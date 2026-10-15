@@ -1,0 +1,40 @@
+<ips:template parameters="$notification, $extra, $email" />
+{$email->language->addToStack("acp_notification_ConfigurationError_email")}
+{{if $notification->extra === 'dangerousFunctions'}}
+**{$email->language->addToStack("disable_functions_title")}**
+
+{$email->language->addToStack("disable_functions_desc_1")}
+
+{$email->language->addToStack("disable_functions_desc_2")}
+
+{{foreach \IPS\core\extensions\core\AdminNotifications\ConfigurationError::enabledDangerousFunctions() as $function}}<code>{$function}</code> {{endforeach}}
+{{elseif $notification->extra === 'displayErrors'}}
+**{$email->language->addToStack("display_errors_title")}**
+
+{$email->language->addToStack("display_errors_desc")}
+{{elseif $notification->extra === 'recommendations'}}
+**{$email->language->addToStack("requirements_checker")}**
+
+{$email->language->addToStack("system_check_recommended_blurb")}
+
+{$email->language->addToStack("system_check_recommended_email")}
+{{elseif mb_substr( $notification->extra, 0, 8 ) === 'taskLock'}}
+**{$email->language->addToStack( "dashboard_tasks_broken", FALSE, array( 'htmlsprintf' => array( \IPS\Task::load( \intval( mb_substr( $notification->extra, 9 ) ) )->key ) ) )}**
+
+{$email->language->addToStack("dashboard_tasks_broken_desc")}
+{{elseif $notification->extra === 'failedMail'}}
+**{$email->language->addToStack("dashboard_email_broken")}**
+
+{$email->language->addToStack( "dashboard_email_broken_desc_1", FALSE, array( 'htmlsprintf' => $email->language->formatNumber( \IPS\Email::countFailedMail() ) ) )}
+
+{$email->language->addToStack("dashboard_email_broken_desc_email")}
+{{elseif $notification->extra === 'dataStorageBroken'}}
+**{$email->language->addToStack("dashboard_datastore_broken")}**
+{{elseif $notification->extra === 'cacheBroken'}}
+**{$email->language->addToStack("dashboard_invalid_cachesetup")}**
+{{elseif $notification->extra === 'cicEmailQuota'}}
+**{$email->language->addToStack("dashboard_cic_email_quota")}**
+{{endif}}
+-----
+
+{$email->language->addToStack("see_all_notifications", FALSE)}: {url="app=core&module=overview&controller=notifications" base="admin" plain="true"}

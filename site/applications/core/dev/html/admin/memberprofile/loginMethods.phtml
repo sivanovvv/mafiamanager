@@ -1,0 +1,66 @@
+<ips:template parameters="$member, $loginMethods" />
+{{if \count( $loginMethods ) }}
+	<hr class='ipsHr'>
+	<h3 class='ipsMinorTitle i-flex i-justify-content_space-between'>{lang="active_account_integrations"}
+	{{if \IPS\CIC AND \IPS\Cicloud\isManaged() AND member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+	<a href="{url="app=core&module=members&controller=members&do=loginAdd&id={$member->member_id}"}" data-ipsDialog data-ipsDialog-title="{lang="add_login_link"}" data-ipsTooltip title="{lang="add_login_link"}" class="i-text-transform_none">{lang="add_button"}</a>
+	{{endif}}
+	</h3>
+
+	<i-data>
+		<ul class='ipsData ipsData--table ipsData--login-methods acpMemberView_integrations'>
+			{{foreach $loginMethods as $id => $details}}
+				<li class='ipsData__item'>
+					{{if $details['link']}}
+						<a href="{$details['link']}" target="_blank" rel="noopener" class="ipsData__image" aria-hidden="true" tabindex="-1">
+							{{if isset( $details['icon'] )}}
+								<img src="{$details['icon']}" class="ipsUserPhoto ipsUserPhoto--tiny" alt="" loading="lazy">
+							{{else}}
+								<img src='{resource="default_photo.png" app="core" location="global"}' class="ipsUserPhoto ipsUserPhoto--tiny" alt="" loading="lazy">
+							{{endif}}
+						</a>
+					{{else}}
+						<div class="ipsData__image" aria-hidden="true">
+							{{if isset( $details['icon'] )}}
+								<img src="{$details['icon']}" class="ipsUserPhoto ipsUserPhoto--tiny" alt="" loading="lazy">
+							{{else}}
+								<img src='{resource="default_photo.png" app="core" location="global"}' class="ipsUserPhoto ipsUserPhoto--tiny" alt="" loading="lazy">
+							{{endif}}
+						</div>
+					{{endif}}
+					<div class='ipsData__main'>
+						{{if isset( $details['edit'] ) and ( $details['edit'] or $details['delete'] ) and member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+							<ul class="ipsControlStrip">
+								{{if $details['edit']}}
+									<li class="ipsControlStrip_button">
+										<a href="{url="app=core&module=members&controller=members&do=loginEdit&id={$member->member_id}&method={$id}"}" data-ipsDialog data-ipsDialog-title="{$details['title']}" data-ipsTooltip title="{lang="profilesync_configure"}"><i class="ipsControlStrip_icon fa-solid fa-pencil" aria-hidden="true"></i></a>
+									</li>
+								{{endif}}
+								{{if $details['delete']}}
+									<li class="ipsControlStrip_button">
+										<a href="{url="app=core&module=members&controller=members&do=loginDelete&id={$member->member_id}&method={$id}" csrf="true"}" data-confirm data-ipsTooltip title="{lang="sign_out"}"><i class="ipsControlStrip_icon fa-solid fa-xmark-circle" aria-hidden="true"></i></a>
+									</li>
+								{{endif}}
+							</ul>
+						{{endif}}
+						<p class='acpMemberView_integrations_text'>
+							{{if $details['link']}}
+								<a href="{$details['link']}" target="_blank" rel="noopener" class="i-link-color_inherit">
+							{{endif}}
+							{$details['title']}<br>
+							<span class='i-font-size_1 i-color_soft'>{$details['blurb']}</span>
+							{{if $details['link']}}
+								</a>
+							{{endif}}
+							{{if isset($details['forceSyncErrors'])}}
+							{{foreach $details['forceSyncErrors'] as $type => $error}}
+								<p class="i-font-size_-1 i-color_warning">{lang="profilesync_{$type}_admin_error" sprintf="$error"}</p>
+							{{endforeach}}
+							{{endif}}
+						</p>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+{{endif}}

@@ -1,0 +1,36 @@
+<ips:template parameters="$failures, $failureCount=0" />
+{lang="connect_failures_desc" pluralize="$failureCount"}<br><br>
+{{if !empty( $failures )}}
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--compact ipsData--connect-failures">
+		{{foreach $failures as $failure }}
+			<li class='ipsData__item'>
+				<div class='ipsData__main'>
+					<h4 class='ipsData__title'>{$failure['slave']['slave_url']}</h4>
+					<p class='ipsData__meta'>
+						{$failure['count']} {lang="failed_logins_suffix"}
+					</p>
+				</div>
+				<div>
+					<div class='ipsTree_controls'>
+						<ul data-ipscontrolstrip class="ipsControlStrip">
+							<li class="ipsControlStrip_button">
+								<a href='{url="app=core&module=settings&controller=login&do=retryConnect&slave={$failure['slave']['slave_id']}"}' title='{lang="slave_try_again"}' data-ipsTooltip>
+									<i class='ipsControlStrip_icon fa-solid fa-circle-play' aria-hidden="true"></i>
+									<span class='ipsControlStrip_item'>{lang="slave_try_again"}</span>
+								</a>
+							</li>
+							<li class="ipsControlStrip_button">
+								<a href='{url="app=core&module=overview&controller=dashboard&deleteSlave={$failure['slave']['slave_id']}" csrf="1"}' title='{lang="remove_slave"}' data-confirm data-ipsTooltip data-confirmMessage="{lang="delete_slave_confirm"}">
+									<i class='ipsControlStrip_icon fa-solid fa-xmark-circle' aria-hidden="true"></i>
+									<span class='ipsControlStrip_item'>{lang="remove_slave"}</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		{{endforeach}}
+		</ul>
+	</i-data>
+{{endif}}

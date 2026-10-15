@@ -1,0 +1,54 @@
+<ips:template parameters="$content, $tabs, $activeTab, $counters=null" />
+
+<div class='ipsPull ipsBox ipsModCpanel'>
+	<div class='cModCP_header i-padding-inline_3 i-padding-block_3 i-flex i-align-items_center i-flex-wrap_wrap i-gap_2 i-border-bottom_3' data-ips-hook="modcp_header">
+		<h1 class='ipsTitle ipsTitle--h2 i-flex_11 i-flex i-align-items_center i-gap_2'><i class="fa-solid fa-user-lock i-color_soft i-opacity_5" aria-hidden="true"></i>{lang="modcp"}</h1>
+		{{if !empty( $counters )}}
+			<ul class='ipsList ipsList--inline i-gap_4 i-row-gap_1 i-font-weight_500'>
+			    {{foreach $counters as $counter}}
+			        <li {{if !$counter['total']}}class='i-color_soft'{{endif}}><span id="{$counter['id']}" class="ipsBadge {{if !$counter['total']}}ipsBadge--positive{{else}}ipsBadge--warning{{endif}} i-margin-end_icon">{$counter['total']}</span> {lang="$counter['title']"}</li>
+			    {{endforeach}}
+			</ul>
+		{{endif}}
+	</div>
+	<section class='ipsColumns ipsColumns--modcpanel i-gap_0'>
+		<div class='ipsColumns__secondary i-basis_340'>
+			<div class='ipsSideMenu ipsSideMenu--modcp-menu' id='modcp_menu' data-ipsSideMenu>
+				<h3 class='ipsSideMenu__view'>
+					<a href='#modcp_menu' data-action='openSideMenu'><i class='fa-solid fa-bars' aria-hidden="true"></i> <span>{lang="modcp_sections"}</span></a>
+				</h3>
+				<div class="ipsSideMenu__menu">
+					{{if isset( $tabs['content'] ) and count( $tabs['content'] )}}
+						<h4 class='ipsSideMenu__title'>{lang="modcp_content_tools"}</h4>
+						<ul class='ipsSideMenu__list'>
+						{{foreach $tabs['content'] as $key => $extensions}}
+							<li><a href='{url="app=core&module=modcp&controller=modcp&tab=$key" seoTemplate="modcp_tab"}' class='ipsSideMenu_item {{if $activeTab == $key}}ipsSideMenu_itemActive{{endif}}'>{lang="modcp_{$key}"}</a></li>
+						{{endforeach}}
+						</ul>
+					{{endif}}
+					{{if isset( $tabs['members'] ) and count( $tabs['members'] )}}
+						<h4 class='ipsSideMenu__title'>{lang="modcp_member_tools"}</h4>
+						<ul class='ipsSideMenu__list'>
+						{{foreach $tabs['members'] as $key => $extensions}}
+							<li><a href='{url="app=core&module=modcp&controller=modcp&tab=$key" seoTemplate="modcp_tab"}' class='ipsSideMenu_item {{if $activeTab == $key}}ipsSideMenu_itemActive{{endif}}'>{lang="modcp_{$key}"}</a></li>
+						{{endforeach}}
+						</ul>
+					{{endif}}
+					{{if isset( $tabs['other'] ) and count( $tabs['other'] )}}
+						<h4 class='ipsSideMenu__title'>{lang="modcp_tools"}</h4>
+						<ul class='ipsSideMenu__list'>
+						{{foreach $tabs['other'] as $key => $extensions}}
+							<li><a href='{url="app=core&module=modcp&controller=modcp&tab=$key" seoTemplate="modcp_tab"}' class='ipsSideMenu_item {{if $activeTab == $key}}ipsSideMenu_itemActive{{endif}}'>{lang="modcp_{$key}"}</a></li>
+						{{endforeach}}
+						</ul>
+					{{endif}}
+				</div>
+			</div>
+		</div>
+		<div class='ipsColumns__primary' id='elModCPContent'>
+			<div class=''>
+				{$content|raw}
+			</div>
+		</div>
+	</section>
+</div>

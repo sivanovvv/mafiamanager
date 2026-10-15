@@ -1,0 +1,21 @@
+<ips:template parameters="$currentCategory=NULL" />
+	{{$categories = $currentCategory ? $currentCategory->children( 'view', NULL, FALSE ) : \IPS\blog\Category::roots();}}
+	{{if !\IPS\blog\Category::theOnlyNode( array(), TRUE, FALSE ) and \count( $categories )}}
+	<div id='elBlogCategoriesBlock' class='ipsWidget ipsWidget--vertical'>
+		<h3 class='ipsWidget__header'>{{if $currentCategory}}{lang="blog_subcategories"}{{else}}{lang="categories"}{{endif}}</h3>
+		<div class='ipsWidget__content'>
+			<div class='ipsSideMenu ipsSideMenu--truncate ipsCategoriesMenu'>
+				<ul class='ipsSideMenu__list'>
+					{{foreach $categories as $category}}
+						<li>
+							<a href="{$category->url()}" class='ipsSideMenu_item'>
+								<span class='ipsSideMenu__text'>{$category->_title}</span>
+								<span class='ipsSideMenu_itemCount'>{number="$category->childrenCount()"}</span>
+							</a>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		</div>
+	</div>
+	{{endif}}

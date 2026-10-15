@@ -1,0 +1,97 @@
+<ips:template parameters="$table, $headers, $images" />
+{{if \count( $images )}}
+	{{foreach $images as $image}}
+		<div
+            class='ipsData__item ipsData__item--gallery-row {{if method_exists( $image, "tableClass" ) && $image->tableClass()}}ipsData__item--{$image->tableClass()}{{endif}} {{if $image->hidden()}}ipsModerated{{endif}} {$image->ui( "css" )}'
+            data-imageId="{$image->id}"
+            data-rowid="{$image->id}"
+            {$image->ui( 'dataAttributes' )}
+            {{if $image->unread()}}data-ips-unread{{else}}data-ips-read{{endif}}
+        >
+		<a href='{$image->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$image->caption}</span></a>
+			<figure class='ipsFigure ipsFigure--ratio'>
+				{{if $image->media }}
+					<a href='{$image->url()}' title='{lang="view_this_video" sprintf="$image->caption"}' class='ipsFigure__main'>
+						<video data-role="video" loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+							<source src="{file="$image->original_file_name" extension="gallery_Images"}" type='{$image->file_type}' />
+						</video>
+						<i class="ipsFigure__play" aria-hidden="true"></i>
+					</a>
+				{{else}}
+					<a href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}' class='ipsFigure__main'>
+						<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy">
+					</a>
+				{{endif}}
+				{template="nsfwOverlay" app="gallery" location="front" group="global" params="$image, FALSE"}
+			</figure>
+            <div class='ipsData__content'>
+				<div class='ipsData__main'>
+					<div class='ipsData__title'>
+						<div class='ipsBadges'>
+						    {{foreach $image->badges() as $badge}}{$badge|raw}{{endforeach}}
+
+							{{if $image->prefix()}}
+								{template="prefix" group="global" app="core" params="$image->prefix( TRUE ), $image->prefix()"}
+							{{endif}}
+						</div>
+						{{if $image->unread()}}
+							<span class='ipsIndicator' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'></span>
+						{{endif}}
+						<h4><a href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"} {{if $image->canEdit()}}{lang="click_hold_edit"}{{endif}}' {{if $image->canEdit()}}data-role="editableTitle"{{endif}}>
+							{$image->caption}
+						</a></h4>
+					</div>
+					<p class='ipsData__meta'>{lang="byline_nodate" htmlsprintf="$image->author()->link()"} &middot; {{if $image->updated == $image->date}}{lang="uploaded"}{{else}}{lang="updated"}{{endif}} {datetime="$image->updated"}</p>			
+					<div class='ipsData__desc ipsRichText ipsTruncate_4 i-margin-top_2'>
+						{$image->truncated()|raw}
+					</div>
+
+					{{if \count( $image->tags() )}}
+						{template="tags" group="global" app="core" params="$image->tags()"}
+					{{endif}}
+				</div>
+				<div class="ipsData__extra">
+					<div class="ipsData__last" data-ips-hook="latestUserPhoto">
+						{{if $image->mapped('num_comments')}}
+							{template="userPhoto" app="core" group="global" params="$image->lastCommenter(), 'fluid'"}
+						{{else}}
+							{template="userPhoto" app="core" group="global" params="$image->author(), 'fluid'"}
+						{{endif}}
+						<div class="ipsData__last-text">
+							<div class="ipsData__last-primary">
+								{{if $image->mapped('num_comments')}}
+									{$image->lastCommenter()->link()|raw}
+								{{else}}
+									{$image->author()->link( NULL, NULL, $image->isAnonymous() )|raw}
+								{{endif}}
+							</div>
+							<div class="ipsData__last-secondary">
+								<a href='{$image->url( 'getLastComment' )}' title='{lang="get_last_post"}'>
+									{{if $image->mapped('last_comment')}}{datetime="$image->mapped('last_comment')"}{{else}}{datetime="$image->mapped('date')"}{{endif}}
+								</a>
+							</div>
+						</div>
+					</div>
+					<ul class='ipsData__stats'>
+						{{if $image->directContainer()->allow_comments}}
+							<li data-statType='comments' {{if !$image->comments}}data-v="0"{{endif}}>
+								<span class='ipsData__stats-icon' data-stat-value="{number='$image->comments'}" aria-hidden="true" data-ipstooltip title='{number="$image->comments" format="short"} {lang="comments" pluralize="$image->comments"}'></span>
+								<span class='ipsData__stats-label'>{number="$image->comments"} {lang="comments" pluralize="$image->comments"}</span>
+							</li>
+						{{endif}}
+						<li data-statType='views'>
+							<span class='ipsData__stats-icon' data-stat-value="{number='$image->views'}" aria-hidden="true" data-ipstooltip title='{number="$image->views" format="short"} {lang="num_views" pluralize="$image->views"}'></span>
+							<span class='ipsData__stats-label'>{number="$image->views"} {lang="num_views" pluralize="$image->views"}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			{{if $table->canModerate()}}
+				<label class="ipsData__mod">
+					<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+					<input type='checkbox' data-role='moderation' name="moderate[{$image->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $image ) )"}" data-state='{{if $image->unread() === -1 or $image->unread() === 1}}unread{{else}}read{{endif}} {{if $image->hidden() === -1}}hidden{{elseif $image->hidden === 1}}unapproved{{endif}} {{if $image->mapped('pinned')}}pinned{{endif}} {{if $image->mapped('featured')}}featured{{endif}} {{if $image->mapped('locked')}}locked{{endif}}' class="ipsInput ipsInput--toggle">
+				</label>
+			{{endif}}
+		</div>
+	{{endforeach}}
+{{endif}}

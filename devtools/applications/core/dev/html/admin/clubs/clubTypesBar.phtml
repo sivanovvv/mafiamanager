@@ -1,0 +1,17 @@
+<ips:template parameters="$percentages, $rawCounts" />
+<div class="i-padding_3 i-background_2">
+	<h2 class='ipsTitle ipsTitle--h3'>{lang="stats_club_types"}</h2>
+	<div class='acpStatsBar i-margin-bottom_1'>
+		{{foreach $percentages as $type => $percent}}
+			<div class='acpStatsBar_segment' style='width: {$percent}%;' title='{lang="club_type_{$type}"}: {number="$rawCounts[ $type ]"}' data-ipsTooltip data-ipsTooltip-safe></div>
+		{{endforeach}}
+	</div>
+	<ul class='ipsList ipsList--inline'>
+		{{foreach $percentages as $type => $percent}}
+			<li class='acpStatsBar_legend'>
+				<span class='acpStatsBar_preview'></span>
+				{lang="club_type_{$type}"}
+			</li>
+		{{endforeach}}
+	</ul>
+</div>

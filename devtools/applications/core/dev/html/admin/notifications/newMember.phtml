@@ -1,0 +1,25 @@
+<ips:template parameters="$users, $notification, $more" />
+<div class="ipsGrid i-basis_400">
+	{{foreach $users as $user}}
+		<div class='ipsBox i-flex i-padding_2'>
+			<div class='ipsPhotoPanel ipsPhotoPanel_mini'>
+				{template="userPhoto" app="core" group="global" params="$user, 'mini'"}
+				<div>			
+					<h4 class='ipsPhotoPanel__primary'><strong><a href='{$user->acpUrl()}'>{$user->name}</a></strong> <span class='i-color_soft i-font-weight_normal i-font-size_-1'>({$user->email})</span></h4>
+					<ul class='ipsPhotoPanel__secondary'>
+						<li><strong>{lang="ip_address"}</strong> {$user->ip_address}</li>
+						<li><strong>{lang="block_awaiting_registered"}</strong> {datetime="$user->joined"}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	{{endforeach}}
+	{{if $more > 1}}
+		<div class='ipsBox i-flex i-align-items_center i-justify-content_center i-padding_2 i-text-align_center'>
+			<h4 class='i-font-size_2'><strong><a href='{url="app=core&module=members&controller=members"}'>{lang="acp_notification_NewRegComplete_more" pluralize="$more"}</a></strong></h4>
+		</div>
+	{{endif}}
+</div>
+<div class="i-color_soft">
+	<span class="i-font-size_-1"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {lang="acp_notification_NewRegComplete_desc" sprintf="$notification->id"}</span>
+</div>

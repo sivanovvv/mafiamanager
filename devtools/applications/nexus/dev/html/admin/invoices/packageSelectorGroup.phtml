@@ -1,0 +1,9 @@
+<ips:template parameters="$group" />
+<li>
+	<div class='ipsTree_row {{if $group->hasChildren()}}ipsTree_parent{{endif}}' data-role="group" data-groupId="{$group->id}">
+		<div class='ipsTree_rowData'>
+			<h4 class="ipsTree_title">{$group->_title}</h4>
+		</div>
+	</div>
+	<ul class='ipsTree ipsTree_node'></ul>
+</li>

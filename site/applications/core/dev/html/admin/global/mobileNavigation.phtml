@@ -1,0 +1,113 @@
+<ips:template parameters="$menu, $currentTab" />
+<i-card id='ipsOffCanvas--acpNavigation' popover class="ipsOffCanvas">
+	<div class='iCard'>
+		<header class='iCard__header'>
+			<h2>{lang="offcanvas_navigation"}</h2>
+			<div class='iCard__headerButtons'>
+				<button type='button' popovertarget='ipsOffCanvas--acpNavigation'>
+					<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+				</button>
+			</div>
+		</header>
+		<div class='iCard__content'>
+
+			<!-- Navigation -->
+			<nav aria-label="Mobile">
+				<ul class='ipsOffCanvas__nav ipsOffCanvas__nav--acpNavigation'>
+					<li>
+						<a href='../'>
+							<span class="ipsOffCanvas__icon" aria-hidden="true">
+								<i class='fa-solid fa-house' aria-hidden="true"></i>
+							</span>
+							<span class="ipsOffCanvas__label">{lang="site"}</span>
+						</a>
+					</li>
+					<li>
+						<a href='{url="app=core&module=members&controller=members&do=adminDetails"}'>
+							<span class="ipsOffCanvas__icon" aria-hidden="true">
+								<i class='fa-solid fa-pencil' aria-hidden="true"></i>
+							</span>
+							<span class="ipsOffCanvas__label">{lang="my_details"}</span>
+						</a>
+					</li>
+					<li>
+						<a href='{url="app=core&module=system&controller=login&do=logout" csrf="true"}'>
+							<span class="ipsOffCanvas__icon" aria-hidden="true">
+								<i class='fa-solid fa-power-off' aria-hidden="true"></i>
+							</span>
+							<span class="ipsOffCanvas__label">{lang="sign_out"}</span>
+						</a>
+					</li>
+					<li><hr></li>
+				    {{foreach $menu['tabs'] as $tab => $items}}
+						<li>
+							<details>
+								<summary class="ipsOffCanvas__item">
+									<span class='ipsOffCanvas__icon' aria-hidden="true"><i class='fa-solid fa-{lang="menutab__{$tab}_icon"}' aria-hidden="true"></i></span>
+									<span class='ipsOffCanvas__label'>{lang="menutab__{$tab}"}</span>
+								</summary>
+								<i-details-content>
+									<ul>
+										{{foreach $items as $appAndModule => $item}}
+											<li class='ipsOffCanvas__title'>
+												{lang="menu__{$appAndModule}"}
+											</li>
+											{{foreach $item as $key => $url}}
+												<li>
+													<a href='{url="$url"}'>{lang="menu__{$appAndModule}_{$key}"}</a>
+												</li>
+											{{endforeach}}
+										{{endforeach}}
+									</ul>
+								</i-details-content>
+							</details>
+						</li>
+					{{endforeach}}
+					<hr>
+					<li>
+						<details>
+							<summary class="ipsOffCanvas__item">
+								<span class='ipsOffCanvas__icon' aria-hidden="true"><i class='fa-solid fa-paint-brush' aria-hidden="true"></i></span>
+								<span class='ipsOffCanvas__label'>{lang="skin"}</span>
+							</summary>
+							<i-details-content data-controller='core.admin.core.changeTheme'>
+								<ul data-role="mobileThemeMenu">
+									<li>
+										<button type="button" data-value="os" {{if !isset(\IPS\Request::i()->cookie['acptheme']) OR !\IPS\Request::i()->cookie['acptheme']}}aria-selected="true"{{endif}}>{lang="acptheme_os_preference"}</button>
+									</li>
+									<li>
+										<button type="button" data-value="light" {{if isset(\IPS\Request::i()->cookie['acptheme']) AND \IPS\Request::i()->cookie['acptheme'] == 'light'}}aria-selected="true"{{endif}}>{lang="acptheme_light"}</button>
+									</li>
+									<li>
+										<button type="button" data-value="dark" {{if isset(\IPS\Request::i()->cookie['acptheme']) AND \IPS\Request::i()->cookie['acptheme'] == 'dark'}}aria-selected="true"{{endif}}>{lang="acptheme_dark"}</button>
+									</li>
+								</ul>
+							</i-details-content>
+						</details>
+					</li>
+					{{$languages = \IPS\Lang::getEnabledLanguages();}}
+					{{if \count( $languages ) > 1}}
+						<li>
+							<details>
+								<summary class="ipsOffCanvas__item">
+									<span class='ipsOffCanvas__icon' aria-hidden="true"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i></span>
+									<span class='ipsOffCanvas__label'>{lang="language"}</span>
+								</summary>
+								<i-details-content>
+									<ul>
+										{{foreach $languages as $id => $lang }}
+										<li>
+											<a href='{url="app=core&module=system&controller=language&id=$id" csrf="true"}' {{if \IPS\Member::loggedIn()->acp_language == $id || ( $lang->default && \IPS\Member::loggedIn()->acp_language === 0 )}}aria-selected="true"{{endif}}>{{if $lang->get__icon()}}<i class='{$lang->get__icon()}' aria-hidden="true"></i> {{endif}}{$lang->title} {{if $lang->default}}{lang="default"}{{endif}}</a>
+										</li>
+									{{endforeach}}
+									</ul>
+								</i-details-content>
+							</details>
+						</li>
+					{{endif}}
+				</ul>
+			</nav>
+		</div>
+	</div>
+</i-card>

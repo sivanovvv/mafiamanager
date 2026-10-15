@@ -1,0 +1,24 @@
+<ips:template parameters="$values, $previousValues=array()" />
+{{if \count( $values )}}
+    <table class='ipsTable i-font-size_2 i-margin-top_3 i-text-align_start'>
+        {{foreach $values as $title => $count}}
+            <tr>
+                <td>{lang="$title"}</td>
+                <td class='i-text-align_end {{if isset( $previousValues[ $title ] ) AND $previousValues[ $title ] > $count}} i-color_negative{{elseif isset( $previousValues[ $title ] ) AND $previousValues[ $title ] < $count}} i-color_positive{{else}} i-color_soft{{endif}}'>
+                    {number="$count"}
+                    {{if isset( $previousValues[ $title ] )}}
+                        {{if $previousValues[ $title ] > $count}}
+                            <i class='fa-solid fa-arrow-down' title='{expression="round( 100 - ( $count / $previousValues[ $title ] * 100 ) )"}%' aria-hidden="true"></i>
+                        {{elseif $previousValues[ $title ] < $count}}
+                            <i class='fa-solid fa-arrow-up' title='{{if $previousValues[ $title ]}}{expression="round( ( ( $count - $previousValues[ $title ] ) / $previousValues[ $title ] ) * 100 )"}%{{endif}}' aria-hidden="true"></i>
+                        {{endif}}
+                    {{endif}}
+                </td>
+            </tr>
+        {{endforeach}}
+    </table>
+{{else}}
+    <p class='i-color_soft i-text-align_center'>
+        {lang="no_data"}
+    </p>
+{{endif}}

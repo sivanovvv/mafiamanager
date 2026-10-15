@@ -1,0 +1,11 @@
+<ips:template parameters="$member, $size='small', $warningRef=NULL, $classes='', $hovercard=TRUE" />
+{{if $member->member_id and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members' ) )}}
+{{$memberURL = ( $warningRef ) ? $member->url()->setQueryString( 'wr', $warningRef ) : $member->url();}}
+	<a data-ips-hook="userPhotoWithUrl" href="{$memberURL}" rel="nofollow" {{if $hovercard}}data-ipsHover data-ipsHover-width="370" data-ipsHover-target="{$memberURL->setQueryString( 'do', 'hovercard' )}"{{endif}} class="ipsUserPhoto ipsUserPhoto--{$size}{{if $classes}} {$classes}{{endif}}" title="{lang="view_user_profile" sprintf="$member->name"}" data-group="{$member->member_group_id}" aria-hidden="true" tabindex="-1">
+		<img src='{$member->photo}' alt='{$member->name}' loading="lazy">
+	</a>
+{{else}}
+	<span data-ips-hook="userPhotoWithoutUrl" class='ipsUserPhoto ipsUserPhoto--{$size} {{if $classes}}{$classes}{{endif}}' data-group="{$member->member_group_id}">
+		<img src='{$member->photo}' alt='{$member->name}' loading="lazy">
+	</span>
+{{endif}}

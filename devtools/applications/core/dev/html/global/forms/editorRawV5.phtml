@@ -1,0 +1,48 @@
+<ips:template parameters="$name, $value, $options, $postKey, $uploadControl, $emoticons, $tags=array(), $contentClass=NULL, $contentId=NULL" />
+{{if ! empty( $options['profanityBlock'] ) and \is_array( $options['profanityBlock'] )}}
+	<div data-role='editorCensorBlock' data-controller='core.global.editor.censorBlock' data-censorBlockWords='{expression="json_encode($options['profanityBlock'])"}' data-editorID='{$name}' class='ipsHide i-margin-bottom_3 i-background_2 i-padding_2 ipsLoading--small'>
+		<div class="ipsMessage ipsMessage--warning">
+			{lang="profanity_block_public_explanation"}
+		</div>
+		<div data-role="editorCensorBlockMessage" class="ipsRichText"><div data-role="editorCensorBlockMessageInternal"></div></div>
+	</div>
+{{endif}}
+<div class='ipsEditor' data-ipsEditorv5
+    {{if $options['minimize'] !== NULL}}data-ipsEditorv5-minimized{{endif}}
+
+    {{if $postKey}}
+        data-ipsEditorv5-postKey="{$postKey}"
+    {{endif}}
+
+    {{if $options['autoSaveKey']}}
+        data-ipsEditorv5-autoSaveKey="{$options['autoSaveKey']}"
+    {{endif}}
+
+    data-ipsEditorv5-name="{$name}"
+
+    {{if $contentClass AND $contentId}}
+        data-ipsEditorv5-contentClass='{$contentClass}'
+        data-ipsEditorv5-contentId='{$contentId}'
+    {{endif}}
+
+    {{if @$options['comments']}}data-ipseditorv5-commenteditor{{endif}}
+
+    {{if settings.giphy_enabled}}data-ipseditorv5-giphyenabled{{endif}}
+    {{if \IPS\core\StoredReplies::enabledRepliesExist()}}data-ipseditorv5-stockrepliesenabled{{endif}}
+    {{if $options['loadPlugins']}}data-ipseditorv5-loadplugins{{endif}}
+    data-ipseditorv5-restrictions="{expression='implode(",",\IPS\Helpers\Form\Editor::getMemberRestrictions( comments: (bool) $options["comments"] ) )'}"
+    data-ipseditorv5-restrictionlevel="{expression='\IPS\Helpers\Form\Editor::getMemberRestrictionLevel( comments: (bool) $options["comments"] )'}"
+>
+
+	<div data-role='editorComposer'>
+		<div {{if $options['minimize']}}class="ipsHide norewrite"{{else}}class="norewrite ipsLoading"{{endif}} data-role="mainEditorArea">
+			<textarea name="{$name}" data-role='contentEditor' class="ipsInput ipsInput--text ipsHide">{$value|doubleencode}</textarea>
+		</div>
+		{{if $options['minimize']}}
+			<div class='ipsComposeArea_dummy ipsJS_show'><i class='fa-regular fa-comment' aria-hidden="true"></i> {lang="$options['minimize']"}</div>
+		{{endif}}
+
+        <div data-role="editor-messages-container"></div>
+		{$uploadControl|raw}
+	</div>
+</div>

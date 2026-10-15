@@ -1,0 +1,111 @@
+<ips:template parameters="$invoice" />
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--payment-log cNexusPaymentLog">
+		{{foreach $invoice->transactions( array( \IPS\nexus\Transaction::STATUS_PAID, \IPS\nexus\Transaction::STATUS_WAITING, \IPS\nexus\Transaction::STATUS_HELD, \IPS\nexus\Transaction::STATUS_REVIEW, \IPS\nexus\Transaction::STATUS_REFUSED, \IPS\nexus\Transaction::STATUS_REFUNDED, \IPS\nexus\Transaction::STATUS_PART_REFUNDED, \IPS\nexus\Transaction::STATUS_GATEWAY_PENDING ) ) as $thisTransaction}}
+			<li class='ipsData__item'>
+				{{if $thisTransaction->status === $thisTransaction::STATUS_PAID}}
+					<div class='ipsData__icon i-color_positive'>
+						<i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>{lang="transaction_paid" sprintf="$thisTransaction->amount, ( $thisTransaction->method ) ? $thisTransaction->method->_title : \IPS\Member::loggedIn()->language()->get('account_credit')"}</div>
+						<p class='ipsData__meta'>{datetime="$thisTransaction->date"}</p>
+					</div>
+				{{elseif $thisTransaction->status === $thisTransaction::STATUS_WAITING}}
+					<div class='ipsData__icon i-color_issue'>
+						<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'><a href="{$thisTransaction->url()}">{lang="transaction_wait" sprintf="$thisTransaction->method->_title"}</a></div>
+					</div>
+				{{elseif $thisTransaction->status === $thisTransaction::STATUS_HELD or $thisTransaction->status === $thisTransaction::STATUS_REVIEW}}
+					<div class='ipsData__icon i-color_issue'>
+						<i class="fa-regular fa-clock" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>
+							{lang="transaction_awaiting_approval"}: {lang="transaction_paid" sprintf="$thisTransaction->amount, $thisTransaction->method->_title"}
+							<span class='i-color_soft'>{datetime="$thisTransaction->date"}</span>
+						</div>
+						{{if $thisTransaction->gw_id}}
+							<p class='ipsData__meta'>
+								{lang="payment_ref"}: {$thisTransaction->gw_id}
+							</p>
+						{{endif}}
+					</div>
+				{{elseif $thisTransaction->status === $thisTransaction::STATUS_GATEWAY_PENDING}}
+					<div class='ipsData__icon i-color_issue'>
+						<i class="fa-regular fa-clock" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>
+							{lang="transaction_processing"}: {lang="transaction_paid" sprintf="$thisTransaction->amount, $thisTransaction->method->_title"}</strong>
+							<span class='i-color_soft'>{datetime="$thisTransaction->date"}</span>
+						</p>
+					</div>
+				{{elseif $thisTransaction->status === $thisTransaction::STATUS_REFUSED}}
+					<div class='ipsData__icon i-color_warning'>
+						<i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>{lang="transaction_declined" sprintf="$thisTransaction->amount, $thisTransaction->method->_title"}</div>
+						{{if $thisTransaction->gw_id}}
+							<p class='ipsData__meta'>
+								{lang="payment_ref"}: {$thisTransaction->gw_id}
+							</p>
+						{{endif}}
+						{{if isset( $thisTransaction->extra['processor_response'] )}}
+						<p class='ipsData__meta'>
+							{{$responseCode = $thisTransaction->extra['processor_response']['response_code'];}}
+							<br>
+							{lang="processor_response_avs"}: {$thisTransaction->extra['processor_response']['avs_code']} ({lang="processor_response_avs__{$thisTransaction->extra['processor_response']['avs_code']}"})
+							<br>
+							{lang="processor_response_cvv"}: {$thisTransaction->extra['processor_response']['cvv_code']}({lang="processor_response_cvv__{$thisTransaction->extra['processor_response']['cvv_code']}"})
+							<br>
+							{lang="processor_response_code"}: {$responseCode} {{if \is_numeric( $responseCode )}}{{$responseCode = (int)$responseCode;}}{{endif}}
+							<br>
+							<span>{lang="processor_response_code__{$responseCode}"}</span>
+						</p>
+						{{endif}}
+					</div>
+				{{elseif $thisTransaction->status === $thisTransaction::STATUS_REFUNDED}}
+					<div class='ipsData__icon i-color_soft'>
+						<i class="fa-solid fa-circle-arrow-left" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+					<div class='ipsData__title'>{lang="transaction_refunded" sprintf="$thisTransaction->amount, ( $thisTransaction->method ) ? $thisTransaction->method->_title : \IPS\Member::loggedIn()->language()->get('account_credit')"}</div>
+						{{if $thisTransaction->gw_id}}
+							<p class='ipsData__meta'>
+								{lang="payment_ref"}: {$thisTransaction->gw_id}
+							</p>
+						{{endif}}
+					</div>
+				{{elseif $thisTransaction->status === $thisTransaction::STATUS_PART_REFUNDED}}
+					<div class='ipsData__icon i-color_positive'>
+						<i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>{lang="transaction_paid" sprintf="$thisTransaction->amount, ( $thisTransaction->method ) ? $thisTransaction->method->_title : \IPS\Member::loggedIn()->language()->get('account_credit')"}
+							<span class='i-color_soft'>{datetime="$thisTransaction->date"}</span>
+						</div>
+						{{if $thisTransaction->partial_refund->amount->isGreaterThanZero()}}
+							<p>
+								{lang="transaction_part_refunded" sprintf="$thisTransaction->partial_refund"}
+							</p>
+						{{endif}}
+						{{if $thisTransaction->credit->amount->isGreaterThanZero()}}
+							<p>
+								{lang="transaction_part_credited" sprintf="$thisTransaction->credit"}
+							</p>
+						{{endif}}
+						{{if $thisTransaction->gw_id}}
+							<p class='ipsData__meta'>
+								{lang="payment_ref"}: {$thisTransaction->gw_id}
+							</p>
+						{{endif}}
+					</div>
+				{{endif}}
+			</li>
+		{{endforeach}}
+	</ul>
+</i-data>

@@ -1,0 +1,7 @@
+<ips:template parameters="$k, $enabled" />
+<li class="cNotificationTypes__row ipsLoading--tiny">
+	<a href="{url="app=core&module=system&controller=notifications&do=options&type={$k}" seoTemplate="notifications_options"}" class="i-flex i-align-items_center i-gap_3 i-padding_3 i-color_root" data-action="showNotificationSettings">
+		{template="notificationSettingsIndexRowDetails" group="system" params="$k, $enabled"}
+	</a>
+	<div data-role="notificationSettingsWindow" class="ipsHide"></div>
+</li>

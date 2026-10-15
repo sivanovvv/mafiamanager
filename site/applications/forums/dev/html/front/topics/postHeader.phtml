@@ -1,0 +1,75 @@
+<ips:template parameters="$item, $comment, $idField, $viewerIsFollowingTheseExperts=[]" />
+<aside data-ips-hook="topicAuthorColumn" class='ipsEntry__header' data-feedid="{$item->feedId}">
+	<div class='ipsEntry__header-align'>
+
+		<div class='ipsPhotoPanel'>
+			<!-- Avatar -->
+			<div class='ipsAvatarStack' data-ips-hook="postUserPhoto">
+				{template="userPhoto" app="core" group="global" params="$comment->author(), 'fluid', $comment->warningRef()"}
+				{{if !$comment->isAnonymous() and $comment->author()->canHaveAchievements() and \IPS\core\Achievements\Rank::show() and $rank = $comment->author()->rank()}}
+					{$rank->html( 'ipsAvatarStack__rank' )|raw}
+				{{endif}}
+				{{if $comment->author()->isOnline() AND ( !$comment->author()->isOnlineAnonymously() OR ( $comment->author()->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+					<span class='ipsOnline' data-ipsTooltip title='{{if $comment->author()->isOnlineAnonymously()}}{lang="online_now_anon" sprintf="$comment->author()->name"}{{elseif $comment->author()->isOnline()}}{lang="online_now" sprintf="$comment->author()->name"}{{endif}}'></span>
+				{{endif}}
+			</div>
+			<!-- Username -->
+			<div class='ipsPhotoPanel__text'>
+				<h3 data-ips-hook="postUsername" class='ipsEntry__username'>
+					{template="userLink" group="global" app="core" params="$comment->author(), $comment->warningRef(), FALSE, $comment->isAnonymous()"}
+					{{if !$comment->isAnonymous()}}
+						<span class='ipsEntry__group'>
+							{{if $comment->author()->modShowBadge()}}
+								<a href='{url="app=core&module=staffdirectory&controller=directory" seoTemplate="staffdirectory"}' class="ipsEntry__moderatorBadge" data-ipsTooltip title='{lang="member_is_moderator" sprintf="$comment->author()->name"}'>
+									{expression="\IPS\Member\Group::load( $comment->author()->member_group_id )->formattedName" raw="true"}
+								</a>
+							{{else}}
+								{expression="\IPS\Member\Group::load( $comment->author()->member_group_id )->formattedName" raw="true"}
+							{{endif}}
+						</span>
+					{{endif}}
+					{{if $comment->isAnonymous() and \IPS\Member::loggedIn()->modPermission('can_view_anonymous_posters')}}
+						<a data-ipsHover data-ipsHover-width="370" data-ipsHover-onClick href="{{if $comment->isFirst()}}{$comment->item()->url( 'reveal' )->csrf()}{{else}}{$comment->url( 'reveal' )->csrf()}{{endif}}" rel="nofollow"><span class="ipsAnonymousIcon" data-ipsTooltip title="{lang="post_anonymously_reveal"}"></span></a>
+					{{endif}}
+				</h3>
+				<p class='ipsPhotoPanel__secondary'>
+					{{if ! \IPS\Output::i()->reduceLinks()}}<a href='{$comment->shareableUrl()}' rel="nofollow">{{endif}}{$comment->dateLine()|raw}{{if ! \IPS\Output::i()->reduceLinks()}}</a>{{endif}}
+				</p>
+			</div>
+		</div>
+
+		<!-- Minimal badges -->
+		<ul data-ips-hook="postBadgesSecondary" class='ipsBadges'>
+			{{if ! $comment->isFirst() and $comment->author()->member_id AND $comment->author()->member_id == $item->author()->member_id}}
+				<li><span class="ipsBadge ipsBadge--author">{lang="author"}</span></li>
+			{{endif}}
+			{{if $comment->authorIsAnExpert()}}
+				<li>{template="expertBadge" group="topics" app="forums" params="$item, $comment, $viewerIsFollowingTheseExperts"}</li>
+			{{endif}}
+			{{if $comment->author()->hasHighlightedReplies()}}
+				<li><span class='ipsBadge ipsBadge--highlightedGroup'>{expression="\IPS\Member\Group::load( $comment->author()->highlightedGroup() )->name" raw="true"}</span></li>
+			{{endif}}
+			{{if ( $comment->item()->isSolved() and $comment->item()->mapped('solved_comment_id') == $comment->pid )}}
+				<li><span class='ipsBadge ipsBadge--positive'><i class='fa-solid fa-check' aria-hidden="true"></i><span>{lang="this_is_a_solved_post"}</span></span></li>
+			{{endif}}
+			{{if $comment->isFeatured()}}
+				<li><span class='ipsBadge ipsBadge--positive'>{lang="this_is_a_featured_post"}</span></li>
+			{{endif}}
+			{{if $comment->isHighlighted() }}
+				<li><span class='ipsBadge ipsBadge--popular'>{lang="this_is_a_popular_post"}</span></li>
+			{{endif}}
+		</ul>
+
+		{{if \count( $item->commentMultimodActions() ) and !$comment->mapped('first')}}
+            <label class='ipsInput ipsInput--toggle ipsInput--pseudo' for='mod-checkbox-{$comment->$idField}'></label>
+        {{endif}}
+
+		{$comment->menu()->linkHtml()|raw}
+
+		{{if $comment->author()->member_id}}
+			<button class='ipsEntry__topButton ipsEntry__topButton--profile' type='button' aria-controls='mini-profile-{$comment->$idField}' aria-expanded='false' data-ipscontrols data-ipscontrols-src="{$comment->authorMiniProfileUrl}" data-ipstooltip='{lang="author_stats"}'><i class="fa-solid fa-chevron-down" aria-hidden="true"></i><span class="ipsInvisible">{lang="author_stats"}</span></button>
+		{{endif}}
+
+        {template="miniProfileWrap" app="core" group="global" params="$comment->author(), $comment->$idField, remoteLoading: true"}
+	</div>
+</aside>

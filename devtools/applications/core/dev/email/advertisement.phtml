@@ -1,0 +1,13 @@
+<ips:template parameters="$advertisement, $email" />
+<tr>
+	<td dir='{dir}' align='center' style="text-align: center; margin: 0 auto; width: 100%; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+		{{if $advertisement->link}}
+			{{$hmacKey = hash_hmac( "sha256", $advertisement->link, \IPS\Settings::i()->site_secret_key . 'a' );}}
+			<a href='{url="app=core&module=system&controller=redirect&do=advertisement&ad={$advertisement->id}&key={$hmacKey}" base="front"}' target='_blank' rel='nofollow noopener'>
+		{{endif}}
+			<img src='{file="$advertisement->_images['large']" extension="$advertisement->storageExtension()"}' alt="{{if $advertisement->image_alt}}{$advertisement->image_alt}{{else}}{lang="advertisement_alt"}{{endif}}" style="max-width:100%">
+		{{if $advertisement->link}}
+			</a>
+		{{endif}}
+	</td>
+</tr>

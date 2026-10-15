@@ -1,0 +1,51 @@
+<ips:template parameters="" />
+
+
+{{if ($blocks = \IPS\core\Statistics\Chart::getSavedBlocks()) AND !empty($blocks)}}
+<div data-role="savedOverviewStats" data-controller='core.admin.stats.overview' data-url='?app=core&module=stats&controller=overview&do=loadBlock'>
+    <div class='ipsBox i-padding_3 i-margin-bottom_2 i-flex i-flex-wrap_wrap i-align-items_center i-gap_2'>
+        {{if ($apps = \IPS\core\Statistics\Chart::getAppsToFilterBy()) and count( $apps ) > 1}}
+            <ul class='ipsList ipsList--inline i-flex_11 i-margin-block_1'>
+                <li>
+                    <strong>{lang="stats_show_c"}</strong>
+                </li>
+
+                {{foreach \IPS\Application::applications() as $key => $app}}
+                    {{if isset( $apps[ $key ] )}}
+                        <li>
+                            <label for='toggle_app_{$app->directory}'>
+                                <input
+                                        type='checkbox'
+                                        id='toggle_app_{$app->directory}'
+                                        name='toggle_app_{$app->directory}'
+                                        data-action='toggleApp'
+                                        data-toggledApp='{$app->directory}'
+                                        checked
+                                >
+                                {$app->_title}
+                            </label>
+                        </li>
+                    {{endif}}
+                {{endforeach}}
+            </ul>
+        {{else}}
+            <div class='i-flex_11'></div>
+        {{endif}}
+    </div>
+    <hr class='ipsHr' />
+    <div class='cStatsGrid'>
+        <div class='ipsGrid i-basis_340'>
+            {{foreach $blocks as $block}}
+                {template="overviewStatisticBlock" group="reports" location="admin" app="core" params="$block['blockKey'], $block['subblock'], $block['details'], $block['saved_stat_id']"}
+            {{endforeach}}
+        </div>
+    </div>
+</div>
+{{else}}
+    <div data-role="savedOverviewStats" class="ipsBox">
+        <p class="ipsEmpty">
+            {lang="statsreports_no_blocks"}
+        </p>
+    </div>
+{{endif}}
+

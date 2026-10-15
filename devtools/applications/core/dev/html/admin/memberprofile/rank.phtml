@@ -1,0 +1,38 @@
+<ips:template parameters="$member" />
+{{if settings.achievements_enabled}}
+    <div class='ipsAcpProfile__half acpMemberView_quota ipsBox' data-ips-template="rank">
+        <h2 class='ipsBox__header'>
+            <i class="fa-solid fa-chart-line ipsBox__header-icon" aria-hidden="true"></i>
+            {lang="acp_profile_ranks_title"}
+            {{if member.hasAcpRestriction( 'core', 'members', 'member_edit' )}}
+                <a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\Points&id={$member->member_id}"}" class="ipsBox__header-secondary">{lang="acp_profile_points_manage"}</a>
+            {{endif}}
+        </h2>
+        {{if $member->rank()}}
+        <div class='i-padding_3'>
+            <div class="i-flex i-align-items_center i-margin-bottom_1">
+                <span class='acpMemberView_quotaNumber i-flex_11 i-font-size_1'>{$member->rank()->_title}</span><br>
+                <span class='i-font-size_1 i-color_soft'>{lang="acp_profile_points" sprintf="$member->achievements_points"}</span>
+            </div>
+            {{if $nextRank = $member->nextRank()}}
+                <meter class='ipsMeter i-margin-bottom_1' max='100' high='90' value='{expression="$member->achievements_points / $nextRank->points * 100"}'></meter>
+                <span class='i-font-size_1 i-color_soft'>{lang="acp_rank_points_for_next"} {expression="$nextRank->points - $member->achievements_points"}</span>
+            {{endif}}
+        </div>
+        {{endif}}
+    </div>
+    <div class='ipsAcpProfile__half acpMemberView_quota ipsBox'>
+        <h2 class='ipsBox__header'>
+            <i class="fa-solid fa-certificate ipsBox__header-icon" aria-hidden="true"></i>
+            {lang="acp_profile_badges_title"}
+            {{if member.hasAcpRestriction( 'core', 'members', 'member_edit' )}}
+                <a href="{$member->acpUrl()->setQueryString('do', 'badges')}" class="ipsBox__header-secondary">{lang="acp_profile_manage_badges"}</a>
+            {{endif}}
+        </h2>
+        <div class='i-padding_3 i-flex i-flex-wrap_wrap i-gap_2'>
+            {{foreach $member->recentBadges(20) as $badge}}
+                <span class="i-flex_00 i-basis_40">{$badge->html('ipsDimension:5')|raw}</span>
+            {{endforeach}}
+        </div>
+    </div>
+{{endif}}

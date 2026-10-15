@@ -1,0 +1,7 @@
+<ips:template parameters="$comment, $member, $email" />
+
+{{$item = ( $comment instanceof \IPS\Content\Item ) ? $comment : $comment->item();}}{$email->language->addToStack("email_new_reacted", FALSE, array( 'htmlsprintf' => array( ( $comment->author()->group['gbw_view_reps'] ) ? $member->name : $email->language->get( 'notifications_anonymous' ), $item->indefiniteArticle( $email->language ) ) ) )} {$item->mapped('title')}
+
+{$comment->emailContent( $email, 'plaintext' )|raw}
+
+-- {setting="board_name"}

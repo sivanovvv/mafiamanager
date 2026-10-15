@@ -1,0 +1,33 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<form
+    accept-charset='utf-8'
+    class="cStatsFilters {$class}"
+    action="{$action}"
+    method="post"
+    {{if $uploadField}}enctype="multipart/form-data"{{endif}}
+    {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}}
+    data-ipsForm
+    data-role="dateFilter"
+    data-defaultRange='{$elements['']['predate']->value}'
+    data-controller='core.admin.stats.liveDateFilter'
+>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<ul class='i-flex i-align-items_center i-gap_2'>
+		<li data-role='formTitle'>
+			<strong>{lang="stats_date_range_c"}</strong>
+		</li>
+		<li class="i-flex_00">
+			{$elements['']['predate']->html()|raw}
+			<div id='dateFilterInputs'>{$elements['']['date']->html()|raw}</div>
+			<button type="submit" class="ipsButton ipsButton--primary ipsHide">{lang="update"}</button>
+			<button type="button" class="ipsButton ipsButton--text ipsHide" data-action='cancelDateRange'>{lang="cancel"}</button>
+		</li>
+	</ul>
+</form>

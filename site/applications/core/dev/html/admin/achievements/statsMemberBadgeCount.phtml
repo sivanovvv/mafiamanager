@@ -1,0 +1,2 @@
+<ips:template parameters="$count, $memberId, $startTime, $endTime" />
+<a href='{url="app=core&module=stats&controller=badges&do=showMemberBadges&member_id={$memberId}&badgeDateStart={$startTime}&badgeDateEnd={$endTime}"}' data-ipsDialog data-ipsDialog-size="narrow" data-ipsDialog-title='{lang="stats_badges_count"}' title="{lang="stats_badge_tooltip"}" data-ipsTooltip>{$count}</a>

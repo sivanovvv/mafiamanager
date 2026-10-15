@@ -1,0 +1,85 @@
+<ips:template parameters="$actions, $member, $min" />
+<div class="i-padding_3 i-border-bottom_3">
+	<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_2'>{lang="assigned_point_levels"}</h3>
+	<p>{lang="warn_points_blurb"}</p>
+</div>
+<i-data>
+	<ol class="ipsData ipsData--table ipsData--compact ipsData--warnActions">
+		{{if $min}}
+			<li class="ipsData__item">
+				<div class="i-basis_40 i-text-align_center">
+					<span class="i-font-weight_bold i-color_negative"><span><i class='fa-solid fa-angle-left' aria-hidden="true"></i> {$min}</span></span>
+				</div>
+				<div class='ipsData__main'>
+					<p class="i-color_soft">{lang="no_punishment"}</p>
+				</div>
+			</li>
+		{{endif}}
+		{{foreach $actions as $action}}
+			<li class="ipsData__item">
+				<div class='i-basis_40 i-text-align_center'>
+					<span class="i-font-weight_bold i-color_negative">{$action['wa_points']}</span>
+				</div>
+				<div class='ipsData__main'>
+					{{if $action['wa_mq'] or $action['wa_rpa'] or $action['wa_suspend']}}
+						<ul>
+							{{if $action['wa_mq']}}
+								<li>
+									<div class="ipsData__title">{lang="warn_mq"}</div>
+									<div class="i-color_soft">
+										<i class='fa-regular fa-clock' aria-hidden="true"></i>
+										{{if $action['wa_mq'] != -1}}
+											{{if $action['wa_mq_unit'] == 'h'}}
+												{lang="f_hours" pluralize="$action['wa_mq']"}
+											{{else}}
+												{lang="f_days" pluralize="$action['wa_mq']"}
+											{{endif}}
+										{{else}}
+											{lang="indefinitely"}
+										{{endif}}
+									</div>
+								</li>
+							{{endif}}
+							{{if $action['wa_rpa']}}
+								<li>
+									<div class="ipsData__title">{lang="warn_rpa"}</div>
+									<div class="i-color_soft">
+										<i class='fa-regular fa-clock' aria-hidden="true"></i>
+										{{if $action['wa_rpa'] != -1}}
+											{{if $action['wa_rpa_unit'] == 'h'}}
+												{lang="f_hours" pluralize="$action['wa_rpa']"}
+											{{else}}
+												{lang="f_days" pluralize="$action['wa_rpa']"}
+											{{endif}}
+										{{else}}
+											{lang="indefinitely"}
+										{{endif}}
+									</div>
+								</li>
+							{{endif}}
+							{{if $action['wa_suspend']}}
+								<li>
+									<div class="ipsData__title">{lang="warn_suspend"}</div>
+									<div class="i-color_soft">
+										<i class='fa-regular fa-clock' aria-hidden="true"></i>
+										{{if $action['wa_suspend'] != -1}}
+											{{if $action['wa_suspend_unit'] == 'h'}}
+												{lang="f_hours" pluralize="$action['wa_suspend']"}
+											{{else}}
+												{lang="f_days" pluralize="$action['wa_suspend']"}
+											{{endif}}
+										{{else}}
+											{lang="indefinitely"}
+										{{endif}}
+									</div>
+								</li>
+							{{endif}}
+						</ul>
+					{{else}}
+						<p class='i-color_soft'>{lang="no_punishment"}</p>
+					{{endif}}
+				</div>
+			</li>
+		{{endforeach}}
+	</ol>
+</i-data>

@@ -1,0 +1,12 @@
+<ips:template parameters="$topic, $comment, $viewerIsFollowingTheseExperts" />
+{{$isFollowing = ( is_array( $viewerIsFollowingTheseExperts ) and count( $viewerIsFollowingTheseExperts ) and in_array( $comment->author()->member_id, $viewerIsFollowingTheseExperts ) );}}
+<span class="ipsBadge ipsBadge--expert">
+    <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+    {lang="forums_is_expert"}
+    {{if $comment->author()->member_id != \IPS\Member::loggedIn()->member_id }}
+        <span data-followApp='core' data-followArea='member' data-followID='{$comment->author()->member_id}' data-buttonSize="small" data-controller='core.front.core.followButton'>
+            {template="memberFollowButton" group="profile" app="core" params="'core', 'member', $comment->author()->member_id, 0, 'small', $isFollowing"}
+        </span>
+    {{endif}}
+</span>
+

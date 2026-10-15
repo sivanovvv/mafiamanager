@@ -1,0 +1,29 @@
+<ips:template parameters="$forum, $depth=0" />
+<div data-controller="forums.front.forum.flow" data-rootForum="{$forum->_id}" class='ipsWidget cForumMiniList_wrapper' id='elFluidFormFilters'>
+	<ul class='cForumMiniList cForumMiniList_multiRoot'>
+		<li class="cForumMiniList__category" data-category>
+			{{if $forum->sub_can_post}}
+				{{$lastPost = $forum->lastPost();}}
+				{{$unread = \IPS\forums\Topic::containerUnread( $forum );}}
+				{{$children = $forum->children();}}
+				<a href="{$forum->url()}" data-parent-id="{$forum->_id}" data-node-id="{$forum->_id}" data-has-children="1" {{if $unread}}data-ips-unread{{else}}data-ips-read{{endif}} {{if $forum->feature_color}}style="--i-featured: {$forum->feature_color}; --i-featured-text: {$forum->_featureTextColor};"{{endif}}>
+					<span class='cForumMiniList__blob' {{if $lastPost AND $lastPost['date']}}title="{lang="forum_simple_view_last_post"} {datetime="$lastPost['date']"}" data-ipsTooltip data-ipsTooltip-safe{{endif}}>
+						<i class='fa-solid fa-check' aria-hidden="true"></i>
+					</span>
+					<span class='cForumMiniList__title'>{$forum->_title}</span>
+					<span class='cForumMiniList__count'>{number="\IPS\forums\Topic::contentCountItemsOnly( $forum )" format="short"}</span>
+				</a>
+			{{else}}
+				<a href="{$forum->url()}" data-parent-id="{$forum->_id}" data-node-id="{$forum->_id}"><span>{$forum->_title}</span></a>
+			{{endif}}
+			{{if $forum->hasChildren()}}
+				<ul class='cForumMiniList'>
+					{template="simplifiedViewForumSidebar_children" app="forums" location="front" group="index" params="$forum, $depth+1"}
+				</ul>
+			{{endif}}
+		</li>			
+	</ul>
+	<div class='ipsResponsive_hideDesktop ipsSubmitRow'>
+		<button type="button" class='ipsButton ipsButton--wide ipsButton--primary' data-action='dialogClose'>{lang="done_forum_filtering"}</button>
+	</div>
+</div>

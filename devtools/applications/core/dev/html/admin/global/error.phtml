@@ -1,0 +1,27 @@
+<ips:template parameters="$title, $message, $code, $extra, $member" />
+{{if $code === '1X000/X' and \IPS\Application::appIsEnabled('cloud')}}
+    {template="featureDisabled" app="cloud" location="admin" group="global" params="'cloud_service_level_upgrade_needed'"}
+{{else}}
+    <div class='ipsMessage ipsMessage--error'>
+        <span class="ipsMessage_code">{$code}</span>
+        {$message|raw}
+    </div>
+
+    <div class="i-padding_3">
+        {{if ( \IPS\IN_DEV or $member->isAdmin() ) and $extra}}
+            <h3 class="i-font-weight_500 i-color_hard i-margin-bottom_2 i-font-size_2">{lang="error_technical_details"}</h3>
+            <textarea class="ipsInput ipsInput--text" rows="13" style="font-family: monospace;">{$extra}</textarea>
+            <p class="i-color_soft i-text-align_center i-margin-top_2">
+                {lang="error_technical_details_desc"}
+                {{if member.hasAcpRestriction( 'core', 'support', 'system_logs_view' )}}
+                    {lang="error_technical_details_logs"}
+                {{endif}}
+            </p>
+        {{endif}}
+        {{if member.hasAcpRestriction( 'core', 'support', 'get_support' )}}
+            <div class="i-text-align_center i-padding-block_2">
+                <a href='{url="app=core&module=support&controller=support" base="admin"}' title='{lang="get_support"}' class="ipsButton ipsButton--inherit">{lang="get_support"}</a>
+            </div>
+        {{endif}}
+    </div>
+{{endif}}

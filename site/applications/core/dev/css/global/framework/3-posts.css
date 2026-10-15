@@ -1,0 +1,63 @@
+/* Additional styles that apply to posts */
+/* Author responses to reviews */
+.ipsReviewResponse {
+	margin-top: var(--i-sp_3);
+	border-inline-start: 2px solid var(--i-background_4);
+	margin-inline-start: var(--i-sp_3);
+}
+
+.cAuthorPane_badge {
+	position: absolute;
+	top: 0;
+	inset-inline-end: -4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 1em; height: 1em;
+	font-size: 26px;
+	color: var(--i-background_1);
+}
+
+	.cAuthorPane_badge:not( .cAuthorPane_badge--rank ) {
+		background: var(--i-primary);
+		border: 2px solid var(--i-background_1);
+		border-radius: 50%;
+	}
+
+	.cAuthorPane_badge::before {
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		font-size: .5em;
+	}
+	
+	.cAuthorPane_badge--anon {
+		position: relative;
+		inset-inline-start: 0;
+		bottom: 0;
+		display: inline-block;
+		line-height: calc(50%);
+		font-weight: normal;
+		text-align: center;
+	}
+	
+	.cAuthorPane_badge_small {
+		font-size: 20px;
+		border-width: 1px;
+	}
+
+	.cAuthorPane_badge--anon::before {
+		content: "\f06e";
+	}
+
+/* PHONES */
+@media screen and (max-width: 767px) {
+	.cAuthorPane_badge {
+		top: -6px;
+		inset-inline-end: -8px;
+		font-size: 18px;
+		width: 1.2em;
+		height: 1.2em;
+	}
+}

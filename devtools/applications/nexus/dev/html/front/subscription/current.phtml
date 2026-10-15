@@ -1,0 +1,6 @@
+<ips:template parameters="$subscription" />
+{{if $package = $subscription->package}}
+	<div class="ipsBox cSubscription_current i-padding_3">
+		{$subscription = $subscription->currentBlurb()}
+	</div>
+{{endif}}

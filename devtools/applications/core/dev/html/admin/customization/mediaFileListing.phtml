@@ -1,0 +1,16 @@
+<ips:template parameters="$item" />
+<li data-role='mediaItem' data-fileid='{$item['resource_id']}' data-uploaded='{datetime="$item['resource_added']" dateonly="true"}' data-path='{$item['resource_path']}' data-filename='{$item['resource_name']}' data-url='{$item['url']}?_cb={$item['resource_added']}' data-fileType='{$item['file_type']}'>
+    <div class='cMedia_item cMedia_itemImage'>
+        <div class='ipsThumb'>
+            {{if $item['file_type'] == 'image'}}
+                <img src='{$item['url']}?_cb={$item['resource_added']}' alt="" loading="lazy">
+            {{else}}
+                <i aria-hidden="true"></i>
+            {{endif}}
+        </div>
+        <div class="cMedia_content">
+            <div class='cMedia_filename'><p class='ipsTruncate_1'>{$item['resource_name']}</p></div>
+            <!-- <div class='cMedia_meta'>{datetime="$item['resource_added']" lowercase="true"}</div> -->
+        </div>
+    </div>
+</li>

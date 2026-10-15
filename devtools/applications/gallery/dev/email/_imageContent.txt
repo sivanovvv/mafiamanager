@@ -1,0 +1,1 @@
+<ips:template parameters="$content, $includeLinks, $includeAuthor, $email" />

@@ -1,0 +1,13 @@
+<ips:template parameters="$events" />
+{{if \count( $events )}}
+	<section class='ipsBox ipsBox--calendarOnlineEvents i-margin-bottom_block'>
+		<h2 class='ipsBox__header'>{lang="events_online_events"}</h2>
+		<i-data>
+			<ul class='ipsEventList ipsData ipsData--grid ipsData--events-list'>
+				{{foreach $events as $event}}
+					{template="event" app="calendar" group="events" params="$event, 'small'"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</section>
+{{endif}}

@@ -1,0 +1,16 @@
+{
+    "files": {
+        "added": [],
+        "edited": [
+            "global\/framework\/common\/components\/dropdown.js",
+            "global\/framework\/common\/components\/navigationMenu.js",
+            "global\/framework\/common\/components\/tooltip.js"
+        ],
+        "removed": []
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

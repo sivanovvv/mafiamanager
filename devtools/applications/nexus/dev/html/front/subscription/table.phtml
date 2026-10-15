@@ -1,0 +1,71 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<section class='ipsBox ipsBox--commerceSubscription ipsPull'>
+	<header class='ipsPageHeader'>
+		<div class="ipsPageHeader__row">
+			<div class='ipsPageHeader__primary'>
+				{{if isset( \IPS\Request::i()->register ) and \IPS\Settings::i()->nexus_subs_register and (int) \IPS\Request::i()->register === 1}}
+					<h1 class='ipsPageHeader__title'>{lang="nexus_sub_sign_up_title"}</h1>
+					<p class="ipsPageHeader__desc">{lang="nexus_sub_sign_up_desc"}</p>
+				{{elseif isset( \IPS\Request::i()->register ) and \IPS\Settings::i()->nexus_subs_register and (int) \IPS\Request::i()->register === 2}}
+					<h1 class='ipsPageHeader__title'>{lang="nexus_sub_needed_title"}</h1>
+					<p class="ipsPageHeader__desc">{lang="nexus_sub_needed_desc"}</p>
+				{{else}}
+					<h1 class='ipsPageHeader__title'>{lang="nexus_front_subscriptions"}</h1>
+					{{if $table->activeSubscription and $table->activeSubscription->purchase->billing_agreement and !$table->activeSubscription->purchase->billing_agreement->canceled}}
+					<p class="ipsMessage ipsMessage--info">
+						{lang="nexus_sub_active_billingagreement_desc" sprintf="$table->activeSubscription->purchase->billing_agreement->url()"}
+					</p>
+					{{endif}}
+				{{endif}}
+			</div>
+			{{if \count( \IPS\nexus\Money::currencies() ) > 1}}
+				<div class='ipsButtons'>
+					{{$baseUrl = \IPS\Http\Url::internal('app=nexus&module=subscriptions&controller=subscriptions', 'front', 'nexus_subscriptions');}}
+					{{if isset( \IPS\Request::i()->register )}}
+						{{$baseUrl = $baseUrl->setQueryString( 'register', (int) \IPS\Request::i()->register );}}
+					{{endif}}
+					{{$memberCurrency = ( ( isset( \IPS\Request::i()->cookie['currency'] ) and \in_array( \IPS\Request::i()->cookie['currency'], \IPS\nexus\Money::currencies() ) ) ? \IPS\Request::i()->cookie['currency'] : \IPS\nexus\Customer::loggedIn()->defaultCurrency() );}}
+					<button type="button" id="elCurrencyChooser" popovertarget="elCurrencyChooser_menu" class='ipsButton ipsButton--soft'><span>{$memberCurrency}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+					<i-dropdown popover id="elCurrencyChooser_menu">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								{{foreach \IPS\nexus\Money::currencies() as $currency}}
+									<li>
+										<a href='{$baseUrl->setQueryString( 'currency', $currency )->csrf()}' title='{lang="set_currency_to" sprintf="$currency"}' {{if $currency == $memberCurrency}}data-selected aria-selected="true"{{endif}}>
+											<i class="iDropdown__input" aria-hidden="true"></i>{$currency}
+										</a>
+									</li>
+								{{endforeach}}
+							</ul>
+						</div>
+					</i-dropdown>
+				</div>
+			{{endif}}
+		</div>
+	</header>
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--top" data-role="tablePagination">
+			<div class="ipsButtonBar__pagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+			</div>
+		</div>
+	{{endif}}
+
+	{{if \is_array( $rows ) AND \count( $rows )}}
+		<i-data>
+			<div class='ipsData ipsData--grid ipsData--subscriptions i-basis_300 {{foreach $table->classes as $class}}{$class} {{endforeach}}' id='elTable_{$table->uniqueId}' data-controller='nexus.front.subscriptions.main' data-role='tableRows'>
+				{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+			</div>
+		</i-data>
+	{{else}}
+		<p class="ipsEmptyMessage">{lang="nexus_subs_non_available"}</p>
+	{{endif}}
+
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--bottom" data-role="tablePagination">
+			<div class="ipsButtonBar__pagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+			</div>
+		</div>
+	{{endif}}
+</section>

@@ -1,0 +1,14 @@
+<ips:template parameters="$categories" />
+<i-dropdown popover id="elDownloadsCategories_menu">
+	<div class="iDropdown">
+		<ul class="iDropdown__items">
+			{{foreach $categories as $cat}}
+				{{if $cat->can('view')}}
+					<li>
+						<a href='{$cat->url()}'>{$cat->_title}<span class="ipsMenu_itemCount">{number="\IPS\downloads\File::contentCount( $cat )"}</span></a>
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+	</div>
+</i-dropdown>

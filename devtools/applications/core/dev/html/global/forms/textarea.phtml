@@ -1,0 +1,45 @@
+<ips:template parameters="$name, $value, $required, $maxlength=NULL, $disabled=FALSE, $class='', $placeholder='', $nullLang=NULL, $tags=array(), $rows=NULL, $allOptions=[]" />
+{{if !empty( $tags ) or !empty( $allOptions['tagSource'] )}}
+<div
+    class='ipsColumns {{if @$allOptions["codeMode"]}}ipsCodebox__outer-wrap{{endif}}'
+    data-controller='core.global.editor.customtags'
+    data-tagFieldType='{{if @$allOptions["codeMode"]}}codebox{{else}}text{{endif}}'
+    data-tagFieldID='elTextarea_{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}'
+    {{if !empty($allOptions['tagSource'])}}data-tagsource="{$allOptions['tagSource']}"{{endif}}
+>
+	<div class='ipsColumns__primary'>
+		<div data-role="editor" {{if @$allOptions["codeMode"]}}class='ipsCodebox__inner-wrap'{{endif}}>
+{{endif}}
+<textarea
+	name="{$name}"
+	id='elTextarea_{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}'
+	value="{{if $value !== null }}{$value}{{endif}}"
+	class="ipsInput ipsInput--text ipsInput--wide {$class}"
+	{{if $rows !== NULL}}rows="{$rows}"{{endif}}
+	{{if $maxlength !== NULL}}maxlength="{$maxlength}"{{endif}}
+	{{if $required === TRUE}}aria-required='true'{{endif}}
+	{{if $disabled}}disabled aria-disabled='true'{{endif}}
+	{{if $placeholder}}placeholder="{$placeholder}"{{endif}}
+    {{if @$allOptions['codeMode']}}data-ipscodebox{{if !empty( $allOptions['codeModeAllowedLanguages'] )}} data-ipscodebox-allowed-languages="{expression="json_encode($allOptions['codeModeAllowedLanguages'])"}"{{endif}}{{endif}}
+>{{if $value !== null }}{$value}{{endif}}</textarea>
+{{if !empty( $tags ) or !empty( $allOptions['tagSource'] )}}
+	</div>
+{{endif}}
+{{if $nullLang}}
+	<div class="ipsFieldRow__inlineCheckbox">
+		{lang="or"} 
+		<input type="checkbox" data-control="unlimited" name="{$name}_null" id="{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}_null" value="1" {{if $value === NULL}}checked{{endif}} {{if $disabled}}disabled{{endif}} aria-controls='{$name}' aria-labelledby='{$name}_null_label' class="ipsInput ipsInput--toggle">
+		<label for='{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}_null' id='{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}_null_label' class='ipsField_unlimited'>{lang="$nullLang"}</label>
+	</div>
+{{endif}}
+{{if !empty( $tags ) or !empty( $allOptions['tagSource'] )}}
+	</div>
+	<div class='ipsColumns__secondary ipsComposeArea_sidebar'>
+		<h3 class='i-padding_2 i-font-weight_600 i-color_hard i-font-size_2' data-role='tagsHeader'>{lang="editor_tags"}</h3>
+		<ul class='ipsScrollbar' data-role='tagsList'>
+            {{$tagLinks = $allOptions['tagLinks'] ?? null;}}
+            {template="editorTags" app="core" location="global" group="forms" params="$tags, $tagLinks"}
+        </ul>
+	</div>
+</div>
+{{endif}}

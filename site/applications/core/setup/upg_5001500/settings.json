@@ -1,0 +1,10 @@
+{
+    "added": [],
+    "edited": [
+        "authy_enabled",
+        "googleauth_enabled",
+        "security_questions_enabled",
+        "verify_enabled"
+    ],
+    "removed": []
+}

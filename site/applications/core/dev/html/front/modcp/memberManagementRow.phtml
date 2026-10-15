@@ -1,0 +1,36 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class='ipsData__item' id='elUserRow_{expression="md5( $row['name'] )"}'>
+		<div class='ipsData__icon'>{$row['photo']|raw}</div>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>{$row['name']|raw}</h4>
+				<ul class='ipsList ipsList--inline i-align-items_center i-color_soft i-link-color_inherit'>
+					{{foreach $row['_buttons'] as $button}}
+						{{if $button['title'] == 'modcp_view_warnings'}}
+							<li><a href='{$button['link']}' title='{lang="$button['title']"}'>{lang="$button['title']"}</a></li>
+						{{endif}}
+					{{endforeach}}
+					<li>
+						<button type="button" id="elUserMod{$row['member_id']}" popovertarget="elUserMod{$row['member_id']}_menu" class="i-font-size_2">
+							<i class="fa-solid fa-gear" aria-hidden="true"></i> <i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+						</button>
+					</li>
+				</ul>
+				<i-dropdown popover id="elUserMod{$row['member_id']}_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{foreach $row['_buttons'] as $button}}
+								<li>
+									<a href='{$button['link']}' title='{lang="$button['title']"}'>
+										{lang="$button['title']"}
+									</a>
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</i-dropdown>
+			</div>
+		</div>
+	</li>
+{{endforeach}}

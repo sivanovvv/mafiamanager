@@ -1,0 +1,24 @@
+<ips:template parameters="$transaction, $complete, $purchases" />
+
+{{if $complete}}
+	<p class='i-font-size_2 i-text-align_center'>
+		<strong>{lang="order_thanks_blurb"}</strong>
+	</p>
+	<p class='i-text-align_center'>
+		<i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="manage_orders_in_billing"}.
+	</p>
+
+	{template="orderReview" group="checkout" app="nexus" params="$transaction->invoice"}
+{{else}}
+	<p class='i-font-size_2 i-text-align_center'>
+		<strong>{lang="order_split_payment_success"}</strong>
+	</p>
+	<p class='i-font-size_2 i-text-align_center'>
+		{lang="order_split_payment_success2"}
+	</p>
+	{{if $invoice = $transaction->invoice}}
+		<p class='i-text-align_center'>
+			<a href="{$invoice->checkoutUrl()}" class='ipsButton ipsButton--primary'>{lang="return_to_checkout"}</a>
+		</p>
+	{{endif}}
+{{endif}}

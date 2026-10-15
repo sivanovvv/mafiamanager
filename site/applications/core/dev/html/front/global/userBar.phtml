@@ -1,0 +1,170 @@
+<ips:template parameters="$userLinkOnly=false" />
+{{if \IPS\Member::loggedIn()->member_id }}
+	<ul data-ips-hook="userBar" class='ipsUserNav ipsUserNav--member' data-controller='core.front.core.userbar{{if member.member_id && settings.auto_polling_enabled}},core.front.core.instantNotifications{{endif}}'>
+		<li id='cUserLink' data-el='user'>
+		    {expression="\IPS\Member::loggedIn()->menu( 'account' )" raw="true"}
+		</li>
+        {{if !$userLinkOnly}}
+            <li data-el='notifications'>
+                <button popovertarget="elFullNotifications_menu" class="ipsUserNav__link" id='elFullNotifications' data-ipsTooltip title='{lang="userbar_notifications" escape="true"}'>
+                    <i class="fa-regular fa-bell ipsUserNav__icon" aria-hidden="true"></i>
+                    <span class='ipsNotification' {{if !member.notification_cnt}}hidden{{endif}} data-notificationType='notify' data-currentCount='{member="notification_cnt"}'>{member="notification_cnt"}</span>
+                    <span class='ipsUserNav__text ipsInvisible'>{lang="notifications"}</span>
+                </button>
+                <i-dropdown id="elFullNotifications_menu" popover data-i-dropdown-persist>
+                    <div class="iDropdown">
+                        <div class='iDropdown__header'>
+                            <p class='iDropdown__headerTitle'><a href='{url="app=core&module=system&controller=notifications" seoTemplate="notifications"}'>{lang="notifications"}</a></p>
+                            <div>
+                                <a href="{url="app=core&module=system&controller=notifications&do=options" seoTemplate="notifications_options"}" class='ipsButton ipsButton--secondary ipsButton--small'><i class="fa-solid fa-gear" aria-hidden="true"></i> {lang="notification_options"}</a>
+                            </div>
+                        </div>
+                        <div class='iDropdown__content'>
+                            {{if \IPS\Notification::webPushEnabled()}}
+                                <i-push-notifications-prompt hidden class="ipsPushNotificationsPrompt i-padding_1">
+                                    <div data-role="content"></div>
+                                    <template data-value="default">
+                                        <button class="ipsPushNotificationsPrompt__button" type="button" data-click="requestPermission">
+                                            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                                            <span class="i-flex_11">{lang="mobile_enable_push_button"}</span>
+                                            <span><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></span>
+                                        </button>
+                                    </template>
+                                    <template data-value="granted">
+                                        <button class="ipsPushNotificationsPrompt__button" type="button" data-click="hideMessage">
+                                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                                            <span class="i-flex_11">{lang="mobile_push_enabled_thanks"}</span>
+                                            <span><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
+                                        </button>
+                                    </template>
+                                    <template data-value="denied">
+                                        <button class="ipsPushNotificationsPrompt__button" type="button" popovertarget="iPushNotificationsPromptPopover">
+                                            <i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
+                                            <span class="i-flex_11">{lang="mobile_push_rejected_button"}</span>
+                                            <span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+                                        </button>
+                                    </template>
+                                </i-push-notifications-prompt>
+                            {{endif}}
+                            <i-data>
+                                <ol class="ipsData ipsData--table ipsData--compact ipsData--user-notifications" data-role='notifyList' id='elNotifyContent' data-ipsfetch='{url="app=core&module=system&controller=notifications"}' data-ipsfetch-type="notify"></ol>
+                            </i-data>
+                        </div>
+                        <a href='{url="app=core&module=system&controller=notifications" seoTemplate="notifications"}' class='iDropdown__footer'>{lang="see_all_notifications"}</a>
+                    </div>
+                </i-dropdown>
+            </li>
+            {{if \IPS\Member::loggedIn()->members_disable_pm != 2 and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+                <li data-el='inbox'>
+                    <button popovertarget="elFullInbox_menu" class="ipsUserNav__link" id='elFullInbox' data-ipsTooltip title='{{if ! \IPS\Member::loggedIn()->members_disable_pm}}{lang="userbar_messages" escape="true"}{{else}}{lang="userbar_messages_disabled" escape="true"}{{endif}}'>
+                        {{if \IPS\Member::loggedIn()->members_disable_pm}}
+                            <i class="fa-regular fa-envelope ipsUserNav__icon i-opacity_5" aria-hidden="true"></i>
+                        {{else}}
+                            <i class="fa-regular fa-envelope ipsUserNav__icon" aria-hidden="true"></i>
+                        {{endif}}
+                        <span class='ipsNotification' {{if !\IPS\Member::loggedIn()->msg_count_new}}hidden{{endif}} data-notificationType='inbox' data-currentCount='{member="msg_count_new"}'>{member="msg_count_new"}</span>
+                        <span class='ipsUserNav__text ipsInvisible'>{lang="userbar_messages"}</span>
+                    </button>
+                    <i-dropdown id="elFullInbox_menu" popover data-i-dropdown-persist>
+                        <div class="iDropdown">
+                            <div class='iDropdown__header'>
+                                <p class='iDropdown__headerTitle'><a href='{url="app=core&module=messaging&controller=messenger" seoTemplate="messaging"}'>{lang="userbar_messages"}</a></p>
+                                <div class="i-font-weight_500 i-color_soft">
+                                    {{if \IPS\core\Messenger\Conversation::showComposeButton( \IPS\Member::loggedIn() )}}
+                                        <a href='{url="app=core&module=messaging&controller=messenger&do=compose" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-remoteSubmit data-ipsDialog-destructOnClose data-ipsDialog-flashMessage="{lang="message_sent"}" id='elMessengerPopup_compose' class='ipsButton ipsButton--secondary ipsButton--small'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="compose_new"}</span></a>
+                                    {{endif}}
+                                </div>
+                            </div>
+                            <div class='iDropdown__content'>
+                                <div id="elNotificationsBrowser" data-controller='core.front.core.notifications'></div>
+                                <i-data>
+                                    <ol class="ipsData ipsData--table ipsData--compact ipsData--user-inbox" data-role='inboxList' id='elInboxContent' data-ipsfetch="{url='app=core&module=messaging&controller=messenger&overview=1&_fromMenu=1'}" data-ipsfetch-type="inbox"></ol>
+                                </i-data>
+                            </div>
+                            <a href='{url="app=core&module=messaging&controller=messenger" seoTemplate="messaging"}' class='iDropdown__footer'><span>{lang="go_to_inbox"}</span></a>
+                        </div>
+                    </i-dropdown>
+                </li>
+            {{endif}}
+            {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'modcp' ) ) and \IPS\Member::loggedIn()->canAccessReportCenter()}}
+                <li data-el='reports'>
+                    <button popovertarget="elFullReports_menu" class="ipsUserNav__link" id='elFullReports' data-ipsTooltip title='{lang="userbar_reports" escape="true"}'>
+                        <i class="fa-regular fa-flag ipsUserNav__icon" aria-hidden="true"></i>
+                        {{if \IPS\Member::loggedIn()->reportCount()}}
+                            <span class='ipsNotification' data-notificationType='reports'>{member="reportCount()"}</span>
+                        {{endif}}
+                        <span class='ipsUserNav__text ipsInvisible'>{lang="report_center_header"}</span>
+                    </button>
+                    <i-dropdown id="elFullReports_menu" popover data-i-dropdown-persist>
+                        <div class="iDropdown">
+                            <div class='iDropdown__header'>
+                                <p class='iDropdown__headerTitle'><a href='{url="app=core&module=modcp&controller=modcp&tab=reports" seoTemplate="modcp_reports"}'>{lang="report_center_header"}</a></p>
+                            </div>
+                            <div class='iDropdown__content' data-ipsfetch="{url='app=core&module=modcp&controller=modcp&tab=reports&overview=1'}">
+                                
+                            </div>
+                            <a href='{url="app=core&module=modcp&controller=modcp&tab=reports" seoTemplate="modcp_reports"}' class="iDropdown__footer">{lang="report_center_link"}</a>
+                        </div>
+                    </i-dropdown>
+                </li>
+            {{endif}}
+            {{if \IPS\core\Assignments\Assignment::canAccessAssignments()}}
+                {template="assignmentsNav" app="cloud" group="global" params="\IPS\core\Assignments\Assignment::totalOpenAssignments()"}
+            {{endif}}
+            {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'discover' ) ) }}
+                {{$defaultStream = \IPS\core\Stream::defaultStream();}}
+                {{if $defaultStream}}
+                    <li data-el="activity">
+                        <a data-action="defaultStream" href='{$defaultStream->url()}' class='ipsUserNav__link' data-ipsTooltip aria-label='{$defaultStream->_title}'>
+                            <i class="fa-regular fa-file-lines ipsUserNav__icon" aria-hidden="true"></i>
+                            <span class='ipsUserNav__text ipsInvisible' data-role="defaultStreamName">{$defaultStream->_title}</span>
+                        </a>
+                    </li>
+                {{endif}}
+            {{endif}}
+            {expression="\IPS\Member::loggedIn()->userNav()" raw="true"}
+        {{endif}}
+	</ul>
+{{else}}
+	<ul id='elUserNav' data-ips-hook="userBarGuest" class='ipsUserNav ipsUserNav--guest'>
+        {{$login = new \IPS\Login( \IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ) );}}
+		{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+        {{$buttonMethods = $login->buttonMethods();}}
+        {{$frontSsoUrl = $login->frontSsoUrl();}}
+        {{if $usernamePasswordMethods or $buttonMethods}}
+            {{if ( \count( $usernamePasswordMethods ) OR \count( $buttonMethods ) > 1 ) AND !$frontSsoUrl}}
+            <li id='elSignInLink' data-el='sign-in'>
+                <button type="button" id="elUserSignIn" popovertarget="elUserSignIn_menu" class='ipsUserNav__link'>
+                	<i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+                	<span class="ipsUserNav__text">{lang="sign_in"}</span>
+                </button>                
+                {template="loginPopup" app="core" group="global" params="$login"}
+            </li>
+            {{else}}
+            <li id='elSignInLink' data-el='sign-in'>
+                <a href='{url="app=core&module=system&controller=login" seoTemplate="login"}' class='ipsUserNav__link' id='elUserSignIn'>
+                	<i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+					<span class="ipsUserNav__text">{lang="sign_in"}</span>
+				</a>
+            </li>
+            {{endif}}
+        {{endif}}
+		{{if \IPS\Login::registrationType() != 'disabled'}}
+			<li data-el='sign-up'>
+				{{if \IPS\Login::registrationType() == 'redirect'}}
+					<a href='{expression="\IPS\Settings::i()->allow_reg_target"}' class='ipsUserNav__link ipsUserNav__link--sign-up' target="_blank" rel="noopener">
+						<i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+						<span class="ipsUserNav__text">{lang="sign_up"}</span>
+                        <span class="ipsInvisible">{lang="open_in_new_tab"}</span>
+					</a>
+				{{else}}
+					<a href='{url="app=core&module=system&controller=register" seoTemplate="register"}' class='ipsUserNav__link ipsUserNav__link--sign-up' {{if \IPS\Login::registrationType() == 'normal'}}data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="sign_up"}'{{endif}} id='elRegisterButton'>
+						<i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+						<span class="ipsUserNav__text">{lang="sign_up"}</span>
+					</a>
+				{{endif}}
+			</li>
+		{{endif}}
+		{expression="\IPS\Member::loggedIn()->userNav()" raw="true"}
+	</ul>
+{{endif}}

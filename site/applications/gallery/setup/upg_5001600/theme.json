@@ -1,0 +1,71 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/browse\/album",
+            "front\/browse\/albumComments",
+            "front\/browse\/albums",
+            "front\/browse\/categoriesSidebar",
+            "front\/browse\/categoryButtons",
+            "front\/browse\/categoryCarousel",
+            "front\/browse\/categoryGrid",
+            "front\/browse\/imageTable",
+            "front\/browse\/index",
+            "front\/browse\/miniAlbum",
+            "front\/browse\/tableRowsLarge",
+            "front\/browse\/tableRowsRows",
+            "front\/browse\/tableRowsThumbs",
+            "front\/forms\/commentUnavailable",
+            "front\/forms\/imageUpload",
+            "front\/forms\/reviewTemplate",
+            "front\/forms\/reviewUnavailable",
+            "front\/global\/approvalQueueItem",
+            "front\/global\/comment",
+            "front\/global\/commentContainer",
+            "front\/global\/commentTableHeader",
+            "front\/global\/embedAlbumComment",
+            "front\/global\/embedAlbumReview",
+            "front\/global\/embedAlbums",
+            "front\/global\/embedImage",
+            "front\/global\/embedImageComment",
+            "front\/global\/embedImageReview",
+            "front\/global\/featuredComment",
+            "front\/global\/manageFollowNodeRow",
+            "front\/global\/manageFollowRow",
+            "front\/global\/review",
+            "front\/global\/reviewContainer",
+            "front\/global\/searchResultAlbumCommentSnippet",
+            "front\/global\/searchResultAlbumSnippet",
+            "front\/global\/searchResultImageSnippet",
+            "front\/submit\/chooseAlbum",
+            "front\/submit\/createAlbum",
+            "front\/submit\/wrapper",
+            "front\/view\/comments",
+            "front\/view\/imageCarouselLink",
+            "front\/view\/imageComments",
+            "front\/view\/imageFrame",
+            "front\/view\/imageInfo",
+            "front\/view\/imageLightboxFrame",
+            "front\/view\/imageLightboxInfo",
+            "front\/view\/reviews",
+            "front\/widgets\/albums",
+            "front\/widgets\/imageRow",
+            "front\/widgets\/latestImage",
+            "front\/widgets\/recentComments",
+            "front\/widgets\/recentImageReviews"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "front\/submit.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

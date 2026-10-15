@@ -1,0 +1,150 @@
+/*
+	----------------
+	- Layout
+	----------------
+*/
+
+/* Column layout */
+.ipsLayout{
+	display: flex;
+	overflow-wrap: break-word;
+	/* Apply margins incase a max-width is set on this element */
+	margin-left: auto;
+	margin-right: auto;
+}
+
+	.ipsLayout__app{
+		flex: 1 1 auto;
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		min-height: 100dvh;
+	}
+
+	.ipsLayout__main{
+		flex: 1 1 auto;
+		padding-top: var(--i-sp_block);
+		outline-width: 0;
+	}
+
+	/* The outline is only displayed when the "Skip to content" link is clicked */
+	.ipsLayout__main:target{
+		outline-offset: -4px;
+		outline-width: 2px;
+	}
+
+	/* Smooth scroll to <main> element when "Skip to content" is clicked */
+	html:has(main:target){
+		scroll-behavior: smooth;
+	}
+
+	@media (max-width: 979px){
+		/* Remove padding to the main block if the breadcrumbs are visible since they add the necessary padding */
+		.ipsBreadcrumb--mobile:not([hidden]) ~ .ipsLayout__main{
+			padding-top: 0;
+		}
+	}
+
+/* Space out all blocks by default */
+:where(.ipsContentWrap > *:not(:last-child)){
+	margin-bottom: var(--i-sp_block);
+}
+
+/* Columns */
+.ipsLayout__columns{
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--i-sp_block);
+}
+
+/* Flip sidebar based on setting */
+[data-ips-theme-setting-flip-sidebar="1"] .ipsLayout__columns{
+	flex-direction: row-reverse;
+}
+
+	.ipsLayout__primary-column{
+		flex: 999 1 600px;
+	}
+
+		.ipsLayout__primary-column > * {
+			margin-bottom: var(--i-sp_block);
+		}
+
+		.ipsLayout__primary-column > :nth-last-child(1 of :not([hidden])) {
+			margin-bottom: 0;
+		}
+
+	.ipsLayout__secondary-column{
+		flex: 1 1 calc(var(--set__i-sidebar-width, 350) * 1px);
+		display: grid;
+	}
+
+	/* Make sidebar sticky, unless it contains <details> elements (since their dynamic height results in a poor UI) */
+	[data-ips-theme-setting-sticky-sidebar="1"] .ipsLayout__secondary-sticky-outer:not(:has(details)){
+		min-height: min(100%, calc(100vh - (var(--i-sp_block) * 2) - var(--i-sticky-offset)));
+		min-height: min(100%, calc(100svh - (var(--i-sp_block) * 2) - var(--i-sticky-offset)));
+		position: sticky;
+		bottom: var(--i-sp_block);
+		align-self: end;
+	}
+	[data-ips-theme-setting-sticky-sidebar="1"] .ipsLayout__secondary-sticky-inner:not(:has(details)){
+		position: sticky;
+		top: calc(var(--i-sticky-offset) + var(--i-sp_block));
+	}
+
+	.ipsLayout__secondary-column--hide{
+		display: none;
+	}
+	.ipsLayout__secondary-column--managing{
+		display: grid !important;
+	}
+
+	@supports selector(a:has(b)){
+		/* Hide widget column by default, and show if it meets certain criteria. Older browsers rely on .ipsLayout__secondary-column--hide */
+		.ipsLayout__secondary-column{
+			display: none;
+		}
+
+		/* Show if there are visible widgets */
+		@media (min-width: 980px){
+			.ipsLayout__secondary-column:has(.ipsWidget:not(.ipsResponsive_hideDesktop .ipsWidget, [hidden] .ipsWidget, [hidden], .ipsHide)){
+				display: grid;
+			}
+		}
+	
+		@media (min-width: 768px) and (max-width: 979px){
+			.ipsLayout__secondary-column:has(.ipsWidget:not(.ipsResponsive_hideTablet .ipsWidget, [hidden] .ipsWidget, [hidden], .ipsHide)){
+				display: grid;
+			}
+		}
+	
+		@media (max-width: 767px){
+			.ipsLayout__secondary-column:has(.ipsWidget:not(.ipsResponsive_hidePhone .ipsWidget, [hidden] .ipsWidget, [hidden], .ipsHide)){
+				display: grid;
+			}
+		}
+
+		/* Always show sidebar if it contains certain elements, or if the Page Editor is active */
+		.ipsLayout__secondary-column:not(.ipsLayout__secondary-column--hide):has(:is(#elContextualTools, [data-role="sidebarAd"], #cAnnouncementSidebar):not([hidden], .ipsHide)){
+			display: grid !important;
+		}
+	}
+
+	/* Always show widgets when in editing mode, even if they've been hidden for responsive reasons */
+	.cWidgetContainer_managing.cWidgetContainer--isWidget:not(.cWidgetContainer--dragging) {
+		display: block !important;
+	}
+
+#elContextualTools, [data-role="sidebarAd"]{
+	margin-bottom: var(--i-sp_block);
+}
+#elContextualTools,
+.ipsLayout__secondary-column .cWidgetContainer > ul{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+	gap: var(--i-sp_block);
+}
+
+.ipsWidgetHide{
+	display: none !important;
+}

@@ -1,0 +1,34 @@
+<ips:template parameters="$transaction, $log" />
+
+<li class='cTransaction_negative'>
+	<div class='cTransaction_icon'>
+		<i class='fa-solid fa-reply-all' aria-hidden="true"></i>
+	</div>
+	<div class='cTransaction_info'>
+		<h3 class="ipsTitle ipsTitle--h3">
+			<strong>
+				{{if $log['to'] === 'credit'}}
+					{lang="tstatus_credited"}
+				{{else}}
+					{lang="tstatus_rfnd_set"}
+				{{endif}}
+			</strong>
+		</h3>
+		<br>
+		
+		{{if isset( $log['ref'] ) and $log['ref']}}
+			<p class='i-font-size_1'>
+				{$log['ref']}
+			</p>
+		{{endif}}
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='i-font-size_1 i-color_soft'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+	</div>
+</li>

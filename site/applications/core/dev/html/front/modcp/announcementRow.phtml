@@ -1,0 +1,77 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class="ipsData__item {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} {{if !$row->active}}ipsModerated{{endif}}">
+		<a href="{$row->url('create')}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1" data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-destructOnClose='true' data-ipsDialog-title='{lang="edit_announcement"}'><span>{$row->mapped('title')}</span></a>
+		<div class='ipsData__icon'>{template="userPhoto" app="core" group="global" params="$row->author(), 'fluid'"}</div>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<div class='ipsData__title'>
+					<h4>
+						<a href='{$row->url()}' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-content='#announcementContent_{$row->id}' title='{lang="view_announcement"}'>{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}</a>
+					</h4>
+					<div class='ipsBadges'>
+						{{if $row->active}}
+							<span class='ipsBadge ipsBadge--positive'>{lang="active"}</span>
+						{{else}}
+							<span class='ipsBadge ipsBadge--negative'>{lang="inactive"}</span>
+						{{endif}}
+					</div>
+				</div>
+				<div class="ipsData__meta">
+					{lang="byline_name_date" htmlsprintf="$row->author()->name, \IPS\DateTime::ts( $row->__get( $row::$databaseColumnMap['date'] ) )->html(TRUE)"}
+				</div>
+			</div>
+			<div class='ipsDialog_inlineContent i-padding_3' id='announcementContent_{$row->id}'>
+				{{if $row->type == \IPS\core\Announcements\Announcement::TYPE_CONTENT}}
+					{template="richText" group="global" app="core" location="global" params="$row->content()"}
+				{{elseif $row->type == \IPS\core\Announcements\Announcement::TYPE_URL}}
+					<div><a href='{$row->url}' target="_blank" rel='noopener' class='i-font-weight_600'>{$row->title}</a></div>
+					<a href='{$row->url}' class='i-color_soft i-text-decoration_underline'>{$row->url}</a>
+				{{else}}
+					<div class='i-font-weight_600'>{$row->title}</div>
+				{{endif}}
+			</div>
+			{{if $table->canModerate()}}
+				<div class='i-flex_00'>
+					<button type="button" id="elAnnouncement{$row->id}" popovertarget="elAnnouncement{$row->id}_menu" class='i-color_soft'>
+						<i class='fa-solid fa-gear' aria-hidden="true"></i> <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+						<span class="ipsInvisible">{lang="edit"}</span>
+					</button>
+					<i-dropdown popover id="elAnnouncement{$row->id}_menu">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								<li>
+									<a href='{$row->url('status')->csrf()}' title='{lang="announce_toggle"}'>
+										<span data-role="ipsMenu_selectedText">{{if $row->active}}{lang="announce_mark_inactive"}{{else}}{lang="announce_mark_active"}{{endif}}</span>
+									</a>
+								</li>
+								<li>
+									<a href='{$row->url()}' title='{lang="view_announcement"}' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-content='#announcementContent_{$row->id}' {{if $row->type == \IPS\core\Announcements\Announcement::TYPE_CONTENT}}data-ipsDialog-title="{$row->title}"{{endif}}>
+										<span data-role="ipsMenu_selectedText">{lang="view"}</span>
+									</a>
+								</li>
+								<li>
+									<a href='{$row->url('create')}' title='{lang="edit_announcement"}' data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-destructOnClose='true' data-ipsDialog-title='{lang="edit_announcement"}'>
+										<span data-role="ipsMenu_selectedText">{lang="edit"}</span>
+									</a>
+								</li>
+								<li><hr></li>
+								<li>
+									<a href='{$row->url('delete')->csrf()}' data-confirm title='{lang="announce_delete"}'>
+										{lang="delete"}
+									</a>
+								</li>
+							</ul>
+						</div>
+					</i-dropdown>
+				</div>
+			{{endif}}
+		</div>
+		{{if $table->canModerate()}}
+			<label class="ipsData__mod">
+				<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+				<input type='checkbox' data-role='moderation' name="moderate[{$row->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{$row->tableStates()}' class='ipsInput ipsInput--toggle'>
+			</label>
+		{{endif}}
+	</li>
+{{endforeach}}

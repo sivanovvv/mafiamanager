@@ -1,0 +1,22 @@
+{
+    "normal": {
+        "added": [
+            "acp_notification_ips4_eol",
+            "acp_notification_ips4_eol_cloud_desc",
+            "acp_notification_ips4_eol_classic_desc"
+        ],
+        "edited": [
+            "requirements_php_version_fail",
+            "requirements_php_version_fail_no_recommended",
+            "requirements_php_version_advice"
+        ],
+        "removed": [
+            "ucp_change_email_prompt"
+        ]
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

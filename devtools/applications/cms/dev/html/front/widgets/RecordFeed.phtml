@@ -1,0 +1,17 @@
+<ips:template parameters="$records, $title, $layout='table', $isCarousel=false" />
+{{if !empty( $records ) }}
+	<header class='ipsWidget__header'>
+		<h3>{$title}</h3>
+		{{if $isCarousel}}
+			{{$carouselID = 'widget--cms-record-feed_' . mt_rand();}}
+			{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+		{{endif}}
+	</header>
+	<div class='ipsWidget__content'>
+		<i-data>
+			<ul class='ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--cms-record-feed' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+				{template="recordRow" group="listing" location="database" app="cms" themeClass="IPS\cms\Theme" params="null, null, $records, $layout"}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

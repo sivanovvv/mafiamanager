@@ -1,0 +1,15 @@
+{
+    "files": {
+        "added": [],
+        "edited": [
+            "global\/framework\/common\/components\/carouselNavigation.js",
+            "core\/front\/controllers\/system\/ips.system.register.js"
+        ],
+        "removed": []
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

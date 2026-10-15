@@ -1,0 +1,31 @@
+<ips:template parameters="$calendars, $date, $featured, $events, $thisCalendar, $months=array()" />
+<section class='ipsBox ipsBox--calendarBrowseMonth' data-controller="calendar.front.overview.eventList" data-ips-hook="main">
+	<h2 class='ipsBox__header'>{lang="events_browse_by_month"}</h2>
+	<div class='cEvents__monthNav' data-role='monthNav' data-ips-hook="navigation">
+		{{foreach $months as $monthObj }}
+			<a class='cEvents__monthNav__monthItem' {{if $monthObj->format( 'n' ) == $date->mon}}aria-current="true"{{endif}} href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&id={$thisCalendar->_id}&y={$monthObj->format( 'Y' )}&m={$monthObj->format( 'n' )}"}{{else}}{url="app=calendar&module=calendar&controller=view&y={$monthObj->format( 'Y' )}&m={$monthObj->format( 'n' )}"}{{endif}}" rel='nofollow' data-action='changeMonth' data-month='{$monthObj->format( 'n' )}' data-year='{$monthObj->format( 'Y' )}'>
+			<span class='cEvents__monthNav__month'>{lang="_date_month_short" pluralize="$monthObj->format( 'n' )"}</span>
+				<span class='cEvents__monthNav__year'>{$monthObj->format( 'Y' )}</span>
+			</a>
+		{{endforeach}}
+	</div>
+	{{if \count($events) }}
+		<i-data>
+			<ul class='ipsEventList ipsData ipsData--grid ipsData--events-list' data-role='eventList' data-ips-hook="eventsList">
+				{{foreach $events as $event}}
+					{template="event" app="calendar" group="events" params="$event, 'normal', \IPS\calendar\Date::getDate( $date->firstDayOfMonth('year'), $date->firstDayOfMonth('mon'), $date->firstDayOfMonth('mday') )"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+		<div class='i-padding_2 i-text-align_center i-border-top_3'>
+			<button class='ipsButton ipsButton--secondary' {{if \count( $events ) < 16}}hidden{{endif}} data-action='loadMore'>{lang="events_show_more"}</button>
+			<p class='ipsEmptyMessage i-padding_0' {{if \count( $events ) >= 16}}hidden{{endif}} data-role='noMoreResults'>{lang="events_no_more_this_month"}</p>
+		</div>
+	{{else}}
+		<i-data>
+			<ul class='ipsEventList ipsData ipsData--grid ipsData--events-list' data-role='eventList'>
+				{template="noEvents" app="calendar" group="events"}
+			</ul>
+		</i-data>
+	{{endif}}
+</section>

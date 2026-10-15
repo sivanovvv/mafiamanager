@@ -1,0 +1,25 @@
+<ips:template parameters="$canSubmitFiles, $currentCategory=NULL, $showReadButtonOnMobile=FALSE" />
+{{if $currentCategory AND $currentCategory->last_file_id AND \IPS\Member::loggedIn()->member_id}}
+	<li class='{{if !$showReadButtonOnMobile}}ipsResponsive_hidePhone{{endif}}'>
+		<a href="{$currentCategory->url()->setQueryString( array( 'do' => 'markRead' ) )->csrf()}" title='{lang="mark_category_read_title"}' class='ipsButton ipsButton--inherit' data-action='markCategoryRead'><i class="fa-solid fa-check" aria-hidden="true"></i><span>{lang="mark_category_read"}</span></a>
+	</li>
+{{endif}}
+{{if $canSubmitFiles}}
+<li>
+	{{if $currentCategory OR $currentCategory = \IPS\downloads\Category::theOnlyNode()}}
+		{{if \IPS\Member::loggedIn()->group['idm_bulk_submit']}}
+			<a class="ipsButton ipsButton--primary" href="{url="app=downloads&module=downloads&controller=submit&category={$currentCategory->id}&_new=1" seoTemplate="downloads_submit"}" data-ipsDialog data-ipsDialog-title='{lang="submit_a_file"}' data-ipsDialog-size='narrow' rel='nofollow noindex'>
+				{lang="submit_a_file"}
+			</a>
+		{{else}}
+			<a class="ipsButton ipsButton--primary" href="{url="app=downloads&module=downloads&controller=submit&category={$currentCategory->id}&_new=1&do=submit" seoTemplate="downloads_submit"}" rel='nofollow noindex'>
+				{lang="submit_a_file"}
+			</a>
+		{{endif}}
+	{{else}}
+		<a class="ipsButton ipsButton--primary" href="{url="app=downloads&module=downloads&controller=submit&_new=1" seoTemplate="downloads_submit"}" data-ipsDialog data-ipsDialog-title='{lang="submit_a_file"}' data-ipsDialog-size='narrow' rel='nofollow noindex'>
+			{lang="submit_a_file"}
+		</a>
+	{{endif}}
+</li>
+{{endif}}

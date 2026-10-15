@@ -1,0 +1,16 @@
+<ips:template parameters="$comment, $file" />
+
+<div class='i-flex i-gap_2'>
+	<div class='i-flex_00 i-basis_70'>
+		{template="thumbImage" group="global" app="core" params="$file->primary_screenshot, $file->name, 'small', '', 'view_this', $file->url( 'getPrefComment' )"}
+	</div>
+	<div class='i-flex_11'>
+		<h3 class='ipsTitle ipsTitle--h3'><a href='{$file->url( "getPrefComment" )}' title='{lang="view_this_file" sprintf="$file->name"}'>{$file->mapped('title')}</a></h3>
+		<p class='i-color_soft i-link-color_inherit'>{lang="in"} <a href='{$file->container()->url()}'>{$file->container()->_title}</a></p>
+		{{if $file->container()->bitoptions['reviews']}}
+			{template="rating" group="global" location="front" app="core" params="'large', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of"} &nbsp;&nbsp;
+		{{endif}}
+
+		<span>{{if !$file->downloads}}<span class='i-color_soft'>{{endif}}<i class='fa-solid fa-circle-arrow-down' aria-hidden="true"></i> {number="$file->downloads"}{{if !$file->downloads}}</span>{{endif}} {{if $file->container()->bitoptions['comments']}}&nbsp;&nbsp;{{if !$file->comments}}<span class='i-color_soft'>{{endif}}<i class='fa-solid fa-comment' aria-hidden="true"></i> {$file->comments}{{endif}}{{if !$file->comments}}</span>{{endif}}</span>
+	</div>
+</div>

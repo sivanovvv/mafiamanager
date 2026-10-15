@@ -1,0 +1,52 @@
+<ips:template parameters="" />
+
+{{if !\IPS\Request::i()->isAjax()}}
+	<!--!Font Awesome Free 6 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+	<link rel='stylesheet' href='{url="applications/core/interface/static/fontawesome/css/all.min.css?v=6.7.2" base="none" noprotocol="true"}'>
+{{endif}}
+
+{{foreach array_unique( \IPS\Output::i()->cssFiles, SORT_STRING ) as $file}}
+{{$url = \IPS\Http\Url::external( $file );}}
+{{if !isset( $url->queryString['v'] )}}
+{{$url = $url->setQueryString( 'v', \IPS\Theme::i()->cssCacheBustKey() );}}
+{{endif}}
+	<link rel='stylesheet' href='{expression="$url"}'>
+{{endforeach}}
+
+<!-- Content Config CSS Properties -->
+<style id="contentOptionsCSS">
+    :root {
+        --i-embed-max-width: {{if settings.max_internalembed_width}}{expression="\IPS\Settings::i()->max_internalembed_width"}px{{else}}100%{{endif}};
+        --i-embed-default-width: {{if settings.max_internalembed_width}}{expression="\IPS\Settings::i()->max_internalembed_width"}px{{else}}500px{{endif}};
+        --i-embed-media-max-width: {{if settings.max_embeddedmedia_width and intval(settings.max_embeddedmedia_width) > 0}}{expression="\IPS\Settings::i()->max_embeddedmedia_width"}px{{else}}100%{{endif}};
+    }
+</style>
+
+{{if \IPS\Dispatcher::i()->controllerLocation == 'front' and ! \IPS\Request::i()->isAjax()}}
+
+	{{if \IPS\Theme::i()->core_css and \IPS\Theme::i()->core_css_filename}}
+		<link rel='stylesheet' href='{file="\IPS\Theme::i()->core_css_filename" extension="core_Theme"}'>
+	{{endif}}
+	{{if \IPS\Output::i()->headCss}}
+		<style id="headCSS">
+			{expression="\IPS\Output::i()->headCss" raw="true"}
+		</style>
+	{{endif}}
+	<style id="themeVariables">
+		{{if \IPS\Theme::i()->getInlineCssVariables()}}
+			{expression="\IPS\Theme::i()->getInlineCssVariables()" raw="true"}
+		{{endif}}
+	</style>
+
+	{{if \IPS\Request::i()->controller != 'themeeditor' || !\IPS\Member::loggedIn()->isEditingTheme()}}
+		<style id="themeCustomCSS">
+			{theme="custom_css_for_output"}
+		</style>
+	{{endif}}
+
+	{{if \IPS\Member::loggedIn()->isEditingTheme()}}
+		<style id="themeEditorStyles"></style>
+		<style id="themeEditorTempStyles"></style>
+	{{endif}}
+
+{{endif}}

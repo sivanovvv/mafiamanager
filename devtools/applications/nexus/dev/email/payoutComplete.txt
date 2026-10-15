@@ -1,0 +1,5 @@
+<ips:template parameters="$payout, $email" />
+
+{$email->language->addToStack("email_payout_message", FALSE, array( 'htmlsprintf' => array( $payout->amount, $payout->date, $payout->gateway ) ) )}
+
+-- {setting="board_name"}

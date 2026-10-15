@@ -1,0 +1,13 @@
+<ips:template parameters="$location, $currency" />
+
+<div class='ipsBox ipsBox--cart'>
+	<div class='i-text-align_center i-padding_3 i-border-bottom_3'>
+		<i class='i-font-size_6 fa-solid fa-cart-shopping i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>
+		<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="your_cart"}</h1>
+	</div>
+	<div data-controller='nexus.front.store.cartReview'>
+		<div data-role="cart">
+			{template="cartContents" group="store" params="$location, $currency"}
+		</div>
+	</div>
+</div>

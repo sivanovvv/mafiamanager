@@ -1,0 +1,89 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+{{if \IPS\CIC AND \IPS\Cicloud\isManaged()}}
+	<h2 class="ipsTitle ipsTitle--h3 i-text-align_center i-padding_3">{lang="managed_upgrade_allow_head" sprintf="\IPS\Cicloud\managedSupportEmail()"}</h2>
+{{endif}}
+{{foreach $elements as $collection}}
+	{{foreach $collection as $input}}
+		{{if \count( $input->options['options'] ) > 1}}
+			<div class="i-background_3 i-padding_3">
+				<div class="i-margin-bottom_1">{lang="upgrade_choose_version"}</div>
+		{{endif}}
+		{{foreach $input->options['options'] as $longVersion => $humanVersion}}
+			<form accept-charset='utf-8' action="{$action}" method="post">
+				<input type="hidden" name="{$id}_submitted" value="1">
+				{{foreach $hiddenValues as $k => $v}}
+					{{if \is_array($v)}}
+						{{foreach $v as $_k => $_v}}
+							<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+						{{endforeach}}
+					{{else}}
+						<input type="hidden" name="{$k}" value="{$v}">
+					{{endif}}
+				{{endforeach}}
+				<input type="hidden" name="version" value="{$longVersion}">
+				
+				{{if \count( $input->options['options'] ) > 1}}
+					<div class="ipsBox i-margin-bottom_1">
+						{{if $humanVersion === \IPS\Application::load('core')->version}}
+							<h2 class="ipsBox__header">{lang="upgrade_check_patches"}</h2>
+						{{else}}
+							<h2 class='ipsBox__header'>{$humanVersion}</h2>
+						{{endif}}
+						<div class="i-padding_3 ipsRichText ipsRichText--release-notes">
+							{{if $humanVersion === \IPS\Application::load('core')->version}}
+								{{if $input->options['_details'][ $longVersion ]['releasenotes']}}
+									<ul>
+										{{foreach $input->options['_details'][ $longVersion ]['changes'] as $issue}}
+											<li>{$issue}</li>
+										{{endforeach}}
+									</ul>
+								{{endif}}
+							{{else}}
+								{{if $input->options['_details'][ $longVersion ]['security']}}
+									<p><strong class="i-color_warning">{lang="this_is_a_security_update"}</strong></p>
+								{{endif}}
+								{{if $input->options['_details'][ $longVersion ]['releasenotes']}}
+									<div>{$input->options['_details'][ $longVersion ]['releasenotes']|raw}</div>
+								{{endif}}
+							{{endif}}
+							<input type="submit" class="ipsButton ipsButton--primary" value="{{if \IPS\CIC}}{lang="start_upgrade"}{{else}}{lang="continue"}{{endif}}">
+							{{if $input->options['_details'][ $longVersion ]['updateurl']}}
+								<a href='{$input->options['_details'][ $longVersion ]['updateurl']}' target="_blank" rel="noopener" class='ipsButton ipsButton--secondary ipsButton--small'>{lang="dashboard_version_moreinfo"}</a>
+							{{endif}}
+						</div>
+					</div>
+				{{else}}
+					<div class="i-background_1 i-padding_3 ipsRichText ipsRichText--release-notes">
+						{{if $humanVersion === \IPS\Application::load('core')->version}}
+							<h2>{lang="upgrade_check_patches"}</h2>
+							{{if $input->options['_details'][ $longVersion ]['releasenotes']}}
+								<ul>
+									{{foreach $input->options['_details'][ $longVersion ]['changes'] as $issue}}
+										<li>{$issue}</li>
+									{{endforeach}}
+								</ul>
+							{{endif}}
+						{{else}}
+							<h2>{lang="dashboard_version_info" sprintf="$humanVersion"}</h2>
+							{{if $input->options['_details'][ $longVersion ]['security']}}
+								<p><strong class="i-color_warning">{lang="this_is_a_security_update"}</strong></p>
+							{{endif}}
+							{{if $input->options['_details'][ $longVersion ]['releasenotes']}}
+								<div>{$input->options['_details'][ $longVersion ]['releasenotes']|raw}</div>
+							{{endif}}
+						{{endif}}
+					</div>
+					<div class="ipsSubmitRow">
+						<input type="submit" class="ipsButton ipsButton--primary" value="{{if \IPS\CIC}}{lang="start_upgrade"}{{else}}{lang="continue"}{{endif}}">
+						{{if $input->options['_details'][ $longVersion ]['updateurl']}}
+							<a href='{$input->options['_details'][ $longVersion ]['updateurl']}' target="_blank" rel="noopener" class='ipsButton ipsButton--secondary ipsButton--small'>{lang="dashboard_version_moreinfo"}</a>
+						{{endif}}
+					</div>
+				{{endif}}
+			</form>
+		{{endforeach}}
+		{{if \count( $input->options['options'] ) > 1}}
+			</div>
+		{{endif}}
+	{{endforeach}}
+{{endforeach}}

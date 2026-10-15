@@ -1,0 +1,4 @@
+<ips:template parameters="$content, $layout='table', $isCarousel=false" />
+<div class='ipsWidget__content {{if isset($orientation) and $orientation == 'vertical'}}i-padding_3{{endif}}'>
+	{$content|raw}
+</div>

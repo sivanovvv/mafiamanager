@@ -1,0 +1,20 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div class='i-padding_3'>
+	{{if isset( $rows['owner'] ) AND \count( $rows['owner'] )}}
+		<h2 class='ipsTitle ipsTitle--h3 ipsTitle--margin'>{lang="user_blogs"}</h2>
+		<ol class='i-grid i-gap_2 i-margin-bottom_3' id='elTable_{$table->uniqueId}_owner'>
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows['owner'], FALSE" object="$table->rowsTemplate[0]"}
+		</ol>
+	{{endif}}
+	{{if isset( $rows['contributor'] ) AND \count( $rows['contributor'] )}}
+		{{if isset( $rows['owner'] ) AND \count( $rows['owner'] )}}
+			<h3 class='ipsTitle ipsTitle--h3 ipsTitle--margin'>{lang="also_contributes"}</h3>
+		{{else}}
+			<h2 class='ipsTitle ipsTitle--h3 ipsTitle--margin'>{lang="contributes_to"}</h2>
+		{{endif}}
+
+		<ol class='i-grid i-gap_2' id='elTable_{$table->uniqueId}_contributor'>
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows['contributor'], TRUE" object="$table->rowsTemplate[0]"}
+		</ol>
+	{{endif}}
+</div>

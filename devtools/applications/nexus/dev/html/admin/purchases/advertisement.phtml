@@ -1,0 +1,46 @@
+<ips:template parameters="$purchase, $advertisement" />
+<div class="ipsSpanGrid i-padding_2 i-text-align_center i-margin-bottom_1">
+	<div class="ipsSpanGrid__6">
+		<span class="i-font-size_6">{$advertisement->impressions}{{if $advertisement->maximum_unit == 'i' and $advertisement->maximum_value != -1}} / {$advertisement->maximum_value}{{endif}}</span>
+		<br>
+		{lang="impressions"}
+	</div>
+	<div class="ipsSpanGrid__6">
+		<span class="i-font-size_6">{$advertisement->clicks}{{if $advertisement->maximum_unit == 'c' and $advertisement->maximum_value != -1}} / {$advertisement->maximum_value}{{endif}}</span>
+		<br>
+		{lang="clicks"}
+	</div>
+</div>
+<div class="ips{expression="\IPS\IPS::mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}">
+	{{$images = array_filter( json_decode( $advertisement->images, TRUE ) );}}
+	{{$link = \IPS\Http\Url::external( $advertisement->link );}}
+	
+	{{if \count( $images ) > 1}}
+		<i-tabs class='ipsTabs acpFormTabBar' id='ipsTabs_adView' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_adView_content' data-ipsTabBar-updateURL='false'>
+			<div role='tablist'>
+				{{foreach $images as $key => $image}}
+					<button type="button" id='ipsTabs_adView_{$key}' class="ipsTabs__tab" title='{$key}' role="tab" aria-controls='ipsTabs_adView_{$key}_panel' aria-selected="{{if $key == "large"}}true{{else}}false{{endif}}">
+						{{if $key === 'large'}}{lang="ad_image"}{{else}}{lang="ad_image_{$key}"}{{endif}}
+					</button>
+				{{endforeach}}
+				</div>
+			{template="tabScrollers" app="core" group="global" location="global"}
+		</i-tabs>
+		<section id='ipsTabs_adView_content' class='acpFormTabContent'>
+			{{foreach $images as $key => $image}}
+				<div id='ipsTabs_adView_{$key}_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_adView_{$key}" {{if $key != "large"}}hidden{{endif}}>
+					<div class="i-padding_3">
+						<a href="{$link}" target='_blank' rel='nofollow noreferrer'><img src="{file="$image" extension="$advertisement->storageExtension()"}" class="ipsImage"></a>
+					</div>
+				</div>
+			{{endforeach}}
+		</section>
+	{{else}}
+		<div class="i-padding_3">
+			{{foreach $images as $key => $image}}
+				<a href="{$link}" target='_blank' rel='nofollow noreferrer'><img src="{file="$image" extension="$advertisement->storageExtension()"}" class="ipsImage"></a>
+			{{endforeach}}
+		</div>
+	{{endif}}
+	<div class="i-font-size_-1"><a href="{$link}" rel="noreferrer">{$advertisement->link}</a></div>
+</div>

@@ -1,0 +1,459 @@
+/* ======================================================== */
+/* ICON PICKER */
+/* The icon picker is used to select either a font awesome icon or an emoji */
+
+.ipsIconPicker__dialog--positioned {
+	/* This prevents the icon panel from being covered up by other elements in the editor, such as new line arrows and the uploader text */
+	z-index: calc(var(--ips-js-zindex-top) + 1);
+	margin: 0;
+}
+
+
+.ipsEditor__iconpicker-wrap >  .ipsIconPicker__dialog {
+	/* Make sure the icon picker is static so the editor internals can position it */
+	position: static !important;
+}
+
+
+.ipsIconPicker__dialog {
+	background: transparent;
+	border-radius: var(--i-box--bo-ra);
+}
+
+.ipsIconPicker__dialog--modal {
+	width: 90vw;
+	max-width: 1200px;
+	height: 100%;
+}
+
+.ipsIconPicker {
+	--i-box--ba-co: var(--i-dropdown--ba-co);
+	box-shadow: var(--i-dropdown--bo-sh);
+	background: var(--i-box--ba-co);
+	border-radius: var(--i-box--bo-ra);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+}
+	.ipsIconPicker__dialog--modal .ipsIconPicker {
+		height: 100%;
+		width: 100%;
+	}
+
+.ipsIconPicker__search{
+	flex: 0 0 auto;
+	display: flex;
+	gap: .7em;
+	background: var(--i-background_3);
+	position: relative;
+	padding: .7em;
+}
+	.ipsIconPicker--anchored .ipsIconPicker__search {
+		background: var(--i-background_2);
+		padding: 0.5em;
+		gap: 0.5em;
+	}
+
+.ipsIconPicker__search::before {
+	content: '\f002';
+	position: absolute;
+	inset-inline-start: 2em;
+	align-self: center;
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-weight: 900;
+	pointer-events: none;
+}
+	.ipsIconPicker--anchored .ipsIconPicker__search::before {
+		inset-inline-start: 1.3em;
+	}
+
+.ipsIconPicker__search [type="text"]{
+	flex: 1 1 100%;
+	padding: .8em 1em;
+	padding-inline-start: 3em;
+	font-size: 1.1em;
+}
+
+	.ipsIconPicker--anchored .ipsIconPicker__search [type="text"] {
+		padding: 0.5em;
+		padding-inline-start: 2.4em;
+		font-size: 1em;
+	}
+
+.ipsIconPicker__search [type="text"]::placeholder{
+	opacity: 1;
+	color: var(--i-color_soft);
+}
+
+.ipsIconPicker__close{
+	width: 1.5em;
+	aspect-ratio: 1;
+	display: grid;
+	place-content: center;
+	font-size: 1.8em;
+	color: var(--i-color_soft);
+	margin-inline-start: auto;
+}
+
+	.ipsIconPicker__close:hover{
+		color: var(--i-color_hard);
+	}
+
+.ipsIconPicker__tabs{
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid var(--i-background_3);
+	padding: .5em;
+	flex: 0 0 auto;
+}
+
+.ipsIconPicker__tabs [data-role="tabs"]{
+	--i-co: var(--i-color_soft);
+	--hover-co: var(--i-color_hard);
+	--hover-ba-co: var(--i-background_3);
+	--active-co: var(--i-secondary-contrast);
+	--active-ba-co: var(--i-secondary);
+	display: flex;	
+	gap: .5em;
+}
+	.ipsIconPicker--anchored .ipsIconPicker__tabs [data-role="tabs"] {
+		flex-grow: 1;
+		justify-content: stretch;
+	}
+		.ipsIconPicker--anchored .ipsIconPicker__tabs [data-role="tabs"] > button {
+			flex-grow: 1;
+			text-align: center;
+			font-size: 12px;
+			padding: 0.6em;
+		}
+
+.ipsIconPicker__tabs [data-role="tabs"] button{
+	--i-outline-offset: -2px;
+	display: block;
+	padding: 0.8em 1.4em;
+	border-radius: 5px;
+	font-weight: 600;
+}
+
+	.ipsIconPicker__tabs [data-role="tabs"] button:where(:hover){
+		color: var(--hover-co);
+		background: var(--hover-ba-co);
+	}
+  
+	.ipsIconPicker__tabs [data-role="tabs"] [data-active]{
+		color: var(--active-co);
+		background: var(--active-ba-co);
+	}
+
+.ipsIconPicker__category-title{
+	padding: 1em;
+	background: var(--i-background_1);
+	color: var(--i-color_soft);
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
+	z-index: 3;
+	font-weight: 600;
+}
+	.ipsIconPicker--anchored .ipsIconPicker__category-title {
+		padding: 0.5em;
+		top: -1px; /* Pretty sure this is a subpixel rendering thing (since the positioner sets the panel's position to a decimal px value), but for some reason setting this to 0 occasionally results in a thin sliver of visible emojis/icons between the header and the search area when left as 0 */
+		background: var(--i-background_2);
+	}
+
+.ipsIconPicker [data-role="iconarea"], .ipsIconPicker__selectedIcons {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(clamp(55px, 7vw, 80px), 1fr));
+	text-align: center;
+	padding: 1em;
+	content-visibility: auto;
+}
+
+/* Only render the button when it's in the view port. Reserve a height for it to reduce jumpy scrolling */
+.ipsIconPicker__option{
+	content-visibility: auto;
+	contain-intrinsic-size: auto clamp(55px, 7vw, 80px);
+}
+
+	/* A 40px grid for anchored icon menus */
+	.ipsIconPicker--anchored [data-role="iconarea"] {
+		grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+		padding: 0.5em;
+	}
+		.ipsIconPicker--anchored .ipsIconPicker__root-icon-area--empty {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+.ipsIconPicker [data-role="iconpicker_item"] {
+	display: grid;
+	place-content: center;
+	border-radius: min(var(--i-design-radius), 5px);
+	aspect-ratio: 1;
+	position: relative;
+}
+	.ipsIconPicker [data-role="iconpicker_item"][data-icon-selected]::after {
+		content: '×';
+		background: var(--i-secondary);
+		color: var(--i-secondary-contrast);
+		position: absolute;
+		inset-inline-end: 4px;
+		top: 4px;
+		border-radius: 50%;
+		font-size: 14px;
+		font-weight: bold;
+		height: 1.2em;
+		width: 1.2em;
+		line-height: 1;
+		text-align: center;
+	}
+
+	.ipsIconPicker [data-role="iconpicker_item"]:hover {
+		background: var(--i-background_2);
+	}
+
+	.ipsIconPicker [data-role="iconpicker_item"]:is(.ipsIconPicker__option--active, :focus, :focus-visible) {
+		z-index: 1;
+		outline: var(--i-outline-width) var(--i-outline-style) var(--i-outline-color);
+		outline-offset: var(--i-outline-offset);
+		background: var(--if-light, var(--i-background_3)) var(--if-dark, var(--i-background_5));
+	}
+
+	.ipsIconPicker [data-role="iconpicker_item"][disabled]{
+		filter: grayscale(1) opacity(60%);
+		pointer-events: none;
+		cursor: not-allowed;
+	}
+
+.ipsIconPicker__option {
+	font-size: 42px; /* The FA SVGs render at around 42 px on average, should make emojis a similar size */
+	display: grid;
+	place-content: center;
+	/* Prevent overflow from long (broken) emojis. The small amount of padding helps to prevent FA icons from being clipped if they slightly overflow their box */
+	overflow: hidden;
+	padding: 2px;
+	/* Ensure all symbols are displayed as emoji */
+	font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+	/* Emoji font size */
+	.ipsIconPicker--anchored [data-role="emojiarea"] .ipsIconPicker__option {
+		font-size: 28px;
+		overflow: hidden;
+	}
+	/* FA font size */
+	.ipsIconPicker--anchored [data-role="faarea"] .ipsIconPicker__option {
+		font-size: 20px;
+	}
+	/* Stickers/custom emoticons */
+	.ipsIconPicker__option img{
+		object-fit: scale-down;
+		width: 80%;
+		height: 80%;
+	}
+
+.ipsIconPicker__option svg {
+	width: 1em;
+}
+
+.ipsIconPicker__title{
+	display: none;
+}
+
+.ipsIconPicker__container {
+	color: var(--i-color_soft);
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	flex: 1 1 auto;
+}
+.ipsLoading [data-role="iconpicker_item"] {
+	content-visibility: hidden;
+}
+
+.ipsIconPicker__fa-attribution{
+	position: absolute;
+	top: 1em;
+	inset-inline-end: 1.3em;
+	z-index: 10;
+	font-weight: 600;
+	color: var(--i-color_soft);
+	font-size: .9em;
+}
+	.ipsIconPicker--anchored .ipsIconPicker__fa-attribution{
+		top: revert;
+		bottom: 0;
+		padding-top: 0.25em;
+		padding-left: 0.5em;
+		background-color: var(--i-background_1);
+		inset-inline-end: 1em;
+		border-top-left-radius: 0.25em;
+	}
+
+	[data-role="emojiarea"] .ipsIconPicker__fa-attribution{
+		display: none;
+	}
+
+	.ipsIconPicker__fa-attribution i{
+		font-size: .8em;
+		margin-inline-start: .3em;
+	}
+
+.ipsIconPicker [data-role="icons"] {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	flex: 1 1 auto;
+	overscroll-behavior: contain;
+	height: 100%;
+}
+	.ipsIconPicker--anchored [data-role="icons"] {
+		min-height: 50px;
+		min-width: 280px;
+		scrollbar-width: thin;
+		padding-bottom: 0.8em;
+	}
+
+	.ipsIconPicker--panel [data-role="icons"] {
+		overflow-y: auto;
+		scrollbar-width: none;
+		padding-bottom: 0;
+	}
+
+	.ipsIconPicker .ipsLoading * {
+		opacity: 0;
+	}
+
+	/* No results */
+	.ipsIconPicker__root-icon-area--empty{
+		display: grid;
+		place-content: center;;
+	}
+
+.ipsIconPicker__search [data-role="type_selectors"]{
+	flex: 0 0 auto;
+	display: flex;
+}
+
+/* Hide selector parent if it's empty (FA icons don't have color options) */
+/* Hide all selectors if FA tab is selected */
+.ipsIconPicker__search [data-role="type_selectors"]:not(:has(*)),
+.ipsIconPicker:has([data-tab="fa"][data-active]) [data-role="type_selectors"]{
+	display: none;
+}
+
+	.ipsIconPicker__search [data-role="type_selectors"] select {
+		font-size: 20px;
+		padding: 0 0.8em;
+		padding-inline-end: calc(1.1em + 12px);
+		background-size: auto 12px;
+		background-position: calc(100% - 0.8em) 50%;
+	}
+
+		/* todo when we upgrade the emoji data list to a version of unicode past 15.0, there will be wider hair style support. At this point, we should unhide this; at the time of creating the iconpicker feature, there were only 3 base emojis that supported hair styles */
+		.ipsIconPicker__search [data-role="type_selectors"] select[data-field="hair"] {
+			display: none;
+		}
+
+/* Hide "Selected icons" if it's empty */
+.ipsIconPicker [data-role="selected_icons"]:not(:has([data-role="iconpicker_item"])){
+	display: none;
+}
+
+
+/**
+These support the icon picker implemented as a dropdown and suggestion panel via tiptap
+ */
+
+/* Dropdown toolbar menu */
+.ipsIconPicker--anchored {
+	width: 340px;
+	max-width: 95vw;
+	height: 450px;
+	--i-arrow-border-top: 0;
+	--i-arrow-border-bottom: 1;
+}
+
+/* Shortcode menu */
+.ipsIconPicker__dialog--panel:not(.ipsIconPicker__dialog--positioned) .ipsIconPicker {
+	display: none;
+}
+.ipsIconPicker--panel {
+	max-height: 300px;
+	width: 300px;
+	height: revert;
+}
+
+	.ipsIconPicker--panel [data-role="iconarea"]{
+		display: block;
+	}
+
+	/* Show shortcodes in this menu */
+	.ipsIconPicker--panel [data-role="iconpicker_item"]{
+		display: flex;
+		aspect-ratio: auto;
+		align-items: center;
+		justify-content: start;
+		gap: .8em;
+		width: 100%;
+		outline-width: 0 !important;
+		padding: 0 0.4em;
+		overflow: hidden;
+	}
+
+	.ipsIconPicker--panel [data-role="iconpicker_item"]:is(.ipsIconPicker__option--active, :focus-visible){
+		background: var(--if-light, var(--i-background_3)) var(--if-dark, var(--i-background_5));
+	}
+
+	.ipsIconPicker--panel [data-role="emojiarea"] .ipsIconPicker__option{
+		font-size: 23px;
+	}
+
+	.ipsIconPicker--panel .ipsIconPicker__option[data-icon-title]::after{
+		display: block;
+		font-family: var(--i-font-family);
+		font-size: 0.8rem;
+		color: var(--i-color_soft);
+		content: attr(data-icon-title);
+	}
+
+	/* Shift contextual panel away from text */
+	.ipsIconPicker__dialog--panel {
+		margin-top: 10px !important;
+	}
+
+	.ipsIconPicker__dialog--panel.ipsIconPicker__dialog--popup {
+		margin-top: -10px !important;
+	}
+
+	.ipsIconPicker--panel :is(.ipsIconPicker__tabs, .ipsIconPicker__search, .ipsSubmitRow, .ipsIconPicker__category-title),
+	.ipsIconPicker--anchored :is(.ipsSubmitRow, .ipsIconPicker__close, [data-role="selected_icons"]) {
+		display: none;
+	}
+	.ipsIconPicker--panel::after {
+		--i-arrow-offset: calc(sqrt(2) * -1); /* The arrow borders are at a 45degree angle, so the shadow has to be offset by this much to make the effective "border" 1px */
+		--i-arrow-sh-co: color-mix(in srgb, var(--i-color_hard) 10%, transparent);
+		content: "";
+		position: absolute;
+		bottom: 100%;
+		left: clamp(10px, 1px * var(--i-arrow-left, 0) - 8px, 100% - 10px);
+		height: 16px;
+		width: 16px;
+		filter: drop-shadow(var(--i-arrow-sh-co) 0px calc(1px * var(--i-arrow-offset)) 0px);
+		border: 8px solid transparent;
+		border-top-color: var(--i-box--ba-co);
+		border-bottom-color: var(--i-box--ba-co);
+		border-top-width: calc(var(--i-arrow-border-top) * 8px);
+		border-bottom-width: calc(var(--i-arrow-border-bottom) * 8px);
+	}
+
+	.ipsIconPicker__dialog--popup .ipsIconPicker--panel::after {
+		--i-arrow-offset: calc(sqrt(2));
+		top:100%;
+	}
+
+	.ipsIconPicker--anchored .ipsIconPicker__container {
+		min-height: 80px;
+	}

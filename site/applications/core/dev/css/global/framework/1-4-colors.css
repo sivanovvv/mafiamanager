@@ -1,0 +1,397 @@
+/* Registering these color variables prevents iOS 16 from crashing and fixes color-mix and relative color bugs in older vresions of Chrome. Fixed in Chrome 125 and iOS 17 */
+@property --i-background_2 {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-background_3 {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-background_4 {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-background_5 {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-primary-dark {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-primary-light {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-secondary-dark {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-secondary-light {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-color_primary {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-color_secondary {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-body--ba-co {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-badge {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+@property --i-co {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: black;
+}
+
+:root{
+
+	color-scheme: light dark;
+
+	--i-co: var(--i-color_root);
+
+	/* Backgrounds */
+	--i-background_start: var(--i-box--ba-co);
+	--i-background_end: var(--i-base_6);
+	--i-background_1: var(--i-background_start);
+	--i-background_2: color-mix(in oklch, var(--i-background_start), var(--i-background_end) 10%);
+	--i-background_3: color-mix(in oklch, var(--i-background_start), var(--i-background_end) 32%);
+	--i-background_4: color-mix(in oklch, var(--i-background_start), var(--i-background_end) 50%);
+	--i-background_5: color-mix(in oklch, var(--i-background_start), var(--i-background_end) 80%);
+	--i-background_6: var(--i-background_end);
+
+	--i-primary-dark: color-mix(in srgb, var(--i-primary), black 20%);
+	--i-primary-light: color-mix(in srgb, var(--i-primary), white 20%);
+	--i-secondary-dark: color-mix(in srgb, var(--i-secondary), black 20%);
+	--i-secondary-light: color-mix(in srgb, var(--i-secondary), white 20%);
+	--i-primary-contrast: oklch(from var(--i-primary) clamp(0, (.80 - l) * 1000, 1) 0 0);
+	--i-secondary-contrast: oklch(from var(--i-secondary) clamp(0, (.80 - l) * 1000, 1) 0 0);
+
+	--i-color_primary: oklch(from var(--i-primary) var(--if-light, min(l, .5)) var(--if-dark, max(l, .7)) c h);
+	--i-color_secondary: oklch(from var(--i-secondary) var(--if-light, min(l, .5)) var(--if-dark, max(l, .7)) c h);
+	--i-color_contrast: oklch(from var(--i-body--ba-co) clamp(.1, (.60 - l) * 1000, .95) min(c, .04) h);
+	--i-color_background-dark-contrast: hsl(0 0% 100%);
+
+	/* Trophy colors */
+	--i-trophy-first--background: #fac746;
+	--i-trophy-first--color: #704926;
+	--i-trophy-second--background: #c0c0c0;
+	--i-trophy-third--background: #cd7f32;
+
+	--i-nav-dropdown--bo-sh: color-mix(in srgb, var(--i-color_hard) 10%, transparent) 0px 0px 0px 1px, hsl(0 0% 0% / .2) 0px 20px 40px, hsl(0 0% 0% / 0.1) 0px 1px 2px;
+	--i-nav-dropdown-arrow--bo-co: color-mix(in srgb, var(--i-color_hard) 10%, transparent);
+	
+}
+
+[data-ips-scheme="light"]{
+
+	color-scheme: light;
+	--if-dark:;
+	--if-light: initial;
+
+	/* Base colors */
+	--i-primary: var(--light__i-primary);
+	--i-primary-relative-l: var(--light__i-primary-relative-l, 0);
+	--i-secondary: var(--light__i-secondary);
+	--i-secondary-relative-l: var(--light__i-secondary-relative-l, 0);
+
+	--i-base-l: calc(var(--light__i-base-l) / 100);
+	--i-base-c: calc(var(--light__i-base-c) / 100);
+	--i-base-c-dark: var(--i-base-c) * 100 / 30; /* Set an ideal chroma for the default setting of 30 */
+	--i-base-c-light: var(--i-base-c-dark) * var(--i-base-l); /* As lightness increases, chroma decreases */
+	--i-base-h: var(--light__i-base-h);
+
+	--i-base_1: oklch(calc(80% + 20% * var(--i-base-l))		calc(5% * var(--i-base-c-dark)	- 	5% * var(--i-base-c-light)) 	var(--i-base-h));
+	--i-base_2: oklch(calc(77% + 22% * var(--i-base-l)) 	calc(6% * var(--i-base-c-dark)	- 	5% * var(--i-base-c-light)) 	var(--i-base-h));
+	--i-base_3: oklch(calc(73% + 23% * var(--i-base-l)) 	calc(7% * var(--i-base-c-dark)	- 	5% * var(--i-base-c-light)) 	var(--i-base-h));
+	--i-base_4: oklch(calc(68% + 21% * var(--i-base-l)) 	calc(9% * var(--i-base-c-dark)	- 	5% * var(--i-base-c-light)) 	var(--i-base-h));
+	--i-base_5: oklch(calc(65% + 22% * var(--i-base-l)) 	calc(12% * var(--i-base-c-dark)	- 	5% * var(--i-base-c-light)) 	var(--i-base-h));
+	--i-base_6: oklch(calc(60% + 20% * var(--i-base-l)) 	calc(14% * var(--i-base-c-dark)	- 	5% * var(--i-base-c-light)) 	var(--i-base-h));
+
+	--i-base-contrast_1: oklch(calc(40% + 10% * var(--i-base-l)) calc(var(--i-base-c) * 46%) var(--i-base-h));
+	--i-base-contrast_2: oklch(calc(37% + 9% * var(--i-base-l)) calc(var(--i-base-c) * 46%) var(--i-base-h));
+	--i-base-contrast_3: oklch(calc(34% + 9% * var(--i-base-l)) calc(var(--i-base-c) * 41%) var(--i-base-h));
+	--i-base-contrast_4: oklch(calc(28% + 5% * var(--i-base-l)) calc(var(--i-base-c) * 36%) var(--i-base-h));
+	--i-base-contrast_5: oklch(calc(21% + 5% * var(--i-base-l)) calc(var(--i-base-c) * 27%) var(--i-base-h));
+	--i-base-contrast_6: oklch(15% calc(var(--i-base-c) * 17%) var(--i-base-h));
+
+	/* Typography */
+	--i-color_positive: hsl(120 82% 36%);
+	--i-color_positive-soft: hsl(150 60% 90%);
+	--i-color_negative: hsl(0 65% 50%);
+	--i-color_negative-soft: hsl(0 65% 90%);
+	--i-color_warning: hsl(24 95% 32%);
+	--i-color_moderated: hsl(0 50% 30%);
+	--i-color_assigned: hsl(23 40% 20%);
+	
+	/* Background colors */
+	--i-background_dark: var(--i-base-contrast_3);
+	--i-background_positive: hsl(150 82% 36%);
+	--i-background_positive-soft: hsl(120 64% 96%);
+	--i-background_negative: hsl(0 72% 30%);
+	--i-background_negative-soft: hsl(0 72% 90%);
+	--i-background_moderated: hsl(0 50% 95%);
+	--i-background_selected: var(--i-background_3);
+	--i-background_hover: color-mix(in srgb, var(--i-background_6) 8%, transparent);
+	--i-background_assigned: hsl(17.1 63.6% 97.8%);
+
+	/* Rich text colors */
+	--i-color_red: hsl(0 100% 45%);
+	--i-color_orange: hsl(30 100% 45%);
+	--i-color_yellow: hsl(50 100% 45%);
+	--i-color_green: hsl(100 85% 45%);
+	--i-color_blue: hsl(210 100% 45%);
+	--i-color_indigo: hsl(260 100% 40%);
+	--i-color_violet: hsl(300 100% 40%);
+
+
+	/*
+		----------------
+		- Assign colors to elements
+		----------------
+	*/
+
+	/* Header */
+	--i-nav-dropdown--ba-co: var(--i-background_1);
+
+	/* Boxes */
+	--i-box--bo-sh: 
+		oklch(10% calc(var(--i-base-c) * 20%) var(--i-base-h) / min(.15, calc(var(--set__i-design-shadow) * .025)))
+		0px
+		calc(5px + var(--set__i-design-shadow) * .6px)
+		calc(3px + var(--set__i-design-shadow) * 2px)
+		-3px;
+
+	/* Dropdowns */
+	--i-dropdown--ba-co: var(--i-background_1);
+	--i-dropdown--co: var(--i-color_root);
+	--i-dropdown--bo-sh: hsl(0 0% 0% / 12%) 0px 0px 0px 1px, hsl(0 0% 0% / 0.25) 0px 20px 50px, hsl(0 0% 0% / .2) 0px 13px 13px -13px;
+	--i-dropdown-arrow--bo-co: color-mix(in srgb, var(--i-color_hard) 10%, transparent);
+
+	/* Inputs */
+	--i-input--ba-co: var(--i-background_1);
+	--i-select--arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath d='M169.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 274.7 54.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z' fill='hsl(0,0%25,0%25,.5)'/%3E%3C/svg%3E");
+
+	/* Other */
+	--i-tooltip--ba-co: oklch(10% calc(var(--i-base-c) * 30%) var(--i-base-h) / 70%);
+
+}
+
+[data-ips-scheme="dark"]{
+	color-scheme: dark;
+	--if-light:;
+	--if-dark: initial;
+
+	/* Base colors */
+	--i-primary: var(--dark__i-primary);
+	--i-primary-relative-l: var(--dark__i-primary-relative-l, 0);
+	--i-secondary: var(--dark__i-secondary);
+	--i-secondary-relative-l: var(--dark__i-secondary-relative-l, 0);
+
+	--i-base-l: calc(var(--dark__i-base-l) / 100);
+	--i-base-c: calc(var(--dark__i-base-c) / 100);
+	--i-base-h: var(--dark__i-base-h);
+
+	--i-base_1: oklch(calc(15% + 15% * var(--i-base-l)) 	calc(var(--i-base-c) * 1.75% * 4 	+ 10% * var(--i-base-c) * var(--i-base-l)) var(--i-base-h));
+	--i-base_2: oklch(calc(19% + 19% * var(--i-base-l)) 	calc(var(--i-base-c) * 3% * 4		+ 10% * var(--i-base-c) * var(--i-base-l)) 		var(--i-base-h));
+	--i-base_3: oklch(calc(23% + 23% * var(--i-base-l)) 	calc(var(--i-base-c) * 4% * 4		+ 10% * var(--i-base-c) * var(--i-base-l)) 	var(--i-base-h));
+	--i-base_4: oklch(calc(27% + 27% * var(--i-base-l)) 	calc(var(--i-base-c) * 4.75% * 4	+ 10% * var(--i-base-c) * var(--i-base-l)) 		var(--i-base-h));
+	--i-base_5: oklch(calc(31% + 31% * var(--i-base-l)) 	calc(var(--i-base-c) * 6% * 4		+ 10% * var(--i-base-c) * var(--i-base-l)) 	var(--i-base-h));
+	--i-base_6: oklch(calc(34% + 34% * var(--i-base-l)) 	calc(var(--i-base-c) * 6.75% * 4	+ 10% * var(--i-base-c) * var(--i-base-l)) 	var(--i-base-h));
+
+	--i-base-contrast_1: oklch(calc(50% + 20% * var(--i-base-l)) calc(var(--i-base-c) * 9% * 4) var(--i-base-h));
+	--i-base-contrast_2: oklch(calc(60% + 15% * var(--i-base-l)) calc(var(--i-base-c) * 6.75% * 4) var(--i-base-h));
+	--i-base-contrast_3: oklch(calc(70% + 10% * var(--i-base-l)) calc(var(--i-base-c) * 5% * 4) var(--i-base-h));
+	--i-base-contrast_4: oklch(calc(80% + 5% * var(--i-base-l)) calc(var(--i-base-c) * 3.5% * 4) var(--i-base-h));
+	--i-base-contrast_5: oklch(calc(90% + 3% * var(--i-base-l)) calc(var(--i-base-c) * 1.75% * 4) var(--i-base-h));
+	--i-base-contrast_6: oklch(100% 0% var(--i-base-h));
+
+	/* Text color */
+	--i-color_positive: hsl(150 60% 45%);
+	--i-color_positive-soft: hsl(150 60% 90%);
+	--i-color_negative: hsl(0 65% 63%);
+	--i-color_negative-soft: hsl(0 65% 90%);
+	--i-color_warning: hsl(27 80% 63%);
+	--i-color_moderated: hsl(350 30% 85%);
+	--i-color_assigned: hsl(23 40% 85%);
+	
+	/* Background color */	
+	--i-background_dark: var(--i-base_6);
+	--i-background_positive: hsl(150 72% 30%);
+	--i-background_positive-soft: hsl(150 72% 15%);
+	--i-background_negative: hsl(0 72% 30%);
+	--i-background_negative-soft: hsl(0 72% 15%);
+	--i-background_moderated: hsl(350 23% 20%);
+	--i-background_selected: var(--i-background_3);
+	--i-background_hover: color-mix(in srgb, var(--i-co) 5%, transparent);
+	--i-background_assigned: hsl(340 3.6% 16.3%);
+
+	/* Rich text colors */
+	--i-color_red: hsl(0 70% 60%);
+	--i-color_orange: hsl(30 70% 60%);
+	--i-color_yellow: hsl(50 70% 60%);
+	--i-color_green: hsl(100 70% 50%);
+	--i-color_blue: hsl(210 90% 60%);
+	--i-color_indigo: hsl(260 90% 70%);
+	--i-color_violet: hsl(300 70% 60%);
+
+
+	/*
+		----------------
+		- Assign colors to elements
+		----------------
+	*/
+
+
+	/* Header */
+	--i-nav-dropdown--ba-co: var(--i-background_2);
+
+	/* Boxes */
+	--i-box--bo-sh: 
+		oklch(10% calc(var(--i-base-c) * 20%) var(--i-base-h) / min(.15, calc(var(--set__i-design-shadow) * .025)))
+		0px
+		calc(5px + var(--set__i-design-shadow) * .6px)
+		calc(3px + var(--set__i-design-shadow) * 2px)
+		-3px;
+
+
+	/* Dropdowns */
+	--i-dropdown--ba-co: var(--i-background_3);
+	--i-dropdown--co: var(--i-color_root);
+	--i-dropdown--bo-sh: inset hsl(0 0% 100% / 10%) 0px 0px 0px 1px, hsl(0 0% 0% / 90%) 0px 0px 0px 1px, hsl(0 0% 0% / 60%) 0px 20px 100px;
+	--i-dropdown-arrow--bo-co: hsl(0 0% 0% / 30%);
+
+	/* Other */
+	--i-tooltip--ba-co: oklch(50% calc(var(--i-base-c) * 1%) var(--i-base-h) / 70%);
+
+	/* Inputs */
+	--i-input--ba-co: var(--i-background_4);
+	--i-input-success--ba-co: hsl(145 33% 22%);
+	--i-input-success--bo-co: hsl(145 33% 35%);
+	--i-input-success--co: hsl(145 33% 90%);
+	--i-input-error--ba-co: hsl(351 36% 22%);
+	--i-input-error--bo-co: hsl(351 36% 35%);
+	--i-input-error--co: hsl(351 36% 90%);
+	--i-select--arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath d='M169.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 274.7 54.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z' fill='hsl(0,0%25,100%25,.5)'/%3E%3C/svg%3E");
+
+}
+
+/* Relative colors fallback. The first selector (from red) is needed for Tor Browser, which thinks it understands relative colors but doesn't. The second selector ensures the browser understands the updated syntax */
+@supports (not (color: oklch(from red l c h))) or (not (color: oklch(from var(--i-primary) clamp(0, (.80 - l) * 1000, 1) c h))) {
+	:root{
+		--i-color_contrast: initial;
+		--i-primary-contrast: hsl(0 0% min(100%, ((70 - var(--i-primary-relative-l)) * 100%)));
+		--i-secondary-contrast: hsl(0 0% min(100%, ((70 - var(--i-secondary-relative-l)) * 100%)));
+	}
+	[data-ips-scheme="light"]{
+		--i-color_primary: color-mix(in hsl, var(--i-primary) 0%, hsl(none none min(60%, var(--i-primary-relative-l) * 1%)));
+		--i-color_secondary: color-mix(in hsl, var(--i-secondary) 0%, hsl(none none min(60%, var(--i-secondary-relative-l) * 1%)));
+	}
+	[data-ips-scheme="dark"]{
+		--i-color_primary: color-mix(in hsl, var(--i-primary) 0%, hsl(none none max(70%, var(--i-primary-relative-l) * 1%)));
+		--i-color_secondary: color-mix(in hsl, var(--i-secondary) 0%, hsl(none none max(70%, var(--i-secondary-relative-l) * 1%)));
+	}
+}
+
+/* color-mix fallback */
+@supports not (color: color-mix(in srgb, red, red)){
+	:root{
+		--i-primary-light: var(--i-primary);
+		--i-primary-dark: var(--i-primary);
+		--i-secondary-light: var(--i-secondary);
+		--i-secondary-dark: var(--i-secondary);
+		--i-background_1: var(--i-base_1);
+		--i-background_2: var(--i-base_2);
+		--i-background_3: var(--i-base_3);
+		--i-background_4: var(--i-base_4);
+		--i-background_5: var(--i-base_5);
+		--i-background_6: var(--i-base_6);
+		--i-color_primary: var(--i-primary);
+		--i-color_secondary: var(--i-secondary);
+		--i-nav-dropdown--bo-sh: hsl(0 0% 0% / .1) 0px 0px 0px 1px, hsl(0 0% 0% / .2) 0px 20px 40px, hsl(0 0% 0% / 0.1) 0px 1px 2px;
+		--i-nav-dropdown-arrow--bo-co: hsl(0 0% 0% / .1);
+		--i-dropdown--bo-sh: hsl(0 0% 0% / .1) 0px 0px 0px 1px, hsl(0 0% 0% / .2) 0px 20px 40px, hsl(0 0% 0% / .1) 0px 1px 2px;
+		--i-dropdown-arrow--bo-co: hsl(0 0% 0% / .1);
+	}
+}
+
+/* oklch fallback */
+@supports not (color: oklch(50% 50% 50)){
+	:root{
+		--i-tooltip--ba-co: hsl(0, 0%, 20%);
+	}
+	[data-ips-scheme="light"]{
+		--i-base_1: hsl(calc(var(--i-base-h) - 40),	calc(var(--i-base-c) * 100%), calc(80% + 20% * var(--i-base-l)));
+		--i-base_2: hsl(calc(var(--i-base-h) - 40),	calc(var(--i-base-c) * 100%), calc(77% + 21% * var(--i-base-l)));
+		--i-base_3: hsl(calc(var(--i-base-h) - 40),	calc(var(--i-base-c) * 100%), calc(77% + 21% * var(--i-base-l)));
+		--i-base_4: hsl(calc(var(--i-base-h) - 40),	calc(var(--i-base-c) * 100%), calc(68% + 21% * var(--i-base-l)));
+		--i-base_5: hsl(calc(var(--i-base-h) - 40),	calc(var(--i-base-c) * 100%), calc(65% + 22% * var(--i-base-l)));
+		--i-base_6: hsl(calc(var(--i-base-h) - 40),	calc(var(--i-base-c) * 100%), calc(60% + 23% * var(--i-base-l)));
+		
+		--i-base-contrast_1: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	calc(37% + 10% * var(--i-base-l)));
+		--i-base-contrast_2: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	calc(30% + 9% * var(--i-base-l)));
+		--i-base-contrast_3: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	calc(24% + 9% * var(--i-base-l)));
+		--i-base-contrast_4: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	calc(18% + 5% * var(--i-base-l)));
+		--i-base-contrast_5: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	calc(11% + 4% * var(--i-base-l)));
+		--i-base-contrast_6: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	5%);
+	}
+	[data-ips-scheme="dark"]{
+		--i-base_1: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(5% + 15% * var(--i-base-l)));
+		--i-base_2: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(9% + 18% * var(--i-base-l)));
+		--i-base_3: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(12% + 21% * var(--i-base-l)));
+		--i-base_4: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(16% + 24% * var(--i-base-l)));
+		--i-base_5: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(20% + 27% * var(--i-base-l)));
+		--i-base_6: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(25% + 30% * var(--i-base-l)));
+
+		--i-base-contrast_1: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(50% + 20% * var(--i-base-l)));
+		--i-base-contrast_2: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(60% + 15% * var(--i-base-l)));
+		--i-base-contrast_3: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(70% + 10% * var(--i-base-l)));
+		--i-base-contrast_4: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(80% + 5% * var(--i-base-l)));
+		--i-base-contrast_5: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), calc(90% + 3% * var(--i-base-l)));
+		--i-base-contrast_6: hsl(0 0% 100%);
+	}
+}
+
+/* iOS 12: Space-separated primary/secondary fallback. We set a generic brand color here for ancient browsers since we can't render the space-separated primary/secondary values */
+@supports not (color: hsl(0 0% 0%)){
+	:root{
+		--i-primary-contrast: #fff;
+		--i-secondary-contrast: #fff;
+	}
+	[data-ips-scheme="light"]{
+		--i-primary: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	10%);
+		--i-secondary: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	20%);
+	}
+	[data-ips-scheme="dark"]{
+		--i-primary: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	40%);
+		--i-secondary: hsl(calc(var(--i-base-h) - 40), calc(var(--i-base-c) * 100%), 	30%);
+	}
+}
+
+/* Improve performance by removing box-shadows instead of making them transparent? */
+@container style(--set__i-design-shadow: 0){
+	body{
+		--i-box--bo-sh: none;
+	}
+}

@@ -1,0 +1,45 @@
+<ips:template parameters="$members, $title, $display='csv', $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>
+	{$title}
+</h3>
+{{if $display === 'csv'}}
+	<div class='ipsWidget__content ipsWidget__padding'>
+		{{if \count( $members )}}
+			<ul class='ipsList ipsList--csv'>
+				{{foreach $members as $row}}
+					<li>{template="userLinkFromData" group="global" app="core" params="$row->member_id, $row->name, $row->members_seo_name, $row->member_group_id"}</li>
+				{{endforeach}}
+			</ul>
+		{{else}}
+			<p class='ipsEmptyMessage'>{lang="widget_members_no_results"}</p>
+		{{endif}}
+	</div>
+{{else}}
+	<div class='ipsWidget__content'>
+		{{if \count( $members ) }}
+			<i-data>
+				<ul class='ipsData ipsData--table ipsData--members'>
+					{{foreach $members as $member}}
+						<li class='ipsData__item'>
+							<div class='ipsData__icon'>{template="userPhoto" group="global" app="core" params="$member, 'fluid'"}</div>
+							<div class='ipsData__content'>
+								<div class='ipsData__main'>
+									<h4 class='i-font-weight_600'>{$member->link()|raw} <a href='{url="app=core&module=members&controller=profile&id={$member->member_id}&do=reputation" seoTemplate="profile_reputation" seoTitle="$member->members_seo_name"}'  class='ipsRepBadge {{if $member->pp_reputation_points > 0}}ipsRepBadge--positive{{elseif $member->pp_reputation_points < 0}}ipsRepBadge--negative{{else}}ipsRepBadge_neutral{{endif}}'><i class='{{if $member->pp_reputation_points > 0}}fa-solid fa-plus-circle{{elseif $member->pp_reputation_points < 0}}fa-solid fa-minus-circle{{else}}fa-regular fa-circle{{endif}}' aria-hidden="true"></i> {number="$member->pp_reputation_points"}</a></h4>
+									<div class='i-color_soft i-font-weight_500'>{$member->groupName|raw}</div>
+								</div>
+								<div class='i-color_soft'>
+									<div>{lang="widget_member_joined_date" htmlsprintf="$member->joined->html()"}</div>
+									{{if $member->last_activity}}
+										<div>{lang="widget_member_last_active_date" htmlsprintf="\IPS\DateTime::ts( $member->last_activity )->html()"}</div>
+									{{endif}}
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		{{else}}
+			<p class='ipsEmptyMessage'>{lang="widget_members_no_results"}</p>
+		{{endif}}
+	</div>
+{{endif}}

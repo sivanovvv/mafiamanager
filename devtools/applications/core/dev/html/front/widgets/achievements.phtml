@@ -1,0 +1,48 @@
+<ips:template parameters="$result, $title, $layout='table', $isCarousel=false" />
+
+{{if $title}}
+<div class="ipsWidget__header">
+	<h3>{$title}</h3>
+	{{if $isCarousel}}
+		{{$carouselID = 'widget-achievements_' . mt_rand();}}
+		{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+	{{endif}}
+</div>
+{{endif}}
+<div class='ipsWidget__content'>
+	<i-data>
+		<ul class='ipsData ipsData--{$layout} ipsData--achievements {{if $isCarousel}}ipsData--carousel{{endif}}' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+			{{foreach $result as $row}}
+				<li class='ipsData__item'>
+					<div class='{{if \in_array( $layout, ["table", "minimal", "mini-grid"] )}}ipsData__icon{{else}}ipsData__image{{endif}}'>{template="userPhoto" app="core" group="global" params="$row['member'], 'fluid', '', ''"}</div>
+					{{if $row['type'] === 'badge'}}
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<div class="i-flex i-gap_2">
+									<div class="i-flex_11">
+										<div class='ipsData__title'><h4>{lang="block_achievements_earned_badge" htmlsprintf="$row['member']->link(), $row['badge']->_title"}</h4></div>
+										{{if ! empty( $row['badge']->awardDescription )}}<p class="ipsData__desc">{$row['badge']->awardDescription}</p>{{endif}}
+										<p class="ipsData__meta">{datetime="$row['date']"}</p>
+									</div>
+									<div class='i-flex_00 cAchievementsWidget__badge'>{$row['badge']->html('')|raw}</div>
+								</div>
+							</div>
+						</div>
+					{{else}}
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<div class="i-flex i-gap_2">
+									<div class="i-flex_11">
+										<div class='ipsData__title'><h4>{lang="block_achievements_earned_rank" htmlsprintf="$row['member']->link(), $row['rank']->_title"}</h4></div>
+										<p class="ipsData__meta">{datetime="$row['date']"}</p>
+									</div>
+									<div class='i-flex_00 cAchievementsWidget__badge'>{$row['rank']->html('')|raw}</div>
+								</div>
+							</div>
+						</div>
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+</div>

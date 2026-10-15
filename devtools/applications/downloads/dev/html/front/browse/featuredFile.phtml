@@ -1,0 +1,83 @@
+<ips:template parameters="$file" />
+<li class="ipsData__item {{if $file->hidden()}}ipsModerated{{endif}} {$file->ui( 'css' )}" {$file->ui( 'dataAttributes' )}>
+	<a href='{$file->url( "getPrefComment" )}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$file->name}</span></a>
+	<div class="ipsData__image" aria-hidden="true" data-ips-hook='image'>
+		{{if $screenshot = $file->primary_screenshot_thumb}}
+			<img src='{$screenshot->url}' alt='' loading='lazy'>
+		{{else}}
+			<i aria-hidden="true"></i>
+		{{endif}}
+	</div>
+	<div class='ipsData__content'>
+		<div class="ipsData__main">
+			<div class='ipsData__title' data-ips--hook='title'>
+				{{if $file->unread()}}
+					<span class='ipsIndicator' data-ipsTooltip title='{{if $file->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'></span>
+				{{endif}}
+				<div class='ipsBadges' data-ips-hook='badges'>
+					{{foreach $file->badges() as $badge}}
+						{{if !\in_array($badge->badgeType, ['ipsBadge--featured', 'ipsBadge--pinned'])}}
+							{$badge|raw}
+						{{endif}}
+					{{endforeach}}
+				</div>
+				<h3><a href='{$file->url( "getPrefComment" )}' title='{lang="view_this_file" sprintf="$file->name"}'>{$file->name}</a></h3>
+			</div>
+			<div class='ipsData__desc'>{$file->truncated(TRUE)|raw}</div>
+			{{if $file->container()->bitoptions['reviews']}}
+				{template="rating" group="global" location="front" app="core" params="'small', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of"}
+			{{endif}}
+			{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+				<span class="cFilePrice">
+					{{if $file->isPaid()}}
+						{{if $price = $file->priceToDisplay()}}
+							{$price|raw}
+						{{endif}}
+					{{else}}
+						{lang="file_free"}
+					{{endif}}
+				</span>
+			{{endif}}
+			<ul class='ipsButtons ipsButtons--start i-margin-block_2' hidden data-ips-hook='buttons'>
+				{{if ( $file->canDownload() or ( $file->container()->message('npd') and !$file->canBuy() ) ) && !$file->canBuy()}}
+					<li>
+						<a href='{{if settings.idm_antileech AND !$file->requiresDownloadConfirmation()}}{$file->url('download')->csrf()}{{else}}{$file->url('download')}{{endif}}' class='ipsButton ipsButton--secondary' {{if $file->requiresDownloadConfirmation()}}data-ipsDialog{{endif}}><i class="fa-solid fa-download" aria-hidden="true"></i><span>{lang="download"}</span></a>
+					</li>
+				{{elseif $file->canBuy()}}
+					<li>
+						<a href='{{if !$file->container()->message('disclaimer') OR !\in_array( $file->container()->disclaimer_location, [ 'purchase', 'both' ] )}}{$file->url('buy')->csrf()}{{else}}{$file->url('buy')}{{endif}}' class='ipsButton ipsButton--secondary'><i class='fa-solid fa-cart-shopping' aria-hidden="true"></i><span>{lang="buy_now"}{{if $price}} - {expression="strip_tags($price)"}{{endif}}</span></a>
+					</li>
+				{{endif}}
+			</ul>
+		</div>
+		<div class="ipsData__extra">
+			<ul class='ipsData__stats' data-ips-hook='stats'>
+				{{if $file->isPaid() and !$file->nexus and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) ) and $file->purchaseCount()}}
+					<li data-statType="purchases">
+						<span class='ipsData__stats-icon' data-stat-value="{$file->purchaseCount()}" aria-hidden="true" data-ipstooltip title='{lang="x_purchases" pluralize="$file->purchaseCount()"}'></span>
+						<span class='ipsData__stats-label'>{$file->purchaseCount()} {lang="purchases"}</span>
+					</li>
+				{{endif}}
+				{{if (!$file->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) )) and $file->downloads}}
+					<li data-statType="downloads">
+						<span class='ipsData__stats-icon' data-stat-value="{number='$file->downloads'}" aria-hidden="true" data-ipstooltip title='{lang="x_downloads" pluralize="$file->downloads"}'></span>
+						<span class='ipsData__stats-label'>{number='$file->downloads'} {lang="downloads"}</span>
+					</li>
+				{{endif}}		 
+				{{if $file->container()->bitoptions['comments'] and $file->comments}}
+					<li data-statType="comments" hidden>
+						<span class='ipsData__stats-icon' data-stat-value="{$file->comments}" aria-hidden="true" data-ipstooltip title='{lang="num_comments" pluralize="$file->comments"}'></span>
+						<span class='ipsData__stats-label'>{$file->comments} {lang="comments"}</span>
+					</li>
+				{{endif}}
+			</ul>
+			<div class="ipsData__last">
+				<div class='ipsData__last-text'>
+					<div class='ipsData__last-primary'>{lang="byline_nodate" htmlsprintf="$file->author()->link( NULL, NULL, $file->isAnonymous() )"}</div>
+					<div class='ipsData__last-secondary'>{{if $file->updated == $file->submitted}}{datetime="$file->submitted"}{{else}}{datetime="$file->updated"}{{endif}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</li>

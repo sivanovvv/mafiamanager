@@ -1,0 +1,73 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+		{{$reaction = \IPS\Content\Reaction::load( $row->rep_reaction );}}
+		<li class='ipsData__item'>		
+			{{if !\IPS\Content\Reaction::isLikeMode()}}
+				<div>
+					<img src='{file="$reaction->_icon" extension="core_Reaction"}' alt='{$reaction->_title}' width='20' height='20' data-ipsTooltip title='{$reaction->_title}'>
+				</div>
+			{{endif}}
+			<div class='ipsData__icon i-align-self_center'>
+				{{if $row->rep_member == \IPS\Request::i()->id}}
+					{template="userPhoto" group="global" app="core" params="\IPS\Member::load( \IPS\Request::i()->id ), 'mini'"}
+				{{else}}
+					{template="userPhoto" group="global" app="core" params="\IPS\Member::load( $row->rep_member ), 'mini'"}
+				{{endif}}
+			</div>
+			<div class='ipsData__main'>
+				<div class='ipsData__title'>
+					<span class=''>
+						{{if !\IPS\Content\Reaction::isLikeMode()}}
+							{{if $row instanceof \IPS\Content\Comment or $row instanceof \IPS\Content\Review}}
+								{{$item = $row->item();}}
+								{{if $row->rep_member != \IPS\Request::i()->id}}
+									{lang="replog_rate_comment_received" htmlsprintf="\IPS\Member::load( $row->rep_member_received )->link(), \IPS\Member::load( $row->rep_member )->link()"} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+								{{else}}
+									{{if $row->rep_member_received}}
+										{lang="replog_rate_comment_gave" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), \IPS\Member::load( $row->rep_member_received )->link()"} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+									{{else}}
+										{lang="replog_rate_comment_gave_no_recipient" htmlsprintf="\IPS\Member::load( $row->rep_member )->link()"} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+									{{endif}}
+								{{endif}}
+							{{else}}
+								{{if $row->rep_member != \IPS\Request::i()->id}}
+									{lang="replog_rate_item_received" htmlsprintf="\IPS\Member::load( $row->rep_member_received )->link(), \IPS\Member::load( $row->rep_member )->link(), $row->indefiniteArticle()"} <a href='{$row->url()}'>{$row->mapped('title')}</a>
+								{{else}}
+									{{if $row->rep_member_received}}
+										{lang="replog_rate_item_gave" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), \IPS\Member::load( $row->rep_member_received )->link(), $row->indefiniteArticle()"} <a href='{$row->url()}'>{$row->mapped('title')}</a>
+									{{else}}
+										{lang="replog_rate_item_gave_no_recipient" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), $row->indefiniteArticle()"} <a href='{$row->url()}'>{$row->mapped('title')}</a>
+									{{endif}}
+								{{endif}}
+							{{endif}}
+						{{else}}
+							<strong>
+								{{if $row instanceof \IPS\Content\Comment or $row instanceof \IPS\Content\Review}}
+									{{$item = $row->item();}}
+									{{if $row->rep_member_received}}
+										{lang="replog_like_comment" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), $row->url(), $row->indefiniteArticle(), \IPS\Member::load( $row->rep_member_received )->link()"} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+									{{else}}
+										{lang="replog_like_comment_no_recipient" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), $row->url(), $row->indefiniteArticle()"} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+									{{endif}}
+								{{else}}
+									{{if $row->rep_member_received}}
+										{lang="replog_like_item" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), $row->indefiniteArticle(), \IPS\Member::load( $row->rep_member_received )->link()"} <a href='{$row->url()}'>{$row->mapped('title')}</a>
+									{{else}}
+										{lang="replog_like_item_no_recipient" htmlsprintf="\IPS\Member::load( $row->rep_member )->link(), $row->indefiniteArticle()"} <a href='{$row->url()}'>{$row->mapped('title')}</a>
+									{{endif}}
+								{{endif}}
+							</strong>
+						{{endif}}
+					</span>
+					<span class='i-color_soft'>&nbsp;&nbsp;{datetime="$row->rep_date"}</span>
+				</div>
+				{{if $result = $row->truncated()}}
+					<div class='ipsData__desc ipsRichText ipsTruncate_2'>
+						{$result|raw}
+					</div>
+				{{endif}}
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

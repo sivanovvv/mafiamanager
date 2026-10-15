@@ -1,0 +1,37 @@
+<ips:template parameters="$notification, $member, $email" />
+{$email->language->addToStack("email_registration_notify", FALSE, array( 'sprintf' => array( \IPS\Settings::i()->board_name ) ) )} {$email->language->addToStack("email_registration_notify_complete")}
+<br><br>
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}'>
+			<table width='100%' cellpadding='0' cellspacing='0' border='0' style='background: #f9f9f9;' class='background_2 responsive_table'>
+				<tr class='responsive_row'>
+					<td dir='{dir}' width='150' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;" valign='top'><strong>{$email->language->addToStack("username", FALSE)}:</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">{$member->name}</td>
+				</tr>
+				<tr class='responsive_row'>
+					<td dir='{dir}' width='150' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;" valign='top'><strong>{$email->language->addToStack("email_address", FALSE)}:</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">{$member->email}</td>
+				</tr>
+				<tr class='responsive_row'>
+					<td dir='{dir}' width='150' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;" valign='top'><strong>{$email->language->addToStack("ip_address", FALSE)}:</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">{$member->ip_address}</td>
+				</tr>
+				{{if $fieldGroups = $member->profileFields() and \count( $fieldGroups )}}
+					{{foreach $fieldGroups as $fields}}
+						{{foreach $fields as $field => $data}}
+							<tr class='responsive_row'>
+								<td dir='{dir}' width='150' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;" valign='top'><strong>{$email->language->addToStack($field, FALSE)}:</strong></td>
+								<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">{expression="preg_replace( '/^<p>(.*)<\/p>$/', '$1', trim( $email->parseTextForEmail( $data, $email->language ) ) )" raw="true"}</td>
+							</tr>
+						{{endforeach}}
+					{{endforeach}}
+				{{endif}}
+			</table>
+		</td>
+	</tr>
+</table>
+<br><br>
+<a href='{$member->url()}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("go_to_this_user", FALSE, array( 'sprintf' => array( $member->name ) ) )}</a>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

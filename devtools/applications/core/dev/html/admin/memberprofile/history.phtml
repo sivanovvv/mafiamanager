@@ -1,0 +1,28 @@
+<ips:template parameters="$member, $history, $historyFilters" />
+<div id='elMemberHistory' class="ipsBox" data-controller="core.admin.members.history">
+	<button type="button" id="memberHistoryFilters" popovertarget="memberHistoryFilters_menu" class="ipsTitle ipsTitle--h4 i-padding_3 i-flex i-align-items_center i-justify-content_space-between">
+		<span data-role="historyTitle">{lang="all_recent_account_activity"}</span>
+		<i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+	</button>
+	<i-dropdown popover id="memberHistoryFilters_menu">
+		<div class="iDropdown">
+			<ul class="iDropdown__items">
+				{{$logApp = NULL;}}
+				{{foreach $historyFilters as $filter}}
+					{{if isset($history->advancedSearch['log_type'][1]['options'][ $filter['log_type'] ])}}
+					{{if $logApp != $filter['log_app']}}
+						<li class="iDropdown__title">{lang="memberlog_app_{$filter['log_app']}"}</li>
+						{{$logApp = $filter['log_app'];}}
+					{{endif}}
+					<li><a href="{url="app=core&module=members&controller=members&do=history&id={$member->member_id}&advanced_search_submitted=1&log_type[]={$filter['log_type']}&_fromFilter=1" csrf="true"}" data-ipsMenuValue="{$filter['log_app']}_{$filter['log_type']}">{lang="$history->advancedSearch['log_type'][1]['options'][ $filter['log_type'] ]"}</a></li>
+					{{endif}}
+				{{endforeach}}
+				<li><hr></li>
+				<li><a href="{url="app=core&module=members&controller=members&do=history&id={$member->member_id}&_fromFilter=1"}" data-ipsMenuValue="">{lang="all_recent_account_activity"}</a></li>
+			</ul>
+		</div>
+	</i-dropdown>
+	<div data-role="historyDisplay">
+		{$history|raw}
+	</div>
+</div>

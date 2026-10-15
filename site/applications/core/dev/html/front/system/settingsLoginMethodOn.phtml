@@ -1,0 +1,46 @@
+<ips:template parameters="$method, $form, $canDisassociate, $photoUrl, $profileName, $extraPermissions, $login, $forceSync" />
+<div class='i-padding_3'>
+	<div class=''>
+		<div class="ipsPhotoPanel {{if $photoUrl}}ipsPhotoPanel--mini{{endif}}">
+			{{if $photoUrl}}
+				<span class='ipsUserPhoto'>
+					<img src="{$photoUrl}" alt="" loading='lazy'>
+				</span>
+			{{endif}}
+			<div>
+        		<h2 class='ipsPhotoPanel__primary'>{$method->_title}</h2>                        
+				<div>
+					{{if $profileName}}
+						{lang="profilesync_headline" sprintf="$profileName"}
+					{{else}}
+						{lang="profilesync_signed_in"}
+					{{endif}}
+				</div>
+				{{if $login}}
+					<div>
+						{template="settingsLoginConnect" group="system" params="$method, $login, \IPS\Member::loggedIn()->language()->addToStack('profilesync_extra_permissions_required', true, array( 'sprintf' => array( $extraPermissions ) ) )"}
+					</div>
+				{{endif}}
+			</div>
+		{{if $canDisassociate}}
+			<a href="{url="app=core&module=system&controller=settings&area=login&service={$method->id}&disassociate=1" seoTemplate="settings_login" csrf="true"}" class="ipsButton ipsButton--negative ipsButton--small" data-confirm data-confirmSubMessage="{lang="profilesync_sign_out_confirm" sprintf="$method->_title"}">{lang="sign_out"}</a>
+		{{endif}}
+	</div>
+	{{if $forceSync}}
+		<hr class="ipsHr">
+		<ul>
+			{{foreach $forceSync as $details}}
+				<li class="i-margin-bottom_3">
+					<p>{$details['label']}</p>
+					{{if $details['error']}}
+						{template="settingsLoginMethodSynError" group="system" params="$details['error']"}
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ul>
+	{{endif}}
+	{{if $form or $forceSync}}
+		<hr class="ipsHr">
+		{$form|raw}
+	{{endif}}
+</div>

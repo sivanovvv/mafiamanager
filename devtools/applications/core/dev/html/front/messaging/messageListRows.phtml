@@ -1,0 +1,10 @@
+<ips:template parameters="$conversations, $pagination=NULL, $overview=FALSE, $folders=array()" />
+{{if empty( $conversations )}}
+	<li class='ipsData__item'>
+		<div class='i-text-align_center i-flex_11 i-color_soft i-font-weight_500'>{lang="no_results_messages"}</div>
+	</li>
+{{else}}
+	{{foreach $conversations as $row}}
+		{template="messageListRow" group="messaging" params="$row, $overview, $folders"}
+	{{endforeach}}
+{{endif}}

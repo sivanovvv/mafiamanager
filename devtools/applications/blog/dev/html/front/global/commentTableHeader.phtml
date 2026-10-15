@@ -1,0 +1,24 @@
+<ips:template parameters="$comment, $entry" />
+<!-- This template is used when viewing Profile > See my activity > Blog Entries -->
+<div class='i-flex i-gap_2'>
+	<div class='i-flex_00 i-basis_40'>
+		{template="userPhoto" group="global" app="core" params="$entry->author()"}
+	</div>
+	<div class='i-flex_11'>
+		<h3 class='ipsTitle ipsTitle--h3'>
+			<a href='{$entry->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$entry->mapped('title')"}'>
+				{$entry->mapped('title')}
+			</a>
+		</h3>
+		<p class='i-link-color_inherit'>{lang="in"} <a href='{$entry->container()->url()}'>{$entry->container()->_title}</a></p>
+		<p class='i-color_soft i-link-color_inherit'>
+			{{if $entry->container()->owner() instanceof \IPS\Member}}
+				{lang="blog_by" htmlsprintf="$entry->container()->owner()->link(), $entry->container()->category()->link()"}
+			{{elseif $club = $entry->container()->club()}}
+				<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="club_blog_for" sprintf="$club->name"}
+			{{else}}
+				<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="group_blog_by" htmlsprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $entry->container()->id ), $entry->container()->category()->link()"}
+			{{endif}}
+		</p>
+	</div>
+</div>

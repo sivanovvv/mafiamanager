@@ -1,0 +1,63 @@
+<ips:template parameters="$loginMethods, $canChangePassword" />
+<i-data>
+	<ul class='ipsData ipsData--table ipsData--settings-overview'>
+		<li class='ipsData__item'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>{lang="username"}</h4>
+				{member="name"}
+			</div>
+			{{if \IPS\Member::loggedIn()->group['g_dname_changes']}}
+				<a href="{url="app=core&module=system&controller=settings&area=username" seoTemplate="settings_username"}" class="ipsButton ipsButton--inherit">{lang="change"}</a>
+			{{endif}}
+		</li>
+		<li class='ipsData__item'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>{lang="email_address"}</h4>
+				{member="email"}
+			</div>
+			{{if \IPS\Settings::i()->allow_email_changes != 'disabled'}}
+				{{if settings.allow_email_changes == 'redirect'}}
+					<a href='{expression="\IPS\Settings::i()->allow_email_changes_target"}' target="_blank" rel="noopener" class="ipsButton ipsButton--inherit">
+				{{else}}
+					<a href='{url="app=core&module=system&controller=settings&area=email" seoTemplate="settings_email"}' class="ipsButton ipsButton--inherit">
+				{{endif}}
+				{lang="change"}</a>
+			{{endif}}
+		</li>
+		{{if $canChangePassword}}
+			<li class='ipsData__item'>
+				<div class='ipsData__main'>
+					<h4 class='ipsData__title'>{lang="password"}</h4>
+					********
+				</div>
+				<a href="{url="app=core&module=system&controller=settings&area=password" seoTemplate="settings_password"}" class="ipsButton ipsButton--inherit">{lang="change"}</a>
+			</li>
+		{{endif}}
+		{{if \count( member.profileCompletion()['required'] ) or \count( member.profileCompletion()['suggested'] )}}
+		<li class='ipsData__item'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>{lang="profile_completion_status"}</h4>
+				<div class='i-margin-top_2'>{template="profileNextStep" group="global" app="core" params="\IPS\Member::loggedIn()->nextProfileStep(), false, false"}</div>
+			</div>
+		</li>
+		{{endif}}
+		{{foreach $loginMethods as $id => $details}}
+			<li class='ipsData__item'>
+				<div class="ipsData__icon">
+					<div class="ipsUserPhoto ipsUserPhoto--mini">
+						{{if isset( $details['icon'] )}}
+							<img src="{$details['icon']}" alt="" loading="lazy">
+						{{else}}
+							<img src="{resource="default_photo.png" app="core" location="global"}" loading="lazy" alt="">
+						{{endif}}
+					</div>
+				</div>
+				<div class='ipsData__main'>
+					<h4 class='ipsData__title'>{$details['title']}</h4>
+					{$details['blurb']}
+				</div>
+				<a href="{url="app=core&module=system&controller=settings&area=login&service={$id}" seoTemplate="settings_login"}" class="ipsButton ipsButton--inherit">{lang="profilesync_configure"}</a>
+			</li>
+		{{endforeach}}
+	</ul>
+</i-data>

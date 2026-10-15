@@ -1,0 +1,12 @@
+<ips:template parameters="$item, $review" />
+{{if $review->isIgnored()}}
+	<div class='ipsEntry ipsEntry--ignored'>
+		<i class="fa-solid fa-user-slash" aria-hidden="true"></i> {lang="ignoring_content" sprintf="$review->author()->name"}
+	</div>
+{{else}}
+	<span id="review-{$review->id}"></span>
+	<span id="findReview-{$review->id}"></span>
+	<article id="review-{$review->id}" class="ipsEntry js-ipsEntry ipsEntry--simple ipsEntry--review {{if $review->hidden() OR $item->hidden() == -2}}ipsModerated{{endif}}">
+		{template="review" location="database" group="display" app="cms" params="$item, $review, $item::$formLangPrefix . 'review', $item::$application, $item::$module"}
+	</article>
+{{endif}}

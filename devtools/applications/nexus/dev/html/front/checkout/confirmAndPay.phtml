@@ -1,0 +1,215 @@
+<ips:template parameters="$invoice, $summary, $form, $amountToPay, $couponForm, $recurrings, $overriddenRenewalTerms" />
+<div class='ipsColumns ipsColumns--reverse ipsColumns--lines cNexusCheckout_review' data-controller='nexus.front.checkout.review'>
+	<div class='ipsColumns__primary'>
+		<div class="i-padding_3">
+			{{if $invoice->billaddress}}
+				<div class='ipsSpanGrid i-margin-bottom_3'>
+					{{if $invoice->billaddress}}
+						<div class='ipsSpanGrid__6'>
+							<h2 class='ipsTitle ipsTitle--h3'>{lang="billing_address"} <a href='{$invoice->checkoutUrl()->setQueryString( '_step', 'checkout_customer' )}' data-action='wizardLink' class='i-font-size_-2'>({lang="edit"})</a></h2>
+							<div class='i-margin-top_3'>
+								{$invoice->billaddress->toString('<br>')|raw}
+								{{if isset( $invoice->billaddress->vat ) and $invoice->billaddress->vat}}
+									<br>
+									{lang="cm_checkout_vat_number"}: {$invoice->billaddress->vat}
+								{{endif}}
+							</div>
+						</div>
+					{{endif}}
+				</div>
+			{{endif}}
+			{{if $invoice->member->email}}
+				<div class='i-color_soft'>
+					<i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="confirmation_sent_to" sprintf="$invoice->member->email"}
+				</div>
+			{{endif}}
+		</div>
+		
+		{$couponForm|raw}
+
+		<section>
+			<h2 class='ipsHide'>
+				{{if \IPS\Request::i()->isSecure() === TRUE}}
+					<i class='fa-solid fa-lock' aria-hidden="true"></i> {lang="secure_payment"}
+				{{else}}
+					{lang="payment"}
+				{{endif}}
+			</h2>
+			<div>
+				{$form|raw}
+			</div>
+		</section>
+	</div>
+	<div class='ipsColumns__secondary i-basis_360'>
+		<div class="i-padding_3">
+			<h2 class='ipsTitle ipsTitle--h3'>{lang="order_review"}</h2>
+		</div>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--order-review">
+				{{foreach $summary['items'] as $item}}
+					{{if !( $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount )}}
+						<li class='ipsData__item'>
+							<div class="ipsData__image" aria-hidden="true">
+								{{if $image = $item->image()}}
+									<img src="{$image->url}" alt="" loading="lazy">
+								{{elseif $item::$icon}}
+									<i class='fa-solid fa-{$item::$icon}' aria-hidden="true"></i>
+								{{else}}
+									<i aria-hidden="true"></i>
+								{{endif}}
+							</div>
+							<div class='ipsData__main'>
+								<div><span class='i-color_soft'>{$item->quantity} x </span>{$item->name}</div>
+								{$item->detailsForDisplay( 'checkout' )|raw}
+							</div>
+							<div class='i-text-align_end'>
+								<span class='cNexusPrice'>{$item->linePrice()}</span>
+								{{if $item->quantity > 1}}
+									<p class='i-font-size_-2 i-color_soft'>
+										{lang="each_short" sprintf="$item->price"}
+									</p>
+								{{endif}}
+							</div>
+						</li>
+					{{endif}}
+				{{endforeach}}
+				{{foreach $summary['items'] as $item}}
+					{{if $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount}}
+						<li class='ipsData__item cNexusCheckout_coupon'>
+							<div class='ipsData__main i-text-align_end'>
+								<strong>{lang="coupon"}</strong>
+							</div>
+							<div class='i-basis_100 i-text-align_end cNexusPrice'>
+								{$item->linePrice()}
+							</div>
+						</li>
+					{{endif}}
+				{{endforeach}}
+				<li class='ipsData__item cNexusCheckout_subtotal'>
+					<div class='ipsData__main i-text-align_end'>
+						<strong>{lang="subtotal"}</strong>
+					</div>
+					<div class='i-basis_100 i-text-align_end cNexusPrice'>
+						{$summary['subtotal']}
+					</div>
+				</li>
+				{{foreach $summary['tax'] as $taxId => $tax}}
+					<li class='ipsData__item'>
+						<div class='ipsData__main i-text-align_end'>
+							<strong>{lang="nexus_tax_{$taxId}"} <span class='i-color_soft i-font-weight_normal'>({expression="$tax['rate']*100"}%)</span></strong>
+						</div>
+						<div class='i-basis_100 i-text-align_end cNexusPrice'>
+							{$tax['amount']}
+						</div>
+					</li>
+				{{endforeach}}
+				{{if $transactionsReceived = $invoice->transactions( array( \IPS\nexus\Transaction::STATUS_PAID, \IPS\nexus\Transaction::STATUS_PART_REFUNDED, \IPS\nexus\Transaction::STATUS_HELD, \IPS\nexus\Transaction::STATUS_REVIEW, \IPS\nexus\Transaction::STATUS_GATEWAY_PENDING ) )}}
+					{{if \count( $transactionsReceived )}}
+						{{foreach $transactionsReceived as $id => $transaction}}
+							<li class='ipsData__item i-font-size_2 {{if $id === 0}}cNexusCheckout_subtotal{{endif}}'>
+								<div class='ipsData__main i-text-align_end'>
+									<strong>{lang="payment_received"}</strong>
+								</div>
+								<div class='i-basis_100 i-text-align_end cNexusPrice'>
+									<strong>{money="$transaction->amount->amount->subtract( $transaction->partial_refund->amount )->multiply( new \IPS\Math\Number('-1') )" currency="$transaction->currency"}</strong>
+								</div>
+							</li>
+						{{endforeach}}
+						<li class='ipsData__item i-font-size_2 cNexusCheckout_subtotal'>
+							<div class='ipsData__main i-text-align_end'>
+								<strong>{lang="total_to_pay"}</strong>
+							</div>
+							<div class='i-basis_100 i-text-align_end cNexusPrice'>
+								<strong>{$invoice->amountToPay( TRUE )}</strong>
+							</div>
+						</li>
+					{{else}}
+						<li class='ipsData__item i-font-size_2 cNexusCheckout_subtotal'>
+							<div class='ipsData__main i-text-align_end'>
+								<strong>{lang="total"}</strong>
+							</div>
+							<div class='i-basis_100 i-text-align_end cNexusPrice'>
+								<strong>{$invoice->amountToPay()}</strong>
+							</div>
+						</li>
+					{{endif}}
+				{{endif}}
+			</ul>
+		</i-data>
+		{{if \count( $recurrings )}}
+			{{$taxAmount = new \IPS\Math\Number('0');}}
+			{{foreach $recurrings as $recurring}}
+				<div class="i-padding_3">
+					<h3 class="ipsTitle ipsTitle--h3 i-margin-top_3">{lang="renewals_header" sprintf="$recurring['term']->getTermUnit()"}</h3>
+				</div>
+				<i-data>
+					<ul class="ipsData ipsData--table ipsData--renewals i-margin-top_3">
+						{{foreach $recurring['items'] as $rId => $item}}
+							{{if !( $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount )}}
+								<li class='ipsData__item'>
+									<div class="ipsData__image" aria-hidden="true">
+										{{if $image = $item->image()}}
+											<img src="{$image->url}" alt="" loading="lazy">
+										{{elseif $item::$icon}}
+											<i class='fa-solid fa-{$item::$icon}' aria-hidden="true"></i>
+										{{else}}
+											<i aria-hidden="true"></i>
+										{{endif}}
+									</div>
+									<div class='ipsData__main'>
+										<div><span class='i-color_soft'>{$item->quantity} x </span>{$item->name}</div>
+										{$item->detailsForDisplay( 'checkout' )|raw}
+														{{if isset( $recurring['showDueDate'] ) AND !$recurring['showDueDate']}}
+														<strong>{lang="product_renews_on" sprintf="$item->expireDate->relative()"}</strong>
+														{{endif}}
+									</div>
+									<div class='i-basis_120 i-text-align_end'>
+										<span class='cNexusPrice'>
+											{{if $item instanceof \IPS\nexus\Invoice\Item\Renewal}}
+												{$item->linePrice()}
+											{{else}}
+												{{if isset( $overriddenRenewalTerms[ $rId ] )}}
+													{money="$overriddenRenewalTerms[ $rId ]->cost->amount->multiply( new \IPS\Math\Number( (string) $item->quantity ) )" currency="$overriddenRenewalTerms[ $rId ]->cost->currency"}
+												{{elseif $item->renewalTerm}}
+													{money="$item->renewalTerm->cost->amount->multiply( new \IPS\Math\Number( (string) $item->quantity ) )" currency="$item->renewalTerm->cost->currency"}
+												{{endif}}
+											{{endif}}
+										</span>
+										{{if $item->quantity > 1 AND (!$item instanceof \IPS\nexus\Invoice\Item\Renewal)}}
+											<p class='i-font-size_-2 i-color_soft'>
+												{lang="each_short" sprintf="$item->renewalTerm->cost"}
+											</p>
+										{{endif}}
+									</div>
+								</li>
+							{{endif}}
+						{{endforeach}}
+						{{if $recurring['term']->tax and $taxRate = $recurring['term']->tax->rate( $invoice->billaddress ) and $taxAmount = $recurring['term']->cost->amount->multiply( new \IPS\Math\Number( $taxRate ) )}}
+							<li class='ipsData__item'>
+								<div class='ipsData__main i-text-align_end'>
+									<strong>{$recurring['term']->tax->_title} <span class='i-color_soft i-font-weight_normal'>({expression="$taxRate*100"}%)</span></strong>
+								</div>
+								<div class='i-basis_100 i-text-align_end cNexusPrice'>
+									{money="$taxAmount" currency="$recurring['term']->cost->currency"}
+								</div>
+							</li>
+						{{endif}}
+						{{if !isset( $recurring['showDueDate'] ) OR $recurring['showDueDate'] }}
+							<li class='ipsData__item cNexusCheckout_subtotal'>
+								<div class='ipsData__main i-text-align_end'>
+									<strong>{lang="total_due_on" sprintf="$recurring['dueDate']->relative()"}</strong>
+								</div>
+								<div class='i-basis_100 i-text-align_end cNexusPrice'>
+									<strong>{money="$recurring['term']->cost->amount->add( $taxAmount )" currency="$recurring['term']->cost->currency"}</strong>
+								</div>
+							</li>
+						{{endif}}
+					</ul>
+				</i-data>
+			{{endforeach}}
+		{{endif}}
+		{{if settings.nexus_tac === 'button'}}
+			<p class="i-font-size_-2">{lang="you_agree_to_tac" sprintf="\IPS\Settings::i()->nexus_tac_link"}</p>
+		{{endif}}
+	</div>
+</div>

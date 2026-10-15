@@ -1,0 +1,68 @@
+<ips:template parameters="$id, $file, $name=NULL, $editor=FALSE, $showAsImages=FALSE, $link=NULL" />
+<!-- v5 todo: This is used as the "Other Media" attachment modal when posting new content -->
+{{if $showAsImages}}
+	<div data-action='selectFile' class='ipsAttach ipsImageAttach {{if $editor}}ipsAttach_done{{endif}}' data-role='file' data-fileid="{$id}" {{if $link}}data-filelink="{$link}"{{endif}} data-fileType="{$file->mediaType()}" {{if $file->attachmentThumbnailUrl}}data-thumbnailurl="{$file->attachmentThumbnailUrl}"{{endif}} {{if $file->isImage() or $file->isVideo()}}data-fullsizeurl="{$file->url}"{{endif}} {{if $file->isVideo()}}data-mimeType="{expression="\IPS\File::getMimeType( $file->originalFilename )"}"{{endif}}>
+		<ul class='ipsImageAttach_controls'>
+			{{if $editor}}
+				<li><button type="button" class='ipsAttach_selection' data-ipsTooltip title='{lang="form_upload_insert_one"}'><i class='fa-solid fa-check' aria-hidden="true"></i></button></li>
+			{{endif}}
+			{{if $name}}
+				<li>
+					<input type="hidden" name="{$name}_keep[{$id}]" value="1">
+					<a href='#' data-role='deleteFile' class='ipsButton ipsButton--small ipsButton--soft' data-ipsTooltip title='{lang="editor_media_remove"}'><i class='fa-regular fa-trash-can' aria-hidden="true"></i></a>
+				</li>
+			{{endif}}
+		</ul>
+		{{$screenshot = isset( $file->screenshot ) ? $file->screenshot : $file;}}
+		{{$extension =  mb_strtolower( mb_substr( $screenshot->originalFilename, mb_strrpos( $screenshot->originalFilename, '.' ) + 1 ) );}}
+		{{if \in_array( $extension, \IPS\Image::supportedExtensions() )}}
+			<div class='ipsImageAttach_thumb' data-role='preview'>
+				<img src="{$screenshot->url}" alt=''>
+			</div>
+		{{elseif \in_array( $extension, \IPS\File::$videoExtensions )}}
+			<div class='ipsImageAttach_thumb' data-role='preview'>
+				<video>
+					<source src="{$screenshot->url}" type="{expression="\IPS\File::getMimeType( $screenshot->originalFilename )"}">
+				</video>
+			</div>
+		{{else}}
+			<div class='ipsImageAttach_thumb' data-role='preview'>
+				<div class='ipsThumb'><i aria-hidden="true"></i></div>
+			</div>
+		{{endif}}		
+		<h2 class='ipsAttach_title ipsTruncate_1' data-role='title'>{{if isset( $file->contextInfo )}}{$file->contextInfo}{{else}}{$file->originalFilename}{{endif}}</h2>
+		<p class='i-color_soft i-font-size_-2 ipsTruncate_1'><span data-role='status'>{filesize="$file->filesize()"}</span>{{if isset( $file->contextInfo )}} &middot; {$file->originalFilename}{{endif}}</p>
+	</div>
+{{else}}
+	<div data-action='selectFile' class='ipsData__item ipsAttach {{if $editor}}ipsAttach_done{{endif}}' {{if $file->attachmentThumbnailUrl}}data-thumbnailurl="{$file->attachmentThumbnailUrl}"{{endif}} data-role='file' data-fileid="{$id}" {{if $link}}data-filelink="{$link}"{{endif}} data-fileType="{$file->mediaType()}">
+		<div class='i-basis_100 ipsResponsive_hidePhone i-text-align_center'>
+			{{if \in_array( mb_strtolower( mb_substr( $file->filename, mb_strrpos( $file->filename, '.' ) + 1 ) ), \IPS\Image::supportedExtensions() )}}
+				<img src="{{if $file->attachmentThumbnailUrl}}{$file->attachmentThumbnailUrl}{{else}}{$file->url}{{endif}}" alt='' loading='lazy'>
+			{{else}}
+				<i class='fa-solid fa-file i-font-size_2' aria-hidden="true"></i>
+			{{endif}}
+		</div>
+		<div class='ipsData__main'>
+			<h2 class='ipsData__title ipsAttach_title ipsTruncate_1' data-role='title'>{$file->originalFilename}</h2>
+			<p class='ipsData__meta'>
+				{filesize="$file->filesize()"}
+			</p>
+		</div>
+		<div class='i-basis_260 i-color_soft' data-role='status'>
+			
+		</div>
+		<div class='i-basis_100 i-text-align_end'>
+			<ul class='ipsList ipsList--inline'>
+				{{if $editor}}
+					<li><button type="button" class='ipsAttach_selection' data-ipsTooltip title='{lang="form_upload_insert_one"}'><i class='fa-solid fa-check' aria-hidden="true"></i></button></li>
+				{{endif}}
+				{{if $name}}
+					<li>
+						<input type="hidden" name="{$name}_keep[{$id}]" value="1">
+						<a href='#' data-role='deleteFile' class='ipsButton ipsButton--small ipsButton--soft' data-ipsTooltip title='{lang="editor_media_remove"}'><i class='fa-regular fa-trash-can' aria-hidden="true"></i></a>
+					</li>
+				{{endif}}
+			</ul>
+		</div>		
+	</div>
+{{endif}}

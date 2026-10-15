@@ -1,0 +1,16 @@
+<ips:template parameters="$indexData, $itemData, $image, $url, $priceInfo, $condensed" />
+{{if $image}}
+	<div class='ipsStreamItem__content-thumb ipsStreamItem__content-thumb--commerce'>
+		{template="thumbImage" group="global" app="core" location="front" params="$image, $indexData['index_title'], 'medium', '', 'view_this', $url, 'nexus_Products', '', true"}
+	</div>
+{{endif}}
+{{if !$condensed}}
+	<div class='ipsStreamItem__content-content ipsStreamItem__content-content--commerce'>			
+		<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+			{lang="nexus_package_{$indexData['index_item_id']}_desc"}
+		</div>			
+		<div class='cNexusPrice'>
+			{template="packageBlockPrice" app="nexus" group="store" params="$priceInfo"}
+		</div>
+	</div>
+{{endif}}

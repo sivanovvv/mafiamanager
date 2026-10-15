@@ -1,0 +1,48 @@
+<ips:template parameters="$form, $blocks, $excludedApps=array()" />
+<div data-controller='core.admin.stats.overview' data-url='?app=core&module=activitystats&controller=overview&do=loadBlock'>
+	<div class='ipsBox i-padding_3 i-margin-bottom_2 i-flex i-flex-wrap_wrap i-align-items_center i-gap_2'>
+		<ul class='ipsList ipsList--inline i-flex_11 i-margin-block_1'>
+			<li>
+				<strong>{lang="stats_show_c"}</strong>
+			</li>
+			{{$apps = array();}}
+			{{foreach $blocks as $blockKey => $block}}
+				{{if $block->page == 'activity' AND $subBlocks = $block->getBlocks()}}
+					{{foreach $subBlocks as $subBlock}}
+						{{if $details = $block->getBlockDetails( $subBlock )}}
+							{{if $details['app'] && !isset( $apps[ $details['app'] ] )}}
+								{{$apps[ $details['app'] ] = \IPS\Application::load( $details['app'] );}}
+							{{endif}}
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+			{{endforeach}}
+
+			{{foreach \IPS\Application::applications() as $key => $app}}
+				{{if isset( $apps[ $key ] )}}
+					<li>
+						<label>
+							<input type='checkbox' id='toggle_app_{$app->directory}' name='toggle_app_{$app->directory}' class="ipsInput ipsInput--toggle i-margin-end_1" data-action='toggleApp' data-toggledApp='{$app->directory}' {{if !\count( $excludedApps ) || !\in_array( $app->directory, $excludedApps )}}checked{{endif}}>
+							{$app->_title}
+						</label>
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+		{$form|raw}
+	</div>
+	<div class='cStatsGrid'>
+		<div class='ipsGrid i-basis_340'>
+			{{foreach $blocks as $blockKey => $block}}
+				{{if $block->page == 'activity' AND $subBlocks = $block->getBlocks()}}
+					{{foreach $subBlocks as $subBlock}}
+						{{if $details = $block->getBlockDetails( $subBlock )}}
+                            {{$details['title'] = member.language()->addToStack( $details['title'] );}}
+                            {template="overviewStatisticBlock" app="core" location="admin" group="reports" params="$blockKey, $subBlock, $details, null, '', \count( $excludedApps ) && \in_array( $details['app'], $excludedApps ) ? true : false"}
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+			{{endforeach}}
+		</div>
+	</div>
+</div>

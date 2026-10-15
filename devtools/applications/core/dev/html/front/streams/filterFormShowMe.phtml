@@ -1,0 +1,59 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL, $showTitle=TRUE" />
+
+{{if $showTitle}}<h3 class='ipsSideMenu__title'>{lang="stream_classes_type"}</h3>{{endif}}
+<ul class='ipsSideMenu__list ipsSideMenu--pseudoChecks cStreamForm_list' data-ipsSideMenu data-ipsSideMenu-type='check' data-ipsSideMenu-responsive='false' data-filterType='type'>
+	<li>
+		<a href='#' class='ipsSideMenu_item {{if $elements['']['stream_classes_type']->value == 0}}ipsSideMenu_itemActive{{endif}}' data-ipsMenuValue='__all'>
+			<input type="hidden" name="stream_classes[__EMPTY]" value="__EMPTY">
+			<span class="ipsSideMenu__toggle"></span>
+			{lang="stream_all_content"}
+		</a>
+		{{if member.canAccessModule( \IPS\Application\Module::get( 'core', 'clubs' ) ) and isset( $elements['']['stream_club_select'] )}}			
+			<a href='#' class='cStreamForm_menu' data-ipsTooltip title='{lang="stream_filter_clubs"}' data-role='streamClubs'>
+				<i class='fa-solid fa-gear i-font-size_2'></i>
+				<i class='fa-solid fa-caret-down'></i>
+			</a>
+			<div class='cStreamForm_nodes ipsHide' id="elStreamClubs">
+				<span class='i-color_soft'>{lang="loading"}</span>
+			</div>
+			<input type="hidden" name="stream_club_select" value="{$elements['']['stream_club_select']->value}">
+			<input type="hidden" name="stream_club_filter" value="{{if \is_array( $elements['']['stream_club_filter']->value )}}{expression="implode(',',$elements['']['stream_club_filter']->value)"}{{else}}{$elements['']['stream_club_filter']->value}{{endif}}">
+		{{endif}}
+		<input type='radio' class='ipsHide' name='stream_classes_type' value='0' {{if $elements['']['stream_classes_type']->value == 0}}checked{{endif}}>
+		<input type='radio' class='ipsHide' name='stream_classes_type' value='1' {{if $elements['']['stream_classes_type']->value == 1}}checked{{endif}}>
+	</li>
+	{{if isset( $elements['']['stream_classes'] )}}
+		{{foreach $elements['']['stream_classes']->options['options'] as $type => $lang}}
+			<li>
+				<a class='ipsSideMenu_item {{if isset( $elements['']['stream_containers_' . str_replace('_pl', '', $lang ) ] ) || isset( $elements['']['stream_classes_' . str_replace('_pl', '', $lang ) ] )}}cStream_withOptions{{endif}} {{if $elements['']['stream_classes_type']->value !== 0 && \in_array( $type, $elements['']['stream_classes']->value ) !== FALSE}}ipsSideMenu_itemActive{{endif}}' data-class='{$type}' data-ipsMenuValue='{expression="str_replace( '_pl', '', $lang )"}'>
+					<input type='checkbox' class="ipsSideMenu__toggle" name='stream_classes[{$type}]' value='1' {{if $elements['']['stream_classes_type']->value !== 0 && \in_array( $type, $elements['']['stream_classes']->value ) !== FALSE}}checked{{endif}}> 
+					<span>{lang="$lang"}</span>
+				</a>
+				{{if \in_array( $type, array_keys( $elements['']['stream_classes']->options['toggles'] ) )}}
+					<a href='#' class='cStreamForm_menu' data-ipsTooltip title='{lang="stream_filter_options" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $lang )"}' data-role='streamContainer' data-class='{$type}' data-contentKey='{expression="str_replace( '_pl', '', $lang )"}'>
+						<i class='fa-solid fa-gear i-font-size_2'></i>
+						<i class='fa-solid fa-caret-down'></i>
+					</a>
+				{{endif}}
+				<div class='cStreamForm_nodes ipsHide'>
+					<span class='i-color_soft'>{lang="loading"}</span>
+				</div>
+			</li>
+		{{endforeach}}
+	{{endif}}
+	{{if ! isset( \IPS\Request::i()->do ) or \IPS\Request::i()->do != 'create' }}
+	<li class="i-margin-top_2">
+		<button title="{lang="stream_apply_tip"}" type='button' class='ipsButton ipsButton--soft ipsButton--wide' popovertarget="elStreamContentTypes_menu">{lang="stream_apply"}</button>
+	</li>
+	{{endif}}
+</ul>
+{{foreach $elements['']['stream_classes']->options['options'] as $type => $lang}}
+	{template="filterFormContentType" group="streams" app="core" params="$elements, str_replace('_pl', '', $lang ), $type, ( $elements['']['stream_classes_type']->value !== 0 && $elements['']['stream_classes']->value == $type ), $elements"}
+{{endforeach}}
+<i-dropdown popover id="elMenu_clubFilter_menu" data-role="streamContainer" data-contentKey="clubs" data-className="clubs">
+	<div class="iDropdown">
+		<div class="i-padding_3">
+
+		</div>
+	</div>
+</i-dropdown>

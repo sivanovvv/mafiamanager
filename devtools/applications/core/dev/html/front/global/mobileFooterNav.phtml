@@ -1,0 +1,29 @@
+<ips:template parameters="" />
+<nav class='ipsOffCanvas__breadcrumb' aria-label="Breadcrumbs">
+<ol itemscope itemtype="https://schema.org/BreadcrumbList">
+	<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+		<a title='{lang="home"}' href='{setting="base_url"}' itemprop="item">
+			<i class="fa-solid fa-house-chimney" aria-hidden="true"></i> <span itemprop="name">{lang="home"}</span>
+		</a>
+		<meta itemprop="position" content="1" />
+	</li>
+	{{$last = end(\IPS\Output::i()->breadcrumb);}}
+	{{$index = 2;}}
+	{{foreach \IPS\Output::i()->breadcrumb as $k => $b}}
+		{{if $b[0] === NULL}}
+			<li aria-current='location' itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+				<span itemprop="name">{$b[1]}</span>
+				<meta itemprop="position" content="{$index}" />
+			</li>
+		{{else}}
+			<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+				<a href='{$b[0]}' itemprop="item">
+					<span itemprop="name">{$b[1]} {{if $b != $last}}{{endif}}</span>
+				</a>
+				<meta itemprop="position" content="{$index}" />
+			</li>
+		{{endif}}
+		{{$index++;}}
+	{{endforeach}}
+</ol>
+</nav>

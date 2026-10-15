@@ -1,0 +1,39 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class="ipsData__item ipsData__item--manage-follow-node-row {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}}" data-controller='core.front.system.manageFollowed' data-followID='{$row->_followData['follow_area']}-{$row->_followData['follow_rel_id']}'>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>
+					<a href='{$row->url()}'>
+						{$row->text}
+					</a>
+				</h4>
+				<ul class='ipsList ipsList--inline i-color_soft'>
+				    {{$count = array_sum( $row->totals );}}
+				    <li>{lang="tagged_items_number" pluralize="$count"}</li>
+				</ul>
+				<ul class="ipsList ipsList--inline i-row-gap_0 i-margin-top_1 i-font-weight_500">
+					<li title='{lang="follow_when"}' data-role='followDate'><i class='fa-regular fa-clock' aria-hidden="true"></i> {datetime="$row->_followData['follow_added']"}</li>
+					<li title='{lang="follow_how"}' data-role='followFrequency'>
+						{{if $row->_followData['follow_notify_freq'] == 'none'}}
+							<i class='fa-regular fa-bell-slash' aria-hidden="true"></i>
+						{{else}}
+							<i class='fa-regular fa-bell' aria-hidden="true"></i>
+						{{endif}} {lang="follow_freq_{$row->_followData['follow_notify_freq']}"}
+					</li>
+					<li data-role='followAnonymous' {{if !$row->_followData['follow_is_anon']}}hidden{{endif}}><i class="fa-regular fa-eye-slash" aria-hidden="true"></i> {lang="follow_is_anon"}</li>
+				</ul>
+			</div>
+			<div class='cFollowedContent_manage'>
+				{template="manageFollow" group="system" app="core" params="$row->_followData['follow_app'], $row->_followData['follow_area'], $row->_followData['follow_rel_id']"}
+			</div>
+		</div>
+
+		{{if $table->canModerate()}}
+			<label class="ipsData__mod">
+				<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+				<input type='checkbox' data-role='moderation' name="moderate[{$row->_id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='' class="ipsInput ipsInput--toggle">
+			</label>
+		{{endif}}
+	</li>
+{{endforeach}}

@@ -1,0 +1,7 @@
+<ips:template parameters="$table" />
+
+{{if !\in_array( \IPS\Login::registrationType(), array( 'normal', 'full' ) )}}
+<p class='ipsMessage ipsMessage--warning i-margin_1'>{lang="qanda_settings_requirements"}</p>
+{{endif}}
+
+{$table|raw}

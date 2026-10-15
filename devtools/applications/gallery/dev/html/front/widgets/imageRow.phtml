@@ -1,0 +1,73 @@
+<ips:template parameters="$image, $layout='table', $isCarousel=false" />
+<li class="ipsData__item {$image->ui('css')}" {$image->ui('dataAttributes')}>
+	<a href="{$image->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$image->caption}</span></a>
+	<div class="ipsData__image" aria-hidden="true" data-ips-hook='image'>
+		{{if $image->small_file_name}}
+			<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="" loading="lazy">
+		{{else}}
+			<i aria-hidden="true"></i>
+		{{endif}}
+        {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image, FALSE"}
+	</div>
+	<div class="ipsData__content">
+		<div class="ipsData__main">
+			<h4 class="ipsData__title" data-ips-hook='title'>
+				<a href="{$image->url()}" title='{lang="view_this_image" sprintf="$image->caption"}'>{$image->caption}</a>
+			</h4>
+			<p class="ipsData__meta">{lang="byline" htmlsprintf="$image->author()->link()"} &middot; {datetime="$image->mapped('date')"}</p>
+			<div class="ipsData__desc">
+				{{if $image->description}}
+					{$image->content()|raw}
+				{{endif}}
+			</div>
+		</div>
+		<div class="ipsData__extra">
+			<div class="ipsData__last ipsData__last--author" data-ips-hook="latestAuthorPhoto">
+				{template="userPhoto" app="core" group="global" params="$image->author(), 'fluid'"}
+				<div class="ipsData__last-text">
+					<div class="ipsData__last-primary">
+						{$image->author()->link( NULL, NULL, $image->isAnonymous() )|raw}
+					</div>
+					<div class="ipsData__last-secondary">
+						<a href='{$image->url( 'getLastComment' )}' title='{lang="get_last_post"}'>
+							{datetime="$image->mapped('date')"}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="ipsData__last" data-ips-hook="latestUserPhoto">
+				{{if $image->mapped('num_comments')}}
+					{template="userPhoto" app="core" group="global" params="$image->lastCommenter(), 'fluid'"}
+				{{else}}
+					{template="userPhoto" app="core" group="global" params="$image->author(), 'fluid'"}
+				{{endif}}
+				<div class="ipsData__last-text">
+					<div class="ipsData__last-primary">
+						{{if $image->mapped('num_comments')}}
+							{$image->lastCommenter()->link()|raw}
+						{{else}}
+							{$image->author()->link( NULL, NULL, $image->isAnonymous() )|raw}
+						{{endif}}
+					</div>
+					<div class="ipsData__last-secondary">
+						<a href='{$image->url( 'getLastComment' )}' title='{lang="get_last_post"}'>
+							{{if $image->mapped('last_comment')}}{datetime="$image->mapped('last_comment')"}{{else}}{datetime="$image->mapped('date')"}{{endif}}
+						</a>
+					</div>
+				</div>
+			</div>
+			<ul class='ipsData__stats' data-ips-hook='stats'>
+				{{if $image->directContainer()->allow_comments}}
+					<li data-statType='comments' {{if !$image->comments}}data-v="0"{{endif}}>
+						<span class='ipsData__stats-icon' data-stat-value="{number='$image->comments'}" aria-hidden="true" data-ipstooltip title='{number="$image->comments" format="short"} {lang="comments" pluralize="$image->comments"}'></span>
+						<span class='ipsData__stats-label'>{number="$image->comments"} {lang="comments" pluralize="$image->comments"}</span>
+					</li>
+				{{endif}}
+				<li data-statType='views'>
+					<span class='ipsData__stats-icon' data-stat-value="{number='$image->views'}" aria-hidden="true" data-ipstooltip title='{number="$image->views" format="short"} {lang="num_views" pluralize="$image->views"}'></span>
+					<span class='ipsData__stats-label'>{number="$image->views"} {lang="num_views" pluralize="$image->views"}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+</li>

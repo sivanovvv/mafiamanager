@@ -1,0 +1,6 @@
+<ips:template parameters="$menu"/>
+{{if $menu->hasContent()}}
+    <ul class='{$menu->css}'>
+        {template="buttonsContent" app="core" group="menu" params="$menu" location="front"}
+    </ul>
+{{endif}}

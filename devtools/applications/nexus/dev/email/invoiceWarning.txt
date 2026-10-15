@@ -1,0 +1,20 @@
+<ips:template parameters="$cards, $credit, $billingAgreement, $invoice, $summary, $paymentDate, $email" />
+{$email->language->get('email_expire_warning')|raw}
+
+{{if $billingAgreement}}{expression="sprintf( $email->language->get('email_expire_warning_billing_agreement'), $paymentDate )" raw="true"}{{elseif \count( $cards ) and $credit and $credit->amount->isGreaterThanZero()}}{expression="sprintf( $email->language->get('email_expire_warning_card_and_credit'), $credit->toString( $email->language ), $paymentDate )" raw="true"}{{elseif \count( $cards )}}{expression="sprintf( $email->language->get('email_expire_warning_card'), $paymentDate )" raw="true"}{{else}}{expression="sprintf( $email->language->get('email_expire_warning_credit'), $credit->toString( $email->language ), $paymentDate )" raw="true"}{{endif}}
+
+{{foreach $summary['items'] as $k => $item}}{{if $item instanceof \IPS\nexus\Invoice\Item\Renewal}}{{if \IPS\nexus\Purchase::load( $item->id )->canCancel( $invoice->member )}}{$email->language->get('email_expire_warning_can_cancel')}: {url="app=nexus&module=clients&controller=invoices" seoTemplate="clientsinvoices" base="front" plain="true"}
+
+{{break;}}{{endif}}{{endif}}{{endforeach}}
+
+===============
+
+{{if \count( $cards )}}{$email->language->get('email_card_on_file')}:
+{{foreach $cards as $card}}{$email->language->get('card_type')}: {{if $card->card->type}}{$email->language->get('card_type_' . $card->card->type)}{{else}}{$email->language->get('card_type_generic')}{{endif}}{{if $card->card->lastFour}} {expression="sprintf( $email->language->get('email_ending_in'), $card->card->lastFour )" raw="true"}{{endif}} - {{if !\is_null( $card->card->number )}}{$email->language->get('email_paymethod_account')}: {$card->card->number}{{endif}}{{if !\is_null( $card->card->expMonth ) AND !\is_null( $card->card->expYear )}}{$email->language->get('card_expires')}: {$card->card->expMonth}/{$card->card->expYear}{{endif}}
+{{endforeach}}
+{$email->language->get('email_update_payment')}: {url="app=nexus&module=clients&controller=cards" seoTemplate="clientscards" base="front" plain="true"}
+{{endif}}
+
+{$email->language->get("email_expiring_soon")}:
+{{foreach $summary['items'] as $k => $item}}{$item->quantity} x {$item->name} ({{if $item->tax AND \IPS\Settings::i()->nexus_show_tax}}{$item->grossLinePrice()->toString( $email->language)} {{if $email->language->checkKeyExists('nexus_tax_explain_val')}}{$email->language->get('nexus_tax_explain_val')}{{endif}}{{else}}{$item->linePrice()->toString( $email->language )}{{endif}}) - {$email->language->addToStack('ps_expire', FALSE)}: {expression="\IPS\nexus\Purchase::load( $item->id )->expire->localeDate( $invoice->member )" raw="true"}
+{{endforeach}}

@@ -1,0 +1,15 @@
+<ips:template parameters="$collection, $input, $category, $page, $database, $record" />
+<li class="ipsFieldRow ipsJS_show i-color_soft" data-controller='cms.front.records.form' data-ipsTitleField="content_field_{$database->field_title}">
+	<div>
+		{{if $collection['record_static_furl']->error}}
+		<p class='i-color_warning'><i class='fa-solid fa-circle-exclamation' aria-hidden="true"></i> {lang="$collection['record_static_furl']->error"}</p>
+		{{endif}}
+		<input type="checkbox" class="ipsHide" id="elInput_record_static_furl_set" name="record_static_furl_set_checkbox" {{if $collection['record_static_furl_set']->value}}checked="checked"{{endif}} value="1">
+		<input type="hidden" name="record_static_furl_set" value="{{if $collection['record_static_furl_set']->value}}1{{else}}0{{endif}}">
+		<i class='fa-solid fa-earth-americas' aria-hidden="true"></i> <strong>{lang="url"}:</strong> <span data-ipsSlugUrl>{url="app=cms&module=pages&controller=page&path=$page->full_path" seoTemplate="content_page_path" seoTitle="$page->full_path"}</span><span data-ipsSlugCategory>{$category->full_path}</span><span data-ipsSlugSlug></span><span data-ipsSlugManual class="ipsHide">
+			/ <input type="text" class='ipsInput ipsInput--text ipsField_short ipsField_tinyText' name="record_static_furl" value="{{if $collection['record_static_furl']->value}}{$collection['record_static_furl']->value}{{endif}}">
+		</span><span data-ipsSlugExt>{{if $record !== NULL}}-r{$record->_id}{{else}}-r#{{endif}}</span>
+		<button data-ipsChange class="ipsButton ipsButton--tiny ipsButton--text" type="button">{lang="change"}</button>
+		<button data-ipsCancel class="ipsHide ipsButton ipsButton--tiny ipsButton--soft" type="button">{lang="cancel"}</button>
+	</div>
+</li>

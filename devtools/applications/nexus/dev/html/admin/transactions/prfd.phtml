@@ -1,0 +1,46 @@
+<ips:template parameters="$transaction, $log" />
+
+<li class='cTransaction_intermediate'>
+	<div class='cTransaction_icon'>
+		{{if $log['to'] === 'credit'}}
+			<i class='fa-solid fa-reply' aria-hidden="true"></i>
+		{{else}}
+			<i class='fa-solid fa-reply-all' aria-hidden="true"></i>
+		{{endif}}
+	</div>
+	<div class='cTransaction_info'>
+		<h3 class="ipsTitle ipsTitle--h3">
+			<strong>
+				{{if $log['to'] === 'credit'}}
+					{lang="tstatus_credited"}
+				{{else}}
+					{lang="tstatus_prfd_set"}
+				{{endif}}
+			</strong>
+		</h3>
+		<br>
+		
+		{{if isset( $log['amount'] )}}
+			{{if $transaction->amount->amount->compare( new \IPS\Math\Number( $log['amount'] ) ) !== 0}}
+				<p class='i-font-size_2'>
+					<span class='cNexusPrice'>{money="$log['amount']" currency="$transaction->currency"}</span>
+				</p>
+			{{endif}}
+		{{endif}}
+
+		{{if isset( $log['ref'] ) and $log['ref']}}
+			<p>
+				{$log['ref']}
+			</p>
+		{{endif}}
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='i-font-size_1 i-color_soft'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+	</div>
+</li>

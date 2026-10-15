@@ -1,0 +1,207 @@
+<ips:template parameters="$title,$html,$location=array()" />
+<!DOCTYPE html>
+<html lang="{expression="\IPS\Member::loggedIn()->language()->bcp47()"}" dir="{{if member.language()->isrtl}}rtl{{else}}ltr{{endif}}" {template="htmlDataAttributes" app="core" group="global" location="front" params=""}>
+	<head data-ips-hook="head">
+		<meta charset="utf-8">
+		<title data-ips-hook="title">{expression="output.getTitle( $title )"}</title>
+		{{$theme = \IPS\Theme::i();}}
+		{{if \IPS\Member::loggedIn()->isEditingTheme() and $theme->edit_in_progress}}
+			<script>
+				if (window.self === window.top) {
+					window.location = '{url="app=core&module=system&controller=themeeditor" seoTemplate="theme_editor" plain="true"}';
+				}
+			</script>
+		{{endif}}
+		{{if settings.core_datalayer_enabled}}
+			{template="includeDataLayer" app="core" group="global" location="front"}
+		{{endif}}
+		{template="prefersColorSchemeLoad" app="core" group="global" location="front" params=""}
+		{template="loadGuestColorScheme" app="core" group="global" location="front" params=""}
+		{{if settings.ga_enabled}}
+			{setting="ga_code"}
+		{{endif}}
+		{{if settings.matomo_enabled}}
+			{setting="matomo_code"}
+		{{endif}}
+		{{if settings.googletag_enabled AND !(settings.core_datalayer_use_gtm AND settings.core_datalayer_enabled)}}
+			{setting="googletag_head_code"}
+		{{endif}}
+		{{if settings.maxmind_key and settings.maxmind_id and settings.maxmind_tracking_code}}
+			<script>
+				(function() {
+					let mmapiws = window.__mmapiws = window.__mmapiws || {};
+					mmapiws.accountId = "{expression='\IPS\Settings::i()->maxmind_id'}";
+					let loadDeviceJs = function() {
+						let element = document.createElement('script');
+						element.async = true;
+						element.src = 'https://device.maxmind.com/js/device.js';
+						document.body.appendChild(element);
+					};
+					window.addEventListener('load', loadDeviceJs, false);
+				})();
+			</script>
+		{{endif}}
+		{template="includeCSS" app="core" group="global" location="global" params=""}
+		{template="includeMeta" app="core" group="global" location="global" params=""}
+		{template="favico" app="core" group="global" location="front" params=""}
+	</head>
+	<body data-ips-hook="body" class='ipsApp ipsApp_front {{foreach output.bodyClasses as $class}} {$class}{{endforeach}}' {{foreach output.bodyAttributes as $k => $v}}data-{$k}="{$v}"{{endforeach}}>
+		<a href='#ipsLayout__main' class='ipsSkipToContent' data-role="skipToContent">{lang="jump_to_content"}</a>
+		{{if \IPS\Settings::i()->guest_terms_bar AND (!\IPS\Member::loggedIn()->member_id OR (\IPS\Request::i()->cookieConsentEnabled() AND (!isset(\IPS\Request::i()->cookie['cookie_consent']) OR !isset(\IPS\Request::i()->cookie['cookie_consent_optional']))))}}
+			<a href='#elGuestTerms' class='ipsSkipToContent' data-role="skipToConsent" hidden>{lang="jump_to_consent_message"}</a>
+		{{endif}}
+		{{if settings.googletag_enabled AND !(settings.core_datalayer_use_gtm AND settings.core_datalayer_enabled)}}
+			{setting="googletag_noscript_code"}
+		{{endif}}
+		{{if settings.core_datalayer_enabled}}
+			{template="includeDataLayerBody" app="core" group="global" location="front"}
+		{{endif}}
+		{template="pwaRefresh" app="core" group="global" location="front"}
+		{template="pwaInstall" app="core" group="global" location="front"}
+		{theme="headerHtml"}
+		<div class='ipsLayout' id="ipsLayout" data-ips-hook="layout">
+			{{if view.global_view_mode == 'side'}}
+				{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+					{template="navigationPanel" app="core" group="global" params=""}
+				{{endif}}
+			{{endif}}
+			<div class='ipsLayout__app' data-ips-hook="app">
+				{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+				<div data-ips-hook="mobileHeader" class='ipsMobileHeader ipsResponsive_header--mobile'>
+					{template="logo" app="core" group="global" params="'mobile'"}
+					{template="mobileNavHeader" app="core" group="global" params=""}
+				</div>
+				{{endif}}
+				{template="announcementTop" app="core" group="global" params=""}
+				{{if !\in_array( 'ipsLayout_minimal', \IPS\Output::i()->bodyClasses )}}
+					{template="breadcrumb" app="core" group="global" params="'mobile'"}
+				{{endif}}
+				{{if view.global_view_mode == 'side'}}
+					{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+						<div class="ipsNavPanelBreadcrumbs ipsResponsive_header--desktop" data-ips-hook="navPanelBreadcrumbs">
+							<div class='ipsWidth ipsHeader__align'>
+								{template="breadcrumb" app="core" group="global" params="'top'"}
+								{template="userBar" app="core" group="global" params=""}
+							</div>
+						</div>
+					{{endif}}
+				{{else}}
+					<header data-ips-hook="header" class='ipsHeader ipsResponsive_header--desktop'>
+						{{if \IPS\Member::loggedIn()->isEditingTheme() || array_intersect(["1","2","3"], $theme->theme_editor_data['header'])}}
+							<div class='ipsHeader__top' {{if !(array_intersect(["1","2","3"], $theme->theme_editor_data['header'])) }}hidden{{endif}}>
+								<div class='ipsWidth ipsHeader__align'>
+									<div data-ips-header-position='1' class='ipsHeader__start'>{template="globalTemplateHeaderLogic" app="core" group="global" params="1"}</div>
+									<div data-ips-header-position='2' class='ipsHeader__center'>{template="globalTemplateHeaderLogic" app="core" group="global" params="2"}</div>
+									<div data-ips-header-position='3' class='ipsHeader__end'>{template="globalTemplateHeaderLogic" app="core" group="global" params="3"}</div>
+								</div>
+							</div>
+						{{endif}}
+						{{if \IPS\Member::loggedIn()->isEditingTheme() || array_intersect(["4","5","6"], $theme->theme_editor_data['header'])}}
+							<div data-ips-hook="primaryHeader" class='ipsHeader__primary' {{if !(array_intersect(["4","5","6"], $theme->theme_editor_data['header'])) }}hidden{{endif}}>
+								<div class='ipsWidth ipsHeader__align'>
+									<div data-ips-header-position='4' class='ipsHeader__start'>{template="globalTemplateHeaderLogic" app="core" group="global" params="4"}</div>
+									<div data-ips-header-position='5' class='ipsHeader__center'>{template="globalTemplateHeaderLogic" app="core" group="global" params="5"}</div>
+									<div data-ips-header-position='6' class='ipsHeader__end'>{template="globalTemplateHeaderLogic" app="core" group="global" params="6"}</div>
+								</div>
+							</div>
+						{{endif}}
+						{{if \IPS\Member::loggedIn()->isEditingTheme() || array_intersect(["7","8","9"], $theme->theme_editor_data['header'])}}
+							<div data-ips-hook="secondaryHeader" class='ipsHeader__secondary' {{if !(array_intersect(["7","8","9"], $theme->theme_editor_data['header'])) }}hidden{{endif}}>
+								<div class='ipsWidth ipsHeader__align'>
+									<div data-ips-header-position='7' class='ipsHeader__start'>{template="globalTemplateHeaderLogic" app="core" group="global" params="7"}</div>
+									<div data-ips-header-position='8' class='ipsHeader__center'>{template="globalTemplateHeaderLogic" app="core" group="global" params="8"}</div>
+									<div data-ips-header-position='9' class='ipsHeader__end'>{template="globalTemplateHeaderLogic" app="core" group="global" params="9"}</div>
+								</div>
+							</div>
+						{{endif}}
+					</header>
+				{{endif}}
+				<main data-ips-hook="main" class='ipsLayout__main' id='ipsLayout__main' tabindex="-1">
+					<div class='ipsWidth ipsWidth--main-content'>
+						<div class="ipsContentWrap">
+							{{if view.global_view_mode == 'default' and (\IPS\Member::loggedIn()->isEditingTheme() || array_intersect(["10","11","12"], $theme->theme_editor_data['header']))}}
+								<div class='ipsHeaderExtra ipsResponsive_header--desktop' {{if !(array_intersect(["10","11","12"], $theme->theme_editor_data['header'])) }}hidden{{endif}}>
+									<div data-ips-header-position='10' class='ipsHeaderExtra__start'>{template="globalTemplateHeaderLogic" app="core" group="global" params="10"}</div>
+									<div data-ips-header-position='11' class='ipsHeaderExtra__center'>{template="globalTemplateHeaderLogic" app="core" group="global" params="11"}</div>
+									<div data-ips-header-position='12' class='ipsHeaderExtra__end'>{template="globalTemplateHeaderLogic" app="core" group="global" params="12"}</div>
+								</div>
+							{{endif}}
+							{template="updateWarning" app="core" group="global" params=""}
+							<div class='ipsLayout__columns'>
+								<div data-ips-hook="primaryColumn" class='ipsLayout__primary-column'>
+									{{if \IPS\core\Advertisement::loadByLocation( 'ad_global_header' )}}
+										<div class="i-margin-bottom_block" data-ips-ad="global_header">
+											{advertisement="ad_global_header"}
+										</div>
+									{{endif}}
+									{template="acknowledgeWarning" if="\IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']" params="\IPS\Member::loggedIn()->warnings( 1, FALSE )" group="global" app="core"}
+									{{if !\in_array('ipsLayout_minimal', \IPS\Output::i()->bodyClasses ) and !member.members_bitoptions['profile_completion_dismissed'] and $nextStep = member.nextProfileStep()}}
+										<div class='ipsBox ipsBox--padding'>
+											{template="profileNextStep" group="global" app="core" params="$nextStep, true"}
+										</div>
+									{{endif}}
+                                    {{if isset( \IPS\Output::i()->customHeader )}}
+                                        {expression="\IPS\Output::i()->customHeader" raw="true"}
+                                    {{endif}}
+									{template="widgetContainer" group="global" app="core" params="'header', 'horizontal'"}
+									{$html|raw}
+									{template="widgetContainer" group="global" app="core" params="'footer', 'horizontal'"}
+								</div>
+								{template="sidebar" app="core" group="global" params=""}
+							</div>
+							{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+								{template="breadcrumb" app="core" group="global" params="'bottom'"}
+							{{endif}}
+							{template="inlineMessage" if="member.msg_show_notification and $message = \IPS\core\Messenger\Conversation::latestUnreadMessage()" app="core" group="global" params="$message"}
+							{{if \IPS\core\Advertisement::loadByLocation( 'ad_global_footer' )}}
+								<div class="i-margin-top_block" data-ips-ad="global_footer">
+									{advertisement="ad_global_footer"}
+								</div>
+							{{endif}}
+						</div>
+					</div>
+				</main>
+				{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+					<div class='ipsFooter' data-ips-hook="footerWrapper">
+						<aside class="ipsFooter__widgets ipsWidth">
+							{template="widgetContainer" group="global" app="core" params="'globalfooter', 'vertical'"}
+						</aside>
+						<footer data-ips-hook="footer" class='ipsFooter__footer'>
+							<div class='ipsWidth'>
+								<div class='ipsFooter__align'>
+									{template="footer" app="core" group="global" params=""}
+								</div>
+							</div>
+						</footer>
+					</div>
+				{{endif}}
+				{template="guestTermsBar" if="\IPS\Settings::i()->guest_terms_bar AND (!\IPS\Member::loggedIn()->member_id OR (\IPS\Request::i()->cookieConsentEnabled() AND (!isset(\IPS\Request::i()->cookie['cookie_consent']) OR !isset(\IPS\Request::i()->cookie['cookie_consent_optional']))))" app="core" group="global" params="base64_encode( \IPS\Request::i()->url() )"}
+			</div>
+		</div>
+		{theme="footerHtml"}
+		{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+			{template="mobileFooterBar" app="core" group="global" params=""}
+		{{endif}}
+		{{if $alert = \IPS\Output::i()->alert}}
+			{$alert|raw}
+		{{endif}}
+		{template="searchDialog" app="core" group="global" params=""}
+		{template="pushNotificationInstructionsCard" app="core" group="system" location="front" params=""}
+		<i-pwa-loading hidden></i-pwa-loading>
+		<i-tooltip popover="manual" id="ipsTooltip" role="tooltip"></i-tooltip>
+		<div id="ipsAriaLive" class="ipsInvisible" aria-live="polite" aria-atomic="true"></div>
+		{template="includeJS" app="core" group="global" location="global" params=""}
+		{template="metaTagEditor" if="isset( $_SESSION['live_meta_tags'] ) and $_SESSION['live_meta_tags'] and member.isAdmin()" app="core" group="global" params=""}
+		<!--ipsQueryLog-->
+		<!--ipsCachingLog-->
+		{expression="output.endBodyCode" raw="true"}
+		{{if settings.fb_pixel_enabled and settings.fb_pixel_id and $noscript = \IPS\core\Facebook\Pixel::i()->noscript()}}
+			<noscript>
+			{$noscript|raw}
+			</noscript>
+		{{endif}}
+		{{if settings.custom_body_code}}
+			{setting="custom_body_code"}
+		{{endif}}
+	</body>
+</html>

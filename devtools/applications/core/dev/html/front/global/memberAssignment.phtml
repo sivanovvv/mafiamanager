@@ -1,0 +1,8 @@
+<ips:template parameters="$member" />
+<div class='ipsPhotoPanel'>
+    <span class='ipsUserPhoto ipsUserPhoto--tiny'><img src='{$member->photo}' alt='' loading='lazy'></span>
+    <div>
+        <strong>{$member->name}</strong><br>
+        <span class='i-color_soft'>{$member->groupName|raw}</span>
+    </div>
+</div>

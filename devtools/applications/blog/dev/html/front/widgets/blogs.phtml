@@ -1,0 +1,123 @@
+<ips:template parameters="$blogs, $title, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{$title}</h3>
+{{if isset($orientation) and $orientation == 'vertical'}}
+<div class='ipsWidget__content'>
+	<i-data>
+		<ul class='ipsData ipsData--table ipsData--blogs-widget'>
+			{{foreach $blogs as $blog}}
+				<li class="ipsData__item {$blog->ui('css')}" {$blog->ui('dataAttributes')}>
+					<div class='i-flex_11'>
+						<h4 class='i-font-weight_600 i-margin-bottom_2'><a href="{$blog->url()}" title='{lang="view_this_blog" sprintf="$blog->_title"}' class="i-color_hard">{$blog->_title}</a></h4>
+						<ul class='ipsGrid ipsGrid--blog-stats ipsGrid--3'>
+							<li><strong class='i-font-weight_600 i-font-size_2 i-color_hard'>{$blog->_items}</strong><br><span class='i-color_soft i-font-size_-1'>{lang="blog_entries" pluralize="$blog->_items"}</span></li>
+							<li><strong class='i-font-weight_600 i-font-size_2 i-color_hard'>{$blog->_comments}</strong><br><span class='i-color_soft i-font-size_-1'>{lang="blog_comments" pluralize="$blog->_comments"}</span></li>
+							<li><strong class='i-font-weight_600 i-font-size_2 i-color_hard'>{$blog->num_views}</strong><br><span class='i-color_soft i-font-size_-1'>{lang="blog_views" pluralize="$blog->num_views"}</span></li>
+						</ul>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+</div>
+{{else}}
+	<i-data>
+		<ol class="ipsData ipsData--table ipsData--blogs-widget" data-role="tableRows">
+		{{foreach $blogs as $blog}}
+			<li class='ipsData__blog-item ipsColumns ipsColumns--lines'>
+				<div class='ipsColumns__secondary i-basis_380 i-background_2 i-text-align_center cBlogInfo'>
+
+					{{$coverPhoto = $blog->coverPhoto();}}
+					<a href='{$blog->url()}' class='ipsCoverPhoto ipsCoverPhoto--blog-listing' data-url="{$blog->url()->csrf()}" style='--offset:{$coverPhoto->offset}' aria-hidden="true" tabindex="-1">
+						{{if $coverPhoto->file}}
+							<div class='ipsCoverPhoto__container'>
+								<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' alt='' loading='lazy'>
+							</div>
+						{{else}}
+							<div class='ipsCoverPhoto__container'>
+								<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$blog->coverPhotoBackgroundColor()}"></div>
+							</div>
+						{{endif}}
+					</a>
+
+					<div class='i-padding_3'>
+						<h3 class='ipsTitle ipsTitle--h3'>
+							<a href='{$blog->url()}' title='{lang="go_to_blog" sprintf="$blog->_title"}'>{$blog->_title}</a>
+						</h3>
+
+						<div class='i-font-weight_500 i-color_soft i-margin-top_1'>
+							{{if $blog->owner() instanceof \IPS\Member}}
+								{lang="blog_by" htmlsprintf="$blog->owner()->link(), $blog->category()->link()"}
+							{{elseif $club = $blog->club()}}
+								<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="club_blog_for" sprintf="$club->name"}
+							{{else}}
+								<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="group_blog_by" htmlsprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $blog->id ), $blog->category()->link()"}
+							{{endif}}
+						</div>
+						<ul class='ipsList ipsList--stats ipsList--stacked ipsList--fill i-margin-top_3'>
+							<li><span class="ipsList__value">{$blog->_items}</span> <span class="ipsList__label">{lang="blog_entries" pluralize="$blog->_items"}</span></li>
+							<li><span class="ipsList__value">{$blog->_comments}</span> <span class="ipsList__label">{lang="blog_comments" pluralize="$blog->_comments"}</span></li>
+							<li><span class="ipsList__value">{$blog->num_views}</span> <span class="ipsList__label">{lang="blog_views" pluralize="$blog->num_views"}</span></li>
+						</ul>
+						{{if $blog->description}}
+							<div class='ipsTruncate_x ipsHide' style='--line-clamp: 9'>{template="richText" group="global" app="core" location="global" params="$blog->description"}</div>
+						{{endif}}
+					</div>
+				</div>
+				<div class='ipsColumns__primary i-padding_3'>
+
+					{{if $blog->latestEntry()}}
+						<div class='ipsTitle--h4'>
+							{$blog->latestEntry()->caption}
+							
+							<h3>
+								<span class='ipsBadges'>
+									{{foreach $blog->latestEntry()->badges() as $badge}}{$badge|raw}{{endforeach}}
+								</span>
+								<a href='{$blog->latestEntry()->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$blog->latestEntry()->name"}'>
+									{$blog->latestEntry()->name}
+								</a>
+							</h3>
+						</div>
+						<div class='ipsPhotoPanel ipsPhotoPanel--small i-margin-top_1 i-margin-bottom_2'>
+							{template="userPhoto" app="core" params="$blog->latestEntry()->author(), ''" group="global"}
+							<div class='ipsPhotoPanel__text'>
+								<p class='i-color_soft i-link-color_inherit'>{lang="latest_entry_by" htmlsprintf="trim( $blog->latestEntry()->author()->link() )"} {datetime="$blog->latestEntry()->date"}</p>
+							</div>
+						</div>
+
+						<div class='ipsRichText cBlogInfo_content' data-controller="core.front.core.lightboxedImages">
+							{$blog->latestEntry()->content()|raw}
+						</div>
+
+					{{else}}
+						<p class='ipsEmptyMessage'>{lang="no_entries_yet"}</p>
+					{{endif}}
+
+					{{$recentEntries = iterator_to_array( $blog->_recentEntries );}}
+					{{if \count( $recentEntries ) > 1}}
+						<h4 class='ipsTitle ipsTitle--h5 ipsTitle--margin i-margin-top_4'>{lang="recent_entries"}</h4>
+						<ul class='ipsBlogs__blog-listing-entries' data-ips-hook='recentEntries'>
+							{{foreach $recentEntries as $entry}}
+								<li class="{$entry->ui('css')}" {$entry->ui('dataAttributes')}>
+									{template="userPhoto" app="core" params="$entry->author(), 'fluid'" group="global"}
+									<div class='i-flex_11 i-flex i-gap_2 i-row-gap_0 i-flex-wrap_wrap'>
+										<h4 class='i-font-weight_500 i-flex_11'>
+											<a href='{$entry->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$entry->name"}'>
+												{$entry->name}
+											</a>
+										</h4>
+										{{if !( $blog->owner() instanceof \IPS\Member )}}
+											<p class='i-font-size_-1 i-color_soft'>{lang="byline_name_date" htmlsprintf="trim( $blog->latestEntry()->author()->link() ), \IPS\DateTime::ts( $blog->latestEntry()->date )->html(TRUE)"}</p>
+										{{endif}}
+									</div>
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+
+				</div>
+			</li>
+		{{endforeach}}
+		</ol>
+	</i-data>
+{{endif}}

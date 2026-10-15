@@ -1,0 +1,92 @@
+<ips:template parameters="$topic, $layout='table', $isCarousel=false" />
+<li data-ips-hook="row" class="ipsData__item {{if method_exists( $topic, 'tableClass' ) && $topic->tableClass()}}ipsData__item--{$topic->tableClass()}{{endif}} {{if $topic->hidden()}}ipsModerated{{endif}} {$topic->ui('css')}" {$topic->ui('dataAttributes')}>
+	<a href='{$topic->url( "getPrefComment" )}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$topic->mapped('title')}</span></a>
+	{{if in_array($layout, array("wallpaper", "featured", "grid"))}}
+		<div class="ipsData__image" aria-hidden="true" data-ips-hook='image'>
+			{{if $image = $topic->primaryImage()}}
+				<img src="{$image->url}" alt="{$topic->mapped( 'title' )}" loading="lazy">
+			{{else}}
+				<i aria-hidden="true"></i>
+			{{endif}}
+		</div>
+	{{else}}
+		<div class='ipsData__icon'>
+			{template="userPhoto" app="core" group="global" params="$topic->author(), 'fluid'"}
+		</div>
+	{{endif}}
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			{{if \IPS\Request::i()->controller != 'forums'}}
+				<div class="ipsData__category"><a href="{$topic->container()->url()}">{$topic->container()->_formattedTitle|raw}</a></div>
+			{{endif}}
+			<div class='ipsData__title'>
+				{{if $topic->prefix()}}
+					{template="prefix" group="global" app="core" params="$topic->prefix( TRUE ), $topic->prefix()"}
+				{{endif}}
+				<h4 data-ips-hook="title">
+					<a href='{$topic->url( "getPrefComment" )}' {{if $topic->tableHoverUrl AND $topic->canView()}}data-ipsHover data-ipsHover-target='{$topic->url()->setQueryString('preview', 1)}' data-ipsHover-timeout='1.5' {{endif}}>
+						{$topic->mapped('title')}
+					</a>
+				</h4>
+				<div data-ips-hook="badges" class="ipsBadges">
+				    {{foreach $topic->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</div>
+				{{if \in_array( $layout, array("list"))}}
+					{{if $topic->commentPageCount() > 1}}
+						{$topic->commentPagination( array(), 'miniPagination' )|raw}
+					{{endif}}
+				{{endif}}
+			</div>
+			<div class='ipsData__meta'>
+				{lang="byline_name_date" htmlsprintf="$topic->author()->link( NULL, NULL, $topic->isAnonymous() ), \IPS\DateTime::ts( $topic->mapped('date') )->html(FALSE)"}
+			</div>
+			{{if $layout === "featured"}}
+				<div class='ipsData__desc'>{$topic->truncated(TRUE)|raw}</div>
+			{{endif}}
+		</div>
+		<div class="ipsData__extra">
+			<ul data-ips-hook="stats" class='ipsData__stats'>
+				{{foreach $topic->stats(FALSE) as $k => $v}}
+					<li {{if \in_array( $k, $topic->hotStats )}}class="ipsData__stats-hot" data-text='{lang="hot_item"}' data-ipsTooltip title='{lang="hot_item_desc"}'{{endif}} data-statType='{$k}' {{if $v === 0}}data-v="{$v}"{{endif}}>
+						<span class='ipsData__stats-icon' data-stat-value="{number='$v'}" aria-hidden="true" data-ipstooltip title='{number="$v" format="short"} {lang="{$k}" pluralize="$v" format="short"}'></span>
+						<span class='ipsData__stats-label'>{number="$v"} {lang="{$k}" pluralize="$v"}</span>
+					</li>
+				{{endforeach}}
+			</ul>
+			<div class="ipsData__last ipsData__last--author" data-ips-hook="latestAuthorPhoto">
+				{template="userPhoto" app="core" group="global" params="$topic->author(), 'fluid'"}
+				<div class="ipsData__last-text">
+					<div class="ipsData__last-primary">
+						{$topic->author()->link( NULL, NULL, $topic->isAnonymous() )|raw}
+					</div>
+					<div class="ipsData__last-secondary">
+						<a href='{$topic->url( 'getLastComment' )}' title='{lang="get_last_post"}'>
+							{datetime="$topic->mapped('date')"}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="ipsData__last" data-ips-hook="latestUserPhoto">
+				{{if $topic->mapped('num_comments')}}
+					{template="userPhoto" app="core" group="global" params="$topic->lastCommenter(), 'fluid'"}
+				{{else}}
+					{template="userPhoto" app="core" group="global" params="$topic->author(), 'fluid'"}
+				{{endif}}
+				<div class="ipsData__last-text">
+					<div class="ipsData__last-primary">
+						{{if $topic->mapped('num_comments')}}
+							{$topic->lastCommenter()->link()|raw}
+						{{else}}
+							{$topic->author()->link( NULL, NULL, $topic->isAnonymous() )|raw}
+						{{endif}}
+					</div>
+					<div class="ipsData__last-secondary">
+						<a href='{$topic->url( 'getLastComment' )}' title='{lang="get_last_post"}'>
+							{{if $topic->mapped('last_comment')}}{datetime="$topic->mapped('last_comment')"}{{else}}{datetime="$topic->mapped('date')"}{{endif}}
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</li>

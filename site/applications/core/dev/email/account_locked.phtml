@@ -1,0 +1,20 @@
+<ips:template parameters="$member, $location, $unlockTime=NULL, $email=NULL" />
+{$email->language->addToStack("email_account_locked", FALSE, array( 'sprintf' => array( \IPS\Settings::i()->ipb_bruteforce_attempts, $location ) ) )}
+<br><br>
+{$email->language->addToStack("email_account_locked_change_password")}
+<br><br>
+{{if $unlockTime}}
+	{$email->language->addToStack("email_account_locked_safely_ignore", FALSE, array( 'sprintf' => $unlockTime ) )}
+{{else}}
+	{$email->language->addToStack("email_account_locked_no_unlock")}
+{{endif}}
+<br><br>
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}' align='center'>
+			<a href='{url="app=core&module=system&controller=settings&do=secureAccount" seoTemplate="settings_secure" base="front"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("email_secure_account", FALSE)}</a>
+			{$email->language->addToStack("or", FALSE)}
+			<a href='{url="app=core&module=system&controller=lostpass" seoTemplate="lostpassword" base="front"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("email_reset_password", FALSE)}</a>
+		</td>
+	</tr>
+</table>

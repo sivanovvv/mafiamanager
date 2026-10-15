@@ -1,0 +1,13 @@
+<ips:template parameters="$items, $tag" />
+<!-- This is used under "All Content" -->
+<i-data>
+    <ol class="ipsData ipsData--grid ipsData--tags-overview" data-role="tableRows">
+        {template="contentTableRows" app="core" group="tags" params="null, array(), $items"}
+    </ol>
+    {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'search' ) )}}
+    <div class="ipsSubmitRow">
+        {{$searchUrl = \IPS\Http\Url::internal( 'app=core&module=search&controller=search', 'front', 'search' )->setQueryString( 'tags', $tag->text );}}
+        <a href="{$searchUrl}" class="ipsButton ipsButton--secondary"><span>{lang="tags__view_all"}</span><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a>
+    </div>
+    {{endif}}
+<i-data>

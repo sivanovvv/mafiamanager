@@ -1,0 +1,4 @@
+<ips:template parameters="$member, $recognize, $email" />
+{$email->language->addToStack("notification__new_recognized")}
+
+-- {setting="board_name"}

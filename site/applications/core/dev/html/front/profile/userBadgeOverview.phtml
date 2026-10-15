@@ -1,0 +1,104 @@
+<ips:template parameters="$member, $percentage" />
+
+{{$baseUrl = \IPS\Http\Url::internal( "app=core&module=members&controller=profile&id={$member->member_id}&do=content", 'front', 'profile_content', $member->members_seo_name );}}
+{{if !\IPS\Request::i()->isAjax()}}
+<div class="ipsProfileContainer" data-controller='core.front.profile.main' id='elProfileUserContent'>
+	{template="profileHeader" app="core" location="front" group="profile" params="$member, true"}
+	<div data-role="profileContent">
+{{endif}}
+		<div class='ipsProfile ipsProfile--badges'>
+            {{if $member->canHaveAchievements() and \IPS\core\Achievements\Rank::show() and \IPS\core\Achievements\Rank::getStore() and $rank = $member->rank()}}
+                <aside class='ipsProfile__aside'>
+                    <div class="ipsProfile__sticky-outer">
+                        <div class="ipsProfile__sticky-inner">
+                            <div class='ipsWidget'>
+                                <h2 class='ipsWidget__header'>{lang="achievements_profile_rank_progress"}</h2>
+                                <div class='i-padding_3'>
+                                    {{if $rank}}
+                                    <p class='i-margin-bottom_3'>
+                                        {{if $percentage}}
+                                            {lang="profile_rank_progress_blurb_percentage" sprintf="$member->name, $member->rank()->rankPosition()['pos'], $member->rank()->rankPosition()['max'], $percentage"}
+                                        <span class="i-color_soft i-font-size_-2" data-ipsToolTip title="{lang="profile_rank_progress_blurb_percentage_info"}"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></span>
+                                        {{else}}
+                                            {lang="profile_rank_progress_blurb" sprintf="$member->name, $member->rank()->rankPosition()['pos'], $member->rank()->rankPosition()['max']"}
+                                        {{endif}}
+                                    </p>
+                                    <hr class='ipsHr i-margin-block_3'>
+                                    {{endif}}
+
+                                    <ul class='cRankHistory'>
+                                        {{if $member->rankHistory()['earned']}}
+                                            {{foreach $member->rankHistory()['earned'] as $entry}}
+                                                <li class='cRankHistory__item'>
+                                                    <div class='cRankHistory__icon'>{$entry['rank']->html( 'cRankHistory__itemBadge' )|raw}</div>
+                                                    <div>
+                                                        <h3 class='i-font-weight_semi-bold i-color_hard i-font-size_2'>{$entry['rank']->_title}</h3>
+                                                        {{if ! $entry['time'] or ( $entry['time']->getTimestamp() < settings.achievements_last_rebuilt)}}
+                                                            {{if \IPS\Settings::i()->achievements_last_rebuilt}}<p class='i-color_soft'>{lang="badge_earned_date_while_rebuilding" htmlsprintf="\IPS\DateTime::ts( (int) \IPS\Settings::i()->achievements_last_rebuilt )->shortMonthAndFullYear()"}</p>{{endif}}
+                                                        {{elseif $entry['time']}}
+                                                        <p class='i-color_soft'>{lang="badge_earned_date" htmlsprintf="$entry['time']->html()"}</p>
+                                                        {{endif}}
+                                                    </div>
+                                                </li>
+                                            {{endforeach}}
+                                        {{endif}}
+                                        {{if $member->rankHistory()['not_earned']}}
+                                            {{foreach $member->rankHistory()['not_earned'] as $entry}}
+                                                <li class='cRankHistory__item'>
+                                                <div class='cRankHistory__icon'>{$entry['rank']->html( 'cRankHistory__itemBadge cRankHistory__itemBadge--unearned' )|raw}</div>
+                                                    <div class='i-opacity_6'>
+                                                        <h3 class='i-font-weight_semi-bold i-font-size_2'>{$entry['rank']->_title}</h3>
+                                                        <p><em>{lang="badge_earned_but_not_really"}</em></p>
+                                                    </div>
+                                                </li>
+                                            {{endforeach}}
+                                        {{endif}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            {{endif}}
+			<section class='ipsProfile__main ipsBox'>
+                <h2 class='ipsBox__header'>{lang="achievements_profile_title" pluralize="$member->badgeCount()"}</h2>
+                {{if $member->badgeCount()}}
+                    <div class='i-padding_3 ipsGrid i-basis_200 i-gap_4 cProfileBadgeGrid'>
+                        {{foreach $member->recentBadges( NULL ) as $badge}}
+                            <div class='i-flex i-gap_2 i-align-items_center' data-badge='{$badge->_id}'>
+                                <div class="i-flex_00">{$badge->html('i-flex_00 i-basis_40 ipsDimension', FALSE, TRUE)|raw}</div>
+                                <div class="i-flex_11">
+                                    {{if ! empty( $badge->recognize ) AND $badge->recognize->contentWrapper() }}
+                                    <h4 class='i-font-weight_semi-bold'>
+                                        {lang="badge_from_recognize" sprintf="$badge->_title, $badge->recognize->content()->url(), $badge->recognize->content()->indefiniteArticle()"}
+                                    </h4>
+                                    {{else}}
+                                    <h4 class='i-font-weight_semi-bold'>{$badge->_title}</h4>
+                                    {{endif}}
+                                    {{if ! empty( $badge->awardDescription )}}
+                                        <p class='i-font-size_-2 i-color_soft'>{$badge->awardDescription}</p>
+                                    {{endif}}
+                                    {{if $badge->datetime < settings.achievements_last_rebuilt}}
+                                        {{if \IPS\Settings::i()->achievements_last_rebuilt}}<p class='i-font-size_-2 i-color_soft'>{lang="badge_earned_date_while_rebuilding" htmlsprintf="\IPS\DateTime::ts( (int) \IPS\Settings::i()->achievements_last_rebuilt )->shortMonthAndFullYear()"}</p>{{endif}}
+                                    {{else}}
+                                    <p class='i-font-size_-2 i-color_soft'>{lang="badge_earned_date" htmlsprintf="\IPS\DateTime::ts( $badge->datetime )->html( false )"}</p>
+                                    {{endif}}
+                                </div>
+                            </div>
+                        {{endforeach}}
+                    </div>
+                {{else}}
+                    <div class='i-padding_3 i-text-align_center i-color_soft'>
+                        {{if $member->member_id === \IPS\Member::loggedIn()->member_id}}
+                            {lang="achievements_self_none" sprintf=""}
+                        {{else}}
+                            {lang="achievements_member_none" sprintf="$member->name"}
+                        {{endif}}
+                    </div>
+                {{endif}}
+			</section>
+		</div>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+</div>
+{{endif}}

@@ -1,0 +1,56 @@
+<ips:template parameters="$blogs=array(), $viewMode=NULL, $forMobile=FALSE, $category=NULL" />
+{{if \count( $blogs ) || \IPS\blog\Blog::canCreate()}}
+	<ul class='ipsButtons ipsButtons--main {{if !$forMobile}}ipsResponsive_hidePhone{{endif}}'>
+		{{if \count( $blogs )}}
+			{{if \count( $blogs ) > 1}}
+				<li>
+					<button type="button" id="elMyBlogs" popovertarget="elMyBlogs_menu" class='ipsButton ipsButton--text'><span>{lang="my_blogs"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+					<i-dropdown popover id="elMyBlogs_menu">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								{{foreach $blogs as $blog}}
+									<li><a href='{$blog->url()}'>{$blog->_title}</a></li>
+								{{endforeach}}
+							</ul>
+						</div>
+					</i-dropdown>
+				</li>
+			{{endif}}
+			{{if \IPS\blog\Blog::canCreate()}}
+				<li>
+					<a href='{url="app=blog&module=blogs&controller=create" seoTemplate="blog_create"}' data-ipsDialog data-ipsDialog-title='{lang="create_blog"}' class='ipsButton ipsButton--text'><span>{lang="create_new_blog"}</span></a>
+				</li>
+			{{endif}}
+		{{elseif \IPS\blog\Blog::canCreate()}}
+			<li>
+				<a class="ipsButton ipsButton--primary" href="{url="app=blog&module=blogs&controller=create" seoTemplate="blog_create"}"><span>{lang="create_blog"}</span></a>
+			</li>
+		{{endif}}
+		{{if \count( $blogs ) AND \IPS\blog\Blog::canOnAny( 'add' )}}
+			<li>
+				{{if \count( $blogs ) > 1}}
+					<button type="button" id="elCreateEntry" class='ipsButton ipsButton--primary' popovertarget="elCreateEntry_menu"><span>{lang="add_entry"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+					<i-dropdown id="elCreateEntry_menu" popover>
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								{{foreach $blogs as $blog}}
+									{{if $blog->disabled != 1}}
+										<li>
+											<a href='{url="app=blog&module=blogs&controller=submit&id={$blog->id}" seoTemplate="blog_submit"}'>{$blog->_title}</a>
+										</li>
+									{{endif}}
+								{{endforeach}}
+							</ul>
+						</div>
+					</i-dropdown>
+				{{else}}
+					{{foreach $blogs as $blog}}
+						{{if $blog->disabled != 1}}
+							<a class="ipsButton ipsButton--primary" href="{url="app=blog&module=blogs&controller=submit&id={$blog->id}" seoTemplate="blog_submit"}" rel='nofollow noindex'>{lang="add_entry"}</a>
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}

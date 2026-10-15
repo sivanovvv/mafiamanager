@@ -1,0 +1,4 @@
+<ips:template parameters="$notification, $transaction, $email" />
+{$email->language->addToStack( "email_transaction_" . $notification->extra, FALSE )}
+
+{expression="sprintf( $email->language->get('transaction_number'), $transaction->id )" raw="true"}: {url="app=nexus&module=payments&controller=transactions&attn=1" base="admin" plain="true"}

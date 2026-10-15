@@ -1,0 +1,14 @@
+<ips:template parameters="$page" />
+
+{{if \IPS\Settings::i()->clubs_header != 'sidebar'}}
+	{template="header" group="clubs" app="core" params="$page->club, NULL, 'full', $page"}
+{{endif}}
+
+<div id='elClubContainer'>
+	<div class='ipsBox ipsBox--clubPage'>
+		<h1 class='ipsBox__header'>{$page->title}</h1>
+		<div class='ipsRichText i-padding_3' id='elPageContent'>
+			{$page->content|raw}
+		</div>
+	</div>
+</div>

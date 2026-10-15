@@ -1,0 +1,33 @@
+<ips:template parameters="$report,$comment,$ref" />
+
+{{if $report->author AND \IPS\Member::loggedIn()->modPermission('mod_see_warn') AND \count(\IPS\Member::load( $report->author )->warnings( 1 ))}}
+	<aside class='ipsColumns__secondary i-basis_340'>
+		<div id="elReportSidebar">
+			<div id='elReportPanel'>
+				<div class='i-padding_2'><strong class='ipsTitle ipsTitle--h4'>{lang="previous_warnings"}</strong></div>	
+				<i-data>
+					<ol class="ipsData ipsData--table ipsData--compact">
+						{{foreach \IPS\Member::load( $report->author )->warnings( 2 ) as $warning}}
+							<li class="ipsData__item">
+								<div class=''>
+									<a href="{url="app=core&module=system&controller=warnings&do=view&id={$report->author}&w={$warning->id}" seoTemplate="warn_view" seoTitle="\IPS\Member::load( $report->author )->members_seo_name"}" data-ipsHover class="i-color_inherit">
+										<span class="ipsWarningPoints">{$warning->points}</span>
+									</a>
+								</div>
+								<div class='ipsData__main'>
+									<h4 class='ipsData__title'>
+										<a href="{url="app=core&module=system&controller=warnings&do=view&id={$report->author}&w={$warning->id}" seoTemplate="warn_view" seoTitle="\IPS\Member::load( $report->author )->members_seo_name"}" data-ipsHover>{lang="core_warn_reason_{$warning->reason}"}</a>
+									</h4>
+									<p class='ipsData__meta'>{lang="byline_name_date" htmlsprintf="\IPS\Member::load( $warning->moderator )->name, \IPS\DateTime::ts( $warning->date )->html(TRUE)"}</p>
+								</div>
+							</li>
+						{{endforeach}}
+					</ol>
+				</i-data>
+				<div class='i-padding_1'>
+					<a href='{url="app=core&module=system&controller=warnings&id={$report->author}" seoTemplate="warn_list" seoTitle="\IPS\Member::load( $report->author )->members_seo_name"}' class='ipsButton ipsButton--inherit i-width_100p'><i class='fa-solid fa-bars' aria-hidden="true"></i><span>{lang="see_all_c"}</span></a>
+				</div>
+			</div>
+		</div>
+	</aside>
+{{endif}}

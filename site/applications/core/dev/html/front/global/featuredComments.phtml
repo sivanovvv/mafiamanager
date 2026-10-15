@@ -1,0 +1,17 @@
+<ips:template parameters="$comments, $url, $titleLang='recommended_replies', $commentLang='__defart_comment', $ipsBox=true" />
+
+<section data-controller='core.front.core.recommendedComments' data-url='{$url}' class='{{if $ipsBox}}ipsBox ipsBox--featuredComments{{endif}} ipsRecommendedComments {{if !\count( $comments )}}ipsHide{{endif}}'>
+	<div data-role="recommendedComments">
+		<header class='{{if $ipsBox}}ipsBox__header{{else}}ipsTitle ipsTitle--h5 i-padding_2 i-flex i-align-items_center i-justify-content_space-between{{endif}}'>
+			<h2>{lang="$titleLang"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'topic-featured-posts'"}
+		</header>
+		{{if \count( $comments )}}
+			<div class="ipsCarousel" id="topic-featured-posts" tabindex="0">
+				{{foreach $comments AS $id => $comment}}
+					{template="featuredComment" group="global" app="core" params="$comment, $id, $commentLang"}
+				{{endforeach}}
+			</div>
+		{{endif}}
+	</div>
+</section>

@@ -1,0 +1,29 @@
+<ips:template parameters="$users"/>
+<div class='ipsGrid i-basis_400'>
+	{{foreach $users as $user }}
+		<div class='ipsBox i-flex i-padding_2' data-role='validatingRow'>
+			<div class='ipsPhotoPanel ipsPhotoPanel_mini i-flex_11'>
+				{template="userPhoto" app="core" group="global" params="$user, 'mini'" }
+				<div>
+					<h4 class='ipsPhotoPanel__primary'>
+						<strong><a href='{$user->acpUrl()}' data-role='userName'>{$user->name}</a></strong>
+						<span class='i-color_soft i-font-weight_normal i-font-size_-1'>({$user->email})</span>
+					</h4>
+					<ul class='ipsPhotoPanel__secondary'>
+						<li><strong>{lang='ip_address'}</strong> {$user->ip_address}</li>
+						<li><strong>{lang='block_awaiting_registered'}</strong> {datetime="$user->joined"}</li>
+					</ul>
+				</div>
+			</div>
+			<ul class='ipsButtons'>
+				<li><a
+					href='{url="app=core&module=members&controller=privacy&do=approveDeletion&id={$user->_privacy_id}" csrf="true"}'
+					data-action='approve' class='ipsButton ipsButton--tiny ipsButton--positive' title='{lang='approve'}' data-ipsTooltip><i class='fa-solid fa-check' aria-hidden="true"></i></a></li>
+				<li><a
+					href='{url="app=core&module=members&controller=privacy&do=rejectDeletion&id={$user->_privacy_id}" csrf="true"}'
+					data-action='reject' class='ipsButton ipsButton--tiny ipsButton--negative' title='{lang='reject'}'
+					data-ipsTooltip><i class='fa-solid fa-xmark' aria-hidden="true"></i></a></li>
+			</ul>
+		</div>
+	{{endforeach}}
+</div>

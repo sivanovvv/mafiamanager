@@ -1,0 +1,11 @@
+<ips:template parameters="$element" />
+<div data-role="filterField" class='cRulesForm_conditionWrap' id="{$element->htmlId}_filter" hidden>
+	<div class="cRulesForm__condition cRulesForm__condition--subCondition ipsBox i-position_relative i-padding_3 i-margin-top_3">
+		<h2 class='cRulesForm__condition__title ipsRadius i-text-align_center i-font-size_1 i-font-weight_600 i-flex_00'>{lang="achievement_filter"}</h2>
+		<div class='i-flex i-align-items_center i-flex_11 i-gap_2'>
+			<div>{$element->prefix}</div>
+			<div>{$element->html()|raw}</div>
+			<button type="button" data-action="filterCollapse" data-filter="{$element->htmlId}_filterCheckbox" data-ipsTooltip title='{lang="remove_condition"}' class='cRulesForm__condition__close'><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,36 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch, $advancedSearch" />
+{{if \count($rows)}}
+	<i-data>
+		<ol class="ipsData ipsData--table ipsData--compact ipsData--report-list-dropdown">
+			{{foreach $rows as $row}}
+				<li class="ipsData__item" {{if $row->unread()}}data-ips-unread{{else}}data-ips-read{{endif}}>
+					<a href='{$row->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}{lang="content_deleted"}{{endif}}</span></a>
+					<div class='ipsData__icon'>
+						{{if $lastComment = $row->comments( 1, 0, 'date', 'desc' )}}
+							{template="userPhoto" app="core" group="global" params="$lastComment->author(), 'tiny'"}
+						{{else}}
+							{template="userPhoto" app="core" group="global" params="$row->author(), 'tiny'"}
+						{{endif}}
+					</div>
+					<div class="ipsData__main">
+						<h4 class='ipsData__title'><a href='{$row->url()}'>{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}</a></h4>
+						<ul class='ipsData__meta ipsList ipsList--sep'>
+							<li>{{if $row->last_updated}}{datetime="$row->last_updated"}{{else}}{datetime="$row->first_report_date"}{{endif}}</li>
+							{{foreach $row->stats() as $k => $v}}
+								<li>
+									<span>{number="$v"}</span>
+									<span>{lang="$k" pluralize="$v"}</span>
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+					<div class='i-align-self_center'>
+						<i class='{{if $row->status == 1}}fa-solid fa-flag i-color_negative{{elseif $row->status == 2}}fa-solid fa-triangle-exclamation i-color_warning{{else}}fa-solid fa-check-circle i-color_positive{{endif}}' data-role="ipsMenu_selectedIcon" title="{{if $row->status == 1}}{lang="report_status_1"}{{elseif $row->status == 2}}{lang="report_status_2"}{{else}}{lang="report_status_3"}{{endif}}" data-ipsTooltip aria-hidden="true"></i>
+					</div>
+				</li>
+			{{endforeach}}
+		</ol>
+	</i-data>
+{{else}}
+	<div class='ipsEmptyMessage'>{lang="no_results_reports"}</div>
+{{endif}}

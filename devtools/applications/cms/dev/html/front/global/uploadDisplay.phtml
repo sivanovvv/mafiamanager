@@ -1,0 +1,16 @@
+<ips:template parameters="$file, $record, $downloadUrl, $cipher, $thumbnail=null" />
+{{if $file->isImage()}}
+    {{if $thumbnail}}
+        <a href='{$file->url}' data-ipsLightbox>
+            <img src='{$thumbnail}' class='ipsImage'>
+        </a>
+    {{else}}
+	    <img src="{$file->url}" class="ipsImage" data-ipsLightbox>
+	{{endif}}
+{{else}}
+	{{if $record}}
+		<a href="{url="applications/cms/interface/file/file.php?record={$record->_id}&database={$record::$customDatabaseId}&fileKey={$cipher}&file=" base="none"}{expression="urlencode($file->originalFilename)"}">{$file->originalFilename}</a>
+	{{else}}
+		<a href="{$downloadUrl}">{$file->originalFilename}</a>
+	{{endif}}
+{{endif}}

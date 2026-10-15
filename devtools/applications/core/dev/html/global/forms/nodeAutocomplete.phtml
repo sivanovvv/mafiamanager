@@ -1,0 +1,7 @@
+<ips:template parameters="$v" />
+<ol class="ipsNodeSelect_breadcrumb">
+	{{foreach $v->parents() as $parent}}
+		<li><span class="i-color_soft">{$parent->_title} <i class="fa-solid fa-angle-right" aria-hidden="true"></i></span></li>
+	{{endforeach}}
+	<li>{$v->_title}</li>
+</ol>

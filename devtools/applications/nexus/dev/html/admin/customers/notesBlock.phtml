@@ -1,0 +1,21 @@
+<ips:template parameters="$customer, $noteCount, $notes" />
+{{if $noteCount}}
+	<div class='ipsBox cNotesBox' data-ips-template="notesBlock">
+		<h2 class='ipsBox__header'>
+			<span>{lang="customer_notes"} ({$noteCount})</span>
+			<a href='{url="app=core&module=members&controller=members&do=lazyBlock&block=IPS\\nexus\\extensions\\core\\MemberACPProfileBlocks\\Notes&id={$customer->member_id}"}' data-ipsDialog data-ipsDialog-title='{lang="customer_notes"}' class='i-margin-start_auto'>
+				{lang="manage_notes"}
+			</a>
+		</h2>
+		<div class='i-padding_3'>
+			{$notes|raw}
+		</div>
+	</div>
+{{else}}
+	<div class='i-padding_3 i-color_soft cCustomerNotes_none' data-ips-template="notesBlock">
+		<a href='{url="app=core&module=members&controller=members&do=lazyBlock&block=IPS\\nexus\\extensions\\core\\MemberACPProfileBlocks\\Notes&id={$customer->member_id}"}' data-ipsDialog data-ipsDialog-title='{lang="customer_notes"}' class='i-float_end i-font-size_1'>
+			{lang="manage_notes"}
+		</a>
+		{lang="customer_notes"} ({$noteCount})
+	</div>
+{{endif}}

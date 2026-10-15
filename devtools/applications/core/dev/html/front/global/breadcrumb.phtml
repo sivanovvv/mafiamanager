@@ -1,0 +1,35 @@
+<ips:template parameters="$position='top', $markRead=TRUE" />
+<nav class='ipsBreadcrumb ipsBreadcrumb--{$position} {{if $position === "mobile"}}ipsResponsive_header--mobile{{endif}}' aria-label="Breadcrumbs" {{if !\count( \IPS\Output::i()->breadcrumb ) and $position === "mobile"}}hidden{{endif}}>
+	<ol itemscope itemtype="https://schema.org/BreadcrumbList" class="ipsBreadcrumb__list">
+		<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+			<a title='{lang="home"}' href='{setting="base_url"}' itemprop="item">
+				<i class="fa-solid fa-house-chimney" aria-hidden="true"></i> <span itemprop="name">{lang="home"}</span>
+			</a>
+			<meta itemprop="position" content="1" />
+		</li>
+		{{$last = end(\IPS\Output::i()->breadcrumb);}}
+		{{$index = 2;}}
+		{{foreach \IPS\Output::i()->breadcrumb as $k => $b}}
+			{{if $b[0] === NULL}}
+				<li aria-current='location' itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+					<span itemprop="name">{$b[1]}</span>
+					<meta itemprop="position" content="{$index}" />
+				</li>
+			{{else}}
+				<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+					<a href='{$b[0]}' itemprop="item">
+						<span itemprop="name">{$b[1]} {{if $b != $last}}{{endif}}</span>
+					</a>
+					<meta itemprop="position" content="{$index}" />
+				</li>
+			{{endif}}
+			{{$index++;}}
+		{{endforeach}}
+	</ol>
+	<ul class="ipsBreadcrumb__feed" data-ips-hook="feed">
+		{{$defaultStream = \IPS\core\Stream::defaultStream();}}
+		<li {{if !\IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'discover' ) ) }} class='ipsHide'{{endif}}>
+			<a data-action="defaultStream" href='{{if $defaultStream}}{$defaultStream->url()}{{endif}}' {{if ! $defaultStream}}hidden{{endif}}><i class="fa-regular fa-file-lines" aria-hidden="true"></i> <span data-role="defaultStreamName">{{if $defaultStream}}{$defaultStream->_title}{{endif}}</span></a>
+		</li>
+	</ul>
+</nav>

@@ -1,0 +1,107 @@
+<ips:template parameters="$club, $members, $pagination, $sortBy, $filter, $clubStaff" />
+
+{{if \IPS\Settings::i()->clubs_header != 'sidebar'}}
+	{template="header" group="clubs" app="core" params="$club"}
+{{endif}}
+
+{{$memberStatus = $club->memberStatus( \IPS\Member::loggedIn(), 2 );}}
+{template="nonMemberClubStatus" group="clubs" app="core" params="$club, $memberStatus"}
+
+{{if $club->canInvite()}}
+	<ul class="ipsButtons ipsButtons--main i-margin-block_block">
+		<li>
+			<a class="ipsButton ipsButton--primary" href="{$club->url()->setQueryString( 'do', 'invite' )}" data-ipsDialog data-ipsDialog-title="{lang="club_invite_members"}" rel='nofollow noindex'>{lang="club_invite_members"}</a>
+		</li>
+	</ul>
+{{endif}}
+
+<div class='ipsBox ipsBox--clubLeaders i-margin-bottom_3'>
+	<h2 class='ipsBox__header'>{lang="club_leaders"}</h2>
+	{template="membersRows" group="clubs" params="$club, $clubStaff"}
+</div>
+
+
+<div class='ipsBox ipsBox--clubAllMembers'>
+	<h2 class='ipsBox__header'>{lang="club_all_members"}</h2>
+	<div data-baseurl='{$club->url()->setQueryString('do', 'members')}' data-controller='core.global.core.table'>
+		<div class="ipsButtonBar ipsButtonBar--top">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{$pagination|raw}
+			</div>
+			<div class='ipsButtonBar__end'>
+				<ul class='ipsDataFilters'>
+					<li>
+						<button type="button" id="elSortByMenu" popovertarget="elSortByMenu_menu" class='ipsDataFilters__button' data-role="sortButton">{lang="sort_by"} <i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						<i-dropdown popover id="elSortByMenu_menu" data-i-dropdown-selectable="radio">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									<li>
+										<a href="{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => $filter, 'sortby' => 'joined' ) )->setPage( 'page', 1 )}" {{if $sortBy == 'joined'}}aria-selected="true"{{endif}} data-ipsMenuValue="joined"><i class="iDropdown__input" aria-hidden="true"></i>{lang="newest"}</a>
+									</li>
+									<li>
+										<a href="{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => $filter, 'sortby' => 'name' ) )->setPage( 'page', 1 )}" {{if $sortBy == 'name'}}aria-selected="true"{{endif}} data-ipsMenuValue="name"><i class="iDropdown__input" aria-hidden="true"></i>{lang="username"}</a>
+									</li>
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+					<li>
+						<button type="button" id="elFilterByMenu" popovertarget="elFilterByMenu_menu" data-role="tableFilterMenu" class='ipsDataFilters__button'>{lang="filter_by"} <i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						<i-dropdown popover id="elFilterByMenu_menu" data-i-dropdown-selectable="radio">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									<li>
+										<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => NULL, 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='' {{if !$filter}}aria-selected="true"{{endif}}>
+											<i class="iDropdown__input" aria-hidden="true"></i>
+											{{if $club->isPaid() and $club->renewal_price}}
+												{lang="club_active_members"}
+											{{else}}
+												{lang="club_members"}
+											{{endif}}
+										</a>
+									</li>
+									{{if $club->isLeader() and $club->isPaid() and $club->renewal_price}}
+										<li>
+											<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => 'expired', 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='expired' {{if $filter == 'expired'}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="club_expired_members"}</a>
+										</li>
+									{{endif}}
+									<li>
+										<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => 'leader', 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='leader' {{if $filter == 'leader'}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="club_leaders_and_moderators"}</a>
+									</li>
+									{{if $club->isLeader()}}
+										{{if $club->type === $club::TYPE_CLOSED}}
+											<li>
+												<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => 'requested', 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='requested' {{if $filter == 'requested'}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="club_requests"}</a>
+											</li>
+											{{if $club->isPaid()}}
+												<li>
+													<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => 'payment_pending', 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='payment_pending' {{if $filter == 'payment_pending'}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="club_payment_pending"}</a>
+												</li>
+											{{endif}}
+										{{endif}}
+										<li>
+											<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => 'invited', 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='invited' {{if $filter == 'invited'}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="club_invitations"}</a>
+										</li>
+										<li>
+											<a href='{$club->url()->setQueryString( array( 'do' => 'members', 'filter' => 'banned', 'sortby' => $sortBy ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='banned' {{if $filter == 'banned'}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="club_banned"}</a>
+										</li>
+									{{endif}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div data-role='tableRows' {{if $club->isLeader()}}data-controller='core.front.clubs.requests'{{endif}}>
+			{template="membersRows" group="clubs" params="$club, $members"}
+		</div>
+		{{if trim( $pagination )}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination" data-role="tablePagination">
+					{$pagination|raw}
+				</div>
+			</div>
+		{{endif}}
+	</div>
+</div>

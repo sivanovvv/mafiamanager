@@ -1,0 +1,13 @@
+<ips:template parameters="$name, $value" />
+<ul class="i-grid i-gap_3">
+	<li>
+		<h4 class="i-color_hard i-font-weight_bold">{lang="oauth_auth_scope_name"}</h4>
+		<input type="text" name="{$name}[key]" value="{{if $value}}{$value['key']}{{endif}}" class="ipsInput ipsInput--text ipsInput--auto">
+	</li>
+	<li>
+		<h4 class="i-color_hard i-font-weight_bold">{lang="oauth_auth_scope_desc"}</h4>
+		<p class="i-margin-bottom_2">{lang="oauth_auth_scope_title"}</p>
+		<textarea name="{$name}[desc]" class="ipsInput ipsInput--text ipsInput--fullWidth" rows="5">{{if $value}}{$value['desc']}{{endif}}</textarea>
+		<p class="i-color_soft i-font-size_-1 i-margin-top_2">{lang="oauth_auth_scope_desc_desc"}</p>
+	</li>
+</ul>

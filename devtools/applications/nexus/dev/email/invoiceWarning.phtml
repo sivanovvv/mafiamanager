@@ -1,0 +1,128 @@
+<ips:template parameters="$cards, $credit, $billingAgreement, $invoice, $summary, $paymentDate, $email" />
+{$email->language->get('email_expire_warning')}
+<br><br>
+{{if $billingAgreement}}
+	{expression="sprintf( $email->language->get('email_expire_warning_billing_agreement'), $paymentDate )"}
+	<br><br>
+	<a href='{$billingAgreement->url()}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background: #417ba3; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("view_billing_agreement", FALSE)}</a>
+{{elseif \count( $cards ) and $credit and $credit->amount->isGreaterThanZero()}}
+	{expression="sprintf( $email->language->get('email_expire_warning_card_and_credit'), $credit->toString( $email->language ), $paymentDate )"}
+{{elseif \count( $cards )}}
+	{expression="sprintf( $email->language->get('email_expire_warning_card'), $paymentDate )"}
+{{else}}
+	{expression="sprintf( $email->language->get('email_expire_warning_credit'), $credit->toString( $email->language ), $paymentDate )"}
+{{endif}}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>
+<br><br>
+{{if \count( $cards )}}
+	<table cellpadding="10" cellspacing="0" border="0" width="100%" bgcolor='#f9f9f9'>
+		<tr>
+			<td dir='{dir}' colspan="4" style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_3">
+				<strong>{$email->language->get('email_card_on_file')}</strong>
+			</td>
+		</tr>
+		{{foreach $cards as $card}}
+			<tr>
+				<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+					<strong>{$email->language->get('card_type')}</strong>
+				</td>
+				<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='left'>
+					{{if $card->card->type}}{$email->language->get('card_type_' . $card->card->type)}{{else}}{$email->language->get('card_type_generic')}{{endif}}
+					{{if isset( $card->card->lastFour )}}
+						{expression="sprintf( $email->language->get('email_ending_in'), $card->card->lastFour )"}
+					{{endif}}
+				</td>
+				{{if !\is_null( $card->card->number )}}
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+						<strong>{$email->language->get('email_paymethod_account')}</strong>
+					</td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='left'>
+						{$card->card->number}
+					</td>
+				{{endif}}
+				{{if !\is_null( $card->card->expMonth ) AND !\is_null( $card->card->expYear )}}
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+						<strong>{$email->language->get('card_expires')}</strong>
+					</td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='left'>
+						{$card->card->expMonth}/{$card->card->expYear}
+					</td>
+				{{endif}}
+			</tr>
+		{{endforeach}}
+		<tr  bgcolor="#f0f0f0" class="background_3">
+			<td dir='{dir}' width='100' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+				&nbsp;
+			</td>
+			<td dir='{dir}' colspan="3" style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='left'>
+				<a href='{url="app=nexus&module=clients&controller=cards" seoTemplate="clientscards" base="front"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->get('email_update_payment')}</a>
+			</td>
+		</tr>
+	</table>
+	<br><br>
+{{endif}}
+
+<table cellpadding="10" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td dir='{dir}' colspan="5" style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_3">
+			<strong>{$email->language->get("email_expiring_soon")}</strong>
+		</td>
+	</tr>
+	<tr bgcolor="#f9f9f9" class="background_2 color_hard">
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+			&nbsp;
+		</td>
+		<td dir='{dir}'>&nbsp;</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 13px; line-height: 21px" colspan="2">
+			<strong>{$email->language->addToStack('invoice_item', FALSE)}</strong>
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 13px; line-height: 21px" align='right'>
+			<strong>{$email->language->get('email_renewal_cost')}</strong>
+		</td>
+	</tr>
+	{{foreach $summary['items'] as $k => $item}}
+		<tr style='border-top: 1px solid #f5f5f5' class="border-top">
+			<td dir='{dir}' width='100' valign='top' class='hidePhone' style='width: 0; max-height: 0; overflow: hidden; float: left;'>
+				{{if $image = $item->image()}}
+					<img src='{$image->url}' width='100' style='border: 0; vertical-align: middle;'>
+				{{endif}}
+			</td>
+			<td dir='{dir}' width='30' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px;" align='right' valign='top'> 
+				<span style="color: #4b4b4b" class="color_soft">{$item->quantity} x</span>
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+				{$item->name}
+				{{if $item instanceof \IPS\nexus\Invoice\Item\Renewal}}
+					<br>
+					<span style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 13px;">
+						{$email->language->addToStack('ps_expire', FALSE)}: {expression="\IPS\nexus\Purchase::load( $item->id )->expire->localeDate( $invoice->member )"}
+					</span>
+				{{endif}}
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+				{{if \count( $item->details )}}
+					{{foreach $item->details as $k => $v}}
+						{lang="nexus_pfield_{$k}"}: {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}<br>
+					{{endforeach}}
+				{{endif}}
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+				{{if $item->tax AND \IPS\Settings::i()->nexus_show_tax}}
+					<strong>{$item->grossLinePrice()->toString( $email->language)}</strong> {{if $email->language->checkKeyExists('nexus_tax_explain_val')}}<span style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 12px; color: #bdbdbd; line-height: 18px;">{$email->language->get('nexus_tax_explain_val')}</span>{{endif}}
+				{{else}}
+					<strong>{$item->linePrice()->toString( $email->language )}</strong>
+				{{endif}}
+			</td>
+		</tr>
+	{{endforeach}}
+</table>
+{{foreach $summary['items'] as $k => $item}}
+	{{if $item instanceof \IPS\nexus\Invoice\Item\Renewal}}
+		{{if \IPS\nexus\Purchase::load( $item->id )->canCancel( $invoice->member )}}
+			<br><br>
+			<a href='{url="app=nexus&module=clients&controller=invoices" seoTemplate="clientsinvoices" base="front"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->get('email_expire_warning_can_cancel')}</a>
+			{{break;}}
+		{{endif}}
+	{{endif}}
+{{endforeach}}

@@ -1,0 +1,9 @@
+<ips:template parameters="$start, $end, $unlimited=NULL, $unlimitedLang=NULL, $unlimitedName=NULL, $unlimitedChecked=FALSE, $toggles=array(), $toggleOn=TRUE" />
+{lang="between"} {$start|raw} {lang="and"} {$end|raw}
+{{if $unlimited !== NULL}}
+	&nbsp;
+	{lang="or"}
+	&nbsp;
+	<input type="checkbox" data-control="unlimited{{if \count( $toggles )}} toggle{{endif}}" name="{$unlimitedName}" id='{$unlimitedName}' value="{$unlimited}" {{if $unlimitedChecked}}checked{{endif}} {{if \count( $toggles )}}{{if $toggleOn === FALSE}}data-togglesOff{{else}}data-togglesOn{{endif}}="{expression="implode( ',', $toggles )"}"{{endif}} aria-labelledby='label_{$unlimitedName}' class="ipsInput ipsInput--toggle">
+	<label for='{$unlimitedName}' id='label_{$unlimitedName}' class='ipsField_unlimited'>{lang="$unlimitedLang"}</label>
+{{endif}}

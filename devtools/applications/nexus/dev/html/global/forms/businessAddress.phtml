@@ -1,0 +1,51 @@
+<ips:template parameters="$name, $value, $googleApiKey, $minimize=FALSE, $requireFullAddress=TRUE, $htmlId=NULL, $vat=FALSE" />
+<ul class="ipsFieldList" data-ipsAddressForm {{if $googleApiKey}}data-ipsAddressForm-googlePlaces data-ipsAddressForm-googleApiKey="{$googleApiKey}"{{endif}} data-ipsAddressForm-requireFullAddress="{{if $requireFullAddress}}true{{else}}false{{endif}}" {{if $minimize}}data-ipsAddressForm-minimize{{endif}}{{if $value->country AND !$value->city AND !$value->region AND !$value->postalCode}} data-ipsAddressForm-country="{$value->country}"{{endif}} data-controller="nexus.global.forms.businessAddressVat">
+	<li>
+		<ul class="ipsFieldList" role="radiogroup" id="elRadio_{$name}_{$htmlId}_type">
+			<li>
+				<input type="radio" name="{$name}[type]" value="consumer" data-role="addressTypeRadio" {{if !isset( $value->business )}}checked{{endif}} id="elRadio_{$name}_type_consumer_{$htmlId}" class="ipsInput ipsInput--toggle">
+				<div class='ipsFieldList__content'>
+					<label for='elRadio_{$name}_type_consumer_{$htmlId}' id='elField_{$name}_type_label'>{lang="cm_address_consumer"}</label>
+				</div>
+			</li>
+			<li>
+				<input type="radio" name="{$name}[type]" value="business" data-role="addressTypeRadio" {{if isset( $value->business )}}checked{{endif}} id="elRadio_{$name}_type_business_{$htmlId}" data-control="toggle" data-toggles="{$htmlId}_businessName" class="ipsInput ipsInput--toggle">
+				<div class='ipsFieldList__content'>
+					<label for='elRadio_{$name}_type_business_{$htmlId}' id='elField_{$name}_type_label'>{lang="cm_address_business"}</label>
+				</div>
+			</li>
+		</ul>
+	</li>	
+	<li>
+		<select class="ipsInput ipsInput--select" name="{$name}[country]" data-role="countrySelect" data-sort>
+			<option value='' {{if !$value->country OR (!$value->city AND !$value->region AND !$value->postalCode)}}selected{{endif}}>{lang="country"}</option>
+			{{foreach \IPS\GeoLocation::$countries as $k}}
+				<option value="{$k}" {{if $k == $value->country AND ( ( $value->city AND ( $value->postalCode OR $value->region ) ) OR !$minimize )}}selected{{endif}}>
+					{lang="country-{$k}"}
+				</option>
+			{{endforeach}}
+		</select>
+	</li>
+	<li id="{$htmlId}_businessName">
+		<input type="text" class="ipsInput ipsInput--text" name="{$name}[business]" placeholder="{lang="cm_business_name"}" value="{{if isset( $value->business )}}{$value->business}{{endif}}" data-role="business" autocomplete="organization">
+	</li>
+	{{foreach $value->addressLines as $i => $line}}
+		<li>
+			<input type="text" class="ipsInput ipsInput--text" name="{$name}[address][]" placeholder="{lang="address_line"}" value="{$line}" data-role="addressLine">
+		</li>
+	{{endforeach}}
+	<li>
+		<input type="text" class="ipsInput ipsInput--text" name="{$name}[city]" placeholder="{lang="city"}" value="{$value->city}" data-role="city" autocomplete="address-level2">
+	</li>
+	<li>
+		<input type="text" class="ipsInput ipsInput--text" name="{$name}[region]" placeholder="{lang="region"}" value="{$value->region}" data-role="regionText" autocomplete="address-level1">
+	</li>
+	<li>
+		<input type="text" class="ipsInput ipsInput--text" name="{$name}[postalCode]" placeholder="{lang="zip"}" value="{$value->postalCode}" data-role="postalCode" autocomplete="postal-code">
+	</li>
+	{{if $vat}}
+		<li data-role="vatField" id="{$htmlId}_vat">
+			<input type="text" name="{$name}[vat]" placeholder="{lang="cm_checkout_vat_number"}" value="{{if isset( $value->vat ) and $value->vat}}{$value->vat}{{endif}}" data-role="vat" class="ipsInput ipsInput--text ipsFieldRow_errorExclude">
+		</li>
+	{{endif}}
+</ul>

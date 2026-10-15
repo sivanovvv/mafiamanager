@@ -1,0 +1,9 @@
+{
+  "require": {
+    "overtrue/phplint": "^9.6",
+    "spatie/x-ray": "^1.1",
+    "ext-redis": "*",
+    "php": ">=8.1.0",
+    "spatie/ray": "^1.41"
+  }
+}

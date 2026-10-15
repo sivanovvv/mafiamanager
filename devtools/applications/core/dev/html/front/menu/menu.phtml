@@ -1,0 +1,14 @@
+<ips:template parameters="$menu"/>
+{{if $menu->hasContent()}}
+    {{if count( $menu->elements ) == 1 and $menu->shrinkToButton and $element = reset($menu->elements) }}
+           <a data-id="{$element->id}" href="{$element->url}" class="ipsButton ipsButton--text"
+           			{{foreach $element->dataAttributes as $attributeKey => $attributeValue}}
+           				{$attributeKey}="{$attributeValue}"
+           			{{endforeach}}>
+           		{{if $element->icon}}<i class="{$element->icon}" aria-hidden="true"></i>{{endif}} <span>{lang="$element->title"}</span> {{if $element->notificationIcon}}<span class='ipsNotification'><i class="{$element->notificationIcon}" aria-hidden="true"></i></span>{{endif}}
+           	</a>
+    {{else}}
+        {template="link" group="menu" app="core" params="$menu" location="front"}
+        {template="content" group="menu" app="core" params="$menu" location="front"}
+    {{endif}}
+{{endif}}

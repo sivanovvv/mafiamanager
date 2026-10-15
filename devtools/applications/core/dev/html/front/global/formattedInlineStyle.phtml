@@ -1,0 +1,7 @@
+<ips:template parameters="$item" />
+{{if \is_array($item)}}
+	{{if $item['feature_color']}}style="--i-featured: {$item['feature_color']}; --i-featured-text: {$item['text_color']};"{{endif}}
+{{else}}
+	{{$column = $item::$featureColumnName;}}
+	{{if $item->$column}}style="--i-featured: {$item->$column}; --i-featured-text: {$item->_featureTextColor};"{{endif}}
+{{endif}}

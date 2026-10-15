@@ -1,0 +1,74 @@
+<ips:template parameters="$rows" />
+<div id='acpEnhancements'>
+	<h2 class='ipsTitle ipsTitle--h3'>{lang="enhancements_ips"}</h2>
+	<br>
+
+	<ul class='ipsGrid i-basis_320 i-margin-bottom_4'>
+		{{foreach $rows[1] as $key => $data}}
+			<li id="enhancement-box_{$key}" class='ipsBox acpEnhancement {{if $data['enabled'] == 1}}acpEnhancement_enabled{{endif}}'>
+				<div class='acpEnhancement__title'>
+					<h3>{lang="$data['title']"}</h3>
+					{{if $data['enabled'] == 1}}
+						<span class='ipsBadge ipsBadge--icon ipsBadge--positive' data-ipsTooltip title='{lang="enabled"}'><i class='fa-solid fa-check' aria-hidden="true"></i></span>
+					{{endif}}
+					{{if $data['icon'] != ""}}<img src='{resource="enhancements/{$data['icon']}" app="core" location="admin"}' class='acpEnhancement_logo' alt="" loading="lazy">{{endif}}
+				</div>
+				{{if $data['description']}}
+					<div class='ipsRichText'>
+						<p>{lang="$data['description']"}</p>
+					</div>
+				{{endif}}
+				<ul class='acpEnhancement_buttons ipsButtons ipsButtons--fill'>
+					<li>
+						{{if $data['enabled'] == 1}}
+							<a href='{url="app=core&module=applications&controller=enhancements&do=enableToggle&id={$key}&status=0" csrf="true"}' class='ipsButton ipsButton--inherit' data-keyAction='t'>{lang="disable"}</a>
+						{{else}}
+							<a href='{url="app=core&module=applications&controller=enhancements&do=enableToggle&id={$key}&status=1" csrf="true"}' class='ipsButton ipsButton--primary' data-keyAction='t'>{lang="enable"}</a>
+						{{endif}}
+					</li>
+					{{if $data['config'] && $data['enabled'] == 1}}
+						<li>
+							<a href='{url="app=core&module=applications&controller=enhancements&do=edit&id={$key}&_new=1"}' class='ipsButton ipsButton--inherit'>{lang="enhancements_configure"}</a>
+						</li>
+					{{endif}}
+				</ul>
+			</li>
+		{{endforeach}}
+	</ul>
+
+	<h2 class='ipsTitle ipsTitle--h3'>{lang="enhancements_thirdparty"}</h2>
+	<br>
+
+	<ul class='ipsGrid i-basis_320'>
+		{{foreach $rows[0] as $key => $data}}
+			<li id="enhancement-box_{$key}" class='ipsBox acpEnhancement {{if $data['enabled'] == 1}}acpEnhancement_enabled{{endif}}'>
+				<div class='acpEnhancement__title'>
+					<h3>{lang="$data['title']"}</h3>
+					{{if $data['enabled'] == 1}}
+						<span class='ipsBadge ipsBadge--icon ipsBadge--positive' data-ipsTooltip title='{lang="enabled"}'><i class='fa-solid fa-check' aria-hidden="true"></i></span>
+					{{endif}}
+					{{if $data['icon'] }}<img src='{resource="enhancements/{$data['icon']}" app="{$data['app']}" location="admin"}' class='acpEnhancement_logo' alt="" loading="lazy">{{endif}}
+				</div>
+				{{if $data['description']}}
+					<div class='ipsRichText'>
+						<p>{lang="$data['description']"}</p>
+					</div>
+				{{endif}}
+				<ul class='acpEnhancement_buttons ipsButtons ipsButtons--fill'>
+					<li>
+						{{if $data['enabled'] == 1}}
+							<a href='{url="app=core&module=applications&controller=enhancements&do=enableToggle&id={$key}&status=0" csrf="true"}' class='ipsButton ipsButton--inherit'>{lang="disable"}</a>
+						{{else}}
+							<a href='{url="app=core&module=applications&controller=enhancements&do=enableToggle&id={$key}&status=1" csrf="true"}' class='ipsButton ipsButton--primary'>{lang="enable"}</a>
+						{{endif}}
+					</li>
+					{{if $data['config'] && $data['enabled'] == 1}}
+						<li>
+							<a href='{url="app=core&module=applications&controller=enhancements&do=edit&id={$key}&_new=1"}' class='ipsButton ipsButton--inherit'>{lang="enhancements_configure"}</a>
+						</li>
+					{{endif}}
+				</ul>
+			</li>
+		{{endforeach}}
+	</ul>
+</div>

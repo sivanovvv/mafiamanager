@@ -1,0 +1,21 @@
+<ips:template parameters="$field" />
+
+<div class='cNexusStack cNexusStack_usergroup'>
+	<ol>
+		<li data-step='{lang="discount_if"}'>
+			<strong class='i-font-size_1'>{lang="discount_customer_in_group"}</strong><br>
+			<select name="{$field->name}[group]" class='ipsInput ipsInput--select ipsInput--fullWidth'><option value="0"></option>{{foreach \IPS\Member\Group::groups() as $group}}<option value="{$group->g_id}" {{if \is_array( $field->value ) and $field->value['group'] == $group->g_id}}selected{{endif}}>{$group->name}</option>{{endforeach}}</select><br>
+			<input type="checkbox" name="{$field->name}[secondary]" {{if \is_array( $field->value ) and isset( $field->value['secondary'] ) and $field->value['secondary']}}checked{{endif}}> {lang="discount_check_secondary"}
+		</li>
+		<li data-step='{lang="discount_then"}'>
+			<strong class='i-font-size_1'>{lang="discount_price_becomes"}</strong><br>
+			<ul>
+				{{foreach \IPS\nexus\Money::currencies() as $currency}}
+					<li>
+						<input type="number" class="ipsInput ipsField_short ipsField_stackItemNoMargin" name="{$field->name}[price][{$currency}]" {{if \is_array( $field->value )}}value="{$field->value['price'][$currency]}"{{endif}} step="0.01"> {$currency}
+					</li>
+				{{endforeach}}
+			</ul>
+		</li>
+	</ol>
+</div>

@@ -1,0 +1,5 @@
+<ips:template parameters="$file, $table" />
+{{if $file->container()->log}}
+	<div class='{{if \IPS\Request::i()->isAjax() }}i-padding_2{{else}}i-margin-bottom_2{{endif}}'><div class='ipsMessage ipsMessage--info'>{lang="log_days" pluralize="$file->container()->log"}</div></div>
+{{endif}}
+{$table|raw}

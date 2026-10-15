@@ -1,0 +1,13 @@
+<ips:template parameters="$name, $value" />
+<div class="cRulesForm__assign-rewards">
+	<input type="number" name="{$name}[points]" value="{{if isset( $value['points'] )}}{$value['points']}{{else}}0{{endif}}" class="ipsInput ipsField_short" min="0">
+	{lang="achievements_points_awarded"}
+	{lang="and"}
+	<select class="ipsInput ipsInput--select" name="{$name}[badge]">
+		<option value="" data-control="toggle" data-togglesoff="{$name}_badge">{lang="achievements_badge_none"}</option>
+		{{foreach \IPS\core\Achievements\Badge::roots() as $badge}}
+			<option value="{$badge->id}" {{if isset( $value['badge'] ) and $value['badge'] == $badge->id}}selected{{endif}}>{$badge->_title}</option>
+		{{endforeach}}
+	</select>
+	{lang="achievements_badge"}
+</div>

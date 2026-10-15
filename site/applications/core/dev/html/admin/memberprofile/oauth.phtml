@@ -1,0 +1,39 @@
+<ips:template parameters="$member, $apps, $onlyApp=NULL" />
+<div class='acpMemberView_2fa ipsBox' data-ips-template="oauth">
+	<h2 class='ipsBox__header'>
+		<i class="fa-solid fa-arrow-right-arrow-left ipsBox__header-icon" aria-hidden="true"></i>
+		{{if $onlyApp}}
+			{$onlyApp->_title}
+		{{else}}
+			{lang="oauth_member_authorized_apps"}
+		{{endif}}
+		<a href="{url="app=core&module=applications&controller=api&do=tokens&member_id={$member->member_id}"}" class="ipsBox__header-secondary">{lang="oauth_view_details"}</a>
+	</h2>
+	{{if \count( $apps )}}
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--oauth">
+				{{foreach $apps as $app}}
+					<li class='ipsData__item'>
+						<div class='ipsData__main'>
+									{{if $app['data']['status'] == 'active'}}
+							<ul class="ipsControlStrip">
+								<li class="ipsControlStrip_button">
+									<a href="{url="app=core&module=applications&controller=oauth&do=revokeToken&client_id={$app['data']['client_id']}&member_id={$app['data']['member_id']}&token={$app['data']['access_token']}&r=p" csrf="true"}" data-confirm data-confirmMessage="{lang="oauth_app_revoke_title"}" data-ipsTooltip title="{lang="oauth_app_revoke"}"><i class="ipsControlStrip_icon fa-solid fa-xmark-circle" aria-hidden="true"></i></a>
+								</li>
+							</ul>
+									{{endif}}
+							<div>
+								{$app['title']|raw}
+								<div class='i-font-size_1 i-color_soft'>
+									{template="oauthStatus" group="api" params="$app['data'], $app['use_refresh_tokens']"}
+								</div>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	{{else}}
+		<div class="i-padding_3 i-color_soft">{lang="no_oauth_apps"}</div>
+	{{endif}}
+</div>

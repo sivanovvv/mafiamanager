@@ -1,0 +1,42 @@
+<ips:template parameters="$showSubmitButton, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+<div class="ipsBox ipsBox--commerceAddPaymentMethodForm">
+	<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--add-payment" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			{{if \is_array($v)}}
+				{{foreach $v as $_k => $_v}}
+					<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+				{{endforeach}}
+			{{else}}
+				<input type="hidden" name="{$k}" value="{$v}">
+			{{endif}}
+		{{endforeach}}
+		{{if $uploadField}}
+			<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+			<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+		{{endif}}
+		
+		<div class="i-padding_3">
+			{{if $form->error}}
+				<div class="ipsMessage ipsMessage--error">
+					{$form->error}
+				</div>
+			{{endif}}
+		
+			{{foreach $elements as $collection}}
+				<ul class='ipsForm {$class} ipsForm--add-payment'>
+					{{foreach $collection as $inputName => $input}}
+						{$input->rowHtml()|raw}
+					{{endforeach}}
+				</ul>
+			{{endforeach}}
+		</div>
+		
+		{{if $showSubmitButton}}
+			<div class='i-background_2 i-padding_3 i-text-align_center' id="paymentMethodSubmit">
+				<button type='submit' class='ipsButton ipsButton--primary'>{lang="save"}</button>
+			</div>
+		{{endif}}
+	</form>
+</div>

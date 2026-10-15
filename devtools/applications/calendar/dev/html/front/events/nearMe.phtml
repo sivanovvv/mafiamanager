@@ -1,0 +1,16 @@
+<ips:template parameters="$nearme, $mapMarkers" />
+<section class='ipsBox ipsBox--calendarNearMe' data-controller='calendar.front.overview.nearMe' {{if settings.googlemaps AND !settings.mapbox}}data-nearme-use-google data-googlemaps-api-key='{setting="google_maps_api_key"}'{{endif}}>
+	<header class='ipsBox__header'>
+		<h2>{lang="events_happening_near_you"}</h2>
+		<label class='ipsBox__header-secondary i-flex i-gap_2 i-align-items_center i-cursor_pointer'>
+			<input type='checkbox' id='useCurrentLocation' class="ipsInput ipsInput--toggle">
+			{lang="events_search_use_location"}
+		</label>
+	</header>
+	<div class='ipsBox__content'>
+		<p class='i-padding_3 i-color_soft'>{lang="showing_events_near_you"} <a href='{url="app=calendar&do=search&form_submitted=1&lat=0&lon=0"}' data-role='nearMeLink' data-action='moreNearMe' class="i-font-weight_500 i-text-decoration_underline">{lang="see_more_events_near_you"} <i class='fa-solid fa-angle-right' aria-hidden="true"></i></a></p>
+		<div class='ipsJS_hide' data-role='locationEvents'>
+			{template="nearMeContent" group="events" app="calendar" params="$nearme, $mapMarkers"}
+		</div>
+	</div>
+</section>

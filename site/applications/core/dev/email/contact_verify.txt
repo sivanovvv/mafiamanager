@@ -1,0 +1,5 @@
+<ips:template parameters="$address, $key, $email" />
+
+{$email->language->addToStack("email_contact_verify", FALSE)}
+
+{url="app=core&module=contact&controller=contact&do=confirm&key={$key}&email={$address}" base="front" seoTemplate="contact"}

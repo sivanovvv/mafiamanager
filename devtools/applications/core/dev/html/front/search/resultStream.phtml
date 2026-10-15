@@ -1,0 +1,60 @@
+<ips:template parameters="$results, $pagination, $baseUrl, $hideSort=FALSE, $count = 0" />
+
+<div class='ipsBox ipsBox--searchResultStream ipsPull'>
+	<h2 class='ipsBox__header'>{lang="search_found" pluralize="$count"}</h2>
+	{{if $pagination OR !$hideSort}}
+		<div class='ipsButtonBar ipsButtonBar--top' data-ips-hook='buttonBar'>
+			{{if $pagination}}
+				<div class='ipsButtonBar__pagination'>{$pagination|raw}</div>
+			{{endif}}
+			{{if !$hideSort}}
+				<div class='ipsButtonBar__end'>
+					<ul class="ipsDataFilters">
+						<li>
+						{{if \IPS\Request::i()->type == 'core_members' or \IPS\Content\Search\Query::init()->canUseRelevancy()}}
+							<button type="button" id="elSortByMenu_search_results" popovertarget="elSortByMenu_search_results_menu" class='ipsDataFilters__button' data-role="sortButton"><span>{lang="sort_by"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						{{endif}}
+							<i-dropdown popover id="elSortByMenu_search_results_menu" data-i-dropdown-selectable="radio">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">
+										{{if !isset( \IPS\Request::i()->type ) OR \IPS\Request::i()->type != 'core_members'}}
+											{{if \IPS\Content\Search\Query::init()->canUseRelevancy()}}
+												<li><a href="{$baseUrl->setQueryString( array( 'sortby' => 'newest' ) )->setPage( 'page', 1 )}" {{if \IPS\Request::i()->sortby == 'newest'}}aria-selected="true"{{endif}} data-sortDirection='desc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="date"}</a></li>
+												<li><a href="{$baseUrl->setQueryString( array( 'sortby' => 'relevancy' ) )->setPage( 'page', 1 )}" {{if \IPS\Request::i()->sortby == 'relevancy'}}aria-selected="true"{{endif}} data-sortDirection='desc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="sort_relevancy"}</a></li>
+											{{endif}}
+										{{else}}
+											<li><a href="{$baseUrl->setQueryString( array( 'sortby' => 'joined', 'sortdirection' => 'desc' ) )->setPage( 'page', 1 )}" {{if \IPS\Request::i()->sortby == 'joined'}}aria-selected="true"{{endif}} data-sortDirection='desc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="sort_joined"}</a></li>
+											<li><a href="{$baseUrl->setQueryString( array( 'sortby' => 'name', 'sortdirection' => 'asc' ) )->setPage( 'page', 1 )}" {{if \IPS\Request::i()->sortby == 'name' || !isset( \IPS\Request::i()->sortby )}}aria-selected="true"{{endif}} data-sortDirection='asc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="sort_mname"}</a></li>
+											<li><a href="{$baseUrl->setQueryString( array( 'sortby' => 'member_posts', 'sortdirection' => 'desc' ) )->setPage( 'page', 1 )}" {{if \IPS\Request::i()->sortby == 'member_posts'}}aria-selected="true"{{endif}} data-sortDirection='desc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="sort_posts"}</a></li>
+											<li><a href="{$baseUrl->setQueryString( array( 'sortby' => 'pp_reputation_points', 'sortdirection' => 'desc' ) )->setPage( 'page', 1 )}" {{if \IPS\Request::i()->sortby == 'pp_reputation_points'}}aria-selected="true"{{endif}} data-sortDirection='desc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="sort_reputation"}</a></li>
+										{{endif}}
+									</ul>
+								</div>
+							</i-dropdown>
+						</li>
+					</ul>
+				</div>
+			{{endif}}
+		</div>
+	{{endif}}
+	{{if \count( $results ) }}
+		<ol class="ipsStream {{if request.type == 'core_members'}}cStream_members ipsGrid ipsGrid--search-result-stream i-basis_260{{endif}}" data-role='resultsContents'>
+			{{foreach $results as $result}}
+				{{if request.type == 'core_members'}}
+					{$result->searchResultHtml()|raw}
+				{{elseif $result !== NULL}}
+					{$result->html()|raw}
+				{{endif}}
+			{{endforeach}}
+		</ol>
+	{{else}}
+		<div class='ipsBox__padding i-text-align_center i-font-size_-2 i-color_soft' data-role='resultsContents'>
+			<p>{lang="no_search_results"}</p>
+		</div>
+	{{endif}}
+	{{if $pagination}}
+		<div class='ipsButtonBar ipsButtonBar--bottom'>
+			<div class='ipsButtonBar__pagination'>{$pagination|raw}</div>
+		</div>
+	{{endif}}
+</div>

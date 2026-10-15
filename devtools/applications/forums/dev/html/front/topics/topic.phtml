@@ -1,0 +1,390 @@
+<ips:template parameters="$topic, $comments, $nextUnread=NULL, $pagination=NULL, $firstPost=null, $viewerIsFollowingTheseExperts=array()" />
+{{$Traditional = \IPS\Member::loggedIn()->getLayoutValue( 'forums_post' ) !== 'modern';}}
+{{$featureFirstPost = \IPS\Member::loggedIn()->getLayoutValue( 'forum_topic_view_firstpost' );}}
+{{if $club = $topic->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $topic->container()"}
+	{{endif}}
+	<div id='elClubContainer' class='i-display_contents'>
+{{endif}}
+
+<!-- Start #ipsTopicView -->
+<div class='ipsBlockSpacer' id="ipsTopicView" data-ips-topic-ui="{{if \IPS\Member::loggedIn()->getLayoutValue( 'forums_post' ) === 'modern'}}minimal{{else}}traditional{{endif}}" data-ips-topic-first-page="{{if $topic->isFirstPage()}}true{{else}}false{{endif}}" data-ips-topic-comments="{{if request.show == 'helpful'}}helpful{{else}}all{{endif}}">
+
+{template="assignmentHeader" app="core" group="global" params="$topic"}
+{template="contentItemMessages" group="global" app="core" params="$topic->getMessages(), $topic"}
+{template="contentHiddenMessage" group="global" app="core" params="$topic"}
+
+<div class="ipsBox ipsBox--topicHeader ipsPull">
+	<header class="ipsPageHeader">
+		<div class="ipsPageHeader__row">
+			<div data-ips-hook="header" class='ipsPageHeader__primary'>
+				<div class='ipsPageHeader__title'>
+					{{if $topic->canEdit()}}
+						<h1 data-ips-hook="titleEditable" data-controller="core.front.core.moderation">
+							<span data-role="editableTitle" title='{lang="click_hold_edit"}'>{$topic->title}</span>
+						</h1>
+					{{else}}
+						<h1 data-ips-hook="title">{$topic->title}</h1>
+					{{endif}}
+					<div data-ips-hook="badges" class='ipsBadges'>
+						{{foreach $topic->badges() as $badge}}{$badge|raw}{{endforeach}}
+					</div>
+				</div>
+				{{if \count( $topic->tags() ) OR $topic->prefix() OR ( $topic->canEdit() AND $topic::canTag( NULL, $topic->container() ) )}}
+					{template="tagsWithPrefix" group="global" app="core" params="$topic->tags(), $topic->prefix(), FALSE, FALSE, ( $topic->canEdit() and $topic::canTag( NULL, $topic->container() ) ) ? $topic->url() : NULL"}
+				{{endif}}
+				{{if $featureFirstPost and \IPS\Platform\Bridge::i()->featureIsEnabled( 'live_full' )}}
+					<!-- Who's viewing, for featured post header -->
+					<div data-controller='cloud.front.realtime.whosViewing' data-location='{expression="\IPS\cloud\Realtime::i()->getLocationHash()"}'></div>
+				{{endif}}
+			</div>
+			{{if !$topic->isArchived() and !$topic->container()->password}}
+				<ul data-ips-hook="topicHeaderButtons" class='ipsButtons'>
+					{{if !$topic->container()->disable_sharelinks}}
+						<li>{template="shareButton" app="core" group="sharelinks" params="$topic"}</li>
+					{{endif}}
+					{{if \IPS\Application::appIsEnabled('cloud')}}
+						<li>{template="spam" app="cloud" group="spam" params="$topic"}</li>
+					{{endif}}
+					<li>{template="follow" app="core" group="global" params="'forums', 'topic', $topic->tid, $topic->followersCount()"}</li>
+				</ul>
+			{{endif}}
+		</div>
+		{$topic->postSummaryBlurb|raw}
+		{{if ! $featureFirstPost}}
+			<!-- PageHeader footer is only shown in traditional view -->
+			<div class="ipsPageHeader__row ipsPageHeader__row--footer">
+				<div class='ipsPageHeader__primary'>
+					<div class='ipsPhotoPanel ipsPhotoPanel--inline'>
+						{template="userPhoto" group="global" app="core" params="$topic->author(), 'fluid', $topic->warningRef()"}
+						<div data-ips-hook="topicHeaderMetaData" class='ipsPhotoPanel__text'>
+							<div class="ipsPhotoPanel__primary">{lang="byline_nodate" htmlsprintf="$topic->author()->link( $topic->warningRef(), NULL, $topic->isAnonymous() )"}</div>
+							<div class="ipsPhotoPanel__secondary">{datetime="$topic->start_date"} {lang="in"} <a href="{$topic->container()->url()}" class="i-font-weight_600">{$topic->container()->_formattedTitle|raw}</a></div>
+						</div>
+					</div>
+				</div>
+				{{if \IPS\Platform\Bridge::i()->featureIsEnabled( 'live_full' )}}
+					<div data-controller='cloud.front.realtime.whosViewing' data-location='{expression="\IPS\cloud\Realtime::i()->getLocationHash()"}'></div>
+				{{endif}}
+			</div>
+		{{endif}}
+	</header>
+
+	{{if $featureFirstPost and $firstPost}}
+
+		<!-- First post of modern view -->
+		{template="postContainer" group="topics" app="forums" params="$topic, $firstPost, 'ipsEntry--first-simple', $viewerIsFollowingTheseExperts"}
+
+	{{endif}}
+
+</div>
+
+<!-- Large topic warnings -->
+{{if $topic->canLock() and $postsToClose = $topic->postsToClose()}}
+    <div class='ipsMessage ipsMessage--warning'>
+        {{if $postsToClose > 0}}
+            {lang="large_topic_warning_message" pluralize="$postsToClose"}
+        {{else}}
+            {lang="large_topic_closing_message"}
+        {{endif}}
+    </div>
+{{elseif $parentTopic = $topic->parent() or $topic->isLargeTopic()}}
+    {{$sequence = $topic->sequence();}}
+    <div class='ipsBox ipsPull'>
+        <div class='ipsMessage ipsMessage--transparent'>
+            {{if $sequence == 1}}
+                {lang="large_topic_message" sprintf="1, $topic->url(), $topic->title"}
+            {{elseif $parentTopic !== null}}
+                {lang="large_topic_message" sprintf="$sequence, $parentTopic->url(), $parentTopic->title"}
+            {{endif}}
+        </div>
+        {{if !$topic->showSummaryOnDesktop() and $parentTopic !== null}}
+            <div class='i-padding_2'>
+                <span class='i-font-weight_600 i-color_hard'>{lang="large_topic_sidebar_title"}</span>
+            <ul class='ipsList ipsList--inline'>
+                {{foreach $parentTopic->children() as $child}}
+                    <li>
+                        <a href='{$child->url()}' class='i-color_soft i-font-weight_500'>{$child->title}</a>
+                    </li>
+                {{endforeach}}
+            </ul>
+            </div>
+        {{endif}}
+    </div>
+{{endif}}
+
+{{if $featureFirstPost and $firstPost and ($topic->showSummaryOnDesktop() === 'post' OR $topic->showSummaryOnMobile())}}
+    {template="activity" group="topics" app="forums" params="$topic, 'post'"}
+{{endif}}
+
+{{if $topic->canSolve() AND ! $topic->isSolved() AND $topic->isNotModeratorButCanSolve()}}
+	<!-- Has this been solved? message -->
+	<div class='ipsMessage ipsMessage--general ipsPull' data-controller='forums.front.topic.solved'>
+		<i class="fa-regular fa-circle-question ipsMessage__icon" aria-hidden="true"></i>
+		<div class='i-flex i-justify-content_space-between i-align-items_center i-flex-wrap_wrap i-gap_1'>
+			<div class='i-flex_11 i-basis_420'>
+				<h4 class='ipsMessage__title'>{lang="solved_did_it_tho_title" sprintf="\IPS\Member::loggedIn()->name"}</h4>
+				<div class='ipsRichText'>{lang="solved_did_it_tho_desc"}</div>
+			</div>
+			{{if member.members_bitoptions['no_solved_reenage']}}
+				<a href="#" data-action="mailSolvedReminders" class="ipsButton ipsButton--primary"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>{lang="solved_reengage_on"}</span></a>
+			{{endif}}
+		</div>
+	</div>
+{{endif}}
+
+{{if $featureFirstPost}}
+	{{if $topic->isSolved()}}
+		{template="topicSolutionMessage" group="topics" app="forums" params="$topic"}
+	{{elseif ( $mostHelpful = $topic->helpfulPosts(1) and $mostHelpful[0]['count'] >= \IPS\Settings::i()->forums_helpful_highlight)}}
+		{template="topicHelpfulMessage" group="topics" app="forums" params="$mostHelpful"}
+	{{endif}}
+{{endif}}
+
+<div class='i-flex i-flex-wrap_wrap-reverse i-align-items_center i-gap_3'>
+
+	<!-- All replies / Helpful Replies: This isn't shown on the first page, due to data-ips-hide="traditional-first" -->
+	{{if $featureFirstPost and $topic::itemHasHelpful( $topic ) and ( $mostHelpful = $topic->helpfulPosts(1) and $mostHelpful[0]['count'] >= \IPS\Settings::i()->forums_helpful_highlight)}}
+		<ul class='ipsButtons ipsButtons--start' data-ips-hide="traditional-first">
+			<li>
+				<a href='{$topic->url()->setQueryString( 'show', 'all' )}' class="ipsButton ipsButton--small {{if request.show !== 'helpful'}}ipsButton--secondary{{endif}}" rel='nofollow'>
+					{{if request.show === 'helpful' and $topic->posts > 2}}{lang="helpful_all_n_replies" pluralize="$topic->posts - 1, $topic->posts - 1"}{{else}}{lang="helpful_all_replies"}{{endif}}
+				</a>
+			</li>
+			<li>
+				<a href='{$topic->url()->setQueryString( 'show', 'helpful' )}' class="ipsButton ipsButton--small {{if request.show == 'helpful'}}ipsButton--secondary{{endif}}" rel='nofollow' {{if request.show !== 'helpful' and $topic->helpfulsRepliesCount() > 1}}data-role="helpfulCount"{{endif}}>
+					{{if request.show !== 'helpful' and $topic->helpfulsRepliesCount() > 1}}{lang="helpful_only_n_helpful" pluralize="$topic->helpfulsRepliesCount()"}{{else}}{lang="helpful_only_helpful"}{{endif}}
+				</a>
+			</li>
+		</ul>
+	{{endif}}
+
+	<!-- Start new topic, Reply to topic: Shown on all views -->
+	<ul data-ips-hook="topicMainButtons" class="i-flex_11 ipsButtons ipsButtons--main">
+		<li>
+			{$topic->menu()|raw}
+		</li>
+		{{if $topic->container()->can('add')}}
+			<li>
+				<a href="{$topic->container()->url()->setQueryString( 'do', 'add' )}" rel="nofollow" class='ipsButton ipsButton--text' title='{lang="start_new_topic_desc"}'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="start_new_topic"}</span></a>
+			</li>
+		{{endif}}
+		{{if $topic->canComment() && !$topic->isArchived()}}
+			<li data-controller='forums.front.topic.reply'>
+				<a href='#replyForm' rel="nofollow" class='ipsButton {{if $topic->locked()}}ipsButton--negative{{else}}ipsButton--primary{{endif}}' data-action='replyToTopic'><i class="fa-solid fa-reply" aria-hidden="true"></i><span>{lang="reply_to_this_topic"}{{if $topic->locked()}} ({lang="locked"}){{endif}}</span></a>
+			</li>
+		{{endif}}
+	</ul>
+</div>
+
+{{if $poll = $topic->getPoll()}}
+	<div data-ips-hook="topicPoll" class='ipsBox ipsBox--topicPoll ipsPull'>
+		{$poll|raw}
+	</div>
+{{endif}}
+
+{template="featuredComments" group="global" app="core" params="$topic->featuredComments(), $topic->url()->setQueryString( 'recommended', 'comments' ), 'recommended_posts', 'post_lc'"}
+
+<div id='comments' data-controller='core.front.core.commentFeed,forums.front.topic.view, core.front.core.ignoredComments' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-baseURL='{$topic->url()}' {{if $topic->isLastPage()}}data-lastPage{{endif}} data-feedID='{$topic->feedId}' class='cTopic ipsBlockSpacer' data-follow-area-id="topic-{$topic->tid}">
+
+	<div data-ips-hook="topicPostFeed" id="elPostFeed" class="ipsEntries ipsPull ipsEntries--topic" data-role='commentFeed' data-controller='core.front.core.moderation' {{if $topic->topic_answered_pid}} data-topicAnswerID="{$topic->topic_answered_pid}"{{endif}}>
+
+		{{if ( \count( $topic->commentMultimodActions() ) && ( $topic->posts > 1 OR $topic->mapped('unapproved_comments') > 0 OR $topic->mapped('hidden_comments') > 0 ) ) || $pagination}}
+			<div class="ipsButtonBar ipsButtonBar--top">
+				{{if $pagination}}
+					<div class="ipsButtonBar__pagination">{$pagination|raw}</div>
+				{{endif}}
+				{{if \count( $topic->commentMultimodActions() )}}
+					<div class="ipsButtonBar__end">
+						<ul class="ipsDataFilters">
+							<li>
+								<button type="button" id="elCheck" popovertarget="elCheck_menu" class="ipsDataFilters__button" data-ipstooltip='{lang="select_rows_tooltip"}' data-ipsAutoCheck data-ipsAutoCheck-context="#elPostFeed">
+									<span class="ipsInvisible">{lang="select_rows_tooltip"}</span>
+									<span class="cAutoCheckIcon"><i class="fa-regular fa-square" aria-hidden="true"></i></span> <i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+									<span class='ipsNotification' data-role='autoCheckCount'>0</span>
+								</button>
+								<i-dropdown popover id="elCheck_menu">
+									<div class="iDropdown">
+										<ul class="iDropdown__items">
+											<li class="iDropdown__title">{lang="select_rows"}</li>
+											<li><button type="button" data-ipsMenuValue="all">{lang="all"}</button></li>
+											<li><button type="button" data-ipsMenuValue="none">{lang="none"}</button></li>
+											<li><hr></li>
+											<li><button type="button" data-ipsMenuValue="hidden">{lang="hidden"}</button></li>
+											<li><button type="button" data-ipsMenuValue="unhidden">{lang="unhidden"}</button></li>
+											<li><button type="button" data-ipsMenuValue="unapproved">{lang="unapproved"}</button></li>
+										</ul>
+									</div>
+								</i-dropdown>
+							</li>
+						</ul>
+					</div>
+				{{endif}}
+			</div>
+		{{endif}}
+		<form action="{$topic->url()->csrf()->setQueryString( 'do', 'multimodComment' )->setPage('page', (int) \IPS\Request::i()->page )}" method="post" data-ipsPageAction data-role='moderationTools'>
+			{{$postCount=0; $timeLastRead = $topic->timeLastRead(); $lined = FALSE;}}
+            {{if !$topic->isFirstPage() AND $topic->isSolved()}}
+                {{$hasSolvedMessage = true;}}
+                <!-- Show the Solved message in favour of the Most Helpful message, if the topic is solved.. -->
+                {template="topicSolutionMessage" group="topics" app="forums" params="$topic"}
+            {{endif}}
+			{{if \count( $comments )}}
+				{{foreach $topic->generateCommentMetaData( $comments, \IPS\Settings::i()->forums_mod_actions_anon ) as $comment}}
+
+					{{if (!$lined and $timeLastRead and $timeLastRead->getTimestamp() < $comment->mapped('date'))}}
+						{{if $lined = TRUE and $postCount}}
+							<div class='ipsUnreadBar'>
+								<span>{lang="topic_meta_unread"}</span>
+							</div>
+						{{endif}}
+					{{endif}}
+
+					{{$postCount++;}}
+					{template="postContainer" group="topics" app="forums" params="$topic, $comment, '', $viewerIsFollowingTheseExperts""}
+
+                    {{$hasSolvedMessage = false;}}
+                    {{$contentUnderPostOne = false;}}
+					{{if ( ! $featureFirstPost ) and $postCount == 1 and $topic->isFirstPage()}}
+						<!-- If this is the first post in the traditional UI, show some of the extras/messages below it -->
+						{{if $topic->isSolved()}}
+						    {{$hasSolvedMessage = true;}}
+							<!-- Show the Solved message in favour of the Most Helpful message, if the topic is solved.. -->
+							{template="topicSolutionMessage" group="topics" app="forums" params="$topic"}
+						{{elseif ($mostHelpful = $topic->helpfulPosts(1) and $mostHelpful[0]['count'] >= \IPS\Settings::i()->forums_helpful_highlight)}}
+							{{$hasSolvedMessage = true;}}
+							<!-- Otherwise show the most helpful message if the criteria is met -->
+							{template="topicHelpfulMessage" group="topics" app="forums" params="$mostHelpful"}
+						{{endif}}
+
+						<!-- Show the All Replies / Most Helpful tabs -->
+						{{if $topic::itemHasHelpful( $topic ) and ($mostHelpful = $topic->helpfulPosts(1) and $mostHelpful[0]['count'] >= \IPS\Settings::i()->forums_helpful_highlight)}}
+							{{$contentUnderPostOne = true;}}
+							<ul class='ipsButtons ipsButtons--start i-padding_2'>
+								<li>
+									<a href='{$topic->url()->setQueryString( 'show', 'all' )}' class="ipsButton ipsButton--tiny {{if request.show !== 'helpful'}}ipsButton--positive{{endif}}" rel='nofollow'>
+										{{if request.show === 'helpful'}}{lang="helpful_all_n_replies" pluralize="$topic->posts - 1, $topic->posts - 1"}{{else}}{lang="helpful_all_replies"}{{endif}}
+									</a>
+								</li>
+								<li>
+									<a href='{$topic->url()->setQueryString( 'show', 'helpful' )}' class="ipsButton ipsButton--tiny {{if request.show == 'helpful'}}ipsButton--positive{{endif}}" rel='nofollow'>
+										{{if request.show !== 'helpful' and $topic->helpfulsRepliesCount() > 1}}{lang="helpful_only_n_helpful" pluralize="$topic->helpfulsRepliesCount()"}{{else}}{lang="helpful_only_helpful"}{{endif}}
+									</a>
+								</li>
+							</ul>
+						{{endif}}
+					{{endif}}
+					
+					{{if ( isset( $comment->metaData['comment']['moderation'] ) OR isset( $comment->metaData['comment']['timeGap'] ) )}}
+						{{$contentUnderPostOne = true;}}
+						<ul class='ipsTopicMeta'>
+							{{if isset( $comment->metaData['comment']['moderation'] )}}
+								{{foreach $comment->metaData['comment']['moderation'] as $modAction}}
+									<li class="ipsTopicMeta__item ipsTopicMeta__item--moderation">
+										<span class='ipsTopicMeta__time'>{datetime="$modAction['row']['ctime']" short="true"}</span>
+										<span class='ipsTopicMeta__action'>{$modAction['blurb']}</span>
+									</li>
+								{{endforeach}}
+							{{endif}}
+							{{if isset( $comment->metaData['comment']['timeGap'] )}}
+								<li class="ipsTopicMeta__item ipsTopicMeta__item--time">
+									{$comment->metaData['comment']['timeGap']['blurb']}...
+								</li>
+							{{endif}}
+						</ul>
+					{{endif}}
+
+					{{if $advertisement = \IPS\core\Advertisement::loadByLocation( 'ad_topic_view', $postCount )}}
+						<div data-ips-ad="topic_view">
+							{$advertisement|raw}
+						</div>
+					{{endif}}
+					{{if ( !$featureFirstPost and $postCount == 1 and ( $topic->showSummaryOnDesktop() === 'post' OR $topic->showSummaryOnMobile() ) )}}
+						{template="activity" group="topics" app="forums" params="$topic, 'post'"}
+					{{endif}}
+				{{endforeach}}
+			{{else}}
+				<div class='ipsEmptyMessage'>{lang="no_posts_show"}{{if $topic->posts > 1}} - <a href='{$topic->url()->setQueryString( 'show', 'all' )}'>{lang="topic_show_all_replies"}</a>{{endif}}</div>
+			{{endif}}
+			{template="commentMultimod" app="core" group="global" params="$topic"}
+		</form>
+		{{if $pagination}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination">{$pagination|raw}</div>
+			</div>
+		{{endif}}
+	</div>
+	
+	{{if $topic->isArchived()}}
+		<div class='ipsMessage ipsMessage--info'>
+			<h4 class='ipsMessage__title'>{lang="topic_is_archived"}</h4>
+			<p>{lang="topic_archived_desc"}</p>
+		</div>
+	{{endif}}
+	
+	{{if ( $topic->commentForm() || $topic->locked() || \IPS\Member::loggedIn()->restrict_post || \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings'] || !\IPS\Member::loggedIn()->checkPostsPerDay()) && !$topic->isArchived()}}
+		<div id='replyForm' data-ips-hook="topicReplyForm" data-role='replyArea' class='cTopicPostArea ipsComposeAreaWrapper ipsBox ipsPull {{if !$topic->canComment()}}cTopicPostArea_noSize{{endif}}' {{if \IPS\Platform\Bridge::i()->featureIsEnabled( 'live_full' )}}data-controller='cloud.front.realtime.forumsReplyArea,cloud.front.realtime.whosTyping'{{endif}}>
+			{{if $topic->commentForm()}}
+				{{if $topic->locked()}}
+					<p class='ipsComposeArea_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="topic_locked_can_comment"}</p>
+				{{elseif ( $topic->getPoll() and $topic->getPoll()->poll_only )}}
+					<p class='ipsComposeArea_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="topic_poll_can_comment"}</p>
+				{{endif}}
+				{$topic->commentForm()|raw}
+			{{else}}
+				{{if $topic->locked()}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'topic_locked_cannot_comment'"}
+				{{elseif \IPS\Member::loggedIn()->restrict_post}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment', \IPS\Member::loggedIn()->warnings(5,NULL,'rpa'), \IPS\Member::loggedIn()->restrict_post"}
+				{{elseif \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'unacknowledged_warning_cannot_post', \IPS\Member::loggedIn()->warnings( 1, FALSE )"}
+				{{elseif !\IPS\Member::loggedIn()->checkPostsPerDay()}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'member_exceeded_posts_per_day'"}
+				{{endif}}
+			{{endif}}
+		</div>
+	{{endif}}
+
+	{{if !$topic->isArchived() and !$topic->container()->password}}
+		<div class='ipsPageActions ipsBox i-padding_2 ipsPull ipsResponsive_showPhone'>
+			{{if !$topic->container()->disable_sharelinks}}
+				{template="shareButton" app="core" group="sharelinks" params="$topic"}
+			{{endif}}
+			{{if \IPS\Application::appIsEnabled('cloud')}}
+				{template="spam" app="cloud" group="spam" params="$topic"}
+			{{endif}}
+			{template="follow" app="core" group="global" params="'forums', 'topic', $topic->tid, $topic->followersCount()"}
+		</div>
+	{{endif}}
+</div>
+
+<div class='ipsPager'>
+	<div class="ipsPager_prev">
+		{{if \IPS\forums\Forum::isSimpleView( $topic->container() )}}
+			<a href="{url="app=forums&module=forums&controller=index" seoTemplate="forums"}" title="{lang="go_back_to_forum"}" rel="parent">
+				<span class="ipsPager_type">{lang="go_back_to_forum"}</span>
+			</a>
+		{{else}}
+			<a href="{$topic->container()->url()}" title="{lang="go_to_forum" sprintf="$topic->container()->metaTitle()"}" rel="parent">
+				<span class="ipsPager_type">{lang="go_back_to_forum"}</span>
+			</a>
+		{{endif}}
+	</div>
+	{{if $nextUnread !== NULL}}
+		<div class='ipsPager_next'>
+			<a href="{$topic->url()->setQueryString( array( 'do' => 'nextUnread' ) )}" title='{lang="view_next_unread_title"}'>
+				<span class="ipsPager_type">{lang="view_next_unread"}</span>
+			</a>
+		</div>
+	{{endif}}
+</div>
+
+
+
+</div> <!-- End #ipsTopicView -->
+
+
+{{if $topic->container()->club()}}
+	</div>
+{{endif}}

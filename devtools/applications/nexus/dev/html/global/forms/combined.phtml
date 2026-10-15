@@ -1,0 +1,17 @@
+<ips:template parameters="$name, $field1, $field2" />
+<input type="hidden" name="{$name}" value="">
+<div class="i-flex i-flex-wrap_wrap i-gap_3">
+	<div>
+		{$field1->html()|raw}
+	</div>
+	<div>
+		<div id="{$name}_unit">
+			{$field2->html()|raw}
+			{{if $name === 'f_maxmind'}}
+				&nbsp;/ 100
+			{{elseif $name === 'f_maxmind_proxy'}}
+				&nbsp;/ 4
+			{{endif}}
+		</div>
+	</div>
+</div>

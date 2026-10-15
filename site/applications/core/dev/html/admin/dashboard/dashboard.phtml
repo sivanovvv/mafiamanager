@@ -1,0 +1,24 @@
+<ips:template parameters="$cols, $blocks, $info" />
+
+<div data-controller='core.admin.dashboard.main'>	
+	<div class='ipsSpanGrid'>
+		<div class='ipsSpanGrid__8' data-role="mainerColumn">
+			<ol data-role="mainColumn">
+				{{foreach $cols['main'] as $cellKey}}
+					{{if array_key_exists( $cellKey, $blocks ) and isset($info[ $cellKey ])}}
+						{template="widgetWrapper" group="dashboard" app="core" params="$blocks[ $cellKey ], $info[ $cellKey ], $cols['collapsed']"}
+					{{endif}}
+				{{endforeach}}
+			</ol>
+		</div>
+		<div class='ipsSpanGrid__4 acpWidget_sidebar'>
+			<ol data-role="sideColumn">
+				{{foreach $cols['side'] as $cellKey}}
+					{{if array_key_exists( $cellKey, $blocks ) and isset($info[ $cellKey ])}}
+						{template="widgetWrapper" group="dashboard" app="core" params="$blocks[ $cellKey ], $info[ $cellKey ], $cols['collapsed']"}
+					{{endif}}
+				{{endforeach}}
+			</ol>
+		</div>
+	</div>
+</div>

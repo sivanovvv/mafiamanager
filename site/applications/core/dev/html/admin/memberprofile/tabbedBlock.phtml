@@ -1,0 +1,39 @@
+<ips:template parameters="$member, $block, $title, $tabNames, $activeId, $defaultContent, $editLink" />
+<div class='ipsBox' data-ips-template="tabbedBlock">
+	{{if $title !== NULL}}
+		<h2 class='ipsBox__header'>
+			<i class="fa-solid fa-user ipsBox__header-icon" aria-hidden="true"></i>
+			{lang="$title"}
+			{{if $editLink and member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( !$member->isAdmin() or member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) )}}
+				<a href="{$editLink}" class="ipsBox__header-secondary" data-ipsDialog data-ipsDialog-title="{lang="$title"}">{lang="edit"}</a>
+			{{endif}}
+		</h2>
+	{{endif}}
+	{{if \count( $tabNames ) > 1}}
+		<i-tabs class='ipsTabs ipsTabs--small' id='ipsTabs_{expression="md5( $block )"}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{expression="md5( $block )"}_content' {{if \IPS\Request::i()->isAjax()}}data-ipsTabBar-updateURL='false'{{endif}}>
+			<div role='tablist'>
+				{{foreach $tabNames as $i => $name}}
+					<a href='{$member->acpUrl()->setQueryString( array( 'do' => 'view', 'blockKey' => $block, 'block[' . $block . ']' => $i ) )}' id='ipsTabs_{expression="md5( $block )"}_{$i}' class="ipsTabs__tab" {{if \is_array( $name )}}title='{lang="{$name[1]}"}' data-ipsTooltip{{else}}title='{lang="{$name}"}'{{endif}} role="tab" aria-controls='ipsTabs_{expression="md5( $block )"}_{$i}_panel' aria-selected="{{if $i == $activeId}}true{{else}}false{{endif}}">
+						{{if \is_array( $name )}}
+							<i class="fa-solid fa-{$name[0]}" aria-hidden="true"></i>
+						{{else}}
+							{lang="$name"}
+						{{endif}}
+					</a>
+				{{endforeach}}
+			</div>
+			{template="tabScrollers" app="core" group="global" location="global"}
+		</i-tabs>
+		<section id='ipsTabs_{expression="md5( $block )"}_content'>
+	{{endif}}
+		{{foreach $tabNames as $i => $name}}
+			{{if $i == $activeId}}
+				<div id='ipsTabs_{expression="md5( $block )"}_{$i}_panel' role="tabpanel" class="ipsTabs__panel" aria-labelledby="ipsTabs_{expression="md5( $block )"}_{$i}" {{if $i != $activeId}}hidden{{endif}}>
+					{$defaultContent|raw}
+				</div>
+			{{endif}}
+		{{endforeach}}
+	{{if \count( $tabNames ) > 1}}
+		</section>
+	{{endif}}
+</div>

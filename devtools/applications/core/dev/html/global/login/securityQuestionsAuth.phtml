@@ -1,0 +1,24 @@
+<ips:template parameters="$question" />
+<div class="i-padding_3 ipsRichText i-text-align_center">
+	{lang="security_questions_auth_blurb"}
+</div>
+<ul class="i-padding_3">
+	<li class="ipsFieldRow">
+		<label class='ipsFieldRow__label'>
+			{$question->_title}
+		</label>
+		<div class="ipsFieldRow__content">
+			<input type="text" name="security_answer" autocomplete="off" class="ipsInput ipsInput--text {{if request.security_answer}}ipsField_error{{endif}}">
+			{{if request.security_answer}}
+				<p class="i-color_warning">{lang="security_answer_incorrect"}</p>
+			{{endif}}
+		</div>
+	</li>
+</ul>
+<ul class="i-padding_3 i-background_3">
+	<li>
+		<button type='submit' class='ipsButton ipsButton--primary ipsButton--wide'>
+			<i class='fa-solid fa-lock' aria-hidden="true"></i> {lang="security_answer_submit"}
+		</button>
+	</li>
+</ul>

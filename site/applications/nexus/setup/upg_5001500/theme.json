@@ -1,0 +1,32 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "admin\/customers\/notesOverviewRows",
+            "admin\/customers\/numberOfPurchasesField",
+            "admin\/customers\/purchaseValueField",
+            "global\/forms\/creditCard",
+            "front\/global\/referralRulesCommission",
+            "front\/store\/cartReview",
+            "front\/store\/categoryContents",
+            "front\/store\/index",
+            "front\/store\/packageBlock",
+            "front\/store\/register",
+            "front\/widgets\/donations"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "front\/clients.css",
+            "front\/store.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

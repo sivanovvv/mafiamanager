@@ -1,0 +1,12 @@
+<ips:template parameters="$thisCalendar, $downloadLinks" />
+{{if $downloadLinks}}
+    <i-dropdown id="elCalendarSettings_menu" popover>
+        <div class="iDropdown">
+            <ul class="iDropdown__items">
+                <li class="iDropdown__title">{{if $thisCalendar}}{lang="with_calendar" sprintf="$thisCalendar->_title"}{{else}}{lang="with_all_calendars"}{{endif}}</li>
+                <li><a href='{{if $thisCalendar}}{$downloadLinks['iCalCalendar']}{{else}}{$downloadLinks['iCalAll']}{{endif}}'><i class='fa-solid fa-download' aria-hidden="true"></i> {lang="download_webcal"}</a></li>
+                <li><a href='{expression="str_replace( array( 'http://', 'https://' ), 'webcal://', $thisCalendar ? $downloadLinks['iCalCalendar'] : $downloadLinks['iCalAll'] )"}'><i class='fa-solid fa-calendar' aria-hidden="true"></i> {lang="subscribe_webcal"}</a></li>
+            </ul>
+        </div>
+    </i-dropdown>
+{{endif}}

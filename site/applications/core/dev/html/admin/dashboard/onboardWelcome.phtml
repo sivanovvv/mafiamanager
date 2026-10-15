@@ -1,0 +1,21 @@
+<ips:template parameters="" />
+
+<div class='ipsBox cOnboardBox cOnboardBox--welcome'>
+	<h1 class='ipsTitle ipsTitle--h3'>{lang="onboard_pagetitle"}</h1>
+	<p class='i-font-size_2 i-color_soft i-font-weight_500 i-margin-bottom_4'>{lang="onboard_subtitle"}</p>
+
+	<div class="ipsColumns i-gap_5 i-flex-wrap_wrap-reverse">
+		<div class="ipsColumns__primary">
+			<div class='i-font-size_2 i-color_soft i-font-weight_500 ipsRichText'>
+				{lang="onboard_welcome_message"}
+			</div>
+		</div>
+		<div class='ipsColumns__secondary i-basis_250 i-text-align_center cOnboardBox__image'>
+			<img src='{resource="welcome.svg" app="core" location="admin"}' alt='' loading="lazy">
+		</div>
+	</div>
+	<div class="ipsButtons ipsButtons--start i-margin-top_4">
+		<a href='{url="app=core&module=overview&controller=onboard&initial=1"}' class='ipsButton ipsButton--primary'>{lang="onboard_startquicksetup"}</a>
+		<a href='{url="app=core&module=overview&controller=onboard&do=dismiss" csrf="true"}' class='ipsButton ipsButton--text ipsButton--text_secondary'>{lang="onboard_skipquicksetup"}</a>
+	</div>
+</div>

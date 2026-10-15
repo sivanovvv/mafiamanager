@@ -1,0 +1,21 @@
+<ips:template parameters="$item, $comment, $replies, $email" />
+{{$member = $item->author();}}
+{$email->language->addToStack("mail_solved_reengagement", FALSE, array( 'htmlsprintf' => array( $item->definiteArticle( $email->language ), $item->url(), $item->mapped('title') ) ) )}
+<br><br>
+<em>{$email->language->addToStack("mail_solved_reengagement_wyw")}</em>
+<br><br>
+{$comment->emailContent( $email, 'html', false )|raw}
+<br><br>
+<em>{$email->language->addToStack("mail_solved_reengagement_others")}</em>
+<br><br>
+{{foreach $replies as $reply}}
+	{$reply->emailContent( $email, 'html' )|raw}
+{{endforeach}}
+<br><br>
+{$email->language->addToStack("mail_solved_reengagement_solved")}
+<br><br>
+<a style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button" href="{$item->url()}">{$email->language->addToStack("mail_solved_reengagement_action")}</a>
+<br><br>
+<a href="{url="app=core&module=system&controller=unsubscribe&action=markSolved&email=" seoTemplate="unsubscribe" base="front"}{$member->email}&key={expression="md5( $member->email . ':' . $member->members_pass_hash )"}" style='text-decoration: none; display: inline-block' class="color_soft">{lang="solved_reengagement_stop"}</a>.
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

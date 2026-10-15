@@ -1,0 +1,33 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li class='ipsData__item'>
+		<div class="i-flex i-flex-wrap_wrap i-align-items_center i-gap_3">
+			<div class="i-flex_91 i-basis_300 i-flex i-gap_2 i-align-items_center">
+				<div class='i-flex_00 i-basis_100 i-text-align_center'>
+					<span class='cNexusCustomerInvoice'>{$row['i_total']}</span>
+					{$row['i_status']|raw}
+				</div>
+				<div class='ipsData__main'>
+					<div class="i-flex i-align-items_center i-gap_3 i-flex-wrap_wrap">
+						<div class="i-flex_91">
+							<p class='ipsData__title'>
+								{{if $row['_buttons']['view']}}
+									<a href='{$row['_buttons']['view']['link']}'>
+								{{endif}}
+								<span class='i-color_soft'>#{$row['i_id']}</span>: {$row['i_title']|raw}
+								{{if $row['_buttons']['view']}}
+									</a>
+								{{endif}}
+							</p>
+							<p class='ipsData__meta'>{lang="invoice_created"} {datetime="$row['i_date']"}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='i-flex_11 i-basis_120 i-text-align_end'>
+				{template="controlStrip" params="$row['_buttons']" group="global" app="core"}
+			</div>
+		</div>
+	</li>
+{{endforeach}}

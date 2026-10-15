@@ -1,0 +1,14 @@
+<ips:template parameters="$title, $form, $objectToPromote" />
+<div id='elPromoteDialog' class='{{if !\IPS\Request::i()->isAjax()}}ipsBox{{endif}}'>
+	{{if $title && !\IPS\Request::i()->isAjax()}}
+		<h1 class="ipsTitle ipsTitle--h3">{$title}</h1>
+	{{endif}}
+	{{if $groups = $objectToPromote->cannotViewGroups()}}
+	<div class="ipsMessage ipsMessage--warning i-margin_2">
+		<div>{lang="promote_dialog_not_all_view_desc" list="$groups"}</div>
+	</div>
+	{{endif}}
+	<div>
+		{$form|raw}
+	</div>
+</div>

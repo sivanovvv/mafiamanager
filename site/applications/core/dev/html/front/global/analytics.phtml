@@ -1,0 +1,104 @@
+<ips:template parameters="$item, $lastCommenter, $members, $busy, $reacted, $images, $commentCount" />
+{{$commentClass = $item::$commentClass;}}
+{{if \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Statistics' )}}
+<div class="">
+    <div class='ipsFluid ipsFluid--padding i-gap_lines'>
+
+        <div class='i-basis_100p i-flex i-flex-wrap_wrap i-gap_1'>
+            <h4 class='ipsTitle ipsTitle--h5 i-margin-end_auto'>{$item->mapped('title')}</h4>
+            <div class='i-flex i-flex-wrap_wrap i-gap_3 i-row-gap_0 i-color_soft'>
+                <span><i class="fa-regular fa-comments i-margin-end_icon" aria-hidden="true"></i> {lang="num_replies" pluralize="$commentCount"}</span>
+                <span><i class="fa-regular fa-eye i-margin-end_icon" aria-hidden="true"></i> {lang="num_views_with_number" pluralize="$item->mapped('views')"}</span>
+            </div>
+        </div>
+
+        {{if \IPS\Application::appIsEnabled('cloud') AND 1 == 2 }}<!-- Disabled foreach now -->
+            {template="analyticsItem" app="cloud" group="analytics" params="$item"}
+        {{endif}}
+
+        <div class=''>
+            <h4 class='ipsTitle ipsTitle--h4 ipsTitle--margin'>{lang="active_members"}</h4>
+            {{if count( $members )}}
+                <i-data>
+                    <ul class='ipsData ipsData--table ipsData--active-members'>
+                        {{foreach $members AS $member}}
+                            <li class='ipsData__item'>
+                                <div class='ipsData__icon'>
+                                    {template="userPhoto" group="global" app="core" params="$member['member'], 'fluid'"}
+                                </div>
+                                <div class='ipsData__main'>
+                                    <div>{$member['member']->link()|raw}</div>
+                                    <div>{lang="num_comments" pluralize="$member['count']"}</div>
+                                </div>
+                            </li>
+                        {{endforeach}}
+                    </ul>
+                </i-data>
+            {{else}}
+                <p class='ipsEmptyMessage'>{lang="no_content_to_show"}</p>
+            {{endif}}
+        </div>
+        <div class=''>
+            <h4 class='ipsTitle ipsTitle--h4 ipsTitle--margin'>{lang="popular_days"}</h4>
+            {{if count( $busy )}}
+                <i-data>
+                    <ul class='ipsData ipsData--table ipsData--popular-days'>
+                        {{foreach $busy AS $date => $day}}
+                            <li class='ipsData__item'>
+                                <div class='ipsData__main'>
+                                    <div class='i-flex i-align-items_center i-justify-content_space-between'>
+                                        <a href='{$item->shareableUrl( $day['commentId'] )}' class='i-font-weight_600'>{datetime="$day['date']"}</a>
+                                        <span class='i-color_soft'>{lang="num_comments" pluralize="$day['count']"}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        {{endforeach}}
+                    </ul>
+                </i-data>
+            {{else}}
+                <p class='ipsEmptyMessage'>{lang="no_content_to_show"}</p>
+            {{endif}}
+        </div>
+        <div class=''>
+            <h4 class='ipsTitle ipsTitle--h4 ipsTitle--margin'>{lang="top_reacted"}</h4>
+            {{if count( $reacted )}}
+                <i-data>
+                    <ul class='ipsData ipsData--table ipsData--top-reacted'>
+                        {{foreach $reacted AS $react}}
+                            <li class='ipsData__item'>
+                                <div class='ipsData__icon'>
+                                    {template="userPhoto" group="global" app="core" params="$react['comment']->author(), 'tiny'"}
+                                </div>
+                                <div class='ipsData__main'>
+                                    <div class='i-flex i-justify-content_space-between i-flex-wrap_wrap'>
+                                        <div>
+                                            <div class='i-font-weight_600'>{$react['comment']->author()->link()|raw}</div>
+                                            <div class='i-color_soft'><a href="{$react['comment']->url()}" rel="nofollow">{$react['comment']->dateLine()|raw}</a></div>
+                                        </div>
+                                        <div class='i-color_soft'>{lang="react_total" pluralize="$react['count']"}</div>
+                                    </div>
+                                    <div class='i-margin-top_2 ipsTruncate_4'>{$react['comment']->truncated()|raw}</div>
+                                </div>
+                            </li>
+                        {{endforeach}}
+                    </ul>
+                </i-data>
+            {{else}}
+                <p class='ipsEmptyMessage'>{lang="no_content_to_show"}</p>
+            {{endif}}
+        </div>
+
+        {{if count( $images )}}
+            <div class='i-basis_100p'>
+                <h4 class='ipsTitle ipsTitle--h4 ipsTitle--margin'>{lang="images"}</h4>
+                <div class='ipsImageGrid'>
+                    {{foreach $images AS $image}}
+                        <div><a href='{$image['commentUrl']}'><img src='{file="$image['attach_location']" extension="core_Attachment"}' loading='lazy' alt=''></a></div>
+                    {{endforeach}}
+                </div>
+            </div>
+        {{endif}}
+        
+    </div>
+</div>
+{{endif}}

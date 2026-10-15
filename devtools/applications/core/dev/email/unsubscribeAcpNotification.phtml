@@ -1,0 +1,9 @@
+<ips:template parameters="$key, $member, $email" />
+{{if $member instanceof \IPS\Member}}
+	<tr>
+		<td dir='{dir}' valign='middle' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 12px; line-height: 18px;">
+			{$email->language->addToStack("unsubscribe_blurb", FALSE)} <a href="{url="app=core&module=overview&controller=notifications&do=settings&type={$key}" base="admin_redirect"}" style='color: #000; text-decoration: underline; font-weight: 600; display: inline-block' class="text-link">{$email->language->addToStack( 'adjust_notification_prefs', FALSE )}</a>.
+			<br>
+		</td>
+	</tr>
+{{endif}}

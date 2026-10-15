@@ -1,0 +1,23 @@
+<ips:template parameters="$comment" />
+{{$blurb = $comment->recognizedBlurb();}}
+<!--Content Recognized -->
+<div class="i-background_2 i-padding_2 i-margin-bottom_2 i-border-radius_box">
+	<div class="ipsPhotoPanel ipsPhotoPanel--start">
+	    {{if $badge = $comment->recognized->badge()}}
+	        <span class='ipsUserPhoto ipsUserPhoto--small'>
+	            {{if $badge->badge_use_image}}
+		            <img src="{file="$badge->image" extension="core_Badges"}">
+		        {{else}}
+		            <img src="{$badge->_icon}">
+		        {{endif}}
+		    </span>
+		{{else}}
+		<span class='ipsBadge ipsBadge--icon ipsBadge--soft'><i class='fas fa-trophy' aria-hidden="true"></i></span>
+		{{endif}}
+		<div class="ipsPhotoPanel__text">
+			<strong>{$blurb['main']}</strong>
+			<p class='i-color_soft i-font-weight_500'>{$blurb['awards']|raw}</p>
+			{{if $blurb['message']}}<p class='i-margin-top_1 i-font-weight_500'>&quot;<em>{$blurb['message']|raw}</em>&quot;</p>{{endif}}
+		</div>
+	</div>
+</div>

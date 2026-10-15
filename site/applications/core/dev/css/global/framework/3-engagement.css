@@ -1,0 +1,439 @@
+/* Engagement: styles for various features that generall fall under user engagement */
+/* ======================================================== */
+/* LIKE & REP BUTTONS */
+
+/* Ensure the hovered reaction list is positioned correctly when "total reputation count" is displayed */
+.ipsReact_types{
+	position: relative;
+}
+
+.ipsReact {
+	--_react-size: 34px;
+	--_icon-size: calc(var(--_react-size) * .8);
+	--_gap: 5px;
+	position: relative;
+	display: flex;
+	align-items: center;
+	font-size: var(--i-font-size_-2);
+	z-index: 1;
+	height: var(--_react-size);
+}
+
+.ipsReact :where(a){
+	color: inherit;
+	text-decoration: none;
+}
+
+.ipsReact img{
+	object-fit: contain;
+}
+
+.ipsReact_reaction{
+	-webkit-tap-highlight-color: transparent;
+}
+
+.ipsReact_reaction img {
+	width: var(--_icon-size);
+	height: var(--_icon-size);
+	display: block;
+}
+	
+.ipsReact_button {
+	display: block;
+	position: relative;
+	transition: .2s all ease-in-out;
+	filter: grayscale(100%) opacity(60%);
+}
+
+	.ipsReact_button.ipsReact_reacted,
+	body.ipsApp_noTouch .ipsReact_types:hover .ipsReact_button,
+	body:not(.ipsApp_noTouch) .ipsReact_types.ipsReact_types_active .ipsReact_button {
+		filter: none;
+	}
+
+.ipsReact_types ul {
+	position: absolute;	
+	background: var(--i-background_1);	
+	display: flex;
+	align-items: center;
+	gap: var(--_gap);
+	pointer-events: none;
+	border-radius: 100px;
+}
+
+@media (max-width: 767px){
+	.ipsReact_types ul{
+		bottom: 100%;
+		flex-direction: column;
+		transform-origin: 50% 100%;
+	}
+}
+
+@media (min-width: 768px){
+	.ipsReact_types ul{
+		inset-inline-end: calc(100% - 1px); /* Cater for sub-pixel rounding. If there was a tiny gap, the mouseleave event was triggered, closing the menu */
+		transform-origin: right center;
+	}
+	:where([dir="rtl"]) .ipsReact_types ul{
+		transform-origin: left center;
+	}
+}
+
+	.ipsReact .ipsReact_types ul.ipsReact_hover {
+		pointer-events: auto;
+		animation: reaction-hover 0.3s ease-in-out forwards;
+	}
+
+	.ipsReact .ipsReact_types ul.ipsReact_hoverOut {
+		animation: reaction-hover-out 0.2s ease-in-out 0.4s forwards;
+	}
+
+	/* Create the pseudo gap which separates the animated list with the solo icon */
+	.ipsReact_types ul::after{
+		content: '';
+	}
+
+/* Tooltip */
+.ipsReact_name {
+	display: none;
+}
+
+.ipsReact_reaction{
+	display: grid;
+	place-content: center;
+	position: relative;
+	height: var(--_react-size);
+	width: var(--_react-size);
+}
+
+a.ipsReact_reaction::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -75%;
+	margin-left: -75%;
+	width: 150%;
+	height: 150%;
+	border-radius: 50%;
+	pointer-events: none;
+	border: 2px solid currentColor;
+	opacity: 0;
+}
+
+	a.ipsReact_reaction.ipsReact_active::after {
+		animation: reaction-click-ring 0.8s ease-out forwards;
+	}
+
+	a.ipsReact_reaction.ipsReact_active img {
+		animation: reaction-click 0.6s ease-out forwards;
+	}	
+
+.ipsReact_unreact {
+	background: var(--i-background_dark);
+	color: #fff !important;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	font-size: 14px;
+	font-family: 'Arial', sans-serif;
+	display: grid;
+	place-content: center;
+	position: absolute;
+	top: -10px;
+	inset-inline-end: -6px;
+}
+
+.ipsReact_unreact[style*="inline"]{
+	display: grid !important;
+}
+
+/* Reaction button */
+.ipsReact_blurb:not(.ipsHide) + .ipsReact_types {
+	border-inline-start: 1px solid var(--i-background_3);
+	padding-inline-start: 1em;
+	margin-inline-start: 1em;
+	position: relative;
+}
+
+/* Nudge reaction button in slightly on small devices, so it's not too close to the edge */
+@media (max-width: 600px){
+	.ipsReact_blurb:not(.ipsHide) + .ipsReact_types{
+		margin-inline-end: 1em;
+	}
+}
+
+.ipsReact_reactions {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 2px 7px;
+}
+
+.ipsReact_reactCount {
+	display: flex;
+	font-weight: 500;
+}
+
+	.ipsReact_reactCount > a,
+	.ipsReact_reactCount > span {
+		display: flex;
+		align-items: center;
+		color: var(--i-color_hard);
+		padding: 4px;
+		border: 1px solid var(--i-background_4);
+		background: var(--i-background_1);
+		border-radius: 50px;
+	}
+
+		.ipsReact_reactCount > a:hover {
+			border-color: var(--i-background_6);
+			outline: 4px solid var(--i-background_3);
+		}
+
+	.ipsReact_reactCount img {
+		width: 20px;
+		height: 20px;
+	}
+
+		.ipsReact_reactCount > span > span:last-child,
+		.ipsReact_reactCount > a > span:last-child {
+			font-size: var(--i-font-size_-2);
+			padding: 0 .8em;
+		}
+
+.ipsReact_reactCountOnly {
+	padding: 0 7px;
+	font-weight: bold;
+	line-height: 24px;
+	border-radius: 2px;
+	font-size: var(--i-font-size_-2);
+	display: inline-block;
+}
+
+@media screen and (max-width: 767px) {
+	.ipsReact_button .ipsReact_reaction::after,
+	.ipsReact_overview{
+		display: none;
+	}
+}
+
+.ipsReact_reactCountOnly_mini {
+	line-height: 18px;
+	font-size: max(10px, .7em);
+}
+
+.ipsReactOverview {
+	text-align: center;
+}
+
+/* Hide reaction container if it's empty */
+.ipsReactOverview:not(:has(*)){ display: none }
+@supports not selector(a:has(b)){
+	.ipsReactOverview:-moz-only-whitespace{ display: none }
+}
+
+.ipsReactOverview ul {
+	display: flex;
+	align-items: center;
+	justify-content: center; /* Featured comments at the top of topics */
+	gap: .3em;
+}
+
+	.ipsReactOverview ul + span{
+		vertical-align: middle;
+	}
+
+	.ipsReactOverview ul img {
+		max-height: 1.8em;
+		width: auto;
+	}
+
+		.ipsReactOverview_small ul img {
+			max-height: 1.6em;
+		}
+
+.ipsReactOverview p {
+	display: block;
+    margin-top: .5em;
+    font-size: var(--i-font-size_-2);
+    text-transform: uppercase;
+    opacity: 0.5;
+	font-weight: 500;
+}
+	
+/* REACTION ANIMATION DEFINITIONS */
+@keyframes reaction-click-ring {
+	0% {
+		opacity: 1;
+		transform: scale3d(0.4, 0.4, 1);
+	}
+	40% {
+		transform: scale3d(1, 1, 1);
+		opacity: .8;
+	}
+	100% {
+		opacity: 0;
+		transform: scale3d(1.2, 1.2, 1);
+	}
+}
+
+@keyframes reaction-click {
+	0% {
+		opacity: 0;
+		transform: scale3d(0.1, 0.1, 1);
+	}
+	30% {
+		transform: scale3d(1.3, 1.3, 1);
+		opacity: 1;
+	}
+	100% {
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+@keyframes reaction-hover {
+	0% {
+		opacity: 0;
+		transform: scale3d(0, 1, 1);
+	}
+	50% {
+		transform: scale3d(1.2, 1, 1);
+		opacity: 1;
+	}
+	100% {
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+@keyframes reaction-hover-out {
+	0% {
+		opacity: 1;
+		transform: scale3d(1, 1, 1);
+	}
+	60% {
+		transform: scale3d(0, 0, 1);
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+.ipsReputation_count {
+	background: #fff;
+	display: inline-block;
+	position: relative;
+	font-size: var(--i-font-size_-1);
+	font-weight: bold;
+	border-radius: min(var(--i-design-radius, 4px));
+	border: 1px solid rgba(0,0,0,0.1);
+}
+	
+	.ipsReputation_count.i-color_positive {
+		background: var(--i-background_positive-soft);
+	}
+
+	.ipsReputation_count.i-color_negative {
+		background: var(--i-background_negative-soft);
+	}
+
+.ipsLikeRep [data-action="giveReputation"] + .ipsReputation_count {
+	font-size: var(--i-font-size_-2);
+	margin-inline-start: 10px;
+}
+
+.ipsLikeRep [data-action="giveReputation"] + .ipsReputation_count::before {
+	content: '';
+	display: block;
+	width: 1px;
+	height: 100%;
+	position: absolute;
+	background: currentColor;
+	opacity: .1;
+	top: 0;
+	inset-inline-start: -8px;
+}
+
+/* ======================================================== */
+/* FOLLOW/LIKE */
+.ipsFollowerList {
+	max-height: 300px;
+}
+
+/* ======================================================== */
+/* SHARE LINKS */
+.ipsPageActions{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: .6em;
+	font-size: calc(.85em + var(--i-range) * .1);
+}
+
+	:where(.ipsPageActions > :is(li, div)){
+		display: contents;
+	}
+
+	.ipsPageActions .ipsButton{
+		flex: 1 1 auto;
+	}
+
+	@container (max-width: 600px){
+		.ipsPageActions--mini-responsive .ipsButton__label{
+			display: none;
+		}
+	}
+
+	.ipsPageActions__mainLink {
+		display: block;
+		padding: .6em 1em;
+		border-radius: min(var(--i-design-radius), 5px);
+		background-color: color-mix(in hsl, currentColor 10%, transparent);
+		color: var(--i-color_root);
+		font-weight: 500;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100%;
+	}
+
+	.ipsPageActions__mainLink:hover{
+		background-color: color-mix(in hsl, currentColor 15%, transparent);
+	}
+
+		.ipsPageActions__mainLink i{
+			opacity: .5;
+			margin-inline-end: .3em;
+		}
+
+/*
+	----------------
+	- Leaderboard
+	----------------
+*/
+
+.ipsLeaderboard_trophy {
+	color: #ffffff;
+	background-color: var(--i-trophy-first--background);
+	font-size: 1.5em;
+	width: 2em;
+	height: 2em;
+	border-radius: 50%;
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ipsLeaderboard_trophy_2{
+	background-color: var(--i-trophy-second--background);
+}
+
+.ipsLeaderboard_trophy_3{
+	background-color: var(--i-trophy-third--background);
+}
+
+.ipsLeaderboard_trophy_4 {
+	display: none;
+}

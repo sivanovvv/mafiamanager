@@ -1,0 +1,46 @@
+<ips:template parameters="$items, $preview=FALSE" />
+{{foreach $items as $item}}
+	{{if $preview or ( $item->canView() and $item->isAvailableFor( \IPS\Theme::i()->getLayoutValue('global_view_mode') === 'side' ? 'sidebar' : 'header' ) )}}
+		{{if $children = $item->children()}}
+			{{$id = md5( mt_rand() );}}
+			<li id='elNavigation_{$id}' class='ipsMenu_subItems'>
+				<a href='{{if $item->link()}}{$item->link()}{{else}}#{{endif}}'>
+					{$item->title()}
+				</a>
+				<ul id='elNavigation_{$id}_menu' class='ipsMenu ipsMenu_auto ipsHide'>
+					{template="navColumnChildren" app="core" group="global" params="$children, $preview"}
+				</ul>
+			</li>
+		{{elseif $item instanceof \IPS\core\extensions\core\FrontNavigation\MenuHeader}}
+			<li class='ipsNavPanel__title'>
+				{$item->title()}
+			</li>
+		{{elseif $item instanceof \IPS\core\extensions\core\FrontNavigation\MenuSeparator}}
+			<li>
+				<hr>
+			</li>
+		{{elseif $item instanceof \IPS\core\extensions\core\FrontNavigation\MenuButton}}
+			<li>
+				<a href='{$item->link()}' class=''>
+					<span class="ipsNavPanel__icon" aria-hidden="true">
+						<i class="fa-solid" style="--icon:'\\f061'" aria-hidden="true"></i>
+					</span>
+					<span>{$item->title()}</span>
+				</a>
+			</li>
+		{{else}}
+			<li {$item->attributes()|raw}>
+				<a href='{$item->link()}' {{if method_exists( $item, 'target' ) AND $item->target()}}target='{$item->target()}'{{if $item->target() == '_blank'}} rel="noopener"{{endif}}{{endif}}>
+					<span class="ipsNavPanel__icon" aria-hidden="true">
+					    {{if $item->getIconData()}}
+					        {$item->getIconData()|raw}
+						{{else}}
+						    <i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+						{{endif}}
+					</span>
+					<span>{$item->title()}</span>
+				</a>
+			</li>
+		{{endif}}
+	{{endif}}
+{{endforeach}}

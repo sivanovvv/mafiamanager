@@ -1,0 +1,15 @@
+{
+    "normal": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [
+            "sc_use_this_version",
+            "sc_remove_selection"
+        ],
+        "edited": [],
+        "removed": []
+    }
+}

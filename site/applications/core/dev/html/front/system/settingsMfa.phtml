@@ -1,0 +1,81 @@
+<ips:template parameters="$handlers" />
+
+{{if \count( $handlers )}}
+	<div class='i-padding_3 i-border-bottom_3'>
+		<h2 class="ipsTitle ipsTitle--h3">{lang="mfa_settings_title"}</h2>
+		<p class=''>{lang="mfa_ucp_blurb"}</p>
+	</div>
+	<div class='ipsGrid ipsGrid--lines ipsGrid--auto-fit ipsGrid--settingsMfa i-basis_400'>
+		{{foreach $handlers as $key => $handler}}
+			<div class="i-padding_4 i-flex i-flex-direction_column">
+				<div class='i-flex_11'>
+					<div class="i-margin-bottom_1 i-flex i-align-items_center i-gap_3 i-flex-wrap_wrap i-row-gap_0">
+						<h3 class="ipsTitle ipsTitle--h4">{$handler->ucpTitle()}</h3>
+						{{if $handler->memberHasConfiguredHandler( \IPS\Member::loggedIn() )}}<span class='i-color_positive i-font-weight_600'><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="enabled"}</span>{{endif}}
+					</div>
+					<p>{$handler->ucpDesc()}</p>
+				</div>
+				<ul class="ipsButtons ipsButtons--start i-margin-top_3">
+					{{if $handler->memberHasConfiguredHandler( \IPS\Member::loggedIn() )}}
+						<li><a href="{url="app=core&module=system&controller=settings&area=mfa&act=enable&type={$key}&_new=1" seoTemplate="settings_mfa" csrf="true"}" class="ipsButton ipsButton--inherit"><i class="fa-solid fa-gear" aria-hidden="true"></i> {lang="mfa_{$key}_reauth"}</a></li>
+						<li><a href="{url="app=core&module=system&controller=settings&area=mfa&act=disable&type={$key}" seoTemplate="settings_mfa" csrf="true"}" class="ipsButton ipsButton--inherit i-color_negative" data-confirm><i class="fa-regular fa-circle-xmark" aria-hidden="true"></i> {lang="mfa_disable"}</a></li>
+					{{else}}
+						<li><a href="{url="app=core&module=system&controller=settings&area=mfa&act=enable&type={$key}&_new=1" seoTemplate="settings_mfa" csrf="true"}" class="ipsButton ipsButton--primary"><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="enable"}</a></li>
+					{{endif}}
+				</ul>
+			</div>
+		{{endforeach}}
+	</div>
+{{endif}}
+
+{{if \IPS\Member::loggedIn()->group['g_hide_online_list'] !== 2}}
+	<div class='i-padding_3 i-border-bottom_3 {{if \count( $handlers )}}i-border-top_3{{endif}}'>
+		<h2 class='ipsTitle ipsTitle--h3'>{lang="settings_privacy_title"}</h2>
+	</div>
+	<div class='ipsGrid ipsGrid--lines ipsGrid--auto-fit ipsGrid--privacySettings i-basis_400'>
+		<div class="i-padding_4 i-flex i-flex-direction_column">
+			<div class='i-flex_11'>
+				<div class="i-margin-bottom_1 i-flex i-align-items_center i-gap_3 i-flex-wrap_wrap i-row-gap_0">
+					<h3 class='ipsTitle ipsTitle--h4'>{lang="online_visibility"}</h3>
+					{{if \IPS\Member::loggedIn()->members_bitoptions['is_anon']}}
+						<span class='i-color_negative i-font-weight_600'><i class='fa-solid fa-xmark' aria-hidden="true"></i> {lang="online_status_hidden"}</span>
+					{{else}}
+						<span class='i-color_positive i-font-weight_600'><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="online_status_visible"}</span>
+					{{endif}}
+				</div>
+				<p>{lang="online_visibility_desc"}</p>
+			</div>
+			{{if !\IPS\Member::loggedIn()->group['g_hide_online_list']}}
+				<ul class="ipsButtons ipsButtons--start i-margin-top_3">
+					{{if \IPS\Member::loggedIn()->members_bitoptions['is_anon']}}
+						<li><a href='{url="app=core&module=system&controller=settings&do=updateAnon&value=0" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang="show_online_status"}</a></li>
+					{{else}}
+						<li><a href='{url="app=core&module=system&controller=settings&do=updateAnon&value=1" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang="hide_online_status"}</a></li>
+					{{endif}}
+				</ul>
+			{{endif}}
+		</div>
+		{{if settings.core_datalayer_enabled AND settings.core_datalayer_include_pii AND settings.core_datalayer_member_pii_choice}}
+			<div class="i-padding_4 i-flex i-flex-direction_column">
+				<div class='i-flex_11'>
+					<div class="i-margin-bottom_1 i-flex i-align-items_center i-gap_3 i-flex-wrap_wrap i-row-gap_0">
+						<h3 class='ipsTitle ipsTitle--h4'>{lang="datalayer_pii_opt_out"}</h3>
+						{{if !\IPS\Member::loggedIn()->members_bitoptions['datalayer_pii_optout']}}
+							<span class='i-color_negative i-font-weight_600'><i class='fa-solid fa-xmark' aria-hidden="true"></i> {lang="datalayer_omitted"}</span>
+						{{else}}
+							<span class='i-color_positive i-font-weight_600'><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="datalayer_collected"}</span>
+						{{endif}}
+					</div>
+					<p>{lang="datalayer_pii_opt_out_desc"}</p>
+				</div>
+				<ul class="ipsButtons ipsButtons--start i-margin-top_3">
+					{{if \IPS\Member::loggedIn()->members_bitoptions['datalayer_pii_optout']}}
+						<li><a href='{url="app=core&module=system&controller=settings&do=togglePii" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang="datalayer_omit"}</a></li>
+					{{else}}
+						<li><a href='{url="app=core&module=system&controller=settings&do=togglePii" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang="datalayer_collect"}</a></li>
+					{{endif}}
+				</ul>
+			</div>
+		{{endif}}
+	</div>
+{{endif}}

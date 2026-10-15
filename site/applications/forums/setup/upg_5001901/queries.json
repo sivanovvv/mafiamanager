@@ -1,0 +1,24 @@
+{
+    "1": {
+        "method": "addIndex",
+        "params": [
+            "forums_topics",
+            {
+                "type": "key",
+                "name": "topic_listing",
+                "columns": [
+                    "forum_id",
+                    "starter_id",
+                    "approved",
+                    "is_future_entry"
+                ],
+                "length": [
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,170 @@
+<ips:template parameters="$chart, $html" />
+<div class='ipsChart ipsBox' data-controller='core.admin.core.dynamicChart' data-chart-url='{$chart->baseURL}' data-chart-identifier='{$chart->identifier}' data-chart-type="{$chart->type}" data-chart-timescale="{$chart->timescale}" data-chart-customfilter-submitted='{{if isset( \IPS\Request::i()->filter_form_submitted )}}true{{else}}false{{endif}}'>
+	<div class='i-padding_2 i-background_2 i-border-bottom_3 ipsChart_filters i-flex i-flex-wrap_wrap i-gap_1 i-border-start-start-radius_box i-border-start-end-radius_box'>
+		<div class='i-flex_91 {{if $chart->description}}i-basis_100p{{endif}}'>
+			{{if $chart->title}}
+				<h2 class='ipsTitle ipsTitle--h4'>{$chart->title}</h2>
+			{{endif}}
+			{{if $chart->description}}
+				<p class="i-color_soft ipsChart__desc">{$chart->description}</p>
+			{{endif}}
+		</div>
+		<ul class='ipsButtons ipsButtons--end ipsChart__primaryActions i-align-self_center'>
+            {{if \IPS\Request::i()->chartId AND is_numeric( \IPS\Request::i()->chartId )}}
+                <li>
+					<a data-confirm href='{$chart->baseURL->setQueryString( array( 'deleteChart' => \IPS\Request::i()->chartId ) )->csrf() }' class='ipsButton--small ipsButton ipsButton--negative'>{lang="mychart_remove"}</a>
+					<button type="button" data-role="updateChart" class='ipsButton ipsButton--small ipsButton--secondary' data-chartId='{request="chartId"}'>{lang="save_chart"}</button>
+					<button type="button" id="el{$chart->identifier}FilterRename" popovertarget="el{$chart->identifier}FilterRename_menu" data-role="renameChart" class='ipsButton--small ipsButton ipsButton--inherit'>{lang="stream_rename"}</button>
+					<i-dropdown popover id="el{$chart->identifier}FilterRename_menu">
+						<div class="iDropdown" data-role="filterRenameMenu">
+							{$chart->form->customTemplate( array( \IPS\Theme::i()->getTemplate( 'forms', 'core', 'front' ), 'popupTemplate' ) )|raw}
+						</div>
+					</i-dropdown>
+				</li>
+            {{elseif $chart->showIntervals OR $chart->showDateRange OR $chart->showFilterTabs}}
+				<li>
+					<button type="button" id="el{$chart->identifier}FilterSave" {{if !\IPS\Request::i()->chartId OR \IPS\Request::i()->chartId == '_default'}} popovertarget="el{$chart->identifier}FilterSave_menu" {{else}} data-chartId='{request="chartId"}' {{endif}} data-ipsTooltip title='{lang="save_chart_desc"}' class='ipsButton ipsButton--inherit ipsButton--small' data-role='saveReport'><i class='fa-solid fa-plus' aria-hidden="true"></i> {lang="save_chart"}</button>
+				</li>
+			{{endif}}
+		</ul>
+		<ul class='ipsButtons ipsButtons--end i-flex_11 ipsChart__secondaryActions i-align-self_center'>
+			{{if $chart->showIntervals}}
+				<li data-role="groupingButtons">
+					<ul class="ipsButtonGroup ipsButton--small">
+						{{if $chart->enableHourly}}
+							<li><a class='ipsButton {{if $chart->timescale == 'hourly'}}ipsButton--active{{endif}}' {{if $chart->type == 'Table'}}disabled{{endif}} href="{$chart->url->setQueryString( array( 'timescale' => array( $chart->identifier => 'hourly' ), 'noheader' => 1 ) )}" data-timescale="hourly" {{if $chart->timescale == 'hourly'}}data-selected{{endif}}>{lang="stats_date_group_hourly"}</a></li>
+						{{endif}}
+						{{foreach array( 'daily', 'weekly', 'monthly' ) as $k}}
+							<li><a class='ipsButton {{if $chart->timescale == $k}}ipsButton--active{{endif}}' {{if $chart->type == 'Table'}}disabled{{endif}} href="{$chart->url->setQueryString( array( 'timescale' => array( $chart->identifier => $k ), 'noheader' => 1 ) )}" data-timescale="{$k}" {{if $chart->timescale == $k}}data-selected{{endif}}>{lang="stats_date_group_$k"}</a></li>
+						{{endforeach}}
+					</ul>
+				</li>
+			{{endif}}
+            {{if $chart->showDateRange}}
+            <li>
+				<button type="button" id="el{$chart->identifier}Date" popovertarget="el{$chart->identifier}Date_menu" class="ipsButton ipsButton--small ipsButton--soft" data-action='chartDate'><i class='fa-solid fa-calendar' aria-hidden="true"></i> {lang="stats_date_range"} <span data-role='dateSummary' class='i-color_soft'>{{if $chart->start AND $chart->end}}({lang="search_betweenXandX" sprintf="$chart->start->localeDate(), $chart->end->localeDate()"}){{elseif $chart->start}}({lang="search_afterX" sprintf="$chart->start->localeDate()"}){{elseif $chart->end}}({lang="search_beforeX" sprintf="$chart->end->localeDate()"}){{endif}}</span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<i-dropdown popover id="el{$chart->identifier}Date_menu">
+					<div class="iDropdown">
+						<form accept-charset='utf-8' action="{$chart->url}" method="post" data-role="dateForm" data-ipsForm class="ipsForm">
+							<div class="ipsFieldRow">
+								<div class="ipsFieldRow__label">{lang="stats_start_date"}</div>
+								{template="date" group="forms" location="global" app="core" params="'start', $chart->start ?: NULL, FALSE, NULL, NULL, FALSE, FALSE, NULL, NULL, NULL, array(), TRUE, 'ipsInput--fullWidth', \IPS\Member::loggedIn()->language()->addToStack('stats_start_date')"}
+							</div>
+							<div class="ipsFieldRow">
+								<div class="ipsFieldRow__label">{lang="stats_end_date"}</div>
+								{template="date" group="forms" location="global" app="core" params="'end', $chart->end ?: NULL, FALSE, NULL, NULL, FALSE, FALSE, NULL, NULL, NULL, array(), TRUE, 'ipsInput--fullWidth', \IPS\Member::loggedIn()->language()->addToStack('stats_end_date')"}
+							</div>
+							<div class="ipsSubmitRow">
+								<button type="submit" class="ipsButton ipsButton--primary ipsButton--wide" data-role="updateDate">{lang="submit"}</button>
+							</div>
+						</form>
+					</div>
+				</i-dropdown>
+            </li>
+            {{endif}}
+            {{if $chart->showSave and count( $chart->availableFilters )}}
+				<li>
+					<button type="button" id="el{$chart->identifier}Filter" popovertarget="el{$chart->identifier}Filter_menu" data-action="chartFilter" class="ipsButton ipsButton--small ipsButton--soft"><i class='fa-solid fa-filter' aria-hidden="true"></i> {lang="stats_chart_filters"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+					<i-dropdown popover id="el{$chart->identifier}Filter_menu" data-i-dropdown-selectable="checkbox" data-i-dropdown-persist>
+						<div class="iDropdown">
+							<ul class="iDropdown__items" data-role='filterMenu'>
+								<li>
+									<button type="button" data-role='selectAll' data-i-dropdown-noselect>{lang="all"}</button>
+								</li>
+								<li>
+									<button type="button" data-role='unselectAll' data-i-dropdown-noselect>{lang="none"}</button>
+								</li>
+								<li><hr></li>
+								{{foreach $chart->availableFilters as $f => $name}}
+									<li>
+										<a href="{$chart->flipUrlFilter( $f )}" {{if \in_array( $f, $chart->currentFilters )}}aria-selected="true"{{endif}} data-ipsMenuValue='{$f}'><i class="iDropdown__input" aria-hidden="true"></i>{{if \is_array( $name )}}{$name['value']}{{else}}{$name}{{endif}}</a>
+									</li>
+								{{endforeach}}
+							</ul>
+							<div class="i-padding_1 i-border-top_3">
+								<button type="button" popovertarget="el{$chart->identifier}Filter_menu" class='ipsButton ipsButton--primary ipsButton--wide'>{lang="apply_filters"}</button>
+							</div>
+						</div>
+					</i-dropdown>
+				</li>
+			{{endif}}
+			{{if $chart->customFiltersForm}}
+                {{$customFilterFormTitle = $chart->customFiltersForm['title'] ?? 'chart_customfilters_title';}}
+				<li>
+					<a href="#elCustomFiltersForm" class="ipsButton ipsButton--small ipsButton--soft" data-ipsDialog data-ipsDialog-size="narrow" data-ipsDialog-title="{lang="$customFilterFormTitle"}" data-ipsDialog-content="#el{$chart->identifier}CustomFiltersForm"><i class='fa-solid fa-chart-column' aria-hidden="true"></i> {lang="$customFilterFormTitle"}</a>
+					<div id='el{$chart->identifier}CustomFiltersForm' class='i-background_2 i-padding_3 ipsJS_hide'>
+						{$chart->getCustomFiltersForm()->customTemplate( array( \IPS\Theme::i()->getTemplate( 'forms', 'core', 'front' ), 'popupTemplate' ) )|raw}
+					</div>
+				</li>
+			{{endif}}
+			{{if isset( $chart->options['limitSearch'] )}}
+				<li>
+					<button type="button" id="el{$chart->identifier}Search" popovertarget="el{$chart->identifier}Search_menu" data-action='chartSearch' class="ipsButton ipsButton--small ipsButton--soft">{lang="$chart->options['limitSearch']"} <span data-role='searchSummary' class='i-color_soft'></span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+					<i-dropdown popover id="el{$chart->identifier}Search_menu">
+						<div class="iDropdown">
+							<form accept-charset='utf-8' action="{$chart->url}" method="post" data-role="searchForm" data-ipsForm class="ipsForm">
+								<div class="ipsFieldRow">
+									<div class="ipsFieldRow__label">{lang="$chart->options['limitSearch']"}</div>
+									{template="text" group="forms" location="global" app="core" params="'search', 'text', NULL, FALSE"}
+								</div>
+								<div class="ipsSubmitRow ipsButtons ipsButtons--fill">
+									<button type="submit" class="ipsButton ipsButton--inherit" data-role="clearSearchTerm" hidden>{lang="stats_search_reset"}</button>
+									<button type="submit" class="ipsButton ipsButton--primary" data-role="updateSearch">{lang="submit"}</button>
+								</div>
+							</form>
+						</div>
+					</i-dropdown>
+				</li>
+			{{endif}}
+			{{if $chart->showSave}}
+				<li>
+                    <button type="button" id="el{$chart->identifier}FilterSave" {{if !\IPS\Request::i()->chartId OR \IPS\Request::i()->chartId == '_default'}} popovertarget="el{$chart->identifier}FilterSave_menu" {{else}}data-chartId='{request="chartId"}'{{endif}} class='ipsButton ipsButton--small ipsButton--primary ipsHide' data-role='saveReport'>{lang="save"}</button>
+					{{if !\IPS\Request::i()->chartId OR \IPS\Request::i()->chartId == '_default'}}
+						<i-dropdown popover id="el{$chart->identifier}FilterSave_menu" data-role='filterSaveMenu'>
+							<div class="iDropdown">
+								{$chart->form->customTemplate( array( \IPS\Theme::i()->getTemplate( 'forms', 'core', 'front' ), 'popupTemplate' ) )|raw}
+							</div>
+						</i-dropdown>
+					{{endif}}
+				</li>
+			{{endif}}
+			{{if $chart instanceof \IPS\Helpers\Chart\Dynamic}}
+				<li>
+					<a class='ipsButton ipsButton--soft ipsButton--small' href='{$chart->url->setQueryString(array( "download" => 1 ))->csrf() }' data-ipsTooltip title='{lang="download_as_csv"}' data-role='downloadChart'><i class="fa-solid fa-download" aria-hidden="true"></i> CSV</a>
+				</li>
+			{{endif}}
+			{{if \count( $chart->availableTypes ) > 1}}
+				<li>
+					<div class="ipsButtonGroup ipsButton--small">
+						{{foreach $chart->availableTypes as $t}}
+							<a class='ipsButton {{if $chart->type == $t}}ipsButton--active{{endif}}' href="{$chart->url->setQueryString( array( 'type' => array( $chart->identifier => $t ), 'noheader' => 1 ) )}" data-ipsTooltip title='{lang="chart_{$t}"}' data-type='{$t}' {{if $chart->type == $t}}data-selected{{endif}}>
+								{{if $t === 'Table'}}
+									<i class="fa-solid fa-table" aria-hidden="true"></i>
+								{{elseif $t === 'LineChart'}}
+									<i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+								{{elseif $t == 'AreaChart'}}
+									<i class='fa-solid fa-chart-area' aria-hidden="true"></i>
+								{{elseif $t === 'ColumnChart'}}
+									<i class="fa-solid fa-chart-column" aria-hidden="true"></i>
+								{{elseif $t === 'BarChart'}}
+									<i class="fa-solid fa-chart-column fa-rotate-90" aria-hidden="true"></i>
+								{{elseif $t === 'PieChart'}}
+									<i class="fa-solid fa-pie-chart" aria-hidden="true"></i>
+								{{elseif $t === 'GeoChart'}}
+									<i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+								{{endif}}
+							</a>
+						{{endforeach}}
+					</div>
+				</li>
+			{{endif}}
+		</ul>
+		
+	</div>
+	<div class='ipsChart__chart i-padding_3' data-role="chart">
+		{$html|raw}
+	</div>
+</div>
+{{if $chart->timezoneError and member.isAdmin()}}
+	<p class="i-font-size_-2 i-color_soft i-padding_2 ipsChart__timezone-disclaimer"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {lang="dynamic_chart_timezone_info"}{{if $chart->hideTimezoneLink === FALSE}} <a href="{url="app=core&module=system&controller=ajax&do=chartTimezones"}" data-ipsDialog data-ipsDialog-title="{lang="dynamic_chart_timezone_title"}">{lang="learn_more"}</a>{{endif}}</p>
+{{endif}}

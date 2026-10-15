@@ -1,0 +1,48 @@
+<ips:template parameters="$rules" />
+{{foreach $rules as $rule}}
+    {{$extension = $rule->extension();}}
+    {{$canUse = $extension ? $extension->canUse() : false;}}
+	<li data-role="node">
+		<div class="ipsTree_row">
+			<div class="ipsTree_align">
+				<div class="ipsTree_rowData {{if !$rule->enabled or !$canUse}}i-opacity_4{{endif}}">
+					<div class="i-flex i-flex-wrap_wrap i-gap_2">
+						<div class="i-flex_01 i-basis_600">
+							<div class="ipsTree_title">
+								{$extension?->ruleDescription( $rule )|raw}
+							</div>
+							{{if !$canUse}}
+								<div class="i-font-size_-1">{lang="acp_rule_disabled_reason"}</div>
+							{{endif}}
+							{{if !$rule->enabled}}
+								<div class="ipsTree_description">{lang="acp_rule_paused"}</div>
+							{{elseif !$canUse}}
+								<div class="ipsTree_description">{lang="acp_rule_disabled"}</div>
+							{{endif}}
+						</div>
+						<div class="i-flex_11 i-basis_400">
+							<div class="ipsTree_row_cells">
+								<!-- {lang="achievements_awards"} -->
+								<div class='i-grid i-gap_2'>
+									{{if ( $rule->points_subject or $rule->badgeSubject() ) and ( $rule->points_other or $rule->badgeOther() )}}
+										{template="ruleAwards" group="achievements" params="$rule->points_subject, $rule->badgeSubject(), $extension?->awardOptions( $rule->filters )['subject']"}
+										{template="ruleAwards" group="achievements" params="$rule->points_other, $rule->badgeOther(), $extension?->awardOptions( $rule->filters )['other']"}
+									{{elseif $rule->points_subject or $rule->badgeSubject()}}
+										{template="ruleAwards" group="achievements" params="$rule->points_subject, $rule->badgeSubject(), $extension?->awardOptions( $rule->filters )['subject']"}
+									{{elseif $rule->points_other or $rule->badgeOther()}}
+										{template="ruleAwards" group="achievements" params="$rule->points_other, $rule->badgeOther(), $extension?->awardOptions( $rule->filters )['subject']"}
+									{{else}}
+										{template="ruleAwards" group="achievements" params="$rule->points_other, NULL, NULL"}
+									{{endif}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>				
+				<div class="ipsTree_controls">
+					{template="controlStrip" params="$rule->getButtons( \IPS\Http\Url::internal('app=core&module=achievements&controller=rules') )" group="global" app="core"}
+				</div>
+			</div>
+		</div>
+	</li>
+{{endforeach}}

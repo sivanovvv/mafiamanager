@@ -1,0 +1,39 @@
+{
+    "1": {
+        "method": "addIndex",
+        "params": [
+            "core_search_index",
+            {
+                "type": "key",
+                "name": "index_last_comment_lookup",
+                "columns": [
+                    "index_class",
+                    "index_item_id",
+                    "index_date_created"
+                ],
+                "length": [
+                    250,
+                    null,
+                    null
+                ]
+            }
+        ]
+    },
+    "2": {
+        "method": "dropIndex",
+        "params": [
+            "core_search_index",
+            "index_date_created"
+        ]
+    },
+    "3": {
+        "method": "delete",
+        "params": [
+            "core_expert_users",
+            [
+                "node_id=?",
+                0
+            ]
+        ]
+    }
+}

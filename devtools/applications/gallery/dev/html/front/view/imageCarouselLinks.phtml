@@ -1,0 +1,25 @@
+<ips:template parameters="$image" />
+
+{{$prev = array_reverse( array_slice( $image->fetchNextOrPreviousImages( 9, 'ASC' ), 0, 4 ) );}}
+{{$next = $image->fetchNextOrPreviousImages( 9, 'DESC' );}}
+<div class='cGalleryImageThumbs'>
+	<ol class='ipsCarousel ipsCarousel--images ipsCarousel--gallery-image-thumbs' id='gallery-image-thumbs' tabindex="0">
+		{{$counter = 1;}}
+		{{foreach $prev as $id => $carouselImage}}
+			{template="imageCarouselLink" app="gallery" group="view" location="front" params="$carouselImage"}
+			{{$counter++;}}
+		{{endforeach}}
+
+		{template="imageCarouselLink" app="gallery" group="view" location="front" params="$image, true"}
+		{{$counter++;}}
+
+		{{foreach $next as $id => $carouselImage}}
+			{template="imageCarouselLink" app="gallery" group="view" location="front" params="$carouselImage"}
+			{{$counter++;}}
+			{{if $counter === 10}}
+				{{break;}}
+			{{endif}}
+		{{endforeach}}
+	</ol>
+	{template="carouselNavigation" group="global" app="core" params="'gallery-image-thumbs'"}
+</div>

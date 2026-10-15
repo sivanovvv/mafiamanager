@@ -1,0 +1,26 @@
+<ips:template parameters="$id, $widgets, $orientation='horizontal'" />
+{{if isset( \IPS\Output::i()->sidebar['widgetareas'][$id] )}}
+    {{$area = \IPS\Output::i()->sidebar['widgetareas'][$id];}}
+    {template="widgetArea" group="global" app="core" params="$area"}
+{{elseif array_key_exists( $id, $widgets ) or \IPS\Dispatcher::i()->application->canManageWidgets()}}
+    {{if isset( $widgets[ $id ] ) AND \is_string( $widgets[ $id ] )}}
+    {$widgets[ $id ]|raw}
+    {{else}}
+	<div class='cWidgetContainer cWidgetContainer--main {{if !\IPS\Request::i()->_blockManager and ! isset( $widgets[ $id ] )}}ipsHide{{endif}}' {{if \IPS\Dispatcher::i()->application->canManageWidgets()}}data-controller='core.front.widgets.area'{{endif}} data-role='widgetReceiver' data-orientation='{$orientation}' data-widgetArea='{$id}'>
+		<ul>
+			{{if isset( $widgets[ $id ] )}}
+				{{foreach $widgets[ $id ]->getAllWidgets() as $_widget}}
+				{{if $widget = \IPS\Widget::createWidgetFromStoredData( $_widget )}}
+				<li
+                    class='{{if \get_class( $widget ) != 'IPS\cms\widgets\Database'}}ipsWidget {{endif}}{{foreach $widget->getWrapperClasses() as $class}} {$class}{{endforeach}}' {{foreach $widget->dataAttributes() as $k => $v}} data-{$k}="{$v}"{{endforeach}}
+                    data-controller='core.front.widgets.block'
+                >
+                    {$widget|raw}
+                </li>
+                {{endif}}
+				{{endforeach}}
+			{{endif}}
+		</ul>
+	</div>
+	{{endif}}
+{{endif}}

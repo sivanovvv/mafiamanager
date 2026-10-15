@@ -1,0 +1,4 @@
+<ips:template parameters="$form" />
+<div class='{{if !\IPS\Request::i()->isAjax()}}ipsBox{{endif}}'>
+	{$form|raw}
+</div>

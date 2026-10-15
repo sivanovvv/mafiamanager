@@ -1,0 +1,34 @@
+<ips:template parameters="$content, $checkoutStatus = NULL" />
+
+<div class='ipsBox ipsPull ipsBox--checkoutWrapper'>
+	<div class='i-text-align_center i-padding_3 i-border-bottom_3'>
+		{{if $checkoutStatus && $checkoutStatus != 'continue'}}
+			{{if $checkoutStatus === 'complete'}}
+				<i class='i-font-size_6 fa-solid fa-check-circle i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>
+				<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="transaction_title_success"}</h1>	
+			{{elseif $checkoutStatus === 'waiting'}}
+				<i class='i-font-size_6 fa-regular fa-clock i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>	
+				<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="transaction_title_waiting"}</h1>
+			{{elseif $checkoutStatus === 'hold'}}
+				<i class='i-font-size_6 fa-regular fa-clock i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>	
+				<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="transaction_title_hold"}</h1>
+			{{elseif $checkoutStatus === 'pending'}}
+				<i class='i-font-size_6 fa-regular fa-clock i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>	
+				<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="transaction_title_pending"}</h1>
+			{{elseif $checkoutStatus === 'refused'}}
+				<i class='i-font-size_6 fa-solid fa-triangle-exclamation i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>	
+				<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="transaction_title_refused"}</h1>
+			{{endif}}
+		{{else}}
+			<i class='i-font-size_6 fa-solid fa-cart-shopping i-margin-bottom_2 i-color_soft' aria-hidden="true"></i>
+			<h1 class='i-font-size_5 i-font-weight_600 i-color_hard i-text-align_center'>{lang="checkout"}</h1>
+		{{endif}}
+		{{if \IPS\Request::i()->isSecure() === TRUE}}
+			<div class="i-margin-top_1 i-font-weight_500 i-color_soft"><i class='fa-solid fa-lock' aria-hidden="true"></i> {lang="secure_page"}</div>
+		{{endif}}
+	</div>
+
+	<section id='elCheckoutContent'>
+		{$content|raw}
+	</section>
+</div>

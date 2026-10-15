@@ -1,0 +1,4 @@
+<ips:template parameters="$allContent, $secret, $email" />
+{$email->language->addToStack("post_before_register_followup_text")}
+
+{$email->language->addToStack("finish_this_submission", FALSE)}: {url="app=core&module=system&controller=register&pbr={$secret}&hidereminder=1" base="front" seoTemplate="register" plain="true"}

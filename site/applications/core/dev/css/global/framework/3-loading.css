@@ -1,0 +1,108 @@
+/* ======================================================== */
+/* LOADING THROBBERS */
+@keyframes ipsLoading {
+	0% { transform: rotate(0turn); }
+	100% { transform: rotate(1turn); }
+}
+
+.ipsLoading {
+	position: relative;
+}
+
+.ipsLoadingIcon{
+	width: 1em;
+	height: 1em;
+	font-size: 16px;
+	display: inline-block;
+}
+
+.ipsLoadingIcon::before,
+.ipsLoading::before {
+	content: '';
+	border-radius: 50%;
+	width: 1em;
+	height: 1em;
+	border: calc(2px + .03em) solid transparent;
+	border-color: color-mix(in srgb, var(--i-color_root) 10%, transparent);
+	border-top-color: currentColor;
+	box-sizing: border-box;
+	display: inline-block;
+	animation: ipsLoading 0.65s infinite linear;
+}
+
+.ipsLoading::before {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -.5em;
+	margin-left: -.5em;
+	font-size: 50px;
+}
+
+/* If the progress spinner has a message, reposition the loading icon to allow space for the message */
+.ipsLoading[data-loading-text]::before{
+	top: calc(50% - 14px);
+	transition: top 0.3s ease-in-out;
+}
+
+	/* Otherwise reset it to it's centered position */
+	.ipsLoading[data-loading-text=""]::before{
+		top: 50%;
+	}
+
+	/* Display the spinner loading text as a pseudo element */
+	.ipsLoading[data-loading-text]::after{
+		content: attr(data-loading-text);
+		position: absolute;
+		top: calc(50% + 23px);
+		left: 0; width: 100%;
+		opacity: 1;
+		transform: translateY(0);
+		transition-property: opacity, transform;
+		transition-duration: .3s;
+		transition-timing-function: ease-in-out;
+	}
+
+		/* Hide the text if no message is needed */
+		.ipsLoading[data-loading-text=""]::after{
+			opacity: 0;
+			transform: translateY(9px);
+		}
+
+.ipsLoading--small::before {
+	font-size: 24px;
+}
+
+.ipsLoading--tiny::before {
+	font-size: 16px;
+}
+
+/* Redirector */
+.ipsRedirect {
+	text-align: center;
+}
+	.ipsRedirect--loading {
+		min-height: 100px;
+	}
+	.ipsRedirect_progress {
+		
+	}
+
+	.ipsRedirect_progress[data-loading-text]::after{
+		content: attr(data-loading-text);
+		display: block;
+		margin-top: 15px;
+	}
+
+		/* Hide the message if it's empty */
+		.ipsRedirect_progress[data-loading-text=""]::after{
+			display: none;
+		}
+
+.ipsRedirectMessage {
+	margin: 50px;
+}
+
+.ipsRedirect_manualButton {
+	margin-top: 20px;
+}

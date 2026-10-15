@@ -1,0 +1,7 @@
+<ips:template parameters="$notification, $member, $email" />
+{$email->language->addToStack("email_registration_notify_validate")}
+
+{$email->language->addToStack("go_to_this_user", FALSE, array( 'htmlsprintf' => array( $member->name ) ) )}: {$member->url()}
+{$email->language->addToStack("block_awaiting_validation_all")}: {url="app=core&module=members&controller=members&filter=members_filter_validating" base="admin" plain="true"}
+
+-- {setting="board_name"}

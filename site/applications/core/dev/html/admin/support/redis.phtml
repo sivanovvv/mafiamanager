@@ -1,0 +1,15 @@
+<ips:template parameters="$info, $table" />
+
+<div class='i-padding_4 i-font-size_2'>
+	{{if isset( $info['used_memory_human'] ) AND ( isset( $info['total_system_memory'] ) OR isset( $info['maxmemory'] ) )}}
+		{{$percentage = ( $info['used_memory'] > 0 ) ? ceil( 100 / ( $info['maxmemory'] ?: $info['total_system_memory'] ) * $info['used_memory'] ) : 0;}}
+		<div class="i-position_sticky-top i-padding_2 i-text-align_center">
+			<strong>{lang="redis_space_used_bar"}</strong>
+			{{$progressId = 'ipsProgress-' . mt_rand();}}
+			<p id="{$progressId}" class="i-color_soft"><span data-role="percentage">{$percentage}</span>% (<span data-role="number">{$info['used_memory_human']}</span>/{{if $info['maxmemory']}}{$info['maxmemory_human']}{{else}}{$info['total_system_memory_human']}{{endif}})</p>
+			<progress aria-labelledby="{$progressId}" class="ipsProgress" value='{$percentage}' max='100'></progress>
+		</div>
+	{{endif}}
+	<br>
+	{$table|raw}
+</div>

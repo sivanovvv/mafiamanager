@@ -1,0 +1,134 @@
+<ips:template parameters="$invoice, $summary, $email" />
+{$email->language->get('email_invoice_paid')}
+<br><br>
+<h3 style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 24px; font-weight: 500; line-height: 21px; margin: 0 0 5px 0">
+	{expression="sprintf( $email->language->get('order_number'), $invoice->id )"}
+</h3>
+<p style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 24px; margin: 0">
+	{{if $invoice->po}}
+		<strong>{$email->language->get('invoice_po_number')}: {$invoice->po}</strong><br>
+	{{endif}}
+</p>
+<br><br>
+<a href='{$invoice->url()}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->get('email_view_order')}</a>
+<br><br>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#ffffff" class='responsive_table background_1'>
+	<tr>
+		<td dir='{dir}' width="100%" class='responsive_fullwidth' bgcolor="#f9f9f9" class="background_2">
+			<table cellpadding="10" cellspacing="0" border="0" width="100%">
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_3">
+						<strong>{$email->language->get("billing_address")}</strong>
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+						{$invoice->member->cm_name}<br>
+						{{if $invoice->billaddress}}{$invoice->billaddress->toString('<br>')|raw}{{endif}}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br><br>
+<table cellpadding="10" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td dir='{dir}' colspan="5" style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_3">
+			<strong>{$email->language->get("order_details")}</strong>
+		</td>
+	</tr>
+	<tr bgcolor="#f9f9f9" class="background_2 color_hard">
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+			&nbsp;
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 13px; line-height: 21px" colspan="2">
+			<strong>{$email->language->addToStack('invoice_item', FALSE)}</strong>
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 13px; line-height: 21px" align='right'>
+			<strong>{$email->language->get('total')}</strong>
+		</td>
+	</tr>
+	{{foreach $summary['items'] as $k => $item}}
+		<tr style='border-top: 1px solid #f5f5f5' class="border-top">
+			<td dir='{dir}' width='100' valign='top' class='hidePhone' style='width: 0; max-height: 0; overflow: hidden; float: left;'>
+				{{if $image = $item->image()}}
+					<img src='{$image->url}' width='100' style='border: 0; vertical-align: middle;'>
+				{{endif}}
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+				<span style="color: #4b4b4b" class="color_soft">{$item->quantity} x</span> {$item->name}
+				{{if $item instanceof \IPS\nexus\Invoice\Item\Renewal and $purchase = \IPS\nexus\Purchase::load( $item->id ) and $expire = $purchase->expire}}
+					<span style="color: #4b4b4b; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px;" class="color_soft">
+						({$email->language->addToStack('ps_expire', FALSE)}: {expression="$expire->localeDate( $invoice->member )"})
+					</span>
+				{{endif}}
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+				{{if \count( $item->details )}}
+					{{foreach $item->details as $k => $v}}
+						{lang="nexus_pfield_{$k}"}: {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}<br>
+					{{endforeach}}
+				{{endif}}
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+				<strong>{$item->linePrice()->toString( $email->language )}</strong>
+				{{if $item->quantity > 1}}
+					<br><span style="color: #4b4b4b; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px;" class="color_soft">{$item->price->toString( $email->language )} {$email->language->get("each_short")}</span>
+				{{endif}}
+			</td>
+		</tr>
+	{{endforeach}}
+	<tr style='border-top: 1px solid #dddddd' class="border-top">
+		<td dir='{dir}' colspan='3' align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+			<strong>{$email->language->get('subtotal')}</strong>
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+			<strong>{$summary['subtotal']->toString( $email->language )}</strong>
+		</td>
+	</tr>
+	{{foreach $summary['tax'] as $taxId => $tax}}
+		<tr style='border-top: 1px solid #f5f5f5' class="border-top">
+			<td dir='{dir}' colspan='3' align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+				{$email->language->get( 'nexus_tax_' . $taxId )} ({expression="$tax['rate']*100"}%)
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" align='right'>
+				<strong>{$tax['amount']->toString( $email->language )}</strong>
+			</td>
+		</tr>
+	{{endforeach}}
+	{{if $transactions = $invoice->transactions() and \count( $transactions )}}
+		<tr style='border-top: 1px solid #dddddd' class="border-top">
+			<td dir='{dir}' colspan='3' align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px; line-height: 21px">
+				<strong>{$email->language->get('total')}</strong>
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px; line-height: 21px" align='right'>
+				<strong>{$summary['total']->toString( $email->language )}</strong>
+			</td>
+		</tr>
+		{{foreach $transactions as $transaction}}
+			{{if $transaction->status === $transaction::STATUS_PAID}}
+				<tr>
+					<td dir='{dir}' colspan='2' align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px; line-height: 21px">
+						<strong>{$email->language->get('email_paid_by')} {{if $transaction->method}}{$transaction->method->getTitleForLanguage( $email->language )}{{else}}{$email->language->get('account_credit')}{{endif}}</strong>
+					</td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px; line-height: 21px" align='right'>
+						<strong style="font-size: 1.5em">{$transaction->amount->toString( $email->language )}</strong>
+					</td>
+				</tr>
+			{{endif}}
+		{{endforeach}}
+	{{else}}
+		<tr style='border-top: 1px solid #dddddd' class="border-top">
+			<td dir='{dir}' colspan='3' align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px; color: #cd3816; line-height: 21px">
+				<strong>{$email->language->get('total')}</strong>
+			</td>
+			<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px; color: #cd3816; line-height: 21px" align='right'>
+				<strong>{$summary['total']->toString( $email->language )}</strong>
+			</td>
+		</tr>
+	{{endif}}
+</table>
+<!-- Signature -->
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

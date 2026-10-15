@@ -1,0 +1,25 @@
+<ips:template parameters="$canSubmitImages, $currentCategory=NULL, $currentAlbum=NULL" />
+{{if !$currentCategory}}
+    <li>
+        <ul class="ipsButtonGroup">
+            <li>
+                <a href="{url="app=gallery" seoTemplate="gallery"}" class="ipsButton {{if !request.do=='categories'}} ipsButton--active{{endif}}" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="gallery_overview"}" rel="nofollow">
+                    <i class="fa-regular fa-images" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{url="app=gallery&module=gallery&controller=browse&do=categories" seoTemplate="gallery_categories"}" class="ipsButton {{if request.do=='categories'}} ipsButton--active{{endif}}" data-ipstooltip="" data-ipstooltip-safe="" title="{lang="gallery_view_categories"}" rel="nofollow">
+                    <i class="fa-solid fa-folder-tree" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </li>
+{{endif}}
+{{if $currentCategory AND $currentCategory->cover_img_id AND \IPS\gallery\Image::modPermission( 'edit', \IPS\Member::loggedIn(), $currentCategory )}}
+	<li>
+		<a href="{$currentCategory->url()->setQueryString( array( 'do' => 'unsetCoverPhoto' ) )->csrf()}" title='{lang="gallery_unset_cover"}' class='ipsButton ipsButton--text'>{lang="gallery_unset_cover"}</a>
+	</li>
+{{endif}}
+<li>
+    <a class="ipsButton ipsButton--primary" data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-extraClass='cGalleryDialog_outer' data-ipsDialog-destructOnClose='true' data-ipsDialog-remoteSubmit='true' {{if $currentAlbum}}href="{url="app=gallery&module=gallery&controller=submit&category={$currentCategory->id}&album={$currentAlbum->id}&_new=1" seoTemplate="gallery_submit"}" {{elseif $currentCategory}} href="{url="app=gallery&module=gallery&controller=submit&category={$currentCategory->id}&_new=1" seoTemplate="gallery_submit"}" {{else}} href="{url="app=gallery&module=gallery&controller=submit&_new=1" seoTemplate="gallery_submit"}" {{endif}} rel='nofollow noindex'><i class="fa-solid fa-photo-film" aria-hidden="true"></i><span>{lang="add_gallery_image"}</span></a>
+</li>

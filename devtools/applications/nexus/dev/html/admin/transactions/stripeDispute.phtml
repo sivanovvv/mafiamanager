@@ -1,0 +1,108 @@
+<ips:template parameters="$transaction, $log, $response=NULL, $error=NULL" />
+
+<li class='cTransaction_intermediate'>
+	<div class='cTransaction_icon'>
+		{{if isset( $response['status'] ) and \in_array( $response['status'], array( 'warning_needs_response', 'warning_under_review', 'warning_closed', 'charge_refunded' ) )}}
+			<i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i>
+		{{else}}
+			<i class='fa-solid fa-rotate-left' aria-hidden="true"></i>
+		{{endif}}
+	</div>
+	<div class='cTransaction_info'>
+		<h3 class="ipsTitle ipsTitle--h3">
+			{{if isset( $response['status'] ) and \in_array( $response['status'], array( 'warning_needs_response', 'warning_under_review', 'warning_closed', 'charge_refunded' ) )}}
+				<strong>
+					{lang="tstatus_dspd_inquiry_set"}
+				</strong>
+			{{else}}
+				<strong>
+					{lang="tstatus_dspd_set"}
+				</strong>
+			{{endif}}
+		</h3>
+		<br>
+		
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='i-font-size_1 i-color_soft'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+
+		{{if isset( $response['reason'] )}}
+		<p>
+			{lang="stripe_dispute_reason_{$response['reason']}"}
+		</p>
+		{{endif}}
+		
+		{{if isset( $response['status'] ) and \in_array( $response['status'], array( 'needs_response', 'under_review', 'warning_needs_response', 'warning_under_review' ) )}}
+			<p class='i-font-weight_bold i-color_warning i-margin-top_1'>
+				{lang="stripe_dispute_status_{$response['status']}"}
+			</p>
+		{{endif}}
+		{{if $error}}
+			<p class='ipsMessage ipsMessage--error'>
+				{lang="stripe_dispute_error"}
+			</p>
+		{{endif}}
+		{{if isset( $response['status'] ) and $response['status'] == 'won'}}
+				</div>
+			</li>
+			<li class='cTransaction_positive'>
+				<div class='cTransaction_icon'>
+					<i class='fa-solid fa-repeat' aria-hidden="true"></i>
+				</div>
+				<div class='cTransaction_info'>
+					<h3 class="ipsTitle ipsTitle--h3">
+						<strong>
+							{lang="transaction_dispute_won"}
+						</strong>
+					</h3>
+					<p>
+						{lang="transaction_dispute_won_desc"}
+					</p>
+					{{if $transaction->status === $transaction::STATUS_DISPUTED}}
+						<div class="i-margin-top_1">
+							<a href="{$transaction->acpUrl()->setQueryString( array( 'do' => 'approve', 'r' => 'v' ) )->csrf()}" class="ipsButton ipsButton--positive ipsButton--tiny" data-confirm data-confirmSubMessage="{lang="transaction_approve_from_dispute"}">{lang="transaction_approve"}</a>
+							<a href="{$transaction->acpUrl()->setQueryString( array( 'do' => 'refund', 'r' => 'v' ) )}" class="ipsButton ipsButton--negative ipsButton--tiny" data-ipsDialog data-ipsDialog-title="{lang="transaction_refund_credit_title" sprintf="$transaction->amount"}">{lang="transaction_refund_credit"}</a>
+						</div>
+					{{endif}}
+		{{elseif isset( $response['status'] ) and $response['status'] == 'warning_closed'}}
+				</div>
+			</li>
+			<li class='cTransaction_positive'>
+				<div class='cTransaction_icon'>
+					<i class='fa-solid fa-check' aria-hidden="true"></i>
+				</div>
+				<div class='cTransaction_info'>
+					<h3 class="ipsTitle ipsTitle--h3">
+						<strong>
+							{lang="transaction_dispute_warning_closed"}
+						</strong>
+					</h3>
+					<p>
+						{lang="transaction_dispute_warning_closed_desc"}
+					</p>
+		{{elseif isset( $response['status'] ) and $response['status'] == 'lost'}}
+				</div>
+			</li>
+			<li class='cTransaction_negative'>
+				<div class='cTransaction_icon'>
+					<i class='fa-solid fa-xmark' aria-hidden="true"></i>
+				</div>
+				<div class='cTransaction_info'>
+					<h3 class="ipsTitle ipsTitle--h3">
+						<strong>
+							{lang="transaction_dispute_lost"}
+						</strong>
+					</h3>
+					<p>
+						{lang="transaction_dispute_lost_desc"}
+					</p>
+		{{endif}}
+		
+	</div>
+</li>

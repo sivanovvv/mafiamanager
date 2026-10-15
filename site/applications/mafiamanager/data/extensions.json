@@ -1,0 +1,10 @@
+{
+    "core": {
+        "UIItem": {
+            "MafiaVoting": "IPS\\mafiamanager\\extensions\\core\\UIItem\\MafiaVoting"
+        },
+        "UINode": {
+            "MafiaForum": "IPS\\mafiamanager\\extensions\\core\\UINode\\MafiaForum"
+        }
+    }
+}

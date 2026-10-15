@@ -1,0 +1,6 @@
+<ips:template parameters="$package" />
+{{if $package->description}}
+<div class='i-padding_3'>
+    <div class="ipsRichText i-margin-block_2">{$package->description|raw}</div>
+</div>
+{{endif}}

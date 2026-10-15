@@ -1,0 +1,4 @@
+<ips:template parameters="$club, $email" />
+{$email->language->addToStack("notification__new_club_unapproved", FALSE, array( 'htmlsprintf' => array( $club->owner->name, $club->name ) ) )}
+
+{$email->language->addToStack("club_view", FALSE)}: {$club->url()}

@@ -1,0 +1,102 @@
+<ips:template parameters="$club, $activity, $fieldValues" />
+
+{{if \IPS\Settings::i()->clubs_header != 'sidebar'}}
+	{template="header" group="clubs" app="core" params="$club"}
+{{endif}}
+	<section class='ipsBlockSpacer'>
+		{{if settings.clubs_require_approval and !$club->approved}}
+			<div class='ipsMessage ipsMessage--warning ipsPull'>
+				<i class="fa-solid fa-eye-slash ipsMessage__icon" aria-hidden="true"></i>
+				<div class='i-flex i-align-items_center i-flex-wrap_wrap i-gap_3'>
+					<div class="i-flex_91">
+						<h3 class='ipsMessage__title'>{lang="club_unapproved"}</h3>
+						<p>
+							{{if member.modPermission('can_access_all_clubs')}}
+								{lang="club_unapproved_desc_mod"}
+							{{else}}
+								{lang="club_unapproved_desc_public"}
+							{{endif}}
+						</p>
+					</div>
+					{{if member.modPermission('can_access_all_clubs')}}
+						<div class='i-flex_11 ipsButtons'>
+							<a class="ipsButton ipsButton--inherit" href="{$club->url()->setQueryString( array( 'do' => 'approve', 'approved' => 0 ) )->csrf()}" data-confirm>
+								<i class="fa-solid fa-trash-can" aria-hidden="true"></i> {lang="delete"}
+							</a>
+							<a class="ipsButton ipsButton--primary" href="{$club->url()->setQueryString( array( 'do' => 'approve', 'approved' => 1 ) )->csrf()}" data-confirm>
+								<i class="fa-solid fa-check" aria-hidden="true"></i> {lang="approve"}
+							</a>					
+						</div>
+					{{endif}}
+				</div>
+			</div>
+		{{endif}}
+
+		{{$memberStatus = $club->memberStatus( \IPS\Member::loggedIn(), 2 );}}
+		{template="nonMemberClubStatus" group="clubs" app="core" params="$club, $memberStatus"}
+
+		{{if $club->about || ( $club->location() && settings.clubs_locations && ( !\IPS\GeoLocation::enabled() ) ) || \IPS\Member\Club\CustomField::roots()}}
+			<div class='ipsBox ipsBox--clubDetails ipsPull i-padding_3' data-ips-hook="club_details">
+				{{if $club->about}}
+					<div class="i-margin-bottom_3">
+						<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{lang="club_about_this_club"}</h3>
+						<div class='ipsRichText'>
+							{$club->about}
+						</div>
+					</div>
+				{{endif}}
+				{{if $club->location() && settings.clubs_locations && ( !\IPS\GeoLocation::enabled() )}}
+					<div class="i-margin-bottom_3">
+						<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{lang="club_location"}</h3>
+						<div class='ipsRichText'>
+							{$club->location()}
+						</div>
+					</div>
+				{{endif}}
+				{{$printedHr = FALSE;}}
+				{{if \IPS\Member\Club\CustomField::roots()}}
+					{{foreach \IPS\Member\Club\CustomField::roots() as $field}}
+						{{if isset( $fieldValues[ "field_" . $field->id ] )}}
+							{{if !$printedHr}}
+								<hr class='ipsHr'>
+								{{$printedHr = TRUE;}}
+							{{endif}}
+							<div class='i-margin-bottom_3'>
+								<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{$field->_title}</h3>
+								<div class='ipsRichText'>
+									{$field->displayValue( $fieldValues[ "field_" . $field->id ] )|raw}
+								</div>
+							</div>
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+			</div>
+		{{endif}}
+
+		{{if $club->isLeader() and $club->type === $club::TYPE_CLOSED and $pendingMembers = $club->members( array( $club::STATUS_REQUESTED ), NULL, NULL, 3 ) and \count( $pendingMembers )}}
+			<div class='ipsBox ipsBox--clubPendingMembers ipsPull'>
+				<h2 class='ipsBox__header'><i class='fa-solid fa-lock' data-ipsTooltip title="{lang="club_requested_users_desc"}" aria-hidden="true"></i> {lang="club_requested_users"}</h2>
+				<div data-controller='core.front.clubs.requests'>
+					{template="membersRows" group="clubs" params="$club, $pendingMembers"}
+				</div>
+			</div>
+		{{endif}}
+
+		{{if $club->canRead()}}
+			<div class='ipsBox ipsBox--clubWhatsNew ipsPull'>
+				<div class="i-flex i-align-items_center i-gap_2 i-padding_3">
+					<h3 class='ipsTitle ipsTitle--h4 i-flex_11'>{lang="club_whats_new"}</h3>
+					<div>
+						{template="follow" app="core" group="global" params="'core','club', $club->id, $club->followersCount()"}
+					</div>
+				</div>
+				<ol class="ipsStream ipsStream_withTimeline">
+					{{foreach $activity as $result}}
+						{{if $result !== NULL}}
+							{$result->html()|raw}
+						{{endif}}
+					{{endforeach}}
+				</ol>
+			</div>
+		{{endif}}
+	</section>

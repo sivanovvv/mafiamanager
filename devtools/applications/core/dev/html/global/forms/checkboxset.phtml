@@ -1,0 +1,56 @@
+<ips:template parameters="$name, $value, $required, $options, $multiple=FALSE, $class='', $disabled=FALSE, $toggles=array(), $id=NULL, $unlimited=NULL, $unlimitedLang='all', $unlimitedToggles=array(), $toggleOn=TRUE, $descriptions=array(), $impliedUnlimited=FALSE, $showAllNone=TRUE, $condense=TRUE, $userSuppliedInput=''" />
+{{if $multiple}}
+	<input type="hidden" name="{$name}[__EMPTY]" value="__EMPTY">
+{{endif}}
+<div data-control="granularCheckboxset"{{if $condense}} data-count="{expression="\count( $options )"}"{{endif}}>
+	{{if $unlimited !== NULL AND $impliedUnlimited === FALSE}}
+			<div data-role="checkboxsetUnlimited" class="{{if !\is_array( $value )}}ipsJS_show{{else}}ipsHide{{endif}}">
+				<input
+					type='checkbox'
+					name="{expression="trim( $name, '[]' )"}_unlimited"
+					value='{$unlimited}'
+					id="{expression="trim( $id ?: $name, '[]' )"}_unlimited"
+					{{if $unlimited === $value}}checked{{endif}}
+					{{if $disabled}}disabled aria-disabled='true'{{endif}}
+					class="ipsSwitch"
+					data-role="checkboxsetUnlimitedToggle"
+				>
+				&nbsp;
+				{lang="or"}
+				&nbsp;
+				<a class="i-cursor_pointer" data-action="checkboxsetCustomize">{lang="customize"}</a>
+			</div>
+	{{endif}}
+	<div data-role="checkboxsetGranular" class="ipsField__checkboxOverflow {{if $unlimited !== NULL AND $impliedUnlimited === FALSE and !\is_array( $value )}}ipsJS_hide{{endif}}">
+	{{$userInput = \is_array( $value ) ? array_diff( $value, array_keys( $options ) ) : array();}}
+		<input type="search" data-role="search" placeholder="{lang="search"}" class="ipsInput ipsField__checkboxOverflow__search" />
+		<ul class="ipsFieldList">
+			{{foreach $options as $k => $v}}
+				<li data-role="result">
+					<input type="checkbox" {{if $class}}class="{$class}"{{endif}} name="{$name}[{$k}]" value="1" {{if ( $unlimited !== NULL AND $unlimited === $value ) or ( \is_array( $value ) AND \in_array( $k, $value ) ) or ( $userSuppliedInput AND count( $userInput ) AND $k == $userSuppliedInput )}}checked{{endif}} {{if $disabled === TRUE or ( \is_array( $disabled ) and \in_array( $k, $disabled ) )}}disabled{{endif}} {{if isset( $toggles[ $k ] ) and !empty( $toggles[ $k ] )}}data-control="toggle" {{if $toggleOn === FALSE}}data-togglesOff{{else}}data-togglesOn{{endif}}="{expression="implode( ',', $toggles[ $k ] )"}"{{endif}} id="elCheckbox_{$name}_{$k}" class="ipsInput ipsInput--toggle">
+					<div class='ipsFieldList__content'>
+						<label for='elCheckbox_{$name}_{$k}' id='elField_{$name}_label' data-role="label">{$v|raw}</label>
+						{{if isset( $descriptions[ $k ] )}}
+							<div class='ipsFieldRow__desc'>
+								{$descriptions[ $k ]|raw}
+							</div>
+						{{endif}}
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+        {{if $userSuppliedInput}}
+        <div id='{$userSuppliedInput}' class='i-margin-top_1'>
+            <input type='text' class='ipsInput ipsInput--text' name='{$userSuppliedInput}_{$name}' value='{expression="implode( ',', $userInput )"}'>
+        </div>
+        {{endif}}
+		
+		{{if $showAllNone}}
+		<div class="ipsJS_show ipsField__checkboxOverflow__toggles" data-role="massToggles">
+			{lang="or"}
+			&nbsp;
+			<button data-action="checkboxsetAll" type="button">{lang="all"}</button> / <button data-action="checkboxsetNone" type="button">{lang="none"}</button>
+		</div>
+		{{endif}}
+	</div>
+</div>

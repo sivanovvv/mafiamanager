@@ -1,0 +1,108 @@
+{
+    "1": {
+        "method": "createTable",
+        "params": [
+            {
+                "name": "core_assignments_history",
+                "columns": {
+                    "history_id": {
+                        "name": "history_id",
+                        "type": "BIGINT",
+                        "length": "20",
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": false,
+                        "default": 0,
+                        "comment": "ID Number",
+                        "unsigned": true,
+                        "auto_increment": true
+                    },
+                    "history_assignment_id": {
+                        "name": "history_assignment_id",
+                        "type": "BIGINT",
+                        "length": null,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": true,
+                        "auto_increment": false
+                    },
+                    "history_date": {
+                        "name": "history_date",
+                        "type": "INT",
+                        "length": null,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": "0",
+                        "comment": "",
+                        "unsigned": false,
+                        "auto_increment": false
+                    },
+                    "history_by": {
+                        "name": "history_by",
+                        "type": "BIGINT",
+                        "length": null,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": true,
+                        "auto_increment": false
+                    },
+                    "history_type": {
+                        "name": "history_type",
+                        "type": "VARCHAR",
+                        "length": 20,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": false,
+                        "auto_increment": false
+                    },
+                    "history_text": {
+                        "name": "history_text",
+                        "type": "TEXT",
+                        "length": null,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": false,
+                        "auto_increment": false
+                    }
+                },
+                "indexes": {
+                    "PRIMARY": {
+                        "type": "primary",
+                        "name": "PRIMARY",
+                        "columns": [
+                            "history_id"
+                        ],
+                        "length": [
+                            null
+                        ]
+                    },
+                    "history_assignment": {
+                        "type": "key",
+                        "name": "history_assignment",
+                        "columns": [
+                            "history_assignment_id",
+                            "history_date"
+                        ],
+                        "length": [
+                            null,
+                            null
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

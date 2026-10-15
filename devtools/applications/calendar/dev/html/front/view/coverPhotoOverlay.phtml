@@ -1,0 +1,65 @@
+<ips:template parameters="$event" />
+{{$sameDay = FALSE;}}
+{{if $event->_end_date}}
+	{{$sameDay = !( ($event->_start_date->mday != $event->_end_date->mday) or ($event->_start_date->mon != $event->_end_date->mon) or ($event->_start_date->year != $event->_end_date->year) );}}
+{{endif}}
+
+<div class="ipsPageHeader__row">
+	<div class="ipsPageHeader__primary" data-ips-hook='header'>
+		{{if $event->_happening}}
+			<div><span class="ipsBadge i-margin-bottom_1">{$event->_happening}</span></div>
+		{{endif}}
+		<div class='ipsPageHeader__title'>
+			<h1 data-ips-hook='title'>
+				{{if $event->canEdit()}}
+					<span data-controller="core.front.core.moderation">
+						<span data-role="editableTitle" title='{lang="click_hold_edit"}'>{$event->title}</span>
+					</span>
+				{{else}}
+					{$event->title}
+				{{endif}}
+			</h1>
+			<div class='ipsBadges' data-ips-hook='badges'>
+				{{foreach $event->badges() as $badge}}{$badge|raw}{{endforeach}}
+			</div>
+		</div>
+		{{if $event->container()->allow_reviews}}
+			<div class="ipsPageHeader__rating">{template="rating" group="global" location="front" app="core" params="'large', $event->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $event->memberReviewRating()"} <span class='i-color_soft'>({lang="num_reviews" pluralize="$event->reviews"})</span></div>
+		{{endif}}
+		{{if \count( $event->tags() ) OR $event->prefix() OR ( $event->canEdit() AND $event::canTag( NULL, $event->container() ) )}}
+			{template="tagsWithPrefix" group="global" app="core" params="$event->tags(), $event->prefix(), FALSE, FALSE, ( $event->canEdit() AND $event::canTag( NULL, $event->container() ) ) ? $event->url() : NULL"}
+		{{endif}}
+	</div>	
+	<div class='ipsCoverPhoto__buttons'>
+		<div class='ipsButtons' data-ips-hook='buttons'>
+			{{if $event->canRemind()}}
+				{template="reminder" app="calendar" group="view" params="$event, $event->getReminder()"}
+			{{endif}}
+			{{if \count( $event->shareLinks() )}}
+				{template="shareButton" app="core" group="sharelinks" params="$event"}
+			{{endif}}
+			{{if \IPS\Application::appIsEnabled('cloud')}}
+				{template="spam" app="cloud" group="spam" params="$event"}
+			{{endif}}
+			{template="follow" app="core" group="global" params="'calendar', 'event', $event->id, $event->followersCount()"}
+		</div>
+	</div>
+</div>
+<div class="ipsPageHeader__row ipsPageHeader__row--footer">
+	<div class="ipsPageHeader__primary">
+		<div class="ipsPhotoPanel ipsPhotoPanel--inline">
+			{template="userPhoto" app="core" group="global" params="$event->author(), 'tiny'"}
+			<div class="ipsPhotoPanel__text" data-ips-hook='metadata'>
+				<p class="ipsPhotoPanel__primary">
+					{lang="event_created_by" htmlsprintf="$event->author()->link( $event->warningRef(), NULL, $event->isAnonymous() )"}
+					{{if $event->isAnonymous() and \IPS\Member::loggedIn()->modPermission('can_view_anonymous_posters')}}
+						<a data-ipsHover data-ipsHover-width="370" data-ipsHover-onClick href="{$event->url( 'reveal' )->csrf()}"><span class="cAuthorPane_badge cAuthorPane_badge_small cAuthorPane_badge--anon" data-ipsTooltip title="{lang="post_anonymously_reveal"}"></span></a>
+					{{endif}}
+				</p>
+			</div>
+		</div>
+	</div>
+	<div>
+		<a href='{$event->container()->url()}' class='cEvents_event cEvents_eventSmall cEvents_style{$event->container()->id}'>{$event->container()->_title}</a>
+	</div>
+</div>

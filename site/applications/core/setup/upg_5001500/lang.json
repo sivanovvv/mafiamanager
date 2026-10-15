@@ -1,0 +1,46 @@
+{
+    "normal": {
+        "added": [
+            "x_anonymous_followers",
+            "carousel_pause",
+            "bmtag_member_email",
+            "stats_visits_last",
+            "stats_visits_total",
+            "visits_totals",
+            "total_users_visits",
+            "range_of_visits",
+            "promote_dialog_not_all_view",
+            "promote_dialog_not_all_view_desc",
+            "stats_points_by_group",
+            "stats_points_by_member",
+            "stats_points_total",
+            "stats_points_count",
+            "stats_points_member_group_id",
+            "stats_points_member_id",
+            "database_schema_index_type",
+            "devscan__dupe_langs_title",
+            "devscan__dupe_langs",
+            "devscan__dupe_js_langs_title",
+            "devscan__dupe_js_langs",
+            "login_as_member_banned"
+        ],
+        "edited": [
+            "acprestrictions_type",
+            "can_manage_sidebar",
+            "notification__new_badge"
+        ],
+        "removed": [
+            "emailtpl_notification_event_reminder",
+            "emailstats__notification_event_reminder",
+            "menu_manager_live_preview",
+            "menu_manager_preview_theme",
+            "menu_manager_preview_note",
+            "database_index_type"
+        ]
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

@@ -1,0 +1,10 @@
+<ips:template parameters="$app" />
+<div class='ipsBox i-padding_3'>
+{{$sprintf1 =    '__app_' . $app->directory . '_description';}}
+{{$editLink = \IPS\Developer::getApplicationsLanguageFilePath( $app );}}
+	<p class="i-font-size_2">{lang="dev_app_missing_description" sprintf="$sprintf1"}</p>
+	{{if $editLink }}
+	<br>
+	<a href="{$editLink}" class="ipsButton ipsButton--negative">{lang="open_in_ide"}</a>
+	{{endif}}
+</div>

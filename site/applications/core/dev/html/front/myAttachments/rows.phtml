@@ -1,0 +1,31 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $attachment}}
+	<div class='ipsData__item'>
+		<a href="{setting="base_url"}applications/core/interface/file/attachment.php?id={$attachment['attach_id']}{{if $attachment['attach_security_key']}}&key={$attachment['attach_security_key']}{{endif}}" class="ipsData__image i-basis_70" aria-hidden="true" tabindex="-1">
+			{{if $attachment['attach_is_image']}}
+				<img src="{file="$attachment['attach_location']" extension="core_Attachment"}" alt='' data-ipsLightbox data-ipsLightbox-group="myAttachments" loading="lazy">
+			{{else}}
+				<i class='fa-solid fa-{expression="\IPS\File::getIconFromName( $attachment['attach_file'] )"}' aria-hidden="true"></i>
+			{{endif}}
+		</a>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>
+					<a href="{setting="base_url"}applications/core/interface/file/attachment.php?id={$attachment['attach_id']}{{if $attachment['attach_security_key']}}&key={$attachment['attach_security_key']}{{endif}}">{$attachment['attach_file']}</a>
+				</h4>
+				<p class='ipsData__meta'>
+					{{if !$attachment['attach_is_image']}}{lang="attach_hits_count" pluralize="$attachment['attach_hits']"} &middot; {{endif}} {filesize="$attachment['attach_filesize']"} &middot; {lang="my_attachment_uploaded" htmlsprintf="\IPS\DateTime::ts( $attachment['attach_date'] )->html( false )"}
+				</p>
+			</div>
+			<div class='i-basis_380 i-color_soft'>
+				{$attachment['attach_content']|raw}
+			</div>
+		</div>
+		{{if $table->canModerate()}}
+		<label class="ipsData__mod">
+			<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+			<input type='checkbox' data-role='moderation' name="moderate[{$attachment['attach_id']}]" data-actions="{expression="implode( ' ', $table->multimodActions() )"}"  data-state='' class="ipsInput ipsInput--toggle">
+		</label>
+		{{endif}}
+	</div>
+{{endforeach}}

@@ -1,0 +1,53 @@
+<ips:template parameters="$mail, $members, $count" />
+<div class='ipsBox'>
+	<i-tabs class='ipsTabs acpFormTabBar' id='ipsTabs_bulkmail' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_bulkmail_content'>
+		<div role='tablist'>
+			<button type="button" id='ipsTabs_bulkmail_overview' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_bulkmail_overview_panel" aria-selected="true">
+				{lang="bm_send_overview"}
+			</button>
+			<button type="button" id='ipsTabs_bulkmail_memberlist' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_bulkmail_memberlist_panel" aria-selected="false">
+				{lang="bm_send_recipients" sprintf="$count"}
+			</button>
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<div id='ipsTabs_bulkmail_content' class='acpFormTabContent'>
+		<div id='ipsTabs_bulkmail_overview_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_bulkmail_overview">
+			<ul class='ipsForm ipsForm--horizontal ipsForm--bulk-overview'>
+				<li class='ipsJS_hide'>{lang="bm_send_overview"}</li>
+				<li class='ipsFieldRow'>
+					<div class='ipsFieldRow__label'>
+						{lang="mail_subject"}
+					</div>
+					<div class='ipsFieldRow__content'>
+						{$mail->subject}
+					</div>
+				</li>
+				<li class='ipsFieldRow'>
+					<div class='ipsFieldRow__label'>
+						{lang="mail_body"}
+					</div>
+					<div class='ipsFieldRow__content'>
+						<iframe seamless src='{url="app=core&module=bulkmail&controller=bulkmail&do=iframePreview&id=" base="admin"}{$mail->id}' style="width:100%" height='350'></iframe>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id='ipsTabs_bulkmail_memberlist_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_bulkmail_memberlist" hidden>
+			<div class='ipsJS_hide'>{lang="bm_send_recipients" sprintf="$count"}</div>
+			<div class='ipsSpanGrid'>
+				{{foreach $members as $_index => $member}}
+					<div class='ipsSpanGrid__3 i-padding_3'>
+						<a href='{url="app=core&module=members&controller=profile&id={$member['member_id']}" base="front" seoTitles="$member['members_seo_name']" seoTemplate="profile"}'>{$member['name']}</a>
+						<span class='i-color_soft'>({$member['email']})</span>
+					</div>
+					{{if $_index > 0 AND ( $_index + 1 ) % 4 == 0}}</div><div class='ipsSpanGrid'>{{endif}}
+				{{endforeach}}
+			</div>
+		</div>
+	</div>
+	<div class="ipsSubmitRow">
+		<a href='{url="app=core&module=bulkmail&controller=bulkmail&do=form&id="}{$mail->id}' class='ipsButton ipsButton--secondary'>{lang="continue_editing"}</a>
+		<a href='{url="app=core&module=bulkmail&controller=bulkmail&do=send&id={$mail->id}" csrf="true"}' class='ipsButton ipsButton--primary'>{lang="proceed"}</a>
+	</div>
+</div>

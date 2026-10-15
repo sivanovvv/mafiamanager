@@ -1,0 +1,20 @@
+<ips:template parameters="$subprocessors" />
+<div class='{{if !\IPS\Request::i()->isAjax()}}ipsBox ipsBox--privacy{{endif}}'>
+	<header data-ips-hook="pageHeader" class='ipsPageHeader ipsPageHeader--padding'>
+		<h1 class='ipsPageHeader__title'>{lang="privacy"}</h1>
+	</header>
+	<div class="ipsBox__padding ipsRichText">
+		{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('privacy_text_value')"}
+		{{if \IPS\Settings::i()->site_address and \IPS\Settings::i()->site_address != "null"}}
+			<p>{setting="board_name"}, {address="\IPS\Settings::i()->site_address"}</p>
+		{{endif}}
+		{{if $subprocessors and \count($subprocessors)}}
+			<h3 class="i-margin-top_5">{lang="pp_third_parties"}</h3>
+			{{foreach $subprocessors as $processor}}
+				<h4>{$processor['title']}</h4>
+				<p>{$processor['description']}</p>
+				<p><a href="{$processor['privacyUrl']}" target="_blank" class="i-font-weight_500 i-color_soft">{$processor['title']} {lang="pp_privacy_policy"}</a></p>
+			{{endforeach}}
+		{{endif}}
+	</div>
+</div>

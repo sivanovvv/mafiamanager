@@ -1,0 +1,340 @@
+<ips:template parameters="$subject, $member, $content, $unsubscribe, $placeholderRecipient=FALSE, $introText='', $email=NULL, $ourPicks=NULL" />
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{dir}">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!-- <meta charset="UTF-8"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="color-scheme" content="light dark">
+		<meta name="supported-color-schemes" content="light dark">
+		<title>{$subject}</title>
+		<style type="text/css">		
+			
+			#outlook a {padding:0;} 
+			.ExternalClass {width:100%;}
+			.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
+			#backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+
+			img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;} 
+			a img {border:none;} 
+			p {margin: 1em 0;}
+			table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+			table td {border-collapse: collapse;}
+
+			body, table, td, a {
+				font-family: system-ui, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+				line-height: 1.4;
+			}
+			body, .body{
+				background-color: #eeeeee !important;
+				color: #252525 !important;
+			}
+			.color_hard, .logo, h1, h2, h3, h4, h5, h6 {color: #000 !important;}
+			.color_soft{ color: #4b4b4b !important; }
+			.content{
+				background-color: #fff !important;
+				box-shadow: rgba(0,0,0,0.05) 0px 0px 0px 1px, rgba(0,0,0,0.05) 0px 10px 30px;
+				border-radius: 8px;
+			}
+			a {
+				color: currentColor;
+				text-decoration: underline;
+			}
+			.avatar{
+				background-color: #cccccc;
+			}
+			/* Unhides cells that we set to hide in the HTML in case the client doesn't support style properly */
+			/* *[class~=hidePhone] {
+			    display : block !important;
+			    width : auto !important;
+			    max-height: inherit !important;
+			    overflow : visible !important;
+			    float : none !important;
+			}
+
+			*[class~=hidePhone][width="30"] {
+				width: 30px !important;
+			}
+
+			*[class~=hidePhone][width="40"] {
+				width: 40px !important;
+			}
+
+			td[class~=hidePhone] {
+				display: table-cell !important;
+			}
+			*/
+
+			.ipsImage {
+				max-width: 100% !important;
+				height: auto !important;
+			}
+
+			/* Attachment styles for rich text */
+			.ipsAttachLink_image,
+			.ipsAttachLink {
+				margin-bottom: 15px;
+			}
+			
+			html[dir="ltr"] .ipsAttachLink_image.ipsAttachLink_right,
+			html[dir="ltr"] .ipsAttachLink.ipsAttachLink_right,
+			html[dir="rtl"] .ipsAttachLink_image.ipsAttachLink_left,
+			html[dir="rtl"] .ipsAttachLink.ipsAttachLink_left {
+				margin-left: 30px;
+			}
+			html[dir="ltr"] .ipsAttachLink_image.ipsAttachLink_left, 
+			html[dir="ltr"] .ipsAttachLink.ipsAttachLink_left, 
+			html[dir="rtl"] .ipsAttachLink_image.ipsAttachLink_right, 
+			html[dir="rtl"] .ipsAttachLink.ipsAttachLink_right {
+				margin-right: 30px;
+			}
+
+			.button:hover{
+				background-image: linear-gradient(to right, rgba(255,255,255,.15), rgba(255,255,255,.15));
+			}
+
+			@media only screen and (max-width: 480px) {
+
+				#userPhoto, .hidePhone, *[class~=hidePhone], td[class~=hidePhone] {
+					display: none !important;
+				}
+
+				.responsive_table > tr > td, .responsive_table > tbody > tr > td,
+				.responsive_table > tr, .responsive_table > tbody > tr {
+					display: block;
+					text-align: left;
+				}
+
+				html[dir="rtl"] .responsive_table > tr > td, html[dir="rtl"] .responsive_table > tbody > tr > td,
+				html[dir="rtl"] .responsive_table > tr, html[dir="rtl"] .responsive_table > tbody > tr {
+					text-align: right;
+				}
+
+				.responsive_row {
+					margin-bottom: 10px;
+				}
+
+				.responsive_fullwidth {
+					width: 100% !important;
+				}
+
+				.cOurPicksRow {
+					margin-bottom: 30px;
+					padding-bottom: 30px;
+				}
+			}
+			
+			@media (prefers-color-scheme: dark){
+				body, .body{
+					background-color: #171717 !important;
+					color: #cacaca !important;
+				}
+				.color_hard, .logo, h1, h2, h3, h4, h5, h6, .text-link {color: #fff !important;}
+				.color_soft{ color: #959595 !important; }
+				.content{
+					background-color: #202020 !important;
+					box-shadow: inset rgba(255,255,255,.04) 0px 0px 0px 1px, inset rgba(255,255,255,.12) 0px 1px 0px;
+				}
+				.background_1{
+					background-color: #202020 !important;
+				}
+				.background_2{
+					background-color: #292929 !important;
+				}
+				.background_3{
+					background-color: #2f2f2f !important;
+				}
+				.avatar{
+					background-color: #2f2f2f;
+				}
+				.border-bottom{
+					border-bottom-color: #333333 !important;
+				}
+				.border-top{
+					border-top-color: #333333 !important;
+				}
+				.hr{
+					background: #414141 !important;
+				}
+				.button{
+					box-shadow: inset rgba(255,255,255,.2) 0px 1px 0px;
+				}
+			}
+		</style>
+	</head>
+	<body dir="{dir}" bgcolor="#eeeeee" style="width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; text-size-adjust: 100%; margin: 0; padding: 0;" class="body">
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#eeeeee" class="body">
+			<tr>
+				<td align="center" style="padding:0 15px;">
+					<table width="100%" cellpadding="0" cellspacing="0" style="max-width: 800px; margin: 0 auto;">
+						<tr>
+							<td valign='middle' style="font-size: 25px; font-weight: 500; line-height: 120%; padding: 25px 15px;">
+								<a href='{setting="base_url"}' class="logo" style="text-decoration: none; border: 0;">
+									{{$imgDims=NULL;}}
+									{{if \IPS\Settings::i()->email_logo}}
+										{{try { $imgDims = \IPS\File::get( 'core_Theme', \IPS\Settings::i()->email_logo )->getImageDimensions(); } catch( \Exception $e ) {} }}
+									{{endif}}
+									{{if $imgDims}}
+										<img src='{file="\IPS\Settings::i()->email_logo" extension="core_Theme"}' alt="{setting="board_name"}" width='{$imgDims[0]}' height='{$imgDims[1]}' style="max-width: 100%; height: auto;" />
+									{{else}}
+										{setting="board_name"}
+									{{endif}}
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td class="content">
+								<div style="height: 8px; background-color: {setting="email_color"}; border-radius: 8px 8px 0 0;"></div>
+								<table width='100%' cellpadding='30' style="table-layout: fixed;">
+									{$email->getAdvertisement()|raw}
+									<tr>
+										<td style="font-size: 15px; overflow-wrap: break-word;">
+											{{if $introText}}
+												<h1 style="text-align:center; color: {setting="email_color"} !important; font-size: 28px; font-weight: 500 !important; margin-bottom: 25px;">{$introText}</h1>
+											{{endif}}
+											{{if $member->member_id }}
+												<div style="margin-bottom: 10px;">
+													<strong style='font-size: 17px' class="color_hard">{$email->language->addToStack("email_greeting_member", FALSE, array( 'sprintf' => array( $member->name ) ) )}</strong>
+												</div>
+											{{elseif $placeholderRecipient}}
+												<div style="margin-bottom: 10px;">
+													<strong style='font-size: 17px' class="color_hard">{$email->language->addToStack("email_greeting_member", FALSE, array( 'sprintf' => array( '*|member_name|*' ) ) )}</strong>
+												</div>
+											{{endif}}
+
+											{$content|raw}
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr height='25'>
+							<td></td>
+						</tr>
+						{{if $ourPicks AND \count( $ourPicks )}}
+							<tr>
+								<td class="content" bgcolor='#ffffff' class="background_1">
+									<table width='100%' cellpadding='20' cellspacing='0' border='0'>
+										<tr>
+											<td><b style="font-size: 19px; font-weight: 600;">{$email->language->addToStack("email_also_interesting")}</b></td>
+										</tr>
+									</table>
+									<table width='100%' cellpadding='30' cellspacing='0' border='0' class='responsive_table'>
+										<tr>
+											<td>
+												<table width='100%' cellpadding='0' cellspacing='0' border='0' class='responsive_table'>
+													<tr>
+														{{$count = 0;}}
+														{{foreach $ourPicks as $item}}
+															{{if $count == 2}}
+																</tr>
+																<tr height='30'>
+																	<td colspan='3' class='hidePhone'>
+																		
+																	</td>
+																</tr>
+																<tr height='30'>
+																	<td colspan='3' class='hidePhone'>
+																		
+																	</td>
+																</tr>
+																<tr>
+															{{endif}}
+															<td class='responsive_fullwidth cOurPicksRow' width='48%' valign='top' style="font-size: 15px;">
+																{{$staff = \IPS\Member::load( $item->added_by );}}
+																<p style='font-size: 20px; margin: 0 0 5px 0; font-weight: 500;'>
+																	<a href="{$item->object()->url()}" class="color_hard">{$item->ourPicksTitle}</a>
+																</p>
+																<p style="font-size: 13px; line-height: 21px; margin: 0; color: #4b4b4b;" class="color_soft">
+																	{$item->objectMetaDescription( $email->language )}
+																</p>
+																{{if $text = $item->getText(false)}}
+																	<p style="font-size: 15px; line-height: 21px; margin-bottom: 0">
+																		{truncate="$text" length="100"}
+																	</p>
+																{{endif}}
+																<p style="font-size: 13px; line-height: 21px; margin-top: 5px; margin-bottom: 0">
+																	<a href="{$item->object()->url()}" style='color: #000; text-decoration: none; font-weight: 600;' class="text-link">{$email->language->addToStack("digests_read_more")}</a>
+																	{{if $counts = $item->objectDataCount( $email->language )}}
+																		&nbsp;&nbsp;({$counts['words']})
+																	{{endif}}
+																</p>
+																<br>
+
+																{{if $staff->member_id}}
+																<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+																	<tr>
+																		<td width='40' valign='top'>
+																			<img src='{$staff->get_photo( true, true )}' width='40' height='40' style='border-radius: 6px;' class="avatar">
+																		</td>
+																		<td width='10'>
+																			<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='10' height='1' alt=''>
+																		</td>
+																		<td width='100%' style="font-size: 13px;">
+																			<strong style="font-weight: 600;">{$email->language->addToStack("promoted_by")}</strong><br>
+																			{$staff->name}{{if $item->added}}<span class="color_soft">, {expression="\IPS\DateTime::ts( $item->added )->localeDate( $email->language )"} {expression="\IPS\DateTime::ts( $item->added )->localeTime( TRUE, TRUE, $email->language )"}</span>{{endif}}
+																		</td>
+																	</tr>
+																</table>
+																{{endif}}
+															</td>
+															{{$count++;}}
+															{{if $count == 1 || $count == 3}}
+																<td width='4%' class='hidePhone'>
+																	
+																</td>
+															{{endif}}
+															{{if ( \count( $ourPicks ) === 1 && $count == 1 ) || ( \count( $ourPicks ) == 3 && $count == 3 )}}
+																<td width='48%' class='hidePhone'>
+																	
+																</td>
+															{{endif}}
+														{{endforeach}}
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr height='25'>
+								<td></td>
+							</tr>
+						{{endif}}
+						{{if $unsubscribe}}
+							{$unsubscribe|raw}
+						{{endif}}
+						{{if \IPS\Settings::i()->privacy_type != "none"}}
+							<tr>
+								<td valign='middle' align='center' style="font-size: 12px; line-height: 18px;">
+									<a href='{{if \IPS\Settings::i()->privacy_type == "internal"}}{url="app=core&module=system&controller=privacy" seoTemplate="privacy" base="front"}{{else}}{setting="privacy_link"}{{endif}}' style='color: #000; text-decoration: underline; font-weight: 600; display: inline-block' class="text-link">{$email->language->addToStack("privacy_policy_link", FALSE)}</a>
+								</td>
+							</tr>
+						{{endif}}
+
+						{{if \IPS\Settings::i()->site_social_profiles AND \IPS\Settings::i()->social_links_in_email AND $links = json_decode( \IPS\Settings::i()->site_social_profiles, TRUE ) AND \count( $links )}}
+							{{$socialColors = array('x' => '#1d9bf0;', 'internal' => '#008b00;', 'deviantart' => '#16A085;', 'email' => '#444;', 'facebook' => '#0866ff;', 'linkedin' => '#007FB1;', 'reddit' => '#FF4500;', 'stumble' => '#EB4924;', 'vk' => '#507299;', 'weibo' => '#D32F2F;', 'youtube' => '#ff0000;', 'foursquare' => '#2D5BE3;', 'etsy' => '#ec5500;', 'flickr' => '#0060d4;', 'github' => '#010101;', 'instagram' => '#d12a72;', 'pinterest' => '#df0018;', 'slack' => '#2db079;', 'xing' => '#B0D400;', 'tumblr' => '#EB4924;', 'twitch' => '#772ce8;', 'discord' => '#5d6af2;', 'bluesky' => '#0a7aff', 'tiktok' => '#000000');}}
+							<tr>
+								<td valign='top' align='center' style="font-size: 0px; line-height: 18px; padding-top: 10px;">
+									{{foreach $links as $profile}}
+										<a href='{$profile['key']}' target='_blank' rel="noopener" style='font-size: 12px; width: 28px; height: 28px; line-height: 28px; text-align: center; border-radius: 5px; display: inline-block; color: #fefefe !important; font-size: 15px; margin: 4px; background-color: {$socialColors[ $profile['value'] ]}'><img src='{setting="base_url"}applications/core/interface/email/{$profile['value']}.png' width='16' height='16' style="margin-top: 6px;" alt="{$profile['value']}"></a>
+									{{endforeach}}
+								</td>
+							</tr>
+						{{endif}}
+						{{if \IPS\Settings::i()->board_name}}
+							<tr>
+								<td valign='top' align='center' style="font-size: 12px; line-height: 18px; padding-top: 10px;">
+									{setting="board_name"}{{if \IPS\Settings::i()->site_address and \IPS\Settings::i()->site_address != 'null'}}, {address="\IPS\Settings::i()->site_address"}{{endif}}
+								</td>
+							</tr>
+						{{endif}}
+						<tr height='10'>
+							<td></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

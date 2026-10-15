@@ -1,0 +1,2 @@
+<ips:template parameters="$event, $email" />
+{$email->language->addToStack("x_created_event_in", FALSE, array( 'htmlsprintf' => array( $event->author()->name, $event->container()->getTitleForLanguage( $email->language ) ) ) )}: {$event->title} ({$event->url()})

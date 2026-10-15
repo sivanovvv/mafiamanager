@@ -1,0 +1,92 @@
+<ips:template parameters="$step, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<form accept-charset='utf-8' class="ipsForm {$class} ipsForm--complete-profile" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	{{if \count( $form->elements ) < 2}}
+		{{if \IPS\Member::loggedIn()->language()->checkKeyExists( 'profile_step_text_' . $step->id ) and \IPS\Member::loggedIn()->language()->words[ 'profile_step_text_' . $step->id ]}}
+			<div class='i-padding_2'>
+				<div class="ipsMessage ipsMessage--info">
+					{lang="profile_step_text_{$step->id}"}
+				</div>
+			</div>
+		{{endif}}
+		<div class="">
+			{{if !empty( $sidebar )}}
+				<div class='ipsColumns'>
+					<div class='ipsColumns__primary'>
+			{{endif}}
+				<ul class="ipsForm ipsForm--vertical">
+					{{foreach $elements as $collection}}
+						{{foreach $collection as $input}}
+							{{if \is_object( $input ) }}
+								{$input->rowHtml($form)|raw}
+							{{else}}
+								{$input|raw}
+							{{endif}}
+						{{endforeach}}
+					{{endforeach}}
+				</ul>
+			{{if !empty( $sidebar )}}
+					</div>
+					<div class='ipsColumns__secondary i-basis_180'>
+						{expression="array_pop( $sidebar )" raw="true"}
+					</div>
+				</div>
+			{{endif}}
+		</div>
+	{{else}}
+	{{if \IPS\Member::loggedIn()->language()->checkKeyExists( 'profile_step_text_' . $step->id ) and \IPS\Member::loggedIn()->language()->words[ 'profile_step_text_' . $step->id ]}}
+		<div class='i-padding_2'>
+			<div class="ipsMessage ipsMessage--info">
+				{lang="profile_step_text_{$step->id}"}
+			</div>
+		</div>
+	{{endif}}
+		<i-tabs class='ipsTabs' id='ipsTabs_{$id}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{$id}_content'>
+			<div role='tablist'>
+				{{foreach $elements as $name => $content}}
+					<button type="button" id='ipsTabs_{$id}_{$name}' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_{$id}_{$name}_panel" aria-selected="{{if $name == request.tab}}true{{else}}false{{endif}}">
+						{{foreach $content as $element}}{{if !\is_string( $element ) and $element->error}}<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> {{break;}}{{endif}}{{endforeach}} {lang="$name"}
+					</button>
+				{{endforeach}}
+			</div>
+			{template="tabScrollers" app="core" group="global" location="global"}
+		</i-tabs>
+		<div id='ipsTabs_{$id}_content' class='ipsTabs__panels'>
+			{{foreach $elements as $name => $content}}
+				<div id='ipsTabs_{$id}_{$name}_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_{$id}_{$name}" {{if $name != request.tab}}hidden{{endif}}>
+					<ul class="ipsForm ipsForm--vertical">
+						{{foreach $content as $input}}
+							{{if \is_object( $input ) }}
+								{$input->rowHtml($form)|raw}
+							{{else}}
+								{$input|raw}
+							{{endif}}
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endforeach}}
+		</div>
+	{{endif}}
+	<ul class="ipsSubmitRow ipsButtons">
+		{{foreach $actionButtons as $button}}
+			<li>{$button|raw}</li>
+		{{endforeach}}
+		{{if !$step->required OR $step->completed()}}
+			<li><a href="{$action->setQueryString('_moveToStep', $step->getNextStep())}" data-action="wizardLink" class="ipsButton ipsButton--text ipsJS_none">{lang="profile_complete_skip_step"}</a></li>
+			<li><a href="{url="app=core&module=system&controller=settings" seoTemplate="settings"}" class="ipsButton ipsButton--text">{lang="profile_wizard_cancel"}</a></li>
+		{{endif}}
+	</ul>
+</form>

@@ -1,0 +1,26 @@
+<ips:template parameters="$member, $categories" />
+<div class='ipsBox i-margin-bottom_1' data-ips-template="notificationTypes">
+	<h2 class='ipsBox__header'>
+		<i class="fa-solid fa-bell ipsBox__header-icon" aria-hidden="true"></i>
+		{lang="notification_options"}
+	</h2>
+	<i-data>
+		<ul class="ipsData ipsData--grid ipsData--notification-options cMemberNotifications">
+			{{foreach $categories as $k => $enabled}}
+				<li class="ipsData__item">
+					<a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\Notifications&id={$member->member_id}&type={$k}"}" class="ipsLinkPanel" data-ipsDialog data-ipsDialog-title="{lang="notifications__$k"}"><span>{lang="notifications__$k"}</span></a>
+					<div class="ipsData__main">
+						<h3 class="ipsData__title">{lang="notifications__$k"}</h3>
+						<div class="ipsData__meta">
+							{{if \count( $enabled )}}
+								{expression="\IPS\Member::loggedIn()->language()->formatList( array_map( function( $option ) { return $option['title']; }, $enabled ), \IPS\Member::loggedIn()->language()->get('member_notifications_list_format') )"}
+							{{else}}
+								{lang="notifications_off"}
+							{{endif}}
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+</div>

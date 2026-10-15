@@ -1,0 +1,12 @@
+<ips:template parameters="$customer, $invoices, $invoiceCount" />
+<div class='ipsBox ipsPull ipsBox--invoicesACP'>
+	<h2 class='ipsBox__header'>
+		{lang="menu__nexus_payments_invoices"} ({$invoiceCount})
+		{{if $invoiceCount > $invoices->limit}}
+			<a href="{url="app=nexus&module=payments&controller=invoices&member={$customer->member_id}"}" class="ipsBox__header-secondary">{lang="see_all_invoices" pluralize="$invoiceCount"}</a>
+		{{endif}}
+	</h2>
+	<div>
+		{$invoices|raw}
+	</div>
+</div>

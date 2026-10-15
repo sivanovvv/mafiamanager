@@ -1,0 +1,35 @@
+<ips:template parameters="$templates, $current, $request" />
+<ul class='cTemplateList' data-type='{{if $current and $current->type}}{$current->type}{{else}}{$request['t_type']}{{endif}}'>
+	{{foreach $templates as $type => $data}}
+	<li data-node="top" data-location="{$type}">
+		<details {{if $type == $request['t_location']}}open{{endif}} data-node="top" data-location="{$type}">
+			<summary>{lang="content_template_type_{$type}"}</summary>
+			<i-details-content>
+				<ul>
+					{{if isset( $templates[ $type ] ) and \is_array( $templates[ $type ] )}}
+						{{foreach $templates[ $type ] as $group => $childTemplates}}
+							<li data-group="{$group}" data-type="{$current->type}">
+								{{if $type == 'database' and ! \in_array( $group, array_values( \IPS\cms\Templates::$databaseDefaults ) )}}
+									<a class="ipsCms_templateOptions" href="{url="app=cms&module=pages&controller=templates&do=databaseTemplateGroupOptions&group={$group}&t_location={$type}"}" id="elTemplateEditor_options_{$group}" data-ipsDialog><i class="fa-solid fa-gear" aria-hidden="true"></i></a>
+								{{endif}}
+								<details {{if $request['t_group'] == $group}}open{{endif}} data-group="{$group}" data-type="{$current->type}">
+									<summary>{expression="\IPS\cms\Templates::readableGroupName( $group )"}</summary>
+									<i-details-content>
+										<ul>
+											{{foreach $childTemplates as $key => $child}}
+												<li {{if $request['t_key'] == $child->key && !\IPS\Request::i()->isAjax()}}class="cTemplateList_activeNode"{{endif}} data-type="{$current->type}">
+													<a data-type="{$child->type}" data-location="{$child->location}" href='{url="app=cms&module=pages&controller=templates&t_location={$child->location}&t_group={$child->group}&t_key={$child->key}"}' data-action="openFile" data-group="{$child->group}" data-name="{$child->title}" data-inherited-value="{$child->_inherited}" data-key="{$child->key}" data-itemID="{$child->id}">{$child->title}</a>
+												</li>
+											{{endforeach}}
+										</ul>
+									</i-details-content>
+								</details>
+							</li>
+						{{endforeach}}
+					{{endif}}
+				</ul>
+			</i-details-content>
+		</details>
+	</li>
+	{{endforeach}}
+</ul>

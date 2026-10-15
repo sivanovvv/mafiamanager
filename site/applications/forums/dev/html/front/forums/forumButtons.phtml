@@ -1,0 +1,12 @@
+<ips:template parameters="$forum" />
+<ul data-ips-hook="buttons" class="ipsButtons ipsButtons--main i-margin-block_block">
+	{{if $forum->isCombinedView()}}
+		<li>
+			<a class="ipsButton ipsButton--primary" href="{$forum->url()->setQueryString( [ 'do' => 'createMenu', 'root' => $forum->id ] )}" data-ipsDialog-title='{lang="select_forum"}' data-ipsDialog data-ipsDialog-size='narrow' title='{lang="create_new_topic"}' rel='nofollow noindex'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="start_new_topic"}</span></a>
+		</li>
+	{{elseif $forum->can('add')}}
+		<li>
+			<a class="ipsButton ipsButton--primary" href="{$forum->url()->setQueryString( 'do', 'add' )}" title='{lang="start_new_topic_desc"}' rel='nofollow noindex'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="start_new_topic"}</span></a>
+		</li>
+	{{endif}}
+</ul>

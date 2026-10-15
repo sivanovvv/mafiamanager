@@ -1,0 +1,10 @@
+<ips:template parameters="$k, $element, $form" />
+
+<div data-role="toggleFilter">
+	<div id="{$element->htmlId}" hidden style="position: absolute">
+		<input type="checkbox" id="{$element->htmlId}_filterCheckbox" name="activeFilters[{$element->name}]" value="1" data-control="toggle" data-togglesOn="{$element->htmlId}_filter" data-togglesOff="{$element->htmlId}_button" data-filter="{$element->htmlId}_filter" {{if \in_array( $k, $form->_activeFilters )}}checked{{endif}}>
+	</div>
+	<button type="button" class='cRulesForm__conditionButton ipsRadius i-font-size_-1' data-action="filterReveal" data-filter="{$element->htmlId}_filterCheckbox" id="{$element->htmlId}_button">
+		<span class='cRulesForm__conditionButton__icon i-display_inline-flex i-align-items_center i-justify-content_center'><i class='fa-solid fa-plus' aria-hidden="true"></i></span> {{if $element->label}}{$element->label}{{else}}{lang="$element->name"}{{endif}}
+	</button>
+</div>

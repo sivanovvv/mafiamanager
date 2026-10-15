@@ -1,0 +1,14 @@
+<ips:template parameters="$form, $table, $id=0" />
+{template="pageHeader" group="global" params="\IPS\Member::loggedIn()->language()->addToStack('ignored_users'), \IPS\Member::loggedIn()->language()->addToStack('ignored_users_blurb')"}
+<div data-controller='core.front.ignore.new' data-id="{$id}">
+	<div class='ipsBox ipsBox--ignoreUsers ipsPull i-margin-bottom_block'>
+		<div class="i-padding_3">
+			<h2 class='ipsTitle ipsTitle--h3'>{lang="ignored_users_add"}</h2>
+			<p>{lang="ignored_users_add_desc"}</p>
+		</div>
+		{$form|raw}
+	</div>	
+	<div>
+		{$table|raw}
+	</div>
+</div>

@@ -1,0 +1,23 @@
+<ips:template parameters="$results" />
+<div class="i-padding_3">
+	<div class="ipsTableScroll">
+		<table class="ipsTable ipsTable_zebra " data-role="table">
+			<thead>
+				<tr class="i-background_3">
+					<th>{lang="stats_badge_mgroup_badge"}</th>
+					<th>{lang="stats_badge_mgroup_count"}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{foreach $results as $row}}
+					<tr class="">
+						<td class=" ipsTable_wrap ipsTable_primary ">
+							{$row['badge']->html('ipsDimension:3')|raw} {$row['badge']->_title}
+						</td>
+						<td>{$row['count']}</td>
+					</tr>
+				{{endforeach}}
+			</tbody>
+		</table>
+	</div>
+</div>

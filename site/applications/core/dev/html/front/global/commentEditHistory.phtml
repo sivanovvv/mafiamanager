@@ -1,0 +1,12 @@
+<ips:template parameters="$editHistory, $comment" />
+{{if !\IPS\Request::i()->isAjax()}}
+<h1 class='ipsTitle ipsTitle--h3'>{lang="edit_history_title"}</h1>
+{{endif}}
+
+{{if \IPS\Settings::i()->edit_log_prune > 0}}
+	<div class='ipsMessage ipsMessage--info {{if !\IPS\Request::i()->isAjax()}}i-margin-top_3{{else}}i-margin_2{{endif}}'>{lang="edit_log_prune_notice" pluralize="\IPS\Settings::i()->edit_log_prune"}</div>
+{{endif}}
+
+<div class="i-padding_3" data-role="commentFeed">
+    {$editHistory|raw}
+</div>

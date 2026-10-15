@@ -1,0 +1,4 @@
+<ips:template parameters="$type, $value, $hoverValues = NULL" />
+<span class="ipsAchievementsBadge ipsAchievementsBadge--{$type}" {{if $hoverValues}}data-ipsTooltip data-ipsTooltip-safe title="{expression="implode( '<br>', $hoverValues )"}"{{endif}}>
+	{$value}
+</span>

@@ -1,0 +1,41 @@
+<ips:template parameters="$row, $overview, $folders" />
+<li class='ipsData__item ipsData__item--messenger {{if $row['mt_id'] == \IPS\Request::i()->id}}ipsData__item--active{{endif}}' {{if $row['map_has_unread']}}data-ips-unread{{else}}data-ips-read{{endif}} data-messageid='{$row['map_topic_id']}' data-keyNavBlock data-keyAction='return'>
+	{{if $overview}}
+		<a href='{url="app=core&module=messaging&controller=messenger&id={$row['mt_id']}" seoTemplate="messenger_convo"}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row['mt_title']}</span></a>
+	{{else}}
+		<a href='{url="app=core&module=messaging&controller=messenger&id={$row['mt_id']}&latest=1" seoTemplate="messenger_convo"}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row['mt_title']}</span></a>
+	{{endif}}
+	<div class='ipsData__icon'>{template="userPhoto" app="core" group="global" params="$row['last_message']->author(), 'fluid'"}</div>
+	<div class="ipsData__content">
+		<div class='ipsData__main'>
+			<div class='ipsData__title'>
+				{{if $row['map_has_unread']}}<span class="ipsIndicator"></span>{{endif}}
+				<h4>
+					{{if $overview}}
+						<a href='{url="app=core&module=messaging&controller=messenger&id={$row['mt_id']}" seoTemplate="messenger_convo"}' data-role="messageURL">{$row['mt_title']}</a>
+					{{else}}
+						<a href='{url="app=core&module=messaging&controller=messenger&id={$row['mt_id']}&latest=1" seoTemplate="messenger_convo"}' data-role="messageURL">{$row['mt_title']}</a>
+					{{endif}}
+				</h4>
+			</div>
+			{{if $row['last_message']}}<div class='ipsData__desc ipsTruncate_2'>{$row['last_message']->truncated( TRUE )|raw}</div>{{endif}}
+			<div class='ipsData__extra'>
+				<div class="ipsData__last">
+					<span data-ipsTooltip title="{lang="messenger_started_by" sprintf="\IPS\Member::load( $row['mt_starter_id'] )->name, \IPS\DateTime::ts( $row['mt_start_time'] )->relative()"}{{if $row['mt_start_time'] !== $row['mt_last_post_time'] AND $row['last_message']}} &middot; {lang="messenger_last_reply" sprintf="$row['last_message']->author()->name, \IPS\DateTime::ts( $row['mt_last_post_time'] )->relative()"}{{endif}}">{datetime="$row['mt_last_post_time']" short="true" } &middot; {$row['participants']}</span>
+				</div>
+				<ul class='ipsData__stats'>
+					<li data-statType="comments">
+						<span class='ipsData__stats-icon' data-stat-value="{$row['mt_replies']}" aria-hidden="true" data-ipstooltip title='{lang="messenger_message_count" pluralize="$row['mt_replies']"}'></span>
+						<span class="ipsData__stats-label" data-role="replyCount">{number="$row['mt_replies']"}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	{{if $overview}}
+		<label class="ipsData__mod">
+			<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+			<input type='checkbox' data-role='moderation' name="moderate[{$row['map_topic_id']}]" data-actions='delete {{if \is_array($folders) and \count($folders) > 1}}move{{endif}}' data-state class="ipsInput ipsInput--toggle">
+		</label>
+	{{endif}}
+</li>

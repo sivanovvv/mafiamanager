@@ -1,0 +1,36 @@
+{
+    "normal": {
+        "added": [
+            "pagination_label",
+            "title_suggestions_heading",
+            "title_suggestions_view",
+            "bm_sending_active",
+            "bm_test_send",
+            "bm_test_complete",
+            "bm_test_send_to",
+            "bm_test_send_to_desc",
+            "pf_upload_is_image_yes",
+            "pf_upload_is_image_no",
+            "pf_image_size",
+            "pf_image_size_desc",
+            "pf_upload_is_image",
+            "pf_allowed_extensions",
+            "filter_report_status_open",
+            "filter_report_status_open_app",
+            "profile_birthday_day",
+            "profile_birthday_month",
+            "profile_birthday_year",
+            "cookies_optional_toggle_enabled",
+            "cookies_optional_toggle_disabled"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [
+            "edit"
+        ],
+        "edited": [],
+        "removed": []
+    }
+}

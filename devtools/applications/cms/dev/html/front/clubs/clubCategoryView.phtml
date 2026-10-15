@@ -1,0 +1,7 @@
+<ips:template parameters="$category, $club, $index" />
+
+{{if \IPS\Settings::i()->clubs_header != 'sidebar'}}
+{template="header" group="clubs" app="core" params="$club, $category, 'full'"}
+{{endif}}
+
+{$index|raw}

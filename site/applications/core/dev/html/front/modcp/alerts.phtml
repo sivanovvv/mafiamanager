@@ -1,0 +1,14 @@
+<ips:template parameters="$table" />
+<header class='ipsPageHeader'>
+    <div class="ipsPageHeader__row">
+		<div class="ipsPageHeader__primary">
+			<h1 class="ipsPageHeader__title">{lang="modcp_alerts"}</h1>
+		</div>
+		<ul class='ipsButtons ipsButtons--main'>
+			<li><a href='{url="app=core&module=modcp&tab=alerts&action=create" seoTemplate="modcp_alerts"}' id='elAdd_Alert' class='ipsButton ipsButton--primary' data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-title='{lang="add_alert"}'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="add_alert"}</span></a></li>
+		</ul>
+	</div>
+</header>
+<div class=''>
+	{$table|raw}
+</div>

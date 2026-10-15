@@ -1,0 +1,24 @@
+<ips:template parameters="$siteKey" />
+<div data-ipsCaptcha data-ipsCaptcha-service='hcaptcha' data-ipsCaptcha-key="{$siteKey}">
+	<div class="h-captcha" data-sitekey="{$siteKey}" data-open-callback="hCaptchaOpenCallback" data-close-callback="hCaptchaCloseCallback"></div>
+</div>
+<script>
+	// The h-captcha challenge is appended to the end of the DOM, outside of the <dialog>
+	// It therefore becomes inert, so we need to display the dialog as a non-modal element whenever the challenge is open
+	function hCaptchaOpenCallback(){
+		const dialog = document.getElementById('elRegisterButton_dialog');
+		if (!dialog) return;
+		if(dialog.open){
+			dialog.close();
+			dialog.show();
+		}
+	}
+	function hCaptchaCloseCallback(){
+		const dialog = document.getElementById('elRegisterButton_dialog');
+		if (!dialog) return;
+		if(dialog.open){
+			dialog.close();
+			dialog.showModal();
+		}
+	}
+</script>

@@ -1,0 +1,20 @@
+<ips:template parameters="$table" />
+<header class="ipsPageHeader ipsPageHeader--forum-fluid">
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" class='ipsPageHeader__title'>
+				{lang="topics"}
+			</h1>
+		</div>
+		<ul class='ipsButtons ipsButtons--main'>
+			{{if \IPS\forums\Forum::canOnAny( 'add' )}}
+				<li>
+					<a class="ipsButton ipsButton--primary" href="{url="app=forums&module=forums&controller=forums&do=add" seoTemplate="topic_non_forum_add_button"}" rel="nofollow" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="select_forum"}'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="start_new_topic"}</span></a>
+				</li>
+			{{endif}}
+		</ul>
+	</div>
+	{template="indexButtons" group="index" app="forums" params="FALSE, TRUE"}
+</header>
+
+{$table|raw}

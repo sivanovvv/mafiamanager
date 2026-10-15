@@ -1,0 +1,35 @@
+<ips:template parameters="$k, $enabled" />
+
+<div class='i-flex_11'>
+	<h2 class="ipsTitle ipsTitle--h5 ipsTitle--margin">{lang="notifications__$k"}</h2>
+	{{if \count( $enabled )}}
+		<ul class='ipsList ipsList--inline ipsList--icons'>
+			{{foreach $enabled as $k => $v}}
+				{{if $v['icon'] !== 'envelope' and $v['icon'] !== 'bell' and $v['icon'] !== 'mobile'}}
+					<li {{if isset( $v['description'] )}}title="{lang="$v['description']"}" data-ipsTooltip{{endif}}>
+						<i class="fa-solid fa-{$v['icon']}" aria-hidden="true"></i> {$v['title']}
+					</li>
+				{{endif}}
+				{{if $v['icon'] === 'bell' or $v['icon'] === 'mobile'}}
+					<li>
+						{{if $v['icon'] === 'bell'}}
+							<i class="fa-regular fa-{$v['icon']}" aria-hidden="true"></i>
+						{{else}}
+							<i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+						{{endif}} {$v['title']}
+					</li>
+				{{endif}}
+				{{if $v['icon'] === 'envelope'}}
+					<li>
+						<i class="fa-regular fa-{$v['icon']}" aria-hidden="true"></i> {$v['title']}
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+	{{else}}
+		<p class='i-color_soft i-opacity_5'>
+			{lang="notifications_none_selected"}
+		</p>
+	{{endif}}
+</div>
+<div class="cNotificationSettings_expand i-font-size_3 i-color_soft"><i class="fa-solid fa-angle-down" aria-hidden="true"></i></div>

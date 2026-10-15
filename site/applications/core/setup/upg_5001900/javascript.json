@@ -1,0 +1,23 @@
+{
+    "files": {
+        "added": [],
+        "edited": [
+            "global\/framework\/common\/components\/card.js",
+            "global\/framework\/common\/components\/carouselNavigation.js",
+            "global\/framework\/common\/components\/dropdown.js",
+            "global\/framework\/common\/ui\/ips.ui.form.js",
+            "global\/front\/controllers\/core\/ips.core.lightboxedImages.js",
+            "core\/admin\/controllers\/members\/ips.members.history.js",
+            "core\/front\/controllers\/messages\/ips.messages.list.js",
+            "core\/front\/controllers\/search\/ips.search.results.js",
+            "core\/front\/controllers\/widgets\/ips.widgets.manager.js",
+            "global\/framework\/templates\/ips.core.templates.js"
+        ],
+        "removed": []
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

@@ -1,0 +1,86 @@
+<ips:template parameters="$protected=FALSE" />
+<section class='ipsBox ipsBox--cmsAlternativeClients ipsPull'>
+	<header class='ipsPageHeader'>
+		<div class="ipsPageHeader__row">
+			<div class="ipsPageHeader__primary">
+				<h1 class='ipsPageHeader__title'>{lang="altcontact_title"}</h1>
+				<p class="ipsPageHeader__desc">{lang="altcontact_info"}</p>
+			</div>
+			<a href='{url="app=nexus&module=clients&controller=alternatives&do=form" seoTemplate="clientsalternatives"}' class='ipsButton ipsButton--primary' title="{lang="altcontact_add_title"}" data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title="{lang="altcontact_add"}">{lang="altcontact_add"}</a>
+		</div>
+	</header>
+	{{if !$protected}}	
+		{{if !\count( \IPS\nexus\Customer::loggedIn()->alternativeContacts() )}}
+			<div class='ipsEmptyMessage'>
+				{lang="altcontact_none" sprintf="\IPS\Member::loggedIn()->language()->addToStack('altcontact_add')"}
+			</div>
+		{{else}}
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--alternatives">
+					{{foreach \IPS\nexus\Customer::loggedIn()->alternativeContacts() as $contact}}
+						<li class='ipsData__item cAlternateContactPerms'>
+							<div class='ipsData__icon'>
+								{template="userPhoto" group="global" app="core" params="$contact->alt_id"}
+							</div>
+							<div class='ipsData__content'>
+								<div class='ipsData__main'>
+									<h2 class='ipsData__title'>
+										{template="userLink" group="global" app="core" params="$contact->alt_id"} {lang="altcontact_can"}:
+									</h2>
+									<ul class='ipsList i-gap_1 cAlternateContactPerms_perms'>
+										{{if \count( $contact->purchases )}}
+											<li class='i-flex i-align-items_center i-gap_2'>
+												<span class='ipsBadge ipsBadge--icon ipsBadge--positive i-flex_00'>
+													<i class='fa-solid fa-check' aria-hidden="true"></i>
+												</span>
+												<div class='i-flex_11'>
+													{lang="altcontact_perm_manage" pluralize="\count( $contact->purchases )"}
+													<ul class="ipsSubList">
+														{{foreach $contact->purchases as $purchase}}
+															<li>
+																<a href="{$purchase->url()}">{$purchase->name}</a>
+															</li>
+														{{endforeach}}
+													</ul>
+												</div>
+											</li>
+										{{endif}}
+										{{if $contact->billing}}
+											<li class='i-flex i-align-items_center i-gap_2'>
+												<span class='ipsBadge ipsBadge--icon ipsBadge--positive i-flex_00'>
+													<i class='fa-solid fa-check' aria-hidden="true"></i>
+												</span>
+												<div class='i-flex_11'>
+													{lang="altcontact_perm_billing"}
+												</div>
+											</li>
+										{{else}}
+											<li class='i-flex i-align-items_center i-gap_2 i-opacity_4'>
+												<span class='ipsBadge ipsBadge--icon ipsBadge--neutral i-flex_00'>
+													<i class='fa-solid fa-xmark' aria-hidden="true"></i>
+												</span>
+												<div class='i-flex_11'>
+													{lang="altcontact_perm_billing"}
+												</div>
+											</li>
+										{{endif}}
+									</ul>
+								</div>
+								<div class='i-basis_100'>
+									<ul class='ipsButtons'>
+										<li>
+											<a href="{url="app=nexus&module=clients&controller=alternatives&do=form&id={$contact->alt_id->member_id}" seoTemplate="clientsalternatives"}" class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title='{lang="altcontact_edit"}' title='{lang="altcontact_edit"}'>{lang="edit"}</a>
+										</li>
+										<li>
+											<a href="{url="app=nexus&module=clients&controller=alternatives&do=delete&id={$contact->alt_id->member_id}" seoTemplate="clientsalternatives" csrf="true"}" class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide' data-confirm data-confirmMessage="{lang="altcontact_delete_confirm"}" title="{lang="altcontact_delete"}">{lang="delete"}</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		{{endif}}
+	{{endif}}
+</section>

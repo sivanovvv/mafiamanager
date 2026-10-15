@@ -1,0 +1,64 @@
+<ips:template parameters="$item, $item_key, $type='property', $form='', $table=''" />
+
+<div class="ipsSpanGrid i-border-bottom_3">
+    <div class="ipsSpanGrid__4 i-padding-end_3">
+        <h2 class='i-flex i-align-items_center i-gap_2'>
+            <p data-name-field class='i-font-family_monospace i-font-weight_600 i-font-size_2'>{$item['formatted_name']}</p>
+            {{if $item['custom'] ?? 0}}
+                <a id="deleteProperty" class='ipsButton ipsButton--tiny ipsButton--negative' href='{url="app=core&module=settings&controller=dataLayer&do=deleteProperty&property_key={$item_key}" csrf="true"}'>
+                    <i class='fa-solid fa-circle-minus' aria-hidden="true"></i> {lang="delete"}
+                </a>
+            {{endif}}
+        </h2>
+        <div class="i-margin-top_2">
+            <div class="ipsBadges i-margin-bottom_2">
+                {{if $type === 'property'}}
+                    {{$badgeStyle = $item['enabled'] ? 'positive' : 'negative';}}
+                    {{if $item['pii']}}
+                    <span class='ipsBadge ipsBadge--intermediary'>{lang="datalayer_pii"}</span>
+                    {{endif}}
+                    {{if $item['page_level']}}
+                    <span class='ipsBadge ipsBadge--style2'><a href='{url="app=core&module=settings&controller=dataLayer&tab=pageContext"}'>{lang="datalayer_page_context"}</a></span>
+                    {{endif}}
+                    <span class='ipsBadge ipsBadge--{$badgeStyle}'>{{if $item['enabled']}}{lang="datalayer_enabled"}{{else}}{lang="datalayer_disabled"}{{endif}}</span>
+                    {{if $item['custom'] ?? 0}}
+                    <span class='ipsBadge ipsBadge--neutral'>{lang="datalayer_custom"}</span>
+                    {{endif}}
+                {{endif}}
+            </div>
+            <p>{$item['description']|raw}</p>
+        {{if $item['custom'] ?? 0}}
+            {{$value = $item['value'] ?? 'undefined';}}
+            <p>{lang="datalayer_note_dec" htmlsprintf="$value"}</p>
+        {{endif}}
+        {{if $item['pii'] ?? 0}}
+            <p>{lang="datalayer_pii_desc"}</p>
+        {{endif}}
+        </div>
+    </div>
+    <div class="ipsSpanGrid__8">
+        <h2 class="ipsFieldRow__section">{lang="options"}</h2>
+        {$form|raw}
+        <br>
+    </div>
+</div>
+<br>
+
+{{if $table}}
+    <h3 class="ipsTitle ipsTitle--h4 i-margin-bottom_2">
+        {{if $type==='property'}}
+            {lang="datalayer_events_using_property"}
+        {{else}}
+            {lang="datalayer_events_properties"}
+        {{endif}}
+    </h3>
+    {$table|raw}
+{{else}}
+<p class="i-margin_3">
+    {{if $type === 'property'}}
+        {lang="datalayer_no_events_use_property"}
+    {{else}}
+        {lang="datalayer_no_events_here"}
+    {{endif}}
+</p>
+{{endif}}

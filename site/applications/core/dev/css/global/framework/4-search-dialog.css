@@ -1,0 +1,160 @@
+/*
+	----------------
+	- Search dialog
+	----------------
+*/
+
+html:has(.ipsSearchDialog[open]){
+	overflow: hidden;
+}
+
+.ipsSearchDialog{
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
+	border-width: 0;
+	background: hsl(210 20% 8% / .5);
+	-webkit-backdrop-filter: blur(1px);
+	backdrop-filter: blur(1px);
+
+	transition-property: display, overlay, opacity;
+	transition-behavior: allow-discrete;
+	transition-timing-function: ease-in-out;
+	transition-duration: .2s;
+	opacity: 0;
+	
+	/* This fixes a bug in Safari where the dialog closes instantly with no transition */
+	position: fixed;
+	inset: 0;
+	z-index: 999;
+}
+
+.ipsSearchDialog::backdrop{
+	display: none;
+}
+
+.ipsSearchDialog[open]{
+	opacity: 1;
+	@starting-style{
+		&{
+			opacity: 0;
+		}
+	}
+}
+
+:where([data-ips-scheme="dark"]) .ipsSearchDialog{
+	background: hsl(0 0% 0% / 60%);
+}
+
+.ipsSearchDialog__dismiss{
+	position: fixed;
+	inset: 0;
+	opacity: 0;
+	z-index: -1;
+}
+
+.ipsSearchDialog search{
+	display: block;
+	overflow: hidden;
+	border-radius: var(--i-box--bo-ra);
+	background: var(--i-box--ba-co);
+	box-shadow: var(--i-dialog--bo-sh);
+	width: calc(100vw - 2em);
+	max-width: 880px;
+	margin: 150px auto 0;
+	
+	transition-property: transform;
+	transition-timing-function: ease-in-out;
+	transition-duration: inherit;
+	transform: translateY(-20px);
+	transform-origin: 50% 0;
+}
+
+[data-ips-scheme="dark"] .ipsSearchDialog search{
+	background: var(--i-background_2);
+}
+
+.ipsSearchDialog[open] search{
+	transform: translateY(0px);
+	@starting-style{
+		&{
+			transform: translateY(-20px);
+		}
+	}
+}
+
+.ipsSearchDialog__modal{
+	cursor: auto;
+	--i-co: var(--i-color_root);
+	display: flex;
+	flex-direction: column;
+	max-height: min(600px, 100vh - 2em);
+	max-height: min(600px, 100dvh - 2em);
+	border-radius: inherit;
+}
+
+[data-ips-scheme="dark"] .ipsSearchDialog__modal{
+	box-shadow: inset hsl(0 0% 100% / .15) 0px 1px 0px;
+}
+
+.ipsSearchDialog__input{
+	flex: 0 0 auto;
+	display: flex;
+	gap: .6em;
+	padding: 1.2em;
+	color: var(--i-co);
+}
+
+	.ipsSearchDialog__input [type="text"]{		
+		padding: .3em .6em;
+		flex: 1 1 100%;
+		outline: none;
+		font-size: 1.3em;
+		font-weight: 500;
+	}
+
+	.ipsSearchDialog__input [type="text"]::placeholder{
+		color: inherit;
+		opacity: .5;
+	}
+
+	.ipsSearchDialog__input button{
+		flex: 0 0 auto;
+	}
+
+	.ipsSearchDialog__input button .fa-solid{
+		font-size: .8em;
+	}
+
+.ipsSearchDialog__filters{
+	font-size: max(12px, var(--i-font-size_-2));
+	background: var(--i-background_2);
+	border-top: 1px solid var(--i-background_5);
+	color: var(--i-color_root);
+	font-weight: 500;
+}
+
+[data-ips-scheme="dark"] .ipsSearchDialog__filters{
+	background: var(--i-background_3);
+}
+
+	.ipsSearchDialog__filters select{
+		padding-top: 1em;
+		padding-bottom: 1em;
+		border-radius: 0;
+		/* A background is necessary for Windows otherwise it uses a white background */
+		background: var(--i-background_2);
+	}
+
+	[data-ips-scheme="dark"] .ipsSearchDialog__filters select{
+		background: var(--i-background_3);
+	}
+
+	[data-ips-scheme="dark"] .ipsSearchDialog__filters > *{
+		outline-color: var(--i-background_4);
+	}
+
+	.ipsSearchDialog__filters select:hover{
+		color: var(--i-color_hard);
+	}

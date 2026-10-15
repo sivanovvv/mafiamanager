@@ -1,0 +1,59 @@
+<ips:template parameters="$disabledApps, $restoredDefaultTheme, $disabledAds" />
+<p>{lang="support_third_party_instruction"}</p>
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--third-party-disabled i-margin-top_1" data-role="disabledInformation">
+		{{if \count( $disabledApps )}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+				<div class="i-color_warning">
+					<div data-role="disabledMessage">{lang="support_third_party_apps" pluralize="\count( $disabledApps )"}</div>
+					<div data-role="enabledMessage" class='ipsHide'>{lang="support_third_party_apps_reenabled" pluralize="\count( $disabledApps )"}</div>
+					{{$disabledApps = implode( ',', array_keys( $disabledApps ) );}}
+					<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton--negative ipsButton--tiny i-margin-top_1" data-action="enableThirdPartyPart" data-type="apps">{lang="support_third_party_apps_enable"}</a>
+					<a href="{url="app=core&module=applications&controller=applications"}" target="_blank" rel="noopener" class="ipsButton ipsButton--negative ipsButton--tiny i-margin-top_1">{lang="support_third_party_apps_link"}</a>
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+				<div class="i-color_positive">{lang="support_third_party_no_apps"}</div>
+			</li>
+		{{endif}}
+		{{if $restoredDefaultTheme}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+				<div class="i-color_warning">
+					<div data-role="disabledMessage">
+						{lang="support_third_party_theme"}
+						<p>{lang="support_third_party_theme_desc"}</p>
+					</div>
+					<div data-role="enabledMessage" class="ipsHide">{lang="support_third_party_theme_reenabled"}</div>
+					<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton--negative ipsButton--tiny i-margin-top_1" data-action="enableThirdPartyPart" data-type="theme">{lang="support_third_party_theme_enable"}</a>
+					<a href="{url="app=core&module=customization&controller=themes"}" target="_blank" rel="noopener" class="ipsButton ipsButton--negative ipsButton--tiny i-margin-top_1">{lang="support_third_party_theme_link"}</a>
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+				<div class="i-color_positive">{lang="support_third_party_no_theme"}</div>
+			</li>
+		{{endif}}
+		{{if \count( $disabledAds )}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+				<div class="i-color_warning">
+					<div data-role="disabledMessage">{lang="support_third_party_ads" pluralize="\count( $disabledAds )"}</div>
+					<div data-role="enabledMessage" class="ipsHide">{lang="support_third_party_ads_reenabled" pluralize="\count( $disabledAds )"}</div>
+					{{$disabledAds = implode( ',', $disabledAds );}}
+					<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" class="ipsButton ipsButton--negative ipsButton--tiny i-margin-top_1" data-action="enableThirdPartyPart" data-type="ads">{lang="support_third_party_ads_enable"}</a>
+					<a href="{url="app=core&module=promotion&controller=advertisements"}" target="_blank" rel="noopener" class="ipsButton ipsButton--negative ipsButton--tiny i-margin-top_1">{lang="support_third_party_ads_link"}</a>
+				</div>
+			</li>
+		{{else}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+				<div class="i-color_positive">{lang="support_third_party_no_ads"}</div>
+			</li>
+		{{endif}}
+	</ul>
+</i-data>

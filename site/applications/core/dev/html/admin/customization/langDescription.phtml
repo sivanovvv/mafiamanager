@@ -1,0 +1,4 @@
+<ips:template parameters="$lang" />
+{{if mb_strtolower( (string) $lang->author_name ) != 'invision power services' and ( $lang->author_name != '' OR $lang->author_url != '' )}}
+{{if $lang->author_name != '' }} {lang="byline_nodate" sprintf="$lang->author_name"}{{endif}}{{if $lang->author_url}} {template="basicUrl" group="global" app="core" location="global" params="$lang->author_url, TRUE, $lang->author_url, TRUE, TRUE, TRUE"}{{endif}}
+{{endif}}

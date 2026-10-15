@@ -1,0 +1,13 @@
+<ips:template parameters="$results" />
+{{$currentSeparator = NULL;}}
+{{if \count( $results )}}
+	{{foreach $results as $result}}
+		{{if $result !== NULL}}
+			{$result->html( 'expanded', FALSE, TRUE, array( \IPS\Theme::i()->getTemplate( 'popular', 'core', 'front' ), 'popularItem' ) )|raw}
+		{{endif}}
+	{{endforeach}}
+{{else}}
+	<li class='i-text-align_center i-color_soft i-padding_3' data-role="streamNoResultsMessage">
+		<p>{lang="popular_no_results"}</p>
+	</li>
+{{endif}}

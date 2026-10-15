@@ -1,0 +1,51 @@
+<ips:template parameters="$apps" />
+<div class='i-padding_3 i-border-bottom_3'>
+	<h2 class="ipsTitle ipsTitle--h3">{lang="oauth_apps"}</h2>
+	<p class="i-color_soft">{lang="oauth_apps_info"}</p>
+</div>
+<div class='i-padding_3'>
+	{{if \count( $apps )}}
+		{{foreach $apps as $app}}
+			<div class="ipsBox i-margin-bottom_3">
+				<div class="i-background_2 i-flex i-padding_3">
+					<h2 class="ipsTitle ipsTitle--h3">
+						{$app['client']->_title}
+					</h2>
+					<a href="{url="core&module=system&controller=settings&area=apps&do=revokeApp&client_id={$app['client']->client_id}" seoTemplate="settings_apps" csrf="true"}" class="ipsButton ipsButton--negative ipsButton--small i-margin-start_auto" data-confirm data-confirmSubMessage="{lang="oauth_app_revoke_confirm"}">
+						{lang="oauth_app_revoke"}
+					</a>
+				</div>
+				<i-data>
+					<ul class="ipsData ipsData--table ipsData--settings-apps">
+						<li class="ipsData__item">
+							<span class="i-basis_180">
+								<strong>{lang="oauth_app_issued"}</strong>
+							</span>
+							<span>
+								{datetime="$app['issued']"}
+							</span>
+						</li>
+						{{if $app['scopes']}}
+							<li class="ipsData__item">
+								<span class="i-basis_180">
+									<strong>{lang="oauth_app_scopes"}</strong>
+								</span>
+								<div>
+									<ul>
+										{{foreach $app['scopes'] as $key => $scope}}
+											<li>
+												<i class="fa-solid fa-check" aria-hidden="true"></i> {$scope}
+											</li>
+										{{endforeach}}
+									</ul>
+								</div>
+							</li>
+						{{endif}}
+					</ul>
+				</i-data>
+			</div>
+		{{endforeach}}
+	{{else}}
+		<div class="ipsEmptyMessage">{lang="oauth_apps_empty"}</div>
+	{{endif}}
+</div>

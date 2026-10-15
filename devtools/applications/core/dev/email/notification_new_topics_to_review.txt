@@ -1,0 +1,8 @@
+<ips:template parameters="$expert, $topics, $email" />
+
+{$email->language->addToStack("mail_expert_nudge", FALSE, array())}
+
+{{foreach $topics as $id => $topic}}
+{$topic->title} ({$topic->url()})
+{{endforeach}}
+-- {setting="board_name"}

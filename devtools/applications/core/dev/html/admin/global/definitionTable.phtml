@@ -1,0 +1,38 @@
+<ips:template parameters="$rows, $sidebar=NULL, $parse=TRUE" />
+{{if $sidebar !== NULL}}
+	<div class="ipsColumns">
+		<div class="ipsColumns__primary">
+{{endif}}
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--compact ipsData--definition-table">
+					{{foreach $rows as $k => $v}}
+						<li class="ipsData__item">
+							<div class="ipsData__content">
+								<div class="i-basis_180">
+									<strong class="ipsData__title">
+										{{if $parse}}
+											{lang="$k"}
+										{{else}}
+											{$k}
+										{{endif}}
+									</strong>
+								</div>
+								<div class="">
+									{{if $v}}
+										{$v}
+									{{else}}
+										<em class="i-color_soft">{lang="unknown"}</em>
+									{{endif}}
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+{{if $sidebar !== NULL}}
+		</div>
+		<div class="ipsColumns__secondary i-basis_360">
+			{$sidebar|raw}
+		</div>
+	</div>
+{{endif}}

@@ -1,0 +1,4 @@
+<ips:template parameters="$status" />
+<span class="ipsBadge {{if $status == \IPS\nexus\Invoice::STATUS_PAID}}ipsBadge--positive{{elseif $status == \IPS\nexus\Invoice::STATUS_PENDING}} {{elseif $status == \IPS\nexus\Invoice::STATUS_CANCELED}}ipsBadge--locked{{elseif $status == \IPS\nexus\Invoice::STATUS_EXPIRED}}ipsBadge--warning{{endif}}">
+	{lang="istatus_{$status}"}
+</span>

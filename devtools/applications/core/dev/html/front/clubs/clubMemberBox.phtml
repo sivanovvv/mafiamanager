@@ -1,0 +1,39 @@
+<ips:template parameters="$club" />
+<div class="ipsWidget ipsWidget--vertical ipsWidget--clubMemberBox">
+	<h2 class='ipsWidget__header'>{lang="club_members_count" pluralize="$club->members"}</h2>
+	<div class='ipsWidget__content'>
+		<i-data>
+			<ol class="ipsData ipsData--table ipsData--club-members">
+				{{$membersToShow = $club->members( array('member', 'moderator', 'leader'), 15, "IF(core_clubs_memberships.status='leader' OR core_clubs_memberships.status='moderator',0,1), core_clubs_memberships.joined ASC", 1);}}
+				{{foreach $membersToShow as $memberData}}
+				{{$member = \IPS\Member::load( $memberData['core_members']['member_id'] );}}
+				<li class='ipsData__item'>
+					<div class='ipsData__icon'>{template="userPhoto" app="core" group="global" params="$member, 'fluid'"}</div>
+					<div class='ipsData__main'>
+						<div class='i-flex i-justify-content_space-between i-align-items_center i-flex-wrap_wrap'>
+							<h5 class='ipsData__title'>
+								{template="userLinkFromData" group="global" app="core" params="$member->member_id, $member->name, $member->seo_name, $member->member_group_id"}
+							</h5>
+							{{if $memberData['core_clubs_memberships']['status'] == \IPS\Member\Club::STATUS_LEADER && ( $club->owner and $club->owner->member_id == $member->member_id ) }}
+								<span class="ipsBadge ipsBadge--positive">{lang="club_owner"}</span>
+							{{elseif $memberData['core_clubs_memberships']['status'] == \IPS\Member\Club::STATUS_LEADER}}
+								<span class="ipsBadge ipsBadge--positive">{lang="club_leader"}</span>
+							{{elseif \in_array( $memberData['core_clubs_memberships']['status'], array( \IPS\Member\Club::STATUS_MODERATOR, \IPS\Member\Club::STATUS_EXPIRED_MODERATOR ) )}}
+								<span class="ipsBadge">{lang="club_moderator"}</span>
+							{{endif}}
+						</div>
+						<p class='ipsData__meta'>
+							{lang="club_joined" sprintf="\IPS\DateTime::ts( $memberData['core_clubs_memberships']['joined'] )->relative( \IPS\DateTime::RELATIVE_FORMAT_LOWER )"}
+						</p>
+					</div>
+				</li>
+				{{endforeach}}
+			</ol>
+		</i-data>
+		{{if $club->members > \count( $membersToShow	)}}
+			<div class='i-text-align_center i-font-weight_500 i-color_soft i-link-color_inherit'>
+				<a href='{$club->url()->setQueryString('do', 'members')}'>{lang="club_see_all_members"}<i class='fa-solid fa-angle-right i-margin-start_icon' aria-hidden="true"></i></a>
+			</div>
+		{{endif}}
+	</div>
+</div>

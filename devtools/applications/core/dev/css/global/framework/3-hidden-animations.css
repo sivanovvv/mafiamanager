@@ -1,0 +1,127 @@
+/*
+	----------------
+	- Aria toggle
+	----------------
+*/
+
+:where([data-ips-animating]),
+:where([data-ips-animating])::backdrop{
+	--i-animation-name: initial;
+	--i-animation-duration: initial;
+	animation-name: var(--i-animation-name, none);
+	animation-duration: var(--i-animation-duration, .25s);
+	animation-timing-function: ease-in-out;
+}
+
+/* When the element is being hidden, reverse the animation */
+:where([data-ips-animating="closing"]),
+:where([data-ips-animating="closing"])::backdrop{
+	animation-direction: reverse;
+}
+
+/* Remove animations if requested */
+@media (prefers-reduced-motion: reduce){
+	[data-ips-animating], [data-ips-animating]::backdrop{
+		animation-duration: 0s;
+	}
+}
+
+[data-ips-hidden-animation="slide"]{
+	--i-animation-name: ipshidden_slide;
+}
+
+@keyframes ipshidden_slide{
+	0%{
+		max-height: 0;
+		overflow: hidden;
+	}
+	100%{
+		max-height: var(--i-animating-height);
+		overflow: hidden;
+	}
+}
+
+[data-ips-hidden-animation="slide-fade"]{
+	--i-animation-name: ipshidden_slide-fade;
+}
+
+@keyframes ipshidden_slide-fade{
+	0%{
+		opacity: 0;
+		max-height: 0;
+		overflow: hidden;
+	}
+	100%{
+		opacity: 1;
+		max-height: var(--i-animating-height);
+		overflow: hidden;
+	}
+}
+
+[data-ips-hidden-animation="fade"]{
+	--i-animation-name: ipshidden_fade;
+}
+
+@keyframes ipshidden_fade{
+	from{
+		opacity: 0;
+	}
+}
+
+/* Apply a default animation to certain elements */
+[data-ips-animating]::backdrop{
+	animation-name: ipshidden_fade;
+}
+
+/* Dynamic text for aria-expanded triggers */
+/* Hide trigger if content is expanded */
+[aria-expanded="true"] .ipsAria__expanded-false,
+[aria-expanded="false"] .ipsAria__expanded-true,
+.ipsAria__expanded-hide[aria-expanded="true"]{
+	display: none !important;
+}
+
+
+/* Transitioned details/summary */
+@media (prefers-reduced-motion: no-preference) {
+	details{
+		interpolate-size: allow-keywords;
+
+		&::details-content{
+			height: 0;
+			opacity: 0;
+			overflow-y: clip;
+			transition-property: content-visibility, opacity, height;
+			transition-duration: .3s;
+			transition-behavior: allow-discrete;
+		}
+		&[open]::details-content {
+			height: auto;
+			opacity: 1;
+		}
+
+		/* Animated height fallback */
+		@supports not (interpolate-size: allow-keywords){
+			&::details-content{
+				display: none;
+				height: auto;
+				grid-template-rows: 0fr;
+				transition-property: display, opacity, content-visibility, grid-template-rows;
+			}
+			&[open]::details-content{
+				display: grid;
+				grid-template-rows: 1fr;
+			}
+			@starting-style{
+				&[open]::details-content{
+					grid-template-rows: 0fr;
+					opacity: 0;
+				}
+			}
+		}
+	}
+}
+/* This element is only needed for the fallback. It can be removed once interpolate-size is widely supported */
+i-details-content{
+	display: block;
+}

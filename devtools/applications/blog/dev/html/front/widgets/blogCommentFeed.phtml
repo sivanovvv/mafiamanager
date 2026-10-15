@@ -1,0 +1,95 @@
+<ips:template parameters="$comments, $title, $layout='table', $isCarousel=false" />
+{{if !empty( $comments ) }}
+	<h3 class='ipsWidget__header'>{$title}</h3>
+	<div class='ipsWidget__content'>
+		{{if isset($orientation) and $orientation == 'vertical'}}
+			<i-data>
+				<ul class='ipsData ipsData--table ipsData--blog-comment-feed'>
+					{{foreach $comments as $comment}}
+						<li class='ipsData__item'>
+							<a href='{$comment->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$comment->item()->title}</span></a>
+							<div class='ipsData__icon'>{template="userPhoto" group="global" app="core" params="$comment->author(), 'fluid'"}</div>
+							<div class='ipsData__main'>
+								<div class='ipsData__title'>
+									<h4><a href="{$comment->url()}">{$comment->item()->name}</a></h4>
+								</div>
+								<p class='ipsData__meta'><span>{$comment->author()->link()|raw}</span> <a href="{$comment->url()}">{$comment->dateLine()|raw}</a></p>
+								<div class='ipsData__desc'>{$comment->truncated( true )|raw}</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		{{else}}		
+			<ul class='ipsEntries ipsEntries--blog-comment-widget'>
+				{{foreach $comments as $comment}}
+					<li class='{$comment->ui('css')}' {$comment->ui('dataAttributes')}>
+						<article class='ipsEntry ipsEntry--simple'>
+							<div class='ipsEntry__content'>
+								<header class='ipsEntry__header'>
+									<div class='ipsEntry__header-align'>
+										<div class='ipsPhotoPanel'>
+											<div class='ipsAvatarStack'>
+												{template="userPhoto" app="core" group="global" params="$comment->author(), 'fluid', $comment->warningRef()"}
+												{{if !$comment->isAnonymous() and $comment->author()->canHaveAchievements() and \IPS\core\Achievements\Rank::show() and $rank = $comment->author()->rank()}}
+													{$rank->html( 'ipsAvatarStack__rank' )|raw}
+												{{endif}}
+											</div>
+											<div class='ipsPhotoPanel__text'>
+												<div class='ipsEntry__username'>
+													<h3><a href="{$comment->url()}">{$comment->item()->name}</a></h3>
+												</div>
+												<p class='ipsPhotoPanel__secondary'>
+													{template="userLink" app="core" group="global" params="$comment->author(), $comment->warningRef(), NULL, $comment->isAnonymous()"}
+													&middot;
+													<a href='{$comment->url()}'>{$comment->dateLine()|raw}</a>
+													{{if $comment->editLine()}}
+														({lang="edited_lc"})
+													{{endif}}
+												</p>
+											</div>
+										</div>
+										{{if $comment->canReportOrRevoke() === TRUE}}
+											{{$id = mt_rand();}}
+											<button type="button" id="elBlogCommentFeed_{$id}" popovertarget="elBlogCommentFeed_{$id}_menu" class='ipsEntry__topButton ipsEntry__topButton--ellipsis' title='{lang="more_options"}'><i class='fa-solid fa-ellipsis' aria-hidden="true"></i><span class='ipsInvisible'>{lang="more_options"}</span></button>
+										{{endif}}
+									</div>
+								</header>
+								<div class='ipsEntry__post'>
+									{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and $comment->isHighlighted()}}
+										<ul class='ipsBadges'>									
+											<li><span class='ipsBadge ipsBadge--popular'>{lang="this_is_a_popular_comment"}</span></li>
+										</ul>
+									{{endif}}
+									{{if member.modPermission('mod_see_warn') and $comment->warning}}
+										{template="commentWarned" group="global" app="core" params="$comment"}
+									{{endif}}
+									{{if $comment->hidden() === 1 && $comment->author()->member_id == \IPS\Member::loggedIn()->member_id}}
+										<div class='i-margin-bottom_3'><strong class='i-color_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="comment_awaiting_approval"}</strong></div>
+									{{endif}}
+									<div class='ipsRichText ipsTruncate_6' data-role='commentContent' data-controller='core.front.core.lightboxedImages'>
+										{$comment->content()|raw}
+									</div>
+								</div>
+								{{if $comment->hidden() !== 1 && \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+									<div class='ipsEntry__footer'>
+										{template="reputation" group="global" app="core" params="$comment"}
+									</div>
+								{{endif}}
+							</div>
+						</article>
+						{{if $comment->canReportOrRevoke() === TRUE}}
+							<i-dropdown popover id="elBlogCommentFeed_{$id}_menu">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">	
+										<li><a href='{$comment->url('report')}' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-remoteSubmit data-ipsDialog-size='medium' data-ipsDialog-flashMessage='{lang="report_submit_success"}' data-ipsDialog-title="{lang="report_post"}"{{endif}} data-action='reportComment' title='{lang="report_content"}'>{lang="report"}</a></li>
+									</ul>
+								</div>
+							</i-dropdown>
+						{{endif}}
+					</li>
+				{{endforeach}}
+			</ul>
+		{{endif}}
+	</div>
+{{endif}}

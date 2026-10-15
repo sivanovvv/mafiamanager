@@ -1,0 +1,57 @@
+<ips:template parameters="$url, $poll, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<form accept-charset='utf-8' class="ipsForm {$class} ipsForm--poll" action="{$url->stripQueryString( array( 'fetchPoll', 'viewResults' ) )}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}		
+	{{foreach $elements as $collection}}
+		<ol class='ipsPollList ipsPollList--questions'>
+			{{$i = 0;}}
+			{{foreach $collection as $idx => $input}}
+				{{$i++;}}
+				<li class='ipsFieldRow ipsFieldRow--noLabel'>
+					<h3 class='ipsTitle ipsTitle--h5 ipsTitle--margin'>{$i}. {$input->label}</h3>
+					<div>
+					{{if !$input->options['multiple']}}
+						{template="radio" app="core" location="global" group="forms" params="$input->name, $input->value, $input->required, $input->options['options'], $input->options['disabled'], '', $input->options['disabled']"}
+					{{else}}
+						{template="checkboxset" app="core" location="global" group="forms" params="$input->name, $input->value, $input->required, $input->options['options'], FALSE, NULL, $input->options['disabled'], $input->options['toggles'], NULL, NULL, 'all', array(), TRUE, isset( $input->options['descriptions'] ) ? $input->options['descriptions'] : NULL, FALSE, FALSE, $input->options['condense']"}
+					{{endif}}
+					</div>
+					{{if $input->error}}
+						<div class="ipsFieldRow__warning">{lang="$input->error"}</div>
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ol>
+	{{endforeach}}
+	{{if ($poll->poll_close_date instanceof \IPS\DateTime) or $poll->poll_view_voters}}
+		<div class='i-padding_2 i-border-top_2 i-font-weight_600 i-color_soft'>
+			{{if $poll->poll_view_voters}}
+				<p><i class="fa-regular fa-eye i-margin-end_icon" aria-hidden="true"></i>{lang="poll_is_public"}</p>
+			{{endif}}
+			{{if ( $poll->poll_close_date instanceof \IPS\DateTime ) and !$poll->poll_closed}}
+				<p><i class="fa-regular fa-clock i-margin-end_icon" aria-hidden="true"></i>{lang="poll_auto_closes_on" sprintf="$poll->poll_close_date->localeDate(), $poll->poll_close_date->localeTime( FALSE )"}</p>
+			{{elseif ( $poll->poll_close_date instanceof \IPS\DateTime ) and $poll->poll_closed}}
+				<p><i class="fa-regular fa-clock i-margin-end_icon" aria-hidden="true"></i>{lang="poll_auto_closed_on" sprintf="$poll->poll_close_date->localeDate(), $poll->poll_close_date->localeTime( FALSE )"}</p>
+			{{endif}}
+		</div>
+	{{endif}}
+	<div class="ipsSubmitRow ipsSubmitRow--votePoll">
+		<ul class="ipsButtons">
+			<li>
+				<button type="submit" class="ipsButton ipsButton--primary">{lang="save_vote"}</button>
+			</li>
+			{{if $poll->canViewResults()}}
+			<li><a class='ipsButton ipsButton--text i-margin-end_auto' title='{lang="show_results_title"}' {{if settings.allow_result_view}}href="{$url->setQueryString( '_poll', 'results' )}"{{else}}href="{$url->setQueryString( array( '_poll' => 'results', 'nullVote' => 1 ) )->csrf()}"{{endif}} {{if !settings.allow_result_view}}data-viewResults-confirm="{lang="warn_allow_result_view"}"{{endif}} data-action='viewResults'>{lang="show_results"}</a></li>
+			{{endif}}
+				{{if $poll->canClose()}}
+				{{if ! $poll->poll_closed}}
+					<li><a class='ipsButton ipsButton--inherit' href='{$url->setQueryString( array( 'do' => 'pollStatus', 'value' => 0 ) )->csrf()}'><i class="fa-solid fa-lock" aria-hidden="true"></i><span>{lang="poll_close"}</span></a></li>
+				{{else}}
+					<li><a class='ipsButton ipsButton--inherit' href='{$url->setQueryString( array( 'do' => 'pollStatus', 'value' => 1 ) )->csrf()}'><i class="fa-solid fa-unlock" aria-hidden="true"></i><span>{lang="poll_open"}</span></a></li>
+				{{endif}}
+			{{endif}}
+		</ul>
+	</div>
+</form>

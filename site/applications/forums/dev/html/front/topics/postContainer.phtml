@@ -1,0 +1,154 @@
+<ips:template parameters="$item, $comment, $otherClasses='', $viewerIsFollowingTheseExperts=[]" />
+{{$idField = $comment::$databaseColumnId;}}
+{{$itemClassSafe = str_replace( '\\', '_', mb_substr( $comment::$itemClass, 4 ) );}}
+{{if $comment->isIgnored()}}
+	<div class='ipsEntry ipsEntry--ignored' id='elIgnoreComment_{$comment->$idField}' data-ignoreCommentID='elComment_{$comment->$idField}' data-ignoreUserID='{$comment->author()->member_id}'>
+		<i class="fa-solid fa-user-slash" aria-hidden="true"></i> {lang="ignoring_content" sprintf="$comment->author()->name"} <button type="button" id="elIgnoreComment_{$comment->$idField}" popovertarget="elIgnoreComment_{$comment->$idField}_menu" data-action="ignoreOptions" title='{lang="see_post_ignore_options"}'>{lang="options"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+		<i-dropdown popover id="elIgnoreComment_{$comment->$idField}_menu">
+			<div class="iDropdown">
+				<ul class="iDropdown__items">
+					<li><button type="button" data-ipsMenuValue='showPost'>{lang="show_this_post"}</button></li>
+					<li><hr></li>
+					<li><a href='{url="app=core&module=system&controller=ignore&do=remove&id={$comment->author()->member_id}" seoTemplate="ignore" csrf="true"}' data-ipsMenuValue='stopIgnoring'>{lang="stop_ignoring_posts_by" sprintf="$comment->author()->name"}</a></li>
+					<li><a href='{url="app=core&module=system&controller=ignore" seoTemplate="ignore"}'>{lang="change_ignore_preferences"}</a></li>
+				</ul>
+			</div>
+		</i-dropdown>
+	</div>
+{{endif}}
+<span id='findComment-{$comment->$idField}'></span>
+<span id='comment-{$comment->$idField}'></span>
+<article
+        data-ips-hook="postWrapper"
+        id='elComment_{$comment->$idField}'
+        class="
+		ipsEntry js-ipsEntry {$otherClasses} ipsEntry--{{if member.getLayoutValue('forums_post') === 'modern'}}simple{{else}}post{{endif}} {$comment->ui('css')}
+        {{if ( settings.reputation_enabled and settings.reputation_highlight and $comment->reactionCount() >= settings.reputation_highlight ) OR $comment->isFeatured()}} ipsEntry--popular {{endif}}
+        {{if $comment->author()->hasHighlightedReplies()}} ipsEntry--highlighted {{endif}}
+        {{if $comment->isIgnored()}} ipsHide {{endif}}
+        {{if $comment->hidden() OR $item->hidden() === -2}} ipsModerated {{endif}}
+        {{if ( $item->isSolved() and $item->mapped('solved_comment_id') == $comment->pid )}} ipsEntry--solved {{endif}}
+		"
+        {{if $comment->author()->hasHighlightedReplies()}} data-membergroup="{$comment->author()->member_group_id}" {{endif}}
+        {$comment->ui( 'dataAttributes' )}
+        {{if $field = $item::$databaseColumnMap['first_comment_id'] and $item->$field == $comment->$idField}}data-ips-first-post{{endif}}
+>
+	{{if \IPS\Member::loggedIn()->getLayoutValue('forums_post') === 'classic'}}
+		<aside data-ips-hook="topicAuthorColumn" class='ipsEntry__author-column'>
+			{{if $comment->author()->isOnline() AND ( !$comment->author()->isOnlineAnonymously() OR ( $comment->author()->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+				<span class='ipsEntry__author-online' data-ipsTooltip title='{{if $comment->author()->isOnlineAnonymously()}}{lang="online_now_anon" sprintf="$comment->author()->name"}{{elseif $comment->author()->isOnline()}}{lang="online_now" sprintf="$comment->author()->name"}{{endif}}'></span>
+			{{endif}}
+			<div data-ips-hook="postUserPhoto" class='ipsAvatarStack'>
+				{template="userPhoto" app="core" group="global" params="$comment->author(), 'fluid', $comment->warningRef()"}
+				{{if $comment->author()->modShowBadge()}}
+					<span class="ipsAvatarStack__badge ipsAvatarStack__badge--moderator" data-ipsTooltip title='{lang="member_is_moderator" sprintf="$comment->author()->name"}' hidden></span>
+				{{elseif $comment->author()->joinedRecently()}}
+					<span class="ipsAvatarStack__badge ipsAvatarStack__badge--new" data-ipsTooltip title='{lang="member_is_new_badge" sprintf="$comment->author()->name"}'></span>
+				{{endif}}
+				{{if !$comment->isAnonymous() and $comment->author()->canHaveAchievements() and \IPS\core\Achievements\Rank::show() and $rank = $comment->author()->rank()}}
+					{$rank->html( 'ipsAvatarStack__rank' )|raw}
+				{{endif}}				
+			</div>
+			<h3 data-ips-hook="postUsername" class='ipsEntry__username'>
+				{{if $comment->author()->isOnline() AND ( !$comment->author()->isOnlineAnonymously() OR ( $comment->author()->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+					<span class='ipsOnline' data-ipsTooltip title='{{if $comment->author()->isOnlineAnonymously()}}{lang="online_now_anon" sprintf="$comment->author()->name"}{{elseif $comment->author()->isOnline()}}{lang="online_now" sprintf="$comment->author()->name"}{{endif}}'></span>
+				{{endif}}
+				{template="userLink" group="global" app="core" params="$comment->author(), $comment->warningRef(), FALSE, $comment->isAnonymous()"}
+				{{if $comment->isAnonymous() and \IPS\Member::loggedIn()->modPermission('can_view_anonymous_posters')}}
+					<a data-ipsHover data-ipsHover-width="370" data-ipsHover-onClick href="{{if $comment->isFirst()}}{$comment->item()->url( 'reveal' )->csrf()}{{else}}{$comment->url( 'reveal' )->csrf()}{{endif}}" rel="nofollow"><span class="ipsAnonymousIcon" data-ipsTooltip title="{lang="post_anonymously_reveal"}"></span></a>
+				{{endif}}
+			</h3>
+			{{if !$comment->isAnonymous()}}
+				<div data-ips-hook="postUserGroup" class='ipsEntry__group'>
+					{{if $comment->author()->modShowBadge()}}
+						<a href='{url="app=core&module=staffdirectory&controller=directory" seoTemplate="staffdirectory"}' class="ipsEntry__moderatorBadge" data-ipsTooltip title='{lang="member_is_moderator" sprintf="$comment->author()->name"}'>
+							{expression="\IPS\Member\Group::load( $comment->author()->member_group_id )->formattedName" raw="true"}
+						</a>
+					{{else}}
+						{expression="\IPS\Member\Group::load( $comment->author()->member_group_id )->formattedName" raw="true"}
+					{{endif}}
+				</div>
+			{{endif}}
+			{{if !$comment->isAnonymous() && \IPS\Member\Group::load( $comment->author()->member_group_id )->g_icon }}
+				<div data-ips-hook="postUserGroupImage" class='ipsEntry__group-image'>
+					{{if $comment->author()->modShowBadge()}}
+						<a href='{url="app=core&module=staffdirectory&controller=directory" seoTemplate="staffdirectory"}'>
+							<img src='{file="$comment->author()->group['g_icon']" extension="core_Theme"}' alt='' loading='lazy' {{if $width = $comment->author()->group['g_icon_width']}}width="{$width}"{{endif}}>
+						</a>
+					{{else}}
+						<img src='{file="$comment->author()->group['g_icon']" extension="core_Theme"}' alt='' loading='lazy' {{if $width = $comment->author()->group['g_icon_width']}}width="{$width}"{{endif}}>
+					{{endif}}
+				</div>
+			{{endif}}
+			{{if $comment->author()->member_id}}
+				<ul data-ips-hook="postUserStats" class='ipsEntry__authorStats ipsEntry__authorStats--minimal'>
+					<li data-i-el="posts">
+						{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) ) }}
+							<a href='{url="app=core&module=members&controller=profile&id={$comment->author()->member_id}&do=content" seoTemplate="profile_content" seoTitle="$comment->author()->members_seo_name"}' rel="nofollow" title='{lang="post_pl"}' data-ipsTooltip>
+								<i class="fa-solid fa-comment" aria-hidden="true"></i>
+								<span data-i-el="number">{number="$comment->author()->member_posts" format="short"}</span>
+								<span data-i-el="label">{lang="post_pl_lc"}</span>
+							</a>
+						{{else}}
+							<span>
+								<i class="fa-solid fa-comment" aria-hidden="true"></i>
+								<span data-i-el="number">{number="$comment->author()->member_posts" format="short"}</span>
+								<span data-i-el="label">{lang="post_pl_lc"}</span>
+							</span>
+						{{endif}}
+					</li>
+					{{if isset( $comment->author_solved_count )}}
+						<li data-ips-hook="postUserSolutions" data-i-el="solutions">
+							{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) ) }}
+								<a href='{url="app=core&module=members&controller=profile&id={$comment->author()->member_id}&do=solutions" seoTemplate="profile_solutions" seoTitle="$comment->author()->members_seo_name"}' rel="nofollow" title='{lang="solutions"}' data-ipsTooltip>
+									<i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+									<span data-i-el="number">{number="$comment->author_solved_count" format="short"}</span>
+									<span data-i-el="label">{lang="solutions"}</span>
+								</a>
+							{{else}}
+								<span>
+									<i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+									<span data-i-el="number">{number="$comment->author_solved_count" format="short"}</span>
+									<span data-i-el="label">{lang="solutions"}</span>
+								</span>
+							{{endif}}
+						</li>
+					{{endif}}
+					{{if $comment->author()->canHaveAchievements() and \IPS\core\Achievements\Badge::show() AND \IPS\core\Achievements\Badge::getStore()}}
+						<li data-ips-hook="postUserBadges" data-i-el="badges">
+							<a href="{url="app=core&module=members&controller=profile&id={$comment->author()->member_id}&do=badges" seoTemplate="profile_badges" seoTitle="$comment->author()->members_seo_name"}" data-action="badgeLog" title="{lang="badges"}">
+								<i class="fa-solid fa-award" aria-hidden="true"></i>
+								<span data-i-el="number">{number="$comment->author()->badgeCount()" format="short"}</span>
+								<span data-i-el="label">{lang="badges"}</span>
+							</a>
+						</li>
+					{{endif}}
+					{{if settings.reputation_enabled and settings.reputation_show_profile}}
+						<li data-ips-hook="postUserReputation" data-i-el="reputation">
+							{{if member.group['gbw_view_reps']}}
+								<a href="{url="app=core&module=members&controller=profile&id={$comment->author()->member_id}&do=reputation" seoTemplate="profile_reputation" seoTitle="$comment->author()->members_seo_name"}" data-action="repLog" title="{lang="reputation_title"}" data-ipstooltip>
+									<i class="fa-solid fa-heart" aria-hidden="true"></i>
+									<span data-i-el="number">{number="$comment->author()->pp_reputation_points" format="short"}</span>
+									<span data-i-el="label">{lang="reputation_title"}</span>
+								</a>
+							{{else}}
+								<span>
+									<i class="fa-solid fa-heart" aria-hidden="true"></i>
+									<span data-i-el="number">{number="$comment->author()->pp_reputation_points" format="short"}</span>
+									<span data-i-el="label">{lang="reputation_title"}</span>
+								</span>
+							{{endif}}
+						</li>
+					{{endif}}
+				</ul>
+				<ul data-ips-hook="postUserCustomFields" class='ipsEntry__authorFields'>
+					{template="customFieldsDisplay" group="global" app="core" params="$comment->author()"}
+				</ul>
+			{{endif}}
+			{$comment->ui( 'authorPanel' )|raw}
+		</aside>
+	{{endif}}
+	{template="postHeader" group="topics" app="forums" params="$item, $comment, $idField, $viewerIsFollowingTheseExperts"}
+	{template="post" group="topics" app="forums" params="$item, $comment, $item::$formLangPrefix . 'comment', $item::$application, $item::$module, $itemClassSafe, $viewerIsFollowingTheseExperts"}
+	{$comment->menu()->contentHtml()|raw}
+</article>

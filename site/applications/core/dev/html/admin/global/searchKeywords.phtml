@@ -1,0 +1,94 @@
+<ips:template parameters="$url, $lang=NULL" />
+{{if \IPS\IN_DEV and !\IPS\DEV_HIDE_DEV_TOOLS}}
+	<button type="button" id="acplsi_{expression='md5( $url )'}" popovertarget="acplsi_{expression='md5( $url )'}_menu" class="ipsBadge cACPkeywords">
+		{{if isset( \IPS\Dispatcher::i()->searchKeywords[ $url ] )}}
+			<span>
+				<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> {expression="\count( \IPS\Dispatcher::i()->searchKeywords[ $url ]['keywords'] )"}
+			</span>
+		{{else}}
+			<span>
+				<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> 0
+			</span>
+		{{endif}}
+	</button>
+	<i-dropdown popover id="acplsi_{expression='md5( $url )'}_menu" data-controller="core.admin.core.acpSearchKeywords" data-url="{expression="base64_encode( $url )"}" data-action="{url="app=core&module=system&controller=ajax&do=searchKeywords"}">
+		<div class="iDropdown">
+			<div class="iDropdown__header">
+				<h4 class='iDropdown__headerTitle'><i class='fa-solid fa-gears i-color_soft i-margin-end_icon' aria-hidden="true"></i> Developer Options</h4>
+			</div>
+			<div class="iDropdown__content">
+				<ul class='ipsForm'>
+					<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+						<div class='ipsFieldRow__label'>
+							{lang="keywords_language"}
+						</div>
+						<div class='ipsFieldRow__content'>
+							<input type='text' class="ipsInput ipsInput--text" data-role="lang_key" value="{{if isset( \IPS\Dispatcher::i()->searchKeywords[ $url ] )}}{expression="\IPS\Dispatcher::i()->searchKeywords[ $url ]['lang_key']"}{{elseif $lang}}{$lang}{{else}}menu__{expression="\IPS\Request::i()->app"}_{expression="\IPS\Request::i()->module"}_{expression="\IPS\Request::i()->controller"}{{endif}}">
+						</div>
+					</li>
+					<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+						<div class='ipsFieldRow__label'>
+							{lang="keywords_restriction"}
+						</div>
+						<div class='ipsFieldRow__content'>					
+							<select class="ipsInput ipsInput--select" data-role="restriction">
+								{{$value = isset( \IPS\Dispatcher::i()->searchKeywords[ $url ] ) ? \IPS\Dispatcher::i()->searchKeywords[ $url ]['restriction'] : \IPS\Dispatcher::i()->menuRestriction;}}
+								{{foreach \IPS\Dispatcher::i()->moduleRestrictions as $k => $v}}
+									{{if \is_array( $v )}}
+										<optgroup label="{lang="r__{$k}"}">
+											{{foreach $v as $_k => $_v}}
+												<option value='{$_k}' {{if $value == $_k}}selected{{endif}}>{lang="r__{$_v}"}</option>
+											{{endforeach}}
+										</optgroup>
+									{{else}}
+										<option value='{$k}' {{if $value == $k}}selected{{endif}}>{lang="$v"}</option>
+									{{endif}}
+								{{endforeach}}
+							</select>
+						</div>
+					</li>
+					<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+						<div class='ipsFieldRow__label'>
+							{lang="keywords_keywords"}
+						</div>
+						<div class='ipsFieldRow__content'>
+							<div class="ipsField_stack" data-ipsStack>
+								<ul data-role="stack">
+									{{if isset( \IPS\Dispatcher::i()->searchKeywords[ $url ] )}}
+										{{foreach \IPS\Dispatcher::i()->searchKeywords[ $url ]['keywords'] as $word}}
+											<li class='ipsField_stackItem' data-role="stackItem">
+												<span class="ipsField_stackDrag ipsDrag" data-action='stackDrag'>
+													<i class='fa-solid fa-bars ipsDrag_dragHandle' aria-hidden="true"></i>
+												</span>
+												<div data-ipsStack-wrapper><input type='text' data-role="keywords" value="{$word}" class="ipsInput"></div>
+												<span class="ipsField_stackDelete" data-action="stackDelete">
+													&times;
+												</span>
+											</li>
+										{{endforeach}}
+									{{else}}
+										<li class='ipsField_stackItem' data-role="stackItem">
+											<span class="ipsField_stackDrag ipsDrag" data-action='stackDrag'>
+												<i class='fa-solid fa-bars ipsDrag_dragHandle' aria-hidden="true"></i>
+											</span>
+											<div data-ipsStack-wrapper><input type='text' data-role="keywords" class="ipsInput"></div>
+											<span class="ipsField_stackDelete" data-action="stackDelete">
+												&times;
+											</span>
+										</li>
+									{{endif}}
+								</ul>
+								<div class='i-margin-top_2'>
+									<button class="ipsField_stackAdd ipsButton ipsButton--inherit ipsButton--small" data-action="stackAdd"><i class='fa-solid fa-plus-circle' aria-hidden="true"></i> {lang="stack_add"}</button>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li class="ipsSubmitRow">
+						<button type="button" class="ipsButton ipsButton--primary ipsButton--primary ipsButton--wide" data-action="save">{lang="save"}</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</i-dropdown>
+{{endif}}

@@ -1,0 +1,74 @@
+<ips:template parameters="$invoice, $summary, $address" />
+<div class="ipsPrint">
+	{setting="nexus_invoice_header"}
+	<h1>{lang="invoice_number" sprintf="$invoice->id"}</h1>
+	<div class="i-flex i-flex-wrap_wrap i-gap_3 i-margin-bottom_3 i-margin-top_3">
+		<div class="i-flex_11">
+			{{if $invoice->po}}
+				{lang="invoice_po_number"}: {$invoice->po}<br>
+				<br>
+			{{endif}}
+			{{if $invoice->member->member_id}}
+				{$invoice->member->cm_name}
+			{{else}}
+				{$invoice->guest_data['member']['name']}
+			{{endif}}
+			<br>
+			{{if $address}}
+				{$address->toString('<br>')|raw}
+				{{if isset( $address->vat ) and $address->vat}}
+					<br><br>
+					{lang="cm_checkout_vat_number"}: {expression="mb_strtoupper( preg_replace( '/[^A-Z0-9]/', '', $address->vat ) )"}
+				{{endif}}
+			{{endif}}
+		</div>
+		<div>
+			<strong>{setting="board_name"}</strong><br>
+			{expression="\IPS\GeoLocation::buildFromJson( \IPS\Settings::i()->site_address )->toString('<br>')" raw="true"}<br>
+			<br>
+			{$invoice->date->localeDate()}
+		</div>
+	</div>
+	{{if $invoice->notes}}
+		<div class="i-margin-bottom_3">
+			{expression="nl2br( htmlspecialchars( $invoice->notes, ENT_QUOTES | ENT_DISALLOWED, 'UTF-8', FALSE ) )" raw="true"}
+		</div>
+	{{endif}}
+	<table>
+		<thead>
+			<tr>
+				<th>{lang="invoice_item"}</th>
+				<th>{lang="invoice_unit_price"}</th>
+				<th>{lang="invoice_quantity"}</th>
+				<th>{lang="invoice_line_price"}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $summary['items'] as $k => $item}}
+				<tr>
+					<td>{$item->name} {$item->detailsForDisplay( 'print' )|raw}</td>
+					<td>{$item->price}</td>
+					<td>{$item->quantity}</td>
+					<td>{$item->linePrice()}</td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3"><strong>{lang="subtotal"}</strong></td>
+				<td><strong>{$summary['subtotal']}</strong></td>
+			</tr>
+			{{foreach $summary['tax'] as $taxId => $tax}}
+				<tr>
+					<td colspan="3">{lang="nexus_tax_{$taxId}"} ({expression="$tax['rate']*100"}%)</td>
+					<td>{$tax['amount']}</td>
+				</tr>
+			{{endforeach}}
+			<tr class="i-font-size_2">
+				<td colspan="3"><strong>{lang="total"}</strong></td>
+				<td><strong>{$summary['total']}</strong></td>
+			</tr>
+		</tfoot>
+	</table>
+	{setting="nexus_invoice_footer"}
+</div>

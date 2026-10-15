@@ -1,0 +1,8 @@
+<ips:template parameters="$member, $email" />
+{$email->language->addToStack("notification__referral", FALSE, array( 'htmlsprintf' => array( $member->name ) ) )}
+
+=====
+{$email->language->addToStack("email_go_to_x_profile", FALSE, array( 'htmlsprintf' => array( $member->name ) ) )}: {$member->url()}
+=====
+
+-- {setting="board_name"}

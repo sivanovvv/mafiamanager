@@ -1,0 +1,59 @@
+{
+    "1": {
+        "method": "changeColumn",
+        "params": [
+            "downloads_files",
+            "file_version",
+            {
+                "name": "file_version",
+                "type": "VARCHAR",
+                "length": 100,
+                "decimals": null,
+                "values": [],
+                "allow_null": true,
+                "default": null,
+                "comment": "",
+                "unsigned": false,
+                "auto_increment": false
+            }
+        ]
+    },
+    "2": {
+        "method": "changeColumn",
+        "params": [
+            "downloads_filebackup",
+            "b_version",
+            {
+                "name": "b_version",
+                "type": "VARCHAR",
+                "length": 100,
+                "decimals": null,
+                "values": [],
+                "allow_null": true,
+                "default": null,
+                "comment": "",
+                "unsigned": false,
+                "auto_increment": false
+            }
+        ]
+    },
+    "3": {
+        "method": "changeColumn",
+        "params": [
+            "downloads_reviews",
+            "review_version",
+            {
+                "name": "review_version",
+                "type": "VARCHAR",
+                "length": 100,
+                "decimals": null,
+                "values": [],
+                "allow_null": true,
+                "default": null,
+                "comment": "The version being reviewed",
+                "unsigned": false,
+                "auto_increment": false
+            }
+        ]
+    }
+}

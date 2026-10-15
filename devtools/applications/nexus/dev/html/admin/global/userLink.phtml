@@ -1,0 +1,6 @@
+<ips:template parameters="$member" />
+{{if $member->member_id}}
+	<a href="{$member->acpUrl()}">{{if $member->cm_name}}{$member->cm_name}{{else}}{$member->name}{{endif}}</a>
+{{else}}
+	{lang="guest"}
+{{endif}}

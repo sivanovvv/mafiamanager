@@ -1,0 +1,44 @@
+<ips:template parameters="$table, $headers, $images" />
+{{foreach $images as $image}}
+	{{$imageWidth=isset( $image->_dimensions['small'][0] ) ? $image->_dimensions['small'][0] : 0;}}
+	{{$imageHeight=isset( $image->_dimensions['small'][1] ) ? $image->_dimensions['small'][1] : 0;}}
+	<li class='ipsMasonry__item {{if $image->hidden()}}ipsModerated{{endif}} {$image->ui( 'css' )}' {{if $imageWidth && $imageHeight}}style='--i-ratio:{$imageWidth}/{$imageHeight}'{{endif}} {$image->ui( 'dataAttributes' )}>
+		<figure class='ipsFigure ipsFigure--hover'>
+			<a href="{$image->url()->setQueryString( 'context', 'new' )}" class='ipsFigure__main' aria-hidden="true" tabindex="-1">
+				{{if $image->media }}
+					<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+						<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+					</video>
+					<i class="ipsFigure__play" aria-hidden="true"></i>
+				{{else}}
+					<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="" loading="lazy">
+				{{endif}}
+				<span class="ipsInvisible">{$image->caption}</span>
+            </a>
+			<div class='ipsFigure__header'>
+			    {{foreach $image->badges() as $badge}}{$badge|raw}{{endforeach}}
+				{{if $table->canModerate()}}
+					<input type='checkbox' data-role='moderation' name="moderate[{$image->id}]" data-actions="{{if $image->mapped('featured')}}unfeature{{else}}feature{{endif}} {{if $image->mapped('pinned')}}unpin{{else}}pin{{endif}} {{if $image->hidden() === -1}}unhide{{elseif $image->hidden() === 1}}approve{{else}}hide{{endif}} {{if $image->mapped('locked')}}unlock{{else}}lock{{endif}} move delete" data-state='{{if $image->tableStates()}}{$image->tableStates()}{{endif}}' class='ipsInput ipsInput--toggle'>
+				{{endif}}
+			</div>
+			{template="nsfwOverlay" app="gallery" location="front" group="global" params="$image"}
+			<figcaption class='ipsFigure__footer'>
+				<div class='ipsFigure__title'>
+					{{if $image->unread()}}
+						<span class='ipsIndicator' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'></span>
+					{{endif}}
+					<a href="{$image->url()->setQueryString( 'context', 'new' )}">{$image->caption}</a>
+				</div>
+				<div>
+					{lang="byline_nodate_itemprop" htmlsprintf="$image->author()->link( $image->warningRef() )"}
+
+					{{if $image->directContainer()->allow_comments}}
+						{{if $image->comments > 0}}
+							&middot; <span>{lang="num_comments" pluralize="$image->comments"}</span>
+						{{endif}}
+					{{endif}}
+				</div>
+			</figcaption>
+		</figure>
+	</li>
+{{endforeach}}

@@ -1,0 +1,8 @@
+<ips:template parameters="$item" />
+{{if \count( $item->details )}}
+    <div class="i-color_soft">
+        {{foreach $item->details as $k => $v}}
+            <strong>{lang="nexus_pfield_{$k}"}: </strong> {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}<br>
+        {{endforeach}}
+    </div>
+{{endif}}

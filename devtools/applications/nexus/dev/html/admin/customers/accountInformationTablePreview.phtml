@@ -1,0 +1,11 @@
+<ips:template parameters="$customer, $table, $title, $type" />
+<div class="i-padding_3">
+	{{$count = \count( $table->getRows(NULL) );}}
+	<h3 class='ipsTitle ipsTitle--h4'>{$title}</h3>
+	{$table|raw}
+	<p class='i-margin-top_1'>
+		<a href='{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\nexus\\extensions\\core\\MemberACPProfileBlocks\\AccountInformation&id={$customer->member_id}&type={$type}"}' data-ipsDialog data-ipsDialog-title='{lang="customer_tab_{$type}"}' class='ipsButton ipsButton--inherit ipsButton--wide'>
+			{lang="customer_manage_{$type}"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+		</a>
+	</p>
+</div>

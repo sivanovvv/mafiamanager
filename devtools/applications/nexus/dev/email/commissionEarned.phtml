@@ -1,0 +1,14 @@
+<ips:template parameters="$invoice, $item, $commission, $email" />
+{{if $item}}
+	{$email->language->addToStack("email_commission_product", FALSE, array( 'sprintf' => array( $item->name, $commission ) ) )} 
+{{else}}
+	{$email->language->addToStack("email_commission_no_product", FALSE, array( 'sprintf' => array( $commission ) ) )} 
+{{endif}}
+<br><br>
+{{if \IPS\Settings::i()->nexus_payout}}
+	{$email->language->addToStack("email_commission_info_payout", FALSE)}
+{{else}}
+	{$email->language->addToStack("email_commission_info_no_payout", FALSE)}
+{{endif}}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

@@ -1,0 +1,153 @@
+.ipsFooter{
+	margin-top: 1em;
+	--i-co: var(--i-footer--co);
+	color: var(--i-co);
+	background: var(--i-footer--ba-co);
+	padding: 1.5em 0;
+	--i-footer-widgets: 320px;
+}
+
+.ipsFooter__widgets{
+	margin-bottom: 2em;
+	color: var(--i-color_root);
+}
+
+/* Hide footer widgets if they're empty */
+.ipsFooter__widgets:not(:has(.cWidgetContainer)),
+.ipsFooter__widgets:has(.cWidgetContainer[hidden]:only-child){
+	display: none;
+}
+
+	.ipsFooter .cSidebarManager_placeholder{
+		height: auto;
+	}
+
+.ipsFooter__footer{
+	font-size: .9em;
+	font-weight: 500;
+}
+
+.ipsFooter__align{
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .9em 1.5em;
+}
+
+.ipsFooter hr{
+	border-top: 1px solid currentColor;
+	opacity: .3;
+	flex: 1 1 100%;
+}
+
+.ipsFooterLinks,
+.ipsCopyright {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.ipsCopyright{
+	gap: 0 2em;
+}
+
+.ipsCopyright a{
+	color: inherit;
+}
+
+.ipsCopyright__user:empty{
+	display: none;
+}
+
+@media (max-width: 767px){
+	.ipsFooterLinks, .ipsCopyright{
+		flex: 1 1 100%;
+	}
+}
+
+.ipsFooterLinks > li > a,
+.ipsFooterLinks > li > button{
+	color: inherit;
+	padding: .4em 1em;
+	display: block;
+	border-radius: min(5px, var(--i-design-radius));
+}
+
+.ipsFooterLinks > li > a:hover,
+.ipsFooterLinks > li > button:hover{
+	background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.ipsFooterLinks .fa-angle-down{
+	font-size: 10px;
+	opacity: .6;
+}
+
+/*
+	----------------
+	- Update colors of footer widgets so they blend into footer
+	----------------
+*/
+
+@container style(--i-inherited-footer-widgets: true){
+	.ipsFooter__widgets{
+		--i-color_root: var(--i-footer--co);
+		--i-color_hard: var(--i-footer--co);
+		--i-color_soft: color-mix(in srgb, var(--i-footer--co) 70%, var(--i-footer--ba-co));
+		--i-link--co: var(--i-color-hard);
+		--i-link-hover--co: var(--i-link--co);
+		--i-data--bo-co: color-mix(in srgb, var(--i-footer--co) 20%, var(--i-footer--ba-co));
+		--i-background_start: color-mix(in srgb, var(--i-footer--co) 6%, var(--i-footer--ba-co));
+		--i-background_end: color-mix(in srgb, var(--i-footer--co) 40%, var(--i-footer--ba-co));
+		--i-background_1: var(--i-background_start);
+		--i-background_2: color-mix(in hsl, var(--i-background_start), var(--i-background_end) 10%);
+		--i-background_3: color-mix(in hsl, var(--i-background_start), var(--i-background_end) 32%);
+		--i-background_4: color-mix(in hsl, var(--i-background_start), var(--i-background_end) 50%);
+		--i-background_5: color-mix(in hsl, var(--i-background_start), var(--i-background_end) 80%);
+		--i-background_6: var(--i-background_end);
+	}
+	@supports (color: oklch(from var(--i) clamp(0, (.7 - l) * 1000, 1) c h)) and (color: oklch(from red l c h)){
+		.ipsFooter__widgets{
+			--i-color_hard: oklch(from var(--i-footer--ba-co) clamp(0, (.7 - l) * 1000, 1) c h);
+		}
+	}
+	.ipsFooter__widgets .ipsContainerTitle{
+		color: inherit;
+	}
+	/* Remove all widget styles for the widget footer */
+	.ipsFooter__widgets .ipsWidget,
+	.ipsFooter__widgets .ipsWidget__header,
+	.ipsFooter__widgets .cWidgetContainer__carousel-wrap{
+		background-color: var(--i-background_1);
+		box-shadow: none;
+		border-width: 0;
+	}
+
+	.ipsFooter__widgets .ipsWidget__header {
+		color: var(--i-color_hard);
+		background-color: var(--i-background_2);
+	}
+}
+
+/*
+	----------------
+	- Cookie notice
+	----------------
+*/
+
+.ipsCookieNotice{
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: var(--i-mobileFooter--he);
+	background: var(--i-background_1);
+	border-top: 1px solid color-mix(in srgb, var(--i-color_soft) 30%, transparent);
+	z-index: calc(var(--i-z-index_mobileFooter) - 1);
+	padding: 1.4em 0;
+}
+
+	@media (min-width: 980px){
+		.ipsCookieNotice{
+			bottom: 0;
+		}
+	}

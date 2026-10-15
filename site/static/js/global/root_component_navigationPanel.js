@@ -1,0 +1,6 @@
+;(function(){"use strict";class INavigationPanel extends HTMLElement{connectedCallback(){this.navigationList=this.querySelector('[data-role="navigationList"]');this.addEventListener('toggle',this.toggleBlock,true);this.addEventListener('scrollend',this.saveScroll);}
+_loadCollapsedPanels(){try{const value=ips.utils.cookie.get('collapsedNavigationPanels');const parsed=JSON.parse(value||'[]');return Array.isArray(parsed)?parsed:[];}catch{ips.utils.cookie.set('collapsedNavigationPanels','[]');return[];}}
+toggleBlock(e){if(!this.collapsed){this.collapsed=new Set(this._loadCollapsedPanels());}
+const id=e.target.getAttribute('data-id');if(!id)return;if(e.newState==='open'){this.collapsed.delete(id)}else{this.collapsed.add(id);}
+ips.utils.cookie.set('collapsedNavigationPanels',JSON.stringify([...this.collapsed]),true);this.saveScroll();};saveScroll(){sessionStorage.setItem('navigationPanelScroll',this.scrollTop);};}
+ips.ui.registerWebComponent("navigationPanel",INavigationPanel);Debug.log(`Submitted the web component constructor, INavigationPanel, for ${"navigationPanel"}`);})();;

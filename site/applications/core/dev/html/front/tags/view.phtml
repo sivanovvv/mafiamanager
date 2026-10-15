@@ -1,0 +1,34 @@
+<ips:template parameters="$tag, $tabs, $content=''" />
+<div id="elTagHeader" class='ipsBox ipsBox--tagsHeader ipsPageHeader ipsPull'>
+    {$tag->coverPhoto()|raw}
+    {{if $pinnedItems = $tag->getPinnedItems()}}
+    <div id='elTagPinnedItems'>
+		<h3 class="i-color_soft i-text-transform_uppercase i-font-weight_600 i-font-size_-2 i-padding-block_2 i-padding-inline_3 i-background_2 i-border-top_3 i-border-bottom_3">
+			{lang="tags__pinned_entries" sprintf="$tag->text"}</span>
+		</h3>
+		<i-data>
+			<ol class='ipsData ipsData--grid ipsData--carousel' id="tags-pinned-carousel" tabindex="0">
+				{{foreach $pinnedItems as $pinned}}
+					{template="pinnedItem" app="core" group="tags" location="front" params="$pinned, $tag"}
+				{{endforeach}}
+			</ol>
+			{template="carouselNavigation" group="global" app="core" params="'tags-pinned-carousel'"}
+		</i-data>
+    </div>
+    {{endif}}
+</div>
+<div id='elTagControls' class="ipsBox ipsBox--tagsFeed ipsTagsFeed ipsPull ipsBox--clip">
+    {{if count( $tabs ) > 1}}
+	<div class="ipsPwaStickyFix ipsPwaStickyFix--ipsTabs"></div>
+	<i-tabs class='ipsTabs ipsTabs--sticky' id='ipsTabs_tag' data-ipsTabBar data-ipsTabBar-contentArea="#ipsTabs_tag_content">
+		<div role='tablist'>
+			<a href="{$tag->url()}" class="ipsTabs__tab" id="ipsTabs_tag_all" data-tab="all" role="tab" aria-controls="ipsTabs_tag_all_panel" aria-selected="{{if !isset( \IPS\Request::i()->tab )}}true{{else}}false{{endif}}">{lang="tag_all_content"}</a>
+			{{foreach $tabs as $type}}
+				<a href="{$tag->url()->setQueryString( 'tab', $type )}" class="ipsTabs__tab" id="ipsTabs_tag_{$type}" data-tab="{$type}" role="tab" aria-controls="ipsTabs_tag_{$type}_panel" aria-selected="{{if isset( \IPS\Request::i()->tab ) and \IPS\Request::i()->tab == $type}}true{{else}}false{{endif}}">{lang="{$type}_pl"}</a>
+			{{endforeach}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	{{endif}}
+	<div id='ipsTabs_tag_content' class='ipsTabs__panels'>{$content|raw}</div>
+</div>

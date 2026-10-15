@@ -1,0 +1,15 @@
+<ips:template parameters="$leftColumnBlocks, $mainColumnBlocks" />
+<section class='ipsAcpProfile'>
+    {{if \count($leftColumnBlocks) }}
+	<aside class='ipsAcpProfile__aside'>
+		{{foreach $leftColumnBlocks as $block}}
+			{$block->output()|raw}
+		{{endforeach}}
+	</aside>
+    {{endif}}
+	<div class='ipsAcpProfile__main'>
+		{{foreach $mainColumnBlocks as $block}}
+			{$block->output()|raw}
+		{{endforeach}}
+	</div>
+</section>

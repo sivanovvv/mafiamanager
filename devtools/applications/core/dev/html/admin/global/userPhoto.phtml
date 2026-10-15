@@ -1,0 +1,10 @@
+<ips:template parameters="$member, $size='small'" />
+{{if $member->member_id}}
+	<a href="{$member->url()}" class="ipsUserPhoto ipsUserPhoto--{$size}" target="_blank" rel="noopener">
+		<img src='{$member->photo}' alt='' loading="lazy" referrerpolicy='origin-when-cross-origin'>
+	</a>
+{{else}}
+	<span class="ipsUserPhoto ipsUserPhoto--{$size}">
+		<img src='{$member->photo}' alt='' loading="lazy" referrerpolicy='origin-when-cross-origin'>
+	</span>
+{{endif}}

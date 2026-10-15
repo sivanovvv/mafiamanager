@@ -1,0 +1,24 @@
+<ips:template parameters="" />
+{{/*}}<!-- For guests: Apply either light, dark or system color scheme from cookie. We need to do this due to page caching for guests. -->{{*/}}
+{{if !\IPS\Request::i()->isAjax() and !\IPS\Member::loggedIn()->member_id and cssvar.set__i-change-scheme == "1"}}
+	<script>
+		(() => {
+			function getCookie(n) {
+				let v = `; \${document.cookie}`, parts = v.split(`; \${n}=`);
+				if (parts.length === 2) return parts.pop().split(';').shift();
+			}
+			{{if \IPS\Request::i()->cookieConsentEnabled()}}
+				const c = getCookie('{{if \IPS\COOKIE_PREFIX !== NULL}}{expression="\IPS\COOKIE_PREFIX"}{{endif}}cookie_consent');
+				if(!c) return;
+			{{endif}}
+			const s = getCookie('{{if \IPS\COOKIE_PREFIX !== NULL}}{expression="\IPS\COOKIE_PREFIX"}{{endif}}scheme_preference');
+			if(!s || s === document.documentElement.getAttribute("data-ips-scheme-active")) return;
+			if(s === "system"){
+				document.documentElement.setAttribute('data-ips-scheme',(window.matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light');
+			} else {
+				document.documentElement.setAttribute("data-ips-scheme",s);
+			}
+			document.documentElement.setAttribute("data-ips-scheme-active",s);
+		})();
+	</script>
+{{endif}}

@@ -1,0 +1,26 @@
+<ips:template parameters="$rank, $member, $email" />
+{$email->language->addToStack( "notification__new_rank", FALSE, array( 'sprintf' => array( $email->language->addToStack( "core_member_rank_" . $rank->id ) ) ) )}
+<br><br>
+<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	<tr>
+		<td dir='{dir}'>
+			<img src='{$member->get_photo( true, true )}' width='80' height='80' style='border-radius: 6px;' class="avatar">
+			&nbsp; &nbsp; &nbsp;
+			<img src='{setting="base_url"}applications/core/interface/email/trophy.png' width='80' height='80' alt=''>
+			&nbsp; &nbsp; &nbsp;
+			<img src='{setting="base_url"}applications/core/interface/email/tada.png' width='80' height='80' alt=''>
+		</td>
+	</tr>
+</table>
+<br><br>
+{{if $days = $member->daysSinceLastRank()}}
+	{{if $days < 365}}
+		{$email->language->addToStack("notification_email_days_rank_took_low", NULL, ['sprintf'=>[$days]])}
+	{{else}}
+		{$email->language->addToStack("notification_email_days_rank_took_high", NULL, ['sprintf'=>[$days]])}
+	{{endif}}
+{{endif}}
+<br><br>
+{$email->language->addToStack("notification_email_keep_it_going")}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

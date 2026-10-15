@@ -1,0 +1,11 @@
+<ips:template parameters="$lang, $link=NULL" />
+<li class="ipsStreamItem ipsStreamItem--password ipsStreamItem_contentBlock">
+	<div class='ipsStreamItem__iconCell'>
+		<i class="fa-solid fa-lock" aria-hidden="true"></i>
+	</div>
+	<div class='ipsStreamItem__mainCell'>
+		<div class='i-color_soft i-font-weight_500'>
+			{$lang}{{if $link}} <a href="{$link}">{lang="enter_password"}</a>{{endif}}
+		</div>
+	</div>
+</li>

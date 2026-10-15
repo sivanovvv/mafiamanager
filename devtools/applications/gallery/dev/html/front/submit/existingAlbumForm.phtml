@@ -1,0 +1,50 @@
+<ips:template parameters="$category, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+{{$existingAlbums = \IPS\gallery\Album::loadForSubmit( $category );}}
+
+<form accept-charset='utf-8' class="{$class}" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm data-ipsFormSubmit data-controller='gallery.front.submit.existingAlbums'>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	<ul id='elGallerySubmit_albumChooser' class='ipsScrollbar'>
+		{{foreach $elements['']['existing_album']->options['options'] as $optionID => $option}}
+			{{$album = $existingAlbums[ $optionID ];}}
+			<li>
+				<input id="existing_album_{$optionID}" type='radio' name='existing_album' value='{$optionID}' {{if $optionID == $elements['']['existing_album']->value}}checked{{endif}}>
+				<div class='i-flex i-gap_2'>
+					<span class="ipsThumb i-flex_00 i-basis_40 {{if \IPS\Member::loggedIn()->group['g_img_album_limit'] && $album->count_imgs >= \IPS\Member::loggedIn()->group['g_img_album_limit']}}i-opacity_4{{endif}}">
+						{{if $album->coverPhoto('small')}}
+							<img src='{$album->coverPhoto( 'small' )}' alt="{$album->_title}" loading="lazy">
+						{{endif}}
+					</span>
+					<div class='i-flex_11 cGallerySubmit_albumInfo'>
+						<p><strong class="i-font-size_2">{$album->_title}</strong></p>
+						<ul class='ipsList ipsList--inline i-color_soft'>
+							<li>{lang="num_images" pluralize="$album->count_imgs"}</li>
+							{{if \IPS\Member::loggedIn()->group['g_img_album_limit']}}
+								<li>
+									{{if $album->count_imgs >= \IPS\Member::loggedIn()->group['g_img_album_limit']}}
+										{lang="album_full_desc"}
+									{{else}}
+										{lang="x_more_images_album" pluralize="( \IPS\Member::loggedIn()->group['g_img_album_limit'] - $album->count_imgs )"}
+									{{endif}}
+								</li>
+							{{endif}}
+						</ul>
+					</div>
+					<label for="existing_album_{$optionID}"><span class="ipsInvisible">{$album->_title}</span></label>
+				</div>
+			</li>
+		{{endforeach}}
+	</ul>
+	<div class='ipsSubmitRow cGalleryDialog_submitBar'>
+		<button type='submit' class='ipsButton ipsButton--primary'>{lang="choose_selected_album"}</button>
+	</div>
+</form>

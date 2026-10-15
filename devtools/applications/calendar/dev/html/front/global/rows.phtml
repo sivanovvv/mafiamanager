@@ -1,0 +1,81 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+		<li class="ipsData__item {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} {{if $row->hidden()}}ipsModerated{{endif}} {$row->ui( 'css' )}" {$row->ui( 'dataAttributes' )}>
+			{{if $row->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+				<time datetime='{$row->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->mysqlDatetime()}' class='ipsCalendarDate ipsCalendarDate--large'>
+					<span class='ipsCalendarDate__month'>{$row->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->monthNameShort}</span>
+					<span class='ipsCalendarDate__date'>{$row->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->mday}</span>
+				</time>
+			{{else}}
+				<time datetime='{$row->lastOccurrence( 'startDate' )->mysqlDatetime()}' class='ipsCalendarDate ipsCalendarDate--large'>
+					<span class='ipsCalendarDate__month'>{$row->lastOccurrence( 'startDate' )->monthNameShort}</span>
+					<span class='ipsCalendarDate__date'>{$row->lastOccurrence( 'startDate' )->mday}</span>
+				</time>
+			{{endif}}
+			<div class='ipsData__content'>
+				<div class='ipsData__main'>
+					<div class='ipsData__title'>
+						{{foreach $row->badges() as $badge}}{$badge|raw}{{endforeach}}
+						{{if $row->prefix()}}
+							{template="prefix" group="global" app="core" params="$row->prefix( TRUE ), $row->prefix()"}
+						{{endif}}
+						<h4>
+							<a href='{$row->url( "getPrefComment" )}' {{if $row->tableHoverUrl}}data-ipsHover{{endif}}>
+								{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}
+							</a>
+						</h4>
+					</div>
+					<div class='ipsData__desc'>{$row->eventBlurb()|raw}</div>
+					{{if $row->rsvp}}
+						{{if $attendees = $row->attendees() and isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] ) }}
+							<p class='i-font-size_2 i-color_positive'><strong><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="you_are_going_to_this"}</strong></p>
+						{{else}}
+							<p class='i-font-size_2 i-color_soft'><em><i class='fa-solid fa-circle-xmark' aria-hidden="true"></i> {lang="you_are_not_going_to_this"}</em></p>
+						{{endif}}
+
+						{{if \count( $attendees[1] )}}
+							<ul class='ipsList ipsList--inline'>
+								<li class='i-color_soft'>{lang="rsvp_attend_event"}:</li>
+								{{foreach $attendees[1] as $idx => $attendee}}
+									{{if $idx < 6}}
+										<li>{template="userPhoto" group="global" app="core" params="$attendee, 'tiny', NULL, NULL, TRUE"}</li>
+									{{endif}}
+								{{endforeach}}
+								{{if \count( $attendees[1] ) > 5}}
+									<li class='i-color_soft'>{lang="and_x_more" pluralize="\count( $attendees[1] ) - 5"}</li>
+								{{endif}}
+							</ul>
+						{{endif}}
+					{{endif}}
+					{{if \count( $row->tags() )}}
+						{template="tags" group="global" app="core" params="$row->tags(), true, true"}
+					{{endif}}
+				</div>
+				<div class='i-basis_220'>
+					{{if $row->container()->allow_reviews}}
+						{template="rating" group="global" location="front" app="core" params="'large', $row->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $row->memberReviewRating()"} <span class='i-color_soft'>({lang="num_reviews" pluralize="$row->reviews"})</span>
+					{{endif}}
+					{{if $row->container()->allow_comments}}
+						<p>
+							{{if $row->comments}}
+								<a href='{$row->url()->setQueryString( 'tab', 'comments' )->setFragment('replies')}'>
+							{{endif}}
+							<i class='fa-solid fa-comment' aria-hidden="true"></i> {lang="num_comments" pluralize="$row->comments"}
+							{{if $row->comments}}
+								</a>
+							{{endif}}
+						</p>
+					{{endif}}
+				</div>
+			</div>
+			{{if $table->canModerate()}}
+				<label class="ipsData__mod">
+					<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+					{{$idField = $row::$databaseColumnId;}}
+					<input type='checkbox' data-role='moderation' name="moderate[{$row->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{{if $row->tableStates()}}{$row->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+				</label>
+			{{endif}}
+		</li>
+	{{endforeach}}
+{{endif}}

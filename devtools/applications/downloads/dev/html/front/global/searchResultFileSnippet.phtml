@@ -1,0 +1,31 @@
+<ips:template parameters="$indexData, $itemData, $screenshot, $url, $price, $condensed" />
+
+{{if $screenshot}}
+	<div class='ipsStreamItem__content-thumb ipsStreamItem__content-thumb--downloads'>
+		{template="thumbImage" group="global" app="core" location="front" params="$screenshot, $indexData['index_title'], 'fluid', '', 'view_this', $url, 'downloads_Screenshots', '', true"}
+	</div>
+{{endif}}
+{{if !$condensed}}
+	<div class='ipsStreamItem__content-content ipsStreamItem__content-content--downloads'>
+		<ul class='ipsList ipsList--inline ipsList--icons'>
+			{{if !$price or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) ) }}
+				<li class='i-font-weight_600'><i class='fa-solid fa-download' aria-hidden="true"></i> {lang="num_downloads" pluralize="$itemData['file_downloads']"}</li>
+			{{endif}}
+			{{if $itemData['file_version']}}<li class='i-color_soft i-font-weight_500'><i class="fa-regular fa-file-lines" aria-hidden="true"></i> {lang="version"} {$itemData['file_version']}</li>{{endif}}	
+		</ul>
+		{{if trim( $indexData['index_content'] ) !== ''}}
+			<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+				{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+			</div>
+		{{endif}}		
+		{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+			<div class='cNexusPrice'>
+				{{if $price}}
+					{$price|raw}
+				{{else}}
+					{lang="file_free"}
+				{{endif}}
+			</div>
+		{{endif}}
+	</div>
+{{endif}}

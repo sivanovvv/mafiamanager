@@ -1,0 +1,25 @@
+<ips:template parameters="$name, $value, $options, $postKey, $uploadControl, $emoticons, $tags=array(), $contentClass=NULL, $contentId=NULL" />
+{{if !empty( $tags )}}
+<div class='ipsColumns' data-controller='core.global.editor.customtags' data-tagFieldType='editor' data-tagFieldID='{$name}'>
+	<div class='ipsColumns__primary'>
+{{endif}}
+		<div class='ipsComposeArea_editor' data-role="editor">
+			{template="editorRawV5" group="forms" app="core" location="global" params="$name, $value, $options, $postKey, $uploadControl, $emoticons, $tags, $contentClass, $contentId"}
+		</div>
+{{if !empty( $tags )}}
+	</div>
+	<div class='ipsColumns__secondary ipsComposeArea_sidebar'>
+		<h3 class='i-padding_2 ipsTitle ipsTitle--h5' data-role='tagsHeader'>{lang="editor_tags"}</h3>
+		<ul class='ipsScrollbar' data-role='tagsList'>
+		{{foreach $tags as $tagKey => $tagValue }}
+			<li>
+				<button type="button" data-tagKey="{$tagKey}">
+					<code class="language-ipsphtml">{$tagKey}</code>
+					<div class='i-color_soft i-font-size_-2 i-margin-top_1'>{$tagValue}</div>
+				</button>
+			</li>
+		{{endforeach}}
+		</ul>
+	</div>
+</div>
+{{endif}}

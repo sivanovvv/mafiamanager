@@ -1,0 +1,4 @@
+<ips:template parameters="$purchase, $advertisement" />
+<div class='i-font-size_-1'>
+    {{if $advertisement->type == \IPS\core\Advertisement::AD_EMAIL}}{lang="advertisements_emails"}{{else}}{lang="advertisements_site"}{{endif}}
+</div>

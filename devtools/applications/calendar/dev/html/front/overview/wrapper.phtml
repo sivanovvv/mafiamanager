@@ -1,0 +1,32 @@
+<ips:template parameters="$featured, $nearme, $stream, $searchForm, $mapMarkers, $online, $date, $downloadLinks" />
+
+<div data-role='eventsPage' class='ipsBlockSpacer'>
+	{template="header" group="overview" app="calendar" params="$date, NULL, $downloadLinks"}
+
+	<div class='cEvents__overview-header'>
+		{{if \count( $featured )}}
+			{template="featured" group="events" app="calendar" params="$featured"}
+		{{endif}}
+		<section class='ipsBox ipsBox--calendarSearch {{if \count( $featured )}} i-flex i-flex-direction_column{{endif}}'>
+			<h2 class="ipsBox__header">{lang="events_search_events"}</h2>
+			<div class='ipsBox__content ipsBox__padding {{if \count( $featured )}}i-flex_11 i-flex i-align-items_center{{endif}}'>
+				<div class='i-flex_11 ipsEventSearch {{if \count( $featured )}}ipsEventSearch--vertical{{else}}ipsEventSearch--horizontal{{endif}}'>
+					{$searchForm->customTemplate( array( \IPS\Theme::i()->getTemplate( 'overview', 'calendar' ), 'searchBar' ) )|raw}
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<div data-role='eventsOverview' class='ipsBlockSpacer'>
+        {{if \IPS\GeoLocation::enabled() }}
+		    {template="nearMe" group="events" app="calendar" params="$nearme, $mapMarkers"}
+        {{endif}}
+		{template="online" group="events" app="calendar" params="$online"}
+
+		{$stream|raw}
+	</div>
+
+	<div data-role='searchResultsWrapper' class='ipsHide'>
+		{template="searchResultsWrapper" group="events" app="calendar" params=""}
+	</div>
+</div>

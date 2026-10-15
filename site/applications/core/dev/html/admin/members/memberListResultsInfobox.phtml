@@ -1,0 +1,14 @@
+<ips:template parameters="$massActionLink" />
+<p class="ipsMessage ipsMessage--info ipsMessage--memberListFilters i-margin_1">
+	{lang="member_search_results"}
+	<a href="{url="app=core&module=members&controller=members"}">{lang="member_view_full_list"}</a>
+	{{if member.hasAcpRestriction( 'core', 'members', 'member_delete' )}}
+		&mdash; <a href="{$massActionLink->setQueryString( 'action', 'prune' )}">{lang="member_search_prune"}</a>
+	{{endif}}
+	{{if member.hasAcpRestriction( 'core', 'members', 'member_edit' )}}
+		&mdash; <a href="{$massActionLink->setQueryString( 'action', 'move' )}">{lang="member_search_move"}</a>
+		{{if request.members_allow_admin_emails !== 'a'}}
+			&mdash; <a href="{$massActionLink->setQueryString( 'action', 'unSub' )}">{lang="member_search_unsub"}</a>
+		{{endif}}
+	{{endif}}
+</p>

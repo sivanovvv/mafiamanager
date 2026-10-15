@@ -1,0 +1,12 @@
+<ips:template parameters="$name, $value, $prefixLang='after', $unlimitedLang='never'" />
+{lang="$prefixLang"}
+<input type="number" name="{$name}[0]" {{if is_array($value) AND $value[0] != -1}}value="{$value[0]}"{{endif}} min="0" class="ipsInput ipsField_short">
+<select class="ipsInput ipsInput--select" name="{$name}[1]">
+	<option value="h" {{if is_array($value) AND $value[1] == 'h'}}selected="selected"{{endif}}>{lang="hours"}</option>
+	<option value="d" {{if is_array($value) AND $value[1] == 'd'}}selected="selected"{{endif}}>{lang="days"}</option>
+</select>
+<div class="ipsFieldRow__inlineCheckbox">
+	{lang="or"}
+	<input type="checkbox" class="ipsInput ipsInput--toggle" data-control="unlimited" id='el{$name}_unlimited' {{if is_array($value) AND $value[0] == -1}}checked="checked"{{endif}} name="{$name}[3]">
+	<label for='el{$name}_unlimited' class='ipsField_unlimited'>{lang="$unlimitedLang"}</label>
+</div>

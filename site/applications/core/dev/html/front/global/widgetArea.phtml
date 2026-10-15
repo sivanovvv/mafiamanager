@@ -1,0 +1,53 @@
+<ips:template parameters="$area" />
+
+{{if !$area->isEmpty() OR \IPS\Dispatcher::i()->application?->canManageWidgets()}}
+{{$dataAttributes = $area->dataAttributes();}}
+<section
+	class="cWidgetContainer{{foreach $area->classes() as $class}} {$class}{{endforeach}}"
+	{{if \IPS\Dispatcher::i()->application->canManageWidgets()}}data-controller='core.front.widgets.area'{{endif}}
+	data-role='widgetReceiver'
+	data-orientation='{$area->orientation()}'
+	data-widgetArea='{$area->id}'
+	style="{{foreach $area->styles() as $k => $v}}{$k}:{$v};{{endforeach}}"
+	{{foreach $dataAttributes as $k => $v}}
+	    data-{$k}="{$v}"
+    {{endforeach}}
+    {{if !\IPS\Request::i()->_blockManager and (!$area->totalVisibleWidgets() || $area->isEmpty())}} hidden{{endif}}
+>
+    {{$isCarousel = $area->wrapBehavior === "carousel";}}
+    {{if $isCarousel}}
+        <div class="cWidgetContainer__carousel-wrap">
+    {{endif}}
+    {{foreach $area->children as $child}}
+        {$child|raw}
+    {{endforeach}}
+
+    {{foreach $area->widgets as $_widget}}
+        {{if $widget = \IPS\Widget::createWidgetFromStoredData( $_widget )}}
+        <div class="ipsWidget__content--wrap">
+            <div
+                class='{{if \get_class( $widget ) !== 'IPS\cms\widgets\Database'}}ipsWidget{{endif}}{{foreach $area->widgetClasses( $widget ) as $class}} {$class}{{endforeach}}' {{foreach $widget->dataAttributes() as $k => $v}} data-{$k}="{$v}"{{endforeach}}
+                data-controller='core.front.widgets.block'
+            >
+                {$widget->renderCSS()|raw}
+                {$area->getWidgetContent()|raw}
+            </div>
+        </div>
+        {{endif}}
+    {{endforeach}}
+
+    {{if $isCarousel}}
+        </div>
+        {{$totalWidgets = $area->totalVisibleWidgets() ?: 1;}}
+        <div class="cWidgetContainer__carousel-buttons" data-controller="core.front.widgets.carouselControls" {{if $totalWidgets <= 1}}hidden{{endif}}>
+            <div class="cWidgetContainer__carousel-indicator"></div>
+            <button data-carousel-arrow="prev">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button data-carousel-arrow="next">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    {{endif}}
+</section>
+{{endif}}

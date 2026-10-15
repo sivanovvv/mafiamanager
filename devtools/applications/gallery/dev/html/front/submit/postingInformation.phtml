@@ -1,0 +1,58 @@
+<ips:template parameters="$guestPostBeforeRegister, $modQueued, $continueUrl, $guestEmailError=NULL" />
+<div class='i-padding_3'>
+	<form accept-charset='utf-8' class="ipsForm" action="{$continueUrl}" method="post" data-ipsForm>
+		{{if !member.member_id}}
+			<h2 class='ipsTitle ipsTitle--h3'>{lang="gallery_guest_post_normal_header"}</h2>
+			<p class='i-font-size_2 i-margin-top_3'>
+				{{if $guestPostBeforeRegister}}
+					{lang="gallery_guest_post_pbr_blurb"}<br>
+				{{endif}}
+				{lang="guest_post_sign_in"}
+			</p>
+			{{if $modQueued}}
+				<p class='i-color_warning i-margin-top_3'>
+					{lang="gallery_guest_post_mod_approval"}
+				</p>					
+			{{endif}}
+			{{if $guestPostBeforeRegister}}
+				<input type="hidden" name="guest_email_submit" value="1">
+				<input type="email" name="guest_email" value="" placeholder="{lang="guest_email"}" class="ipsInput ipsInput--text i-margin-top_3" required autocomplete="email">
+				<br><span class="i-color_soft">{lang="guest_email_desc"}</span>
+				{{if $guestEmailError}}
+					<p class="i-color_warning">{lang="$guestEmailError"}</p>
+				{{endif}}
+			{{else}}
+				<input type="hidden" name="_pi" value="1">
+			{{endif}}
+			<ul class='ipsButtons ipsButtons--main'>
+				<li>
+					<button type="submit" class="ipsButton ipsButton--primary">{lang="continue"}</button>
+				</li>
+			</ul>
+		{{else}}
+			<input type="hidden" name="_pi" value="1">
+			<p class='ipsMessage ipsMessage--warning'>{lang="mod_queue_message"}</p>
+			{{$warnings = member.warnings( 1, NULL, 'mq' );}}
+			{{if \count( $warnings ) and member.mod_posts > time()}}
+				{{if \count( $warnings )}}
+					<p class="i-font-size_2 i-margin-top_3">
+						{lang="gallery_this_will_be_moderated"}
+					</p>
+				{{endif}}
+				<p class="i-font-size_2 i-margin-top_3">
+					{lang="restriction_ends" sprintf="\IPS\DateTime::ts( \IPS\Member::loggedIn()->mod_posts )->relative()"}
+				</p>
+			{{endif}}
+			<ul class='ipsButtons i-margin-top_3'>
+				{{foreach $warnings as $idx => $warning}}
+					<li>
+						<a href="{$warning->url()}" class='ipsButton ipsButton--inherit' data-ipsDialog data-ipsDialog-size='narrow'>{lang="view_warning_details"}</a>
+					</li>
+				{{endforeach}}
+				<li>
+					<button type="submit" class="ipsButton ipsButton--primary">{lang="continue"}</button>
+				</li>
+			</ul>
+		{{endif}}
+	</form>
+</div>

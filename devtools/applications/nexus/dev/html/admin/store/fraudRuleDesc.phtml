@@ -1,0 +1,13 @@
+<ips:template parameters="$conditions, $results, $warning" />
+<div class="i-margin-top_1">
+	{{for $i = 0; $i < \count( $conditions ); $i++}}
+		{$conditions[ $i ]}{{if $i != ( \count( $conditions ) - 1 )}}{lang="f_blurb_join"}<br>{{endif}}
+	{{endfor;}}
+	<br>
+	{{for $i = 0; $i < \count( $results ); $i++}}
+		{$results[ $i ]}{{if $i != ( \count( $results ) - 1 )}}{lang="f_blurb_join"}<br>{{endif}}
+	{{endfor;}}
+</div>
+{{if $warning}}
+	<div class="i-color_warning i-margin-top_1"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> {lang="fraud_rule_conflict" sprintf="$warning->_title"}</div>
+{{endif}}

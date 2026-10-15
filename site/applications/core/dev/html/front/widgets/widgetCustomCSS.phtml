@@ -1,0 +1,19 @@
+<ips:template parameters="$css=''" />
+<style data-widget-style>
+    {{if isset( request.do ) and request.do == 'getBlock'}}
+	    {{$block = request.blockID;}}
+	    .ipsBox[data-blockid="{$block}"] {
+	        border-width: 0;
+	        box-shadow: none;
+	    }
+	    .ipsWidget[data-blockid="{$block}"] {
+	        background: transparent;
+	    }
+    {{endif}}
+    {{if !empty( $css )}}
+	    /* Custom CSS */
+	    @scope {
+	        {$css}
+	    }
+    {{endif}}
+</style>

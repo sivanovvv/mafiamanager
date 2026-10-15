@@ -1,0 +1,26 @@
+<ips:template parameters="$stats, $latestImage, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_galleryStats"}</h3>
+<div class='ipsWidget__content'>
+	<ul class='ipsList ipsList--stats ipsList--stacked ipsList--border ipsList--fill'>
+		<li>
+			<strong class='ipsList__label'>{lang="total_images_front_v" pluralize="$stats['totalImages']"}</strong>
+			<span class='ipsList__value'>{number="$stats['totalImages']" format="short"}</span>
+		</li>
+		{{if $stats['totalComments']}}
+			<li>
+				<strong class='ipsList__label'>{lang="stats_total_comments_v" pluralize="$stats['totalComments']"}</strong>
+				<span class='ipsList__value'>{number="$stats['totalComments']" format="short"}</span>
+			</li>
+		{{endif}}
+		{{if $stats['totalAlbums']}}
+			<li>
+				<strong class='ipsList__label'>{lang="total_albums_v" pluralize="$stats['totalAlbums']"}</strong>
+				<span class='ipsList__value'>{number="$stats['totalAlbums']" format="short"}</span>
+			</li>
+		{{endif}}
+	</ul>
+	{{if isset($orientation) and $orientation == 'vertical' && $latestImage}}
+		<hr class='ipsHr ipsHr--none'>
+		<div class='i-padding_1'>{template="latestImage" group="widgets" app="gallery" params="$latestImage"}</div>
+	{{endif}}
+</div>

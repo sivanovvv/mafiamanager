@@ -1,0 +1,49 @@
+<ips:template parameters="$forumIds, $map" />
+<div data-controller="forums.front.forum.flow" class='ipsWidget cForumMiniList_wrapper' id='elFluidFormFilters'>
+	<ul class='cForumMiniList {{if \count( \IPS\forums\Forum::roots() ) === 1}}cForumMiniList_singleRoot{{else}}cForumMiniList_multiRoot{{endif}}'>	
+		{{if \count( \IPS\forums\Forum::roots() ) === 1}}			
+			{{foreach \IPS\forums\Forum::roots() as $category}}
+				{template="simplifiedViewSidebar_children" app="forums" location="front" group="index" params="$forumIds, $category, 0"}
+			{{endforeach}}
+		{{else}}
+			{{foreach \IPS\forums\Forum::roots() as $category}}
+				{{if $category->hasChildren()}}
+					<li data-category>
+						<a href="{$category->url()}" data-parent-id="{$category->_id}" data-node-id="{$category->_id}" class=''><span>{$category->_title}</span></a>
+						{{if $category->hasChildren()}}
+							<ul class='cForumMiniList'>
+								{template="simplifiedViewSidebar_children" app="forums" location="front" group="index" params="$forumIds, $category, 0"}
+							</ul>
+						{{endif}}
+					</li>
+				{{endif}}
+			{{endforeach}}
+		{{endif}}
+		{{if settings.clubs and settings.club_nodes_in_apps and $clubForums = \IPS\forums\Forum::clubNodes()}}
+			<li class="{{if \in_array( 'clubs', $map )}}cForumMiniList__categorySelected{{endif}}" data-category>
+				<a href="{url="app=forums&module=forums&controller=index&forumId=clubs" seoTemplate="forums"}" data-parent-id="clubs" data-node-id="clubs" class='{{if \in_array( 'clubs', $map )}}cForumMiniList__selected{{endif}}'><span class=''>{lang="club_node_forums"}</span></a>
+				<ul class='cForumMiniList'>
+					{{foreach $clubForums as $idx => $forum}}
+						{{$lastPost = $forum->lastPost();}}
+						{{$unread = \IPS\forums\Topic::containerUnread( $forum );}}
+						{{$children = $forum->children();}}
+						{{if ! $forum->redirect_on and $forum->can('read') }}
+							<li class="{{if $children}}cForumMiniList__category{{endif}} {{if isset( $map[ $forum->parent_id ] ) AND \in_array( $forum->_id, $map[ $forum->parent_id ] )}}cForumMiniList__categorySelected{{endif}}" {{if $forum->feature_color}}style="--i-featured: {$forum->feature_color}; --i-featured-text: {$forum->_featureTextColor};"{{endif}}>
+								<a href="{$forum->url()}" data-parent-id="clubs" data-node-id="{$forum->_id}" data-has-children="{{if $children}}1{{else}}0{{endif}}" class='{{if \in_array( $forum->_id, $forumIds )}}cForumMiniList__selected{{endif}}' {{if $unread}}data-ips-unread{{else}}data-ips-read{{endif}}>
+									<span class='cForumMiniList__blob' {{if $lastPost AND $lastPost['date']}}title="{lang="forum_simple_view_last_post"} {datetime="$lastPost['date']"}" data-ipsTooltip data-ipsTooltip-safe{{endif}}>
+										<i class='fa-solid fa-check' aria-hidden="true"></i>
+									</span>
+									<span class='cForumMiniList__title'>{lang="club_node" sprintf="$forum->club()->name, $forum->_title"}</span>
+									<span class='cForumMiniList__count'>{number="\IPS\forums\Topic::contentCount( $forum )" format="short"}</span>
+								</a>
+							</li>
+						{{endif}}
+					{{endforeach}}
+				</ul>
+			</li>
+		{{endif}}
+	</ul>
+	<div class='ipsResponsive_hideDesktop ipsSubmitRow'>
+		<button type="button" class='ipsButton ipsButton--wide ipsButton--primary' data-action='dialogClose'>{lang="done_forum_filtering"}</button>
+	</div>
+</div>

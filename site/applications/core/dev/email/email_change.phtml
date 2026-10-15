@@ -1,0 +1,30 @@
+<ips:template parameters="$member, $vid, $securityKey, $newEmail, $email" />
+{$email->language->addToStack("email_complete_email", FALSE)}
+<br><br>
+<table width='100%' cellpadding='0' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}' height='20' style='line-height: 20px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px;"><strong>{$email->language->addToStack("email_new_email", FALSE)}</strong></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='6' style='line-height: 6px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 22px;">{$newEmail}</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='20' style='line-height: 20px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 22px;">
+			<a href='{url="app=core&module=system&controller=register&do=validate&vid={$vid}&mid={$member->member_id}&security_key={$securityKey}" seoTemplate="register" base="front"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button"><strong>{$email->language->addToStack("email_confirm_address", FALSE)}</strong></a>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='20' style='line-height: 20px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+</table>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

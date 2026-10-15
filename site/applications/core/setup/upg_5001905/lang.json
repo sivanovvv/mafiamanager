@@ -1,0 +1,19 @@
+{
+    "normal": {
+        "added": [
+            "search_elastic_fuzziness",
+            "search_elastic_fuzziness_desc",
+            "search_elastic_fuzziness_off",
+            "search_elastic_fuzziness_auto",
+            "search_elastic_fuzziness_1",
+            "search_elastic_fuzziness_2"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

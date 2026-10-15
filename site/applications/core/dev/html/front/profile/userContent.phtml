@@ -1,0 +1,42 @@
+<ips:template parameters="$member, $types, $currentAppModule, $currentType, $table" />
+{{$baseUrl = \IPS\Http\Url::internal( "app=core&module=members&controller=profile&id={$member->member_id}&do=content", 'front', 'profile_content', $member->members_seo_name );}}
+{{if !\IPS\Request::i()->isAjax()}}
+<div class="ipsProfileContainer" data-controller='core.front.profile.main' id='elProfileUserContent'>
+	{template="profileHeader" app="core" location="front" group="profile" params="$member, true"}
+	<div data-role="profileContent">
+{{endif}}
+		<div class="ipsProfile ipsProfile--content">
+			<aside class="ipsProfile__aside">
+				<div class="ipsProfile__sticky-outer">
+					<div class="ipsProfile__sticky-inner">
+						<div class='ipsBox ipsBox--profileSidebar'>
+							<div class="ipsSideMenu" id="user_content" data-ipsTabBar data-ipsTabBar-contentArea='#elUserContent' data-ipsTabBar-itemselector=".ipsSideMenu_item" data-ipsTabBar-activeClass="ipsSideMenu_itemActive" data-ipsSideMenu>
+								<h3 class="ipsSideMenu__view">
+									<a href="#user_content" data-action="openSideMenu"><i class="fa-solid fa-bars" aria-hidden="true"></i><span>{lang="user_content_type"}</span></a>
+								</h3>
+								<div class="ipsSideMenu__menu">
+									<ul class="ipsSideMenu__list">
+										<li><a href="{$baseUrl->setQueryString( array( 'change_section' => 1 ) )}" class="ipsSideMenu_item {{if !$currentType}}ipsSideMenu_itemActive{{endif}}">{lang="all_activity"}</a></li>
+									</ul>
+									{{foreach $types as $app => $_types}}
+										<h4 class='ipsSideMenu__subTitle'>{lang="module__{$app}"}</h4>
+										<ul class="ipsSideMenu__list">
+											{{foreach $_types as $key => $class}}
+												<li><a href="{$baseUrl->setQueryString( array( 'type' => $key, 'change_section' => 1 ) )}" class="ipsSideMenu_item {{if $currentType == $key}}ipsSideMenu_itemActive{{endif}}" aria-selected="{{if $currentType == $key}}true{{else}}false{{endif}}">{lang="{$class::$title}_pl"}</a></li>
+											{{endforeach}}
+										</ul>
+									{{endforeach}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<section class='ipsProfile__main ipsBox ipsBox--profileMain ipsPull' id='elUserContent'>
+				{template="userContentSection" group="profile" app="core" params="$member, $types, $currentAppModule, $currentType, $table"}
+			</section>
+		</div>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+</div>
+{{endif}}

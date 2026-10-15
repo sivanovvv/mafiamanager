@@ -1,0 +1,566 @@
+<ips:template parameters=" " />
+{{if cssvar.set__i-mobile-icons-location == "footer"}}
+	<nav data-ips-hook="mobileFooter" class="ipsMobileFooter" id='ipsMobileFooter'>
+		<ul>
+			{{if \IPS\Member::loggedIn()->member_id }}
+				{{$defaultStream = \IPS\core\Stream::defaultStream();}}
+				{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'discover' ) ) }}
+					<li data-el="discover" class="ipsMobileFooter__item">
+						<a data-action="defaultStream" class='ipsMobileFooter__link' href='{{if $defaultStream}}{$defaultStream->url()}{{endif}}'>
+							<span class="ipsMobileFooter__icon" aria-hidden="true">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z"/></svg>
+							</span>
+							<span class="ipsMobileFooter__text" data-role="defaultStreamName">{{if $defaultStream}}{$defaultStream->_title}{{endif}}</span>
+						</a>
+					</li>
+				{{endif}}
+				<li data-el="notifications" class="ipsMobileFooter__item">
+					<button type="button" class="ipsMobileFooter__link" popovertarget='ipsOffCanvas--notifications'>
+						<span class="ipsMobileFooter__icon" aria-hidden="true">
+							<svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v25.4c0 45.4-15.5 89.5-43.8 124.9L5.3 377c-5.8 7.2-6.9 17.1-2.9 25.4S14.8 416 24 416H424c9.2 0 17.6-5.3 21.6-13.6s2.9-18.2-2.9-25.4l-14.9-18.6C399.5 322.9 384 278.8 384 233.4V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm0 96c61.9 0 112 50.1 112 112v25.4c0 47.9 13.9 94.6 39.7 134.6H72.3C98.1 328 112 281.3 112 233.4V208c0-61.9 50.1-112 112-112zm64 352H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7s18.7-28.3 18.7-45.3z"/></svg>
+						</span>
+						<span class='ipsNotification' {{if !member.notification_cnt}}hidden{{endif}} data-notificationType='notify' data-currentCount='{member="notification_cnt"}'>{member="notification_cnt"}</span>
+						<span class="ipsMobileFooter__text">{lang="notifications"}</span>
+					</button>
+				</li>
+				{{if \IPS\Member::loggedIn()->members_disable_pm != 2 and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+					<li data-el="messenger" class="ipsMobileFooter__item">
+						<button type="button" class="ipsMobileFooter__link" popovertarget='ipsOffCanvas--messenger'>
+							<span class="ipsMobileFooter__icon" aria-hidden="true">
+								{{if \IPS\Member::loggedIn()->members_disable_pm}}
+									<svg xmlns="http://www.w3.org/2000/svg" height="16" width="20" viewBox="0 0 640 512" class='i-opacity_3'><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L472.1 344.7c15.2-26 23.9-56.3 23.9-88.7V216c0-13.3-10.7-24-24-24s-24 10.7-24 24v24 16c0 21.2-5.1 41.1-14.2 58.7L416 300.8V256H358.9l-34.5-27c2.9-3.1 7-5 11.6-5h80V192H336c-8.8 0-16-7.2-16-16s7.2-16 16-16h80V128H336c-8.8 0-16-7.2-16-16s7.2-16 16-16h80c0-53-43-96-96-96s-96 43-96 96v54.3L38.8 5.1zM358.2 378.2C346.1 382 333.3 384 320 384c-70.7 0-128-57.3-128-128v-8.7L144.7 210c-.5 1.9-.7 3.9-.7 6v40c0 89.1 66.2 162.7 152 174.4V464H248c-13.3 0-24 10.7-24 24s10.7 24 24 24h72 72c13.3 0 24-10.7 24-24s-10.7-24-24-24H344V430.4c20.4-2.8 39.7-9.1 57.3-18.2l-43.1-33.9z"/></svg>
+								{{else}}
+									<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg>
+								{{endif}}
+							</span>
+							<span class='ipsNotification' {{if !\IPS\Member::loggedIn()->msg_count_new}}hidden{{endif}} data-notificationType='inbox' data-currentCount='{member="msg_count_new"}'>{member="msg_count_new"}</span>
+							<span class="ipsMobileFooter__text">{lang="userbar_messages"}</span>
+						</button>
+					</li>
+				{{endif}}
+			{{else}}
+				{{$login = new \IPS\Login( \IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ) );}}
+				{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+				{{$buttonMethods = $login->buttonMethods();}}
+				{{if $usernamePasswordMethods or $buttonMethods}}
+					<li data-el='sign-in' class="ipsMobileFooter__item">
+						<a href='{url="app=core&module=system&controller=login" seoTemplate="login"}' class='ipsMobileFooter__link'>
+							<span class="ipsMobileFooter__icon" aria-hidden="true">
+								<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>
+							</span>
+							<span class="ipsMobileFooter__text">{lang="sign_in_short"}</span>
+						</a>
+					</li>
+				{{endif}}
+				{{if \IPS\Login::registrationType() != 'disabled'}}
+					<li data-el='sign-up' class="ipsMobileFooter__item">
+						{{if \IPS\Login::registrationType() == 'redirect'}}
+							<a href='{expression="\IPS\Settings::i()->allow_reg_target"}' class='ipsMobileFooter__link ipsMobileFooter__link--sign-up' target="_blank" rel="noopener">
+								<span class="ipsMobileFooter__icon" aria-hidden="true">
+									<svg xmlns="http://www.w3.org/2000/svg" height="16" width="20" viewBox="0 0 640 512"><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
+								</span>
+								<span class="ipsMobileFooter__text">{lang="sign_up"}</span>
+							</a>
+						{{else}}
+							<a href='{url="app=core&module=system&controller=register" seoTemplate="register"}' class='ipsMobileFooter__link ipsMobileFooter__link--sign-up'>
+								<span class="ipsMobileFooter__icon" aria-hidden="true">
+									<svg xmlns="http://www.w3.org/2000/svg" height="16" width="20" viewBox="0 0 640 512"><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
+								</span>
+								<span class="ipsMobileFooter__text">{lang="sign_up"}</span>
+							</a>
+						{{endif}}
+					</li>
+				{{endif}}
+			{{endif}}
+			{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'search' ) )}}
+				<li data-el="search" class="ipsMobileFooter__item">
+					<button type="button" class="ipsMobileFooter__link" popovertarget='ipsOffCanvas--search'>
+						<span class="ipsMobileFooter__icon" aria-hidden="true">
+							<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+						</span>
+						<span class="ipsMobileFooter__text">{lang="search"}</span>
+					</button>
+				</li>
+			{{endif}}
+			{expression="\IPS\Member::loggedIn()->mobileNav( 'footer' )" raw="true"}
+			<li data-el="more" class="ipsMobileFooter__item">
+				<button type="button" class="ipsMobileFooter__link" popovertarget='ipsOffCanvas--navigation'>
+					<span class="ipsMobileFooter__icon" aria-hidden="true">
+						<svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+					</span>
+					{{$notificationCount= \IPS\Member\UserMenu::mobileNotificationCount();}}
+					{{if $notificationCount}}
+					    <span class='ipsNotification'>{$notificationCount}</span>
+					{{endif}}
+					<span class="ipsMobileFooter__text">{lang="mobile_footer_menu"}</span>
+				</button>
+			</li>
+		</ul>
+	</nav>
+{{endif}}
+
+{{if \IPS\Member::loggedIn()->member_id }}
+<i-card id='ipsOffCanvas--profile' popover class="ipsOffCanvas">
+	<div class='iCard'>
+		<header class='iCard__header'>
+			<h2>{lang="offcanvas_account"}</h2>
+			<div class="iCard__headerButtons">
+				<button popovertarget='ipsOffCanvas--profile'>
+					<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+				</button>
+			</div>
+		</header>
+		<div class='iCard__content'>
+			<nav>
+				<ul class='ipsOffCanvas__nav ipsOffCanvas__nav--profile' id='mobile-nav__profile'>
+					<li>
+						{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) )}}
+							<a href='{member="url()"}' title='{lang="view_my_profile"}'>
+						{{else}}
+							<div class='ipsOffCanvas__item'>
+						{{endif}}
+							<span class='ipsPhotoPanel i-flex_11'>
+								<span class='ipsUserPhoto'>
+									<img src='{expression="\IPS\Member::loggedIn()->photo"}' alt='' loading="lazy">
+								</span>
+								<span class='ipsPhotoPanel__text'>
+									<span class='i-font-size_2 i-font-weight_600 i-color_hard'>{{if isset( $_SESSION['logged_in_as_key'] )}}{lang="front_logged_in_as" sprintf="$_SESSION['logged_in_from']['name']"} {{endif}}{member="name"}</span>
+									<small class='i-color_soft i-font-size_-1 i-word-break_break-all'>{member="email"}</small>
+								</span>
+							</span>
+						{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) )}}
+							</a>
+						{{else}}
+							</div>
+						{{endif}}
+					</li>
+					{{if cssvar.set__i-mobile-icons-location == "header"}}
+						<li><hr class="ipsHr"></li>
+						<li>
+							<button popovertarget='ipsOffCanvas--notifications'>
+								<span class="ipsOffCanvas__icon" aria-hidden="true">
+									<svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v25.4c0 45.4-15.5 89.5-43.8 124.9L5.3 377c-5.8 7.2-6.9 17.1-2.9 25.4S14.8 416 24 416H424c9.2 0 17.6-5.3 21.6-13.6s2.9-18.2-2.9-25.4l-14.9-18.6C399.5 322.9 384 278.8 384 233.4V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm0 96c61.9 0 112 50.1 112 112v25.4c0 47.9 13.9 94.6 39.7 134.6H72.3C98.1 328 112 281.3 112 233.4V208c0-61.9 50.1-112 112-112zm64 352H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7s18.7-28.3 18.7-45.3z"/></svg>
+								</span>
+								<span class="ipsOffCanvas__label">{lang="notifications"}</span>
+								<span class='ipsNotification' {{if !member.notification_cnt}}hidden{{endif}} data-notificationType='notify' data-currentCount='{member="notification_cnt"}'>{member="notification_cnt"}</span>
+							</button>
+						</li>
+						{{if \IPS\Member::loggedIn()->members_disable_pm != 2 and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+							<li>
+								<button popovertarget='ipsOffCanvas--messenger'>
+									<span class="ipsOffCanvas__icon" aria-hidden="true">
+										{{if \IPS\Member::loggedIn()->members_disable_pm}}
+											<svg xmlns="http://www.w3.org/2000/svg" height="16" width="20" viewBox="0 0 640 512" class='i-opacity_3'><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L472.1 344.7c15.2-26 23.9-56.3 23.9-88.7V216c0-13.3-10.7-24-24-24s-24 10.7-24 24v24 16c0 21.2-5.1 41.1-14.2 58.7L416 300.8V256H358.9l-34.5-27c2.9-3.1 7-5 11.6-5h80V192H336c-8.8 0-16-7.2-16-16s7.2-16 16-16h80V128H336c-8.8 0-16-7.2-16-16s7.2-16 16-16h80c0-53-43-96-96-96s-96 43-96 96v54.3L38.8 5.1zM358.2 378.2C346.1 382 333.3 384 320 384c-70.7 0-128-57.3-128-128v-8.7L144.7 210c-.5 1.9-.7 3.9-.7 6v40c0 89.1 66.2 162.7 152 174.4V464H248c-13.3 0-24 10.7-24 24s10.7 24 24 24h72 72c13.3 0 24-10.7 24-24s-10.7-24-24-24H344V430.4c20.4-2.8 39.7-9.1 57.3-18.2l-43.1-33.9z"/></svg>
+										{{else}}
+											<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg>
+										{{endif}}
+									</span>
+									<span class="ipsOffCanvas__label">{lang="userbar_messages"}</span>
+									<span class='ipsNotification' {{if !\IPS\Member::loggedIn()->msg_count_new}}hidden{{endif}} data-notificationType='inbox' data-currentCount='{member="msg_count_new"}'>{member="msg_count_new"}</span>
+								</button>
+							</li>
+						{{endif}}
+					{{endif}}
+					<li><hr class="ipsHr"></li>
+					{{foreach \IPS\Member::loggedIn()->menu( 'mobile' )->getLinks() as $link}}
+						{$link|raw}
+					{{endforeach}}
+				</ul>
+			</nav>
+		</div>
+		{{if member.canHaveAchievements() and \IPS\core\Achievements\Rank::show() and \IPS\core\Achievements\Rank::getStore() and $rank = member.rank()}}
+			<div class='i-flex_00 i-border-top_2'>
+				<div class="ipsOffCanvas__nav">
+					<div class='ipsOffCanvas__item'>
+						<div class='ipsPhotoPanel i-align-items_center i-flex_11'>
+							<div class="i-basis_40">{$rank->html('i-aspect-ratio_10')|raw}</div>
+							<div class="ipsPhotoPanel__text">
+								<p>
+									<strong class='i-font-size_2 i-font-weight_600 i-color_hard'>{$rank->_title}</strong>
+									<span class='i-margin-start_1 i-color_soft i-font-size_-1'>({$rank->rankPosition()['pos']}/{$rank->rankPosition()['max']})</span>
+								</p>
+								{{if $nextRank = member.nextRank()}}
+									{{$progressId = 'ipsProgress-' . mt_rand();}}
+									<progress aria-labelledby="{$progressId}" class='ipsProgress i-margin-block_1' max='{$nextRank->points}' value='{expression="\IPS\Member::loggedIn()->achievements_points"}'></progress>
+									<small id="{$progressId}" class='i-font-size_-1 i-color_soft i-display_block'>{lang="achievements_next_rank" pluralize="$nextRank->points - \IPS\Member::loggedIn()->achievements_points"}</small>
+								{{endif}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{{elseif member.canHaveAchievements() and \IPS\Settings::i()->achievements_rebuilding}}
+			<div class='i-flex_00 i-border-top_2 i-padding_2'>
+				<p class='i-color_soft'>
+					{lang="ranks_are_being_recalculated"}
+				</p>
+			</div>
+		{{endif}}
+	</div>
+</i-card>
+
+{{else}}
+
+<i-card id='ipsOffCanvas--guest' popover class="ipsOffCanvas">
+	<div class='iCard'>
+		<header class='iCard__header'>
+			<h2>{lang="userbar_account"}</h2>
+			<div class="iCard__headerButtons">
+				<button popovertarget='ipsOffCanvas--guest'>
+					<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+				</button>
+			</div>
+		</header>
+		<div class='iCard__content'>
+			<ul class='ipsOffCanvas__nav ipsOffCanvas__nav--navigation'>
+				{{$login = new \IPS\Login( \IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ) );}}
+				{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+				{{$buttonMethods = $login->buttonMethods();}}
+				{{if $usernamePasswordMethods or $buttonMethods}}
+					<li data-el='sign-in'>
+						<a href='{url="app=core&module=system&controller=login" seoTemplate="login"}'>
+							<span class="ipsOffCanvas__icon" aria-hidden="true">
+								<i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+							</span>
+							<span class="ipsOffCanvas__label">{lang="sign_in"}</span>
+						</a>
+					</li>
+				{{endif}}
+				{{if \IPS\Login::registrationType() != 'disabled'}}
+					<li data-el='sign-up'>
+						{{if \IPS\Login::registrationType() == 'redirect'}}
+							<a href='{expression="\IPS\Settings::i()->allow_reg_target"}' target="_blank" rel="noopener">
+								<span class="ipsOffCanvas__icon" aria-hidden="true">
+									<i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+								</span>
+								<span class="ipsOffCanvas__label">{lang="sign_up"}</span>
+							</a>
+						{{else}}
+							<a href='{url="app=core&module=system&controller=register" seoTemplate="register"}'>
+								<span class="ipsOffCanvas__icon" aria-hidden="true">
+									<i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+								</span>
+								<span class="ipsOffCanvas__label">{lang="sign_up"}</span>
+							</a>
+						{{endif}}
+					</li>
+				{{endif}}
+			</ul>
+		</div>
+	</div>
+</i-card>
+{{endif}}
+
+<i-card id='ipsOffCanvas--navigation' popover class="ipsOffCanvas">
+	<div class='iCard'>
+		<header class='iCard__header'>
+			<h2>{lang="offcanvas_navigation"}</h2>
+			<div class='iCard__headerButtons'>
+				<button popovertarget='ipsOffCanvas--navigation'>
+					<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+				</button>
+			</div>
+		</header>
+		<div class='iCard__content'>
+			<!-- Navigation -->
+			<nav aria-label="Mobile">
+				<ul class='ipsOffCanvas__nav ipsOffCanvas__nav--navigation' data-ips-hook="mobileFooterMenu">
+				    {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'modcp' ) ) and \IPS\Member::loggedIn()->canAccessReportCenter() and \IPS\Member::loggedIn()->reportCount()}}
+						<li data-el='reports'>
+							<a href='{url="app=core&module=modcp&controller=modcp&tab=reports" seoTemplate="modcp_reports"}'>
+								<span class="ipsOffCanvas__icon" aria-hidden="true">
+									<i class="fa-regular fa-flag" aria-hidden="true"></i>
+								</span>
+								<span class="ipsOffCanvas__label">{lang="report_center_header"}</span>
+								{{if \IPS\Member::loggedIn()->reportCount()}}
+									<span class='ipsNotification' data-notificationType='reports'>{member="reportCount()"}</span>
+								{{endif}}
+							</a>
+						</li>
+						<li><hr></li>
+					{{endif}}
+
+					{{$primaryBars = \IPS\core\FrontNavigation::i()->roots();}}
+					{{$subBars = \IPS\core\FrontNavigation::i()->subBars();}}
+					
+					{{foreach $primaryBars as $id => $item}}
+						{{if $item->canView() and $item->isAvailableFor('smallscreen')}}
+							{{$children = $item->children();}}
+
+							{{$active = $item->activeOrChildActive('smallscreen');}}
+							{{if $active}}
+								{{\IPS\core\FrontNavigation::i()->activePrimaryNavBar = $item->id;}}
+							{{endif}}
+
+							{{if ( $subBars && isset( $subBars[ $id ] ) && \count( $subBars[ $id ] ) ) || $children}}
+								<li data-id="{$item->id}">
+									<details {{if $active}}open{{endif}}>
+										<summary>
+											<span class="ipsOffCanvas__icon" aria-hidden="true">
+												{{if $item->getIconData()}}
+													{$item->getIconData()|raw}
+												{{else}}
+													<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+												{{endif}}
+											</span>
+											<span class="ipsOffCanvas__label">{$item->title()}</span>
+										</summary>
+										<i-details-content>
+											<ul id='mobile-nav__{$item->id}'>
+												{{$showSelfLink = true;}}
+												{{if $subBars && isset( $subBars[ $id ] ) && \count( $subBars[ $id ] )}}
+													{{// Determine whether we should show the parent link as a clickable sub item by comparing child links.}}
+													{{// If the *same* link exists as a child item, don't show it twice}}
+													{{foreach $subBars[ $id ] as $child}}
+														{{if $child->canView() and $child->isAvailableFor('smallscreen')}}
+															{{if $subChildren = $child->children()}}
+																{{foreach $subChildren as $subChild}}
+																	{{if method_exists( $subChild, 'link' ) && $subChild->link() && (string) $subChild->link() == (string) $item->link()}}
+																		{{$showSelfLink = false;}}
+																		{{break 2;}}
+																	{{endif}}
+																{{endforeach}}
+															{{elseif method_exists( $child, 'link' ) && $child->link() && (string) $child->link() == (string) $item->link()}}
+																{{$showSelfLink = false;}}
+																{{break;}}
+															{{endif}}
+														{{endif}}
+													{{endforeach}}
+												{{endif}}
+																
+												{{if $showSelfLink && method_exists( $item, 'link' ) and (string) $item->link() !== \IPS\Settings::i()->base_url && $item->link()}}
+													<li data-id="{$item->id}">
+														<a href='{$item->link()}'>
+															<span class="ipsOffCanvas__icon" aria-hidden="true">
+																{{if $item->getIconData()}}
+																	{$item->getIconData()|raw}
+																{{else}}
+																	<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+																{{endif}}
+															</span>
+															<span class="ipsOffCanvas__label">{$item->title()}</span>
+														</a>
+													</li>
+												{{endif}}
+												{{if $children}}
+													{template="mobileNavigationChildren" group="global" app="core" params="$children"}
+												{{endif}}
+												{{if $subBars && isset( $subBars[ $id ] ) && \count( $subBars[ $id ] )}}
+													{template="mobileNavigationChildren" group="global" app="core" params="$subBars[ $id ]"}
+												{{endif}}
+											</ul>
+										</i-details-content>
+									</details>
+								</li>
+							{{else}}
+								<li data-id="{$item->id}"><a href='{$item->link()}' {{if method_exists( $item, 'target' ) AND $item->target()}}target='{$item->target()}'{{if $item->target() == '_blank'}} rel="noopener"{{endif}}{{endif}} {{if $active}}aria-current="page"{{endif}}>
+									<span class="ipsOffCanvas__icon" aria-hidden="true">
+										{{if $item->getIconData()}}
+											{$item->getIconData()|raw}
+										{{else}}
+											<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+										{{endif}}
+									</span>
+									<span class="ipsOffCanvas__label">{$item->title()}</span>
+								</a></li>
+							{{endif}}
+						{{endif}}
+					{{endforeach}}
+				</ul>
+			</nav>
+		</div>
+		{{if \count( \IPS\Output::i()->breadcrumb )}}
+            {template="mobileFooterNav" app="core" location="front" group="global"}
+		{{endif}}
+	</div>
+</i-card>
+
+
+<!-- Messenger -->
+{{if \IPS\Member::loggedIn()->member_id and \IPS\Member::loggedIn()->members_disable_pm != 2 and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+	<i-card id='ipsOffCanvas--messenger' popover class="ipsOffCanvas">
+		<div class='iCard'>
+			<header class='iCard__header'>
+				<h2>
+					<a href='{url="app=core&module=messaging&controller=messenger" seoTemplate="messaging"}'>
+						{{if ! \IPS\Member::loggedIn()->members_disable_pm}}{lang="userbar_messages" escape="true"}{{else}}{lang="userbar_messages_disabled" escape="true"}{{endif}}
+					</a>
+				</h2>
+				<div class='iCard__headerButtons'>
+					<a href='{url="app=core&module=messaging&controller=messenger" seoTemplate="messaging"}'>
+						<i class="fa-solid fa-inbox" aria-hidden="true"></i>
+						<span class='ipsInvisible'>{lang="go_to_inbox"}</span>
+					</a>
+					<a href='{url="app=core&module=messaging&controller=messenger&do=compose" seoTemplate="messenger_compose"}'>
+						<i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+						<span class='ipsInvisible'>{lang="compose_new"}</span>
+					</a>
+					<button popovertarget='ipsOffCanvas--messenger'>
+						<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+						<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+					</button>
+				</div>
+			</header>
+			<div class='iCard__content'>
+				<i-data>
+					<ul class="ipsData ipsData--table ipsData--compact ipsData--offcanvas-inbox" data-ipsfetch='{url="app=core&module=messaging&controller=messenger&overview=1&_fromMenu=1"}' data-ipsfetch-type="inbox"></ul>
+				</i-data>
+			</div>
+		</div>
+	</i-card>
+{{endif}}
+
+{{if \IPS\Member::loggedIn()->member_id}}
+<!-- Notifications -->
+<i-card id='ipsOffCanvas--notifications' popover class="ipsOffCanvas">
+	<div class='iCard'>
+		<header class='iCard__header'>
+			<h2><a href='{url="app=core&module=system&controller=notifications" seoTemplate="notifications"}'>{lang="notifications"}</a></h2>
+			<div class='iCard__headerButtons'>
+				<a href='{url="app=core&module=system&controller=notifications&do=options" seoTemplate="notifications_options"}'>
+					<i class="fa-solid fa-gear" aria-hidden="true"></i>
+					<span class='ipsInvisible'>{lang="notification_options"}</span>
+				</a>
+				<button popovertarget='ipsOffCanvas--notifications'>
+					<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+					<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+				</button>
+			</div>
+		</header>
+		<div class='iCard__content'>
+			{{if \IPS\Notification::webPushEnabled()}}
+				<i-push-notifications-prompt hidden class="ipsPushNotificationsPrompt i-padding_1">
+					<div data-role="content"></div>
+					<template data-value="default">
+						<button class="ipsPushNotificationsPrompt__button" type="button" data-click="requestPermission">
+							<i class="fa-solid fa-bell" aria-hidden="true"></i>
+							<span class="i-flex_11">{lang="mobile_enable_push_button"}</span>
+							<span><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></span>
+						</button>
+					</template>
+					<template data-value="granted">
+						<button class="ipsPushNotificationsPrompt__button" type="button" data-click="hideMessage">
+							<i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+							<span class="i-flex_11">{lang="mobile_push_enabled_thanks"}</span>
+							<span><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
+						</button>
+					</template>
+					<template data-value="denied">
+						<button class="ipsPushNotificationsPrompt__button" type="button" popovertarget="iPushNotificationsPromptPopover">
+							<i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
+							<span class="i-flex_11">{lang="mobile_push_rejected_button"}</span>
+							<span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+						</button>
+					</template>
+				</i-push-notifications-prompt>
+			{{endif}}
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--compact ipsData--offcanvas-notifications" data-ipsfetch='{url="app=core&module=system&controller=notifications"}' data-ipsfetch-type="notify"></ul>
+			</i-data>
+		</div>
+	</div>
+</i-card>
+{{endif}}
+
+{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'search' ) )}}
+	<!-- Search -->
+	<i-card id='ipsOffCanvas--search' popover class="ipsOffCanvas">
+		<div class='iCard'>
+			<header class='iCard__header'>
+				<h2>{lang="search"}</h2>
+				<div class='iCard__headerButtons'>
+					<button popovertarget='ipsOffCanvas--search'>
+						<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+						<span class='ipsInvisible'>{lang="offcanvas_close"}</span>
+					</button>
+				</div>
+			</header>
+			<form class='iCard__content' accept-charset='utf-8' action='{url="app=core&module=search&controller=search&do=quicksearch" seoTemplate="search" noprotocol="true"}' method='post'>
+				<div class='i-padding_2 i-flex i-gap_1'>
+					<input type='search' class="ipsInput ipsInput--text ipsOffCanvas__input" placeholder='{lang="search_placeholder"}' name='q' autocomplete='off' aria-label='{lang="search"}' data-autofocus>
+					<button class="ipsButton ipsButton--primary i-flex_00 i-font-size_-2"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> {lang="search"}</button>
+				</div>
+				<div class="">					
+					<div class='ipsOffCanvas__search-filters i-font-size_-1'>
+						<div class='i-flex i-border-top_3'>
+							<label for='mobile-search__type' class='i-flex_11 i-flex i-align-items_center i-color_soft i-font-weight_500 i-padding-block_2 i-padding-start_2'>
+								<i class="fa-solid fa-window-restore i-basis_30" aria-hidden="true"></i> {lang="search_mobile_where"}:
+							</label>
+							<div class='ipsSimpleSelect ipsSimpleSelect--end i-font-weight_600'>
+								<select id='mobile-search__type' name="type">
+									{{$option = \IPS\Output::i()->defaultSearchOption;}}
+									<option value="all" {{if \IPS\Output::i()->defaultSearchOption[0] == 'all'}} selected{{endif}}>{lang="everywhere"}</option>
+									{{if \count( output.contextualSearchOptions )}}
+									    {{$pos=1;}}
+										{{foreach array_reverse( output.contextualSearchOptions ) as $name => $data}}
+											<option value='contextual_{expression="json_encode( $data )"}' {{if \IPS\Output::i()->defaultSearchOption[0] == $data['type'] and $pos == \count( output.contextualSearchOptions )}}selected{{endif}}>{lang="$name"}</option>
+											{{$pos++;}}
+										{{endforeach}}
+									{{endif}}
+									{{foreach output.globalSearchMenuOptions() as $type => $name}}
+										<option value="{$type}" {{if empty(\IPS\Output::i()->contextualSearchOptions) and \IPS\Output::i()->defaultSearchOption[0] == $type}}selected{{endif}}>{lang="$name"}</option>
+									{{endforeach}}
+								</select>
+							</div>
+						</div>
+						<div class='i-flex i-border-top_3'>
+							<label for='mobile-search__search_in' class='i-flex_11 i-flex i-align-items_center  i-color_soft i-font-weight_500 i-padding-block_2 i-padding-start_2'>
+								<i class="fa-regular fa-file-lines i-basis_30" aria-hidden="true"></i> {lang="search"}:
+							</label>
+							<div class='ipsSimpleSelect ipsSimpleSelect--end i-font-weight_600'>
+								<select id='mobile-search__search_in' name="search_in">
+									<option value="all" selected>{lang="titles_and_body"}</option>
+									<option value="titles">{lang="titles_only"}</option>
+								</select>
+							</div>
+						</div>
+						<div class='i-flex i-border-top_3'>
+							<label for='mobile-search__startDate' class='i-flex_11 i-flex i-align-items_center  i-color_soft i-font-weight_500 i-padding-block_2 i-padding-start_2'>
+								<i class="fa-solid fa-pen-to-square i-basis_30" aria-hidden="true"></i> {lang="startDate"}:
+							</label>
+							<div class='ipsSimpleSelect ipsSimpleSelect--end i-font-weight_600'>
+								<select id='mobile-search__startDate' name="startDate">
+									<option value="any" selected>{lang="search_any"}</option>
+									<option value="day">{lang="search_day"}</option>
+									<option value="week">{lang="search_week"}</option>
+									<option value="month">{lang="search_month"}</option>
+									<option value="six_months">{lang="search_six_months"}</option>
+									<option value="year">{lang="search_year"}</option>
+								</select>
+							</div>
+						</div>
+						<div class='i-flex i-border-top_3'>
+							<label for='mobile-search__search_and_or' class='i-flex_11 i-flex i-align-items_center  i-color_soft i-font-weight_500 i-padding-block_2 i-padding-start_2'>
+								<i class="fa-solid fa-list-check i-basis_30" aria-hidden="true"></i> {lang="search_mobile_use"}:
+							</label>
+							<div class='ipsSimpleSelect ipsSimpleSelect--end i-font-weight_600'>
+								<select id='mobile-search__search_and_or' name="search_and_or">
+									<option value="and" selected>{lang="search_mobile_and_option_tag"}</option>
+									<option value="or">{lang="search_mobile_or_option_tag"}</option>
+								</select>
+							</div>
+						</div>
+						<div class='i-flex i-border-top_3'>
+							<label for='mobile-search__updatedDate' class='i-flex_11 i-flex i-align-items_center  i-color_soft i-font-weight_500 i-padding-block_2 i-padding-start_2'>
+								<i class="fa-regular fa-calendar i-basis_30" aria-hidden="true"></i> {lang="updatedDate"}:
+							</label>
+							<div class='ipsSimpleSelect ipsSimpleSelect--end i-font-weight_600'>
+								<select id='mobile-search__updatedDate' name="updatedDate">
+									<option value="any" selected>{lang="search_any"}</option>
+									<option value="day">{lang="search_day"}</option>
+									<option value="week">{lang="search_week"}</option>
+									<option value="month">{lang="search_month"}</option>
+									<option value="six_months">{lang="search_six_months"}</option>
+									<option value="year">{lang="search_year"}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</i-card>
+{{endif}}

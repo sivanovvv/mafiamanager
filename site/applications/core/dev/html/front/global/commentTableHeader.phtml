@@ -1,0 +1,15 @@
+<ips:template parameters="$comment, $status" />
+
+<div class='i-flex i-align-items_center i-gap_2'>
+	<div class='i-flex_00'>
+		{template="userPhoto" group="global" app="core" params="$status->author()"}
+	</div>
+	<div class='i-flex_11'>
+		<p class='i-color_soft i-link-color_inherit'>
+			{lang="status_updated_by" htmlsprintf="$status->author()->link()"}
+		</p>
+		<div class='ipsRichText ipsTruncate_5'>
+			{$status->truncated()|raw}
+		</div>
+	</div>
+</div>

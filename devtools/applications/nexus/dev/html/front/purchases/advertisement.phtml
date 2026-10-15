@@ -1,0 +1,46 @@
+<ips:template parameters="$purchase, $advertisement" />
+{{if $advertisement->active == -1}}
+	<p class="ipsMessage ipsMessage--info">{lang="advertisement_pending_approval"}</p>
+{{elseif $advertisement->active == 1}}
+	<p class="ipsMessage ipsMessage--success">{lang="advertisement_active"}</p>
+{{else}}
+	<p class="ipsMessage ipsMessage--info">{lang="advertisement_expired"}</p>
+{{endif}}
+
+
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--advertisement">
+		<li class="ipsData__item">
+			<span class="i-basis_120"><strong>{lang="advertisement_url"}</strong></span>
+			<span class="ipsData__main">{$advertisement->link}</span>
+		</li>
+		<li class="ipsData__item">
+		    <span class="i-basis_120"><strong>{lang="ad_image_alt"}</strong></span>
+            <span class="ipsData__main">{$advertisement->image_alt}</span>
+		</li>
+		<li class="ipsData__item">
+			<span class="i-basis_120"><strong>{lang="ads_ad_impressions"}</strong></span>
+			<span class="ipsData__main">{$advertisement->impressions}{{if $advertisement->maximum_unit == 'i' and $advertisement->maximum_value != -1}} / {$advertisement->maximum_value}{{endif}}</span>
+		</li>
+		<li class="ipsData__item">
+			<span class="i-basis_120"><strong>{lang="ads_ad_clicks"}</strong></span>
+			<span class="ipsData__main">{$advertisement->clicks}{{if $advertisement->maximum_unit == 'c' and $advertisement->maximum_value != -1}} / {$advertisement->maximum_value}{{endif}}</span>
+		</li>
+	</ul>
+</i-data>
+
+<div class="ips{expression="\IPS\IPS::mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}">
+	<ul class="i-text-align_center">
+		{{foreach json_decode( $advertisement->images, TRUE ) as $k => $image}}
+			{{if $image}}
+				<li>
+					<div class='ips{expression="\IPS\IPS::mb_ucfirst(\IPS\SUITE_UNIQUE_KEY)"}_{$k} i-background_2 i-padding_2'>
+						<div class='i-background_1 i-padding_2'>
+							<a href="{file="$image" extension="core_Advertisements"}" class='ipsImage ipsThumb_{$k}' data-ipsLightbox data-ipsLightbox-group="ads" data-ipsLightbox-meta="{lang="$k"}"><img src="{file="$image" extension="core_Advertisements"}" loading='lazy' alt='' ></a>
+                        </div>
+					</div>
+				</li>
+			{{endif}}
+		{{endforeach}}
+	</ul>
+</div>

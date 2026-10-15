@@ -1,0 +1,113 @@
+<ips:template parameters="$similar, $title, $layout='table', $isCarousel=false" />
+{{if !empty( $similar ) }}
+	<h3 class='ipsWidget__header'>{$title}</h3>
+	{{if $isCarousel}}
+    	{{$carouselID = 'widget-related-content_' . mt_rand();}}
+    	{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+    {{endif}}
+	{{if isset($orientation) and $orientation == 'vertical'}}
+		<div class='ipsWidget__content'>
+			<i-data>
+				<ul class='ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--related-content' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+					{{foreach $similar as $item}}
+						{{$numComments = ( $item::$firstCommentRequired ) ? $item->mapped('num_comments') - 1 : $item->mapped('num_comments');}}
+						<li class='ipsData__item {{if $item->hidden()}} ipsModerated{{endif}}'>
+							<a href="{$item->url( "getPrefComment" )}" title='{lang="view_this_topic" sprintf="$item->title"}' class="ipsLinkPanel" aria-hidden="true"><span>{$item->mapped('title')}</span></a>
+							<div class='ipsData__icon'>{template="userPhoto" group="global" app="core" params="$item->author(), 'fluid'"}</div>
+							<div class='ipsData__main'>
+								<div class='ipsData__title'>
+									<div class='ipsBadges'>
+										{{if $item->hidden() === -1}}
+											<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{$item->hiddenBlurb()}'><i class='fa-solid fa-eye-slash' aria-hidden="true"></i></span>
+										{{elseif $item->hidden() === 1}}
+											<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i></span>
+										{{endif}}
+										{{if $item->mapped('featured')}}
+											<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="featured"}'><i class='fa-solid fa-star' aria-hidden="true"></i></span>
+										{{endif}}
+										{{if \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Solvable' ) and $item->isSolved()}}
+											<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="this_is_solved"}'><i class='fa-solid fa-check' aria-hidden="true"></i></span>
+										{{endif}}
+									</div>
+									<h4><a href="{$item->url( "getPrefComment" )}" title='{lang="view_this_topic" sprintf="$item->title"}'>{$item->mapped('title')}</a></h4>
+								</div>
+								<p class='ipsData__meta'>
+									{lang="byline_nodate" htmlsprintf="$item->author()->link( NULL, NULL, \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Anonymous' ) ? $item->isAnonymous() : FALSE )"} &middot; {lang="started_date" htmlsprintf="\IPS\DateTime::ts( $item->mapped('date') )->html( false )"}
+								</p>
+							</div>
+							<div class="ipsData__extra">
+								<ul class="ipsData__stats">
+									<li data-statType='replies'>
+										<span class='ipsData__stats-icon' data-stat-value='{expression="\IPS\Member::loggedIn()->language()->formatNumber( $numComments )"}' aria-hidden="true" data-ipstooltip title='{lang="replies_number" pluralize="$numComments"}'></span>
+										<span class='ipsData__stats-label'>{lang="replies_number" pluralize="$numComments"}</span>
+									</li>
+								</ul>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		</div>
+	{{else}}
+		<div class='ipsWidget__content'>
+			<i-data>
+				<ul class="ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--related-content" {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+					{{foreach $similar as $item}}
+						<li class="ipsData__item {{if $item->hidden()}}ipsModerated{{endif}}">
+							<a href='{$item->url( "getPrefComment" )}' title='{lang="view_this_topic" sprintf="$item->title"}' class="ipsLinkPanel" aria-hidden="true"><span>{$item->mapped('title')}</span></a>
+							<div class='ipsData__content'>
+								<div class='ipsData__main'>
+									<div class='ipsData__title'>
+										<div class='ipsBadges'>
+											{{foreach $item->badges() as $badge}}{$badge|raw}{{endforeach}}
+											{{if $item->prefix()}}
+												{template="prefix" group="global" app="core" params="$item->prefix( TRUE ), $item->prefix()"}
+											{{endif}}
+										</div>
+										<h4>
+														<a href='{$item->url( "getPrefComment" )}' {{if $item->tableHoverUrl and $item->canView()}}data-ipsHover data-ipsHover-target='{$item->url()->setQueryString('preview', 1)}' data-ipsHover-timeout='1.5' {{endif}}>{$item->mapped('title')}</a>
+										</h4>
+										{{if $item->commentPageCount() > 1}}
+											{$item->commentPagination( array(), 'miniPagination' )|raw}
+										{{endif}}
+									</div>
+									<div class='ipsData__meta'>{lang="byline_name_date" htmlsprintf="$item->author()->link( NULL, NULL, \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Anonymous' ) ? $item->isAnonymous() : FALSE ), \IPS\DateTime::ts( $item->mapped('date') )->html(TRUE)"}</div>
+									{{if \count( $item->tags() )}}
+										{template="tags" group="global" app="core" params="$item->tags(), true, true"}
+									{{endif}}
+								</div>
+								<ul class="ipsData__stats">
+									{{foreach $item->stats(FALSE) as $k => $v}}
+										<li {{if \in_array( $k, $item->hotStats )}}class="ipsData__stats-hot" data-text='{lang="hot_item"}' data-ipsTooltip title='{lang="hot_item_desc"}'{{endif}}>
+											<span>{number="$v"}</span>
+											<span>{lang="{$k}" pluralize="$v"}</span>
+										</li>
+									{{endforeach}}
+								</ul>
+								<div class="ipsData__last">
+									{{if $item->mapped('num_comments')}}
+										{template="userPhoto" app="core" group="global" params="$item->lastCommenter(), 'fluid'"}
+									{{else}}
+										{template="userPhoto" app="core" group="global" params="$item->author(), 'fluid'"}
+									{{endif}}
+									<div class='ipsData__last-text'>
+										<div class='ipsData__last-primary'>
+											{{if $item->mapped('num_comments')}}
+												{$item->lastCommenter()->link()|raw}
+											{{else}}
+												{$item->author()->link( NULL, NULL, \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Anonymous' ) ? $item->isAnonymous() : FALSE )|raw}
+											{{endif}}
+										</div>
+										<div class='ipsData__last-secondary'>
+											<a href='{$item->url( 'getLastComment' )}' title='{lang="get_last_post"}'>{{if $item->mapped('last_comment')}}{datetime="$item->mapped('last_comment')"}{{else}}{datetime="$item->mapped('date')"}{{endif}}</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		</div>
+	{{endif}}
+{{endif}}

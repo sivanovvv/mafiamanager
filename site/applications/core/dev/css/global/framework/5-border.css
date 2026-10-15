@@ -1,0 +1,28 @@
+/*
+	----------------
+	- Borders
+	----------------
+*/
+
+.i-border-top_1{ border-top: 1px solid var(--i-background_2); }
+.i-border-top_2{ border-top: 1px solid var(--i-background_3); }
+.i-border-top_3{ border-top: 1px solid var(--i-background_4); }
+.i-border-bottom_1{ border-bottom: 1px solid var(--i-background_2); }
+.i-border-bottom_2{ border-bottom: 1px solid var(--i-background_3); }
+.i-border-bottom_3{ border-bottom: 1px solid var(--i-background_4); }
+
+.i-border-radius_box{ border-radius: var(--i-box--bo-ra); }
+.i-border-start-start-radius_box{ border-start-start-radius: var(--i-box--bo-ra); }
+.i-border-start-end-radius_box{ border-start-end-radius: var(--i-box--bo-ra); }
+.i-border-end-start-radius_box{ border-end-start-radius: var(--i-box--bo-ra); }
+.i-border-end-end-radius_box{ border-end-end-radius: var(--i-box--bo-ra); }
+.i-border-radius_0{ border-radius: 0 }
+.i-border-radius_circle{ border-radius: 1000px; }
+
+@media (max-width: 767px){
+	:where(.ipsPull) .i-border-radius_box{ border-radius: 0px; }
+	:where(.ipsPull) .i-border-start-start-radius_box{ border-start-start-radius: 0px; }
+	:where(.ipsPull) .i-border-start-end-radius_box{ border-start-end-radius: 0px; }
+	:where(.ipsPull) .i-border-end-start-radius_box{ border-end-start-radius: 0px; }
+	:where(.ipsPull) .i-border-end-end-radius_box{ border-end-end-radius: 0px; }
+}

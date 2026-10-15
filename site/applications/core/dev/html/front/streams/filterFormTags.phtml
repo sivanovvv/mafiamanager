@@ -1,0 +1,9 @@
+<ips:template parameters="$tags" />
+<div class="i-margin-bottom_4">
+	<input type="hidden" name="stream_tags_type" value="custom">
+	<h3 class='ipsSideMenu__title'>{lang="stream_tags"}</h3>
+	<div class='ipsFieldRow--fullWidth'>
+		{$tags->html()|raw}
+		<p class='i-font-size_-2 i-color_soft i-padding-top_2'>{lang="tags_desc"}</p>
+	</div>
+</div>

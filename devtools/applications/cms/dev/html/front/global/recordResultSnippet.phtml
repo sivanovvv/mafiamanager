@@ -1,0 +1,15 @@
+<ips:template parameters="$indexData, $itemData, $url, $condensed" />
+{{if $itemData['record_image']}}
+	<div class='ipsStreamItem__content-thumb ipsStreamItem__content-thumb--pages'>
+		{template="thumbImage" group="global" app="core" location="front" params="$itemData['record_image'], $indexData['index_title'], 'large', '', 'view_this', $url, 'cms_Records'"}
+	</div>
+{{endif}}
+{{if !$condensed}}
+	{{if trim( $indexData['index_content'] ) !== ''}}
+		<div class='ipsStreamItem__content-content ipsStreamItem__content-content--pages'>
+			<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+				{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+			</div>
+		</div>
+	{{endif}}
+{{endif}}

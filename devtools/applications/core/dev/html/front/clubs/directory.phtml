@@ -1,0 +1,107 @@
+<ips:template parameters="$featuredClubs, $allClubs, $pagination, $baseUrl, $sortOption, $myClubsActivity, $mapMarkers=NULL, $view='grid', $mineOnly=FALSE, $allSortOptions=array()" />
+
+<header class='ipsPageHeader'>
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" class='ipsPageHeader__title'>{lang="club_directory"}</h1>
+		</div>
+		{{if settings.clubs_allow_view_change AND member.member_id}}
+			<ul class="ipsButtonGroup">
+				<li>
+					<a href="{url="app=core&module=clubs&controller=directory&view=grid" seoTemplate="clubs_list" csrf="true"}" class="ipsButton {{if $view == 'grid'}}ipsButton--active{{endif}}" data-ipsTooltip title="{lang="club_view_grid"}" rel="nofollow">
+						<i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li>
+					<a href="{url="app=core&module=clubs&controller=directory&view=list" seoTemplate="clubs_list" csrf="true"}" class="ipsButton {{if $view == 'list'}}ipsButton--active{{endif}}" data-ipsTooltip title="{lang="club_view_list"}" rel="nofollow">
+						<i class="fa-solid fa-align-justify" aria-hidden="true"></i>
+					</a>
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</header>
+
+{{if \count( $featuredClubs )}}
+	<div class="ipsBox ipsBox--clubFeatured ipsPull">
+		<h2 class="ipsBox__header">{lang="featured_clubs"}</h2>
+		<i-data>
+			{{if $view == 'grid'}}
+				<ul class='ipsData ipsData--grid ipsData--clubs-featured'>
+					{{foreach $featuredClubs as $club}}
+						{template="clubCard" group="clubs" app="core" params="$club"}
+					{{endforeach}}
+				</ul>
+			{{else}}
+				<ol class="ipsData ipsData--table ipsData--clubs-featured">
+					{{foreach $featuredClubs as $club}}
+						{template="clubRow" group="clubs" app="core" params="$club"}
+					{{endforeach}}
+				</ol>
+			{{endif}}
+		</i-data>
+	</div>
+{{endif}}
+
+{{if $mapMarkers !== NULL && settings.clubs_locations}}
+	<div class='ipsBox ipsBox--clubFindByLocation ipsPull'>
+		<h2 class='ipsBox__header'>{lang="club_find_by_location"}</h2>
+		<div class='i-padding_2'>
+			<div data-ipsMap data-ipsMap-markers="{expression="json_encode( $mapMarkers )"}" data-ipsMap-contentUrl="{url="app=core&module=clubs&controller=view&do=mapPopup&id="}" class="ipsMap ipsMap--small ipsJS_show"></div>
+		</div>
+	</div>
+{{endif}}
+
+<div class="ipsBox ipsBox--clubMineAll ipsPull">
+	<h2 class="ipsBox__header">{{if $mineOnly}}{lang="my_clubs"}{{else}}{lang="all_clubs"}{{endif}}</h2>
+	{{if \count( $allClubs )}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			<div class="ipsButtonBar__pagination">{$pagination|raw}</div>
+			<div class="ipsButtonBar__end">
+				<ul class="ipsDataFilters">
+					<li>
+						<button type="button" id="elSortByMenu" popovertarget="elSortByMenu_menu" class="ipsDataFilters__button"><span>{lang="sort_by"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+					</li>
+						<li>
+							<a href="{$baseUrl->setQueryString( 'do', 'filters' )}" class="ipsDataFilters__button" data-ipsDialog data-ipsDialog-title="{lang="filter"}">{lang="filter"}</a>
+						</li>
+				</ul>
+			</div>
+		</div>
+		<i-dropdown popover id="elSortByMenu_menu" data-i-dropdown-selectable="radio">
+			<div class="iDropdown">
+				<ul class="iDropdown__items">
+					{{foreach $allSortOptions as $k}}
+						<li>
+							<a href="{$baseUrl->setQueryString( 'sort', $k )}" data-ipsMenuValue="{$k}" {{if $k == $sortOption}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="clubs_sort_{$k}"}</a>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		</i-dropdown>
+		<i-data>
+			{{if $view == 'grid'}}
+				<ul class='ipsData ipsData--grid ipsData--browse-clubs'>
+					{{foreach $allClubs as $club}}
+						{template="clubCard" group="clubs" app="core" params="$club"}
+					{{endforeach}}
+				</ul>
+			{{else}}
+				<ul class="ipsData ipsData--table ipsData--browse-clubs">
+					{{foreach $allClubs as $club}}
+						{template="clubRow" group="clubs" app="core" params="$club"}
+					{{endforeach}}
+				</ul>
+			{{endif}}
+		</i-data>
+		{{if trim( $pagination )}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination">{$pagination|raw}</div>
+			</div>
+		{{endif}}
+	{{else}}
+		<div class="ipsEmptyMessage">
+			{lang="all_clubs_empty"}
+		</div>
+	{{endif}}
+</div>

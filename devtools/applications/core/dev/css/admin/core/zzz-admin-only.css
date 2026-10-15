@@ -1,0 +1,179 @@
+:root{
+	--i-sticky-offset: 61px;
+	overflow-wrap: break-word;
+}
+
+/* Add .fa-star-o, which is used on the Applications page (set as default) */
+.fa-star-o::before{
+	content: '\f005';
+	font-weight: 400;
+}
+
+/* Increase size of main buttons */
+.acpToolbar .ipsButton{
+	--i-button--pa-bl: 1.1em;
+}
+
+/* Horizontal forms in ACP by default. Most forms in the ACP don't assign --horizontal, even though they should */
+.ipsForm--admin-template:not(.ipsForm--horizontal, .ipsForm--vertical) .ipsFieldRow[style*="list-item"]{
+	display: grid !important;
+}
+
+.ipsForm:not(.ipsForm--admin-template) .ipsFieldRow--fullWidth > *{
+	grid-column: 1/-1;
+}
+
+@media (min-width: 890px){
+	.ipsForm--admin-template:where(:not(.ipsForm--horizontal, .ipsForm--vertical)) > .ipsFieldRow{
+		grid-template-columns: max(14em, 22%) 1fr;
+	}
+	.ipsForm--admin-template:not(.ipsForm--horizontal, .ipsForm--vertical) .ipsFieldRow__required{
+		flex: 1 1 100%;
+	}
+	.ipsForm--admin-template:where(:not(.ipsForm--horizontal, .ipsForm--vertical)) > .ipsFieldRow > .ipsFieldRow__label{
+		text-align: end;
+		align-self: baseline;
+	}
+	.ipsForm--admin-template:not(.ipsForm--horizontal, .ipsForm--vertical) .ipsFieldRow__label{
+		display: grid;
+		place-items: end;
+	}
+	/* Reset form alignment in dropdowns */
+	.iDropdown .ipsFieldRow__label{
+		place-items: start !important;
+	}
+}
+
+/* Increase gaps in forms */
+.ipsFieldRow{
+	column-gap: 1.5em;
+	padding: 1.5em;
+}
+
+/* Add background to form section headers */
+.ipsFieldRow__section{
+	background-color: var(--i-background_3);
+	border: 1px solid var(--i-background_5);
+	border-width: 1px 0;
+	margin-top: -1px;
+}
+
+.ipsFieldRow__section:first-child{
+	margin-top: 0;
+	border-top-width: 0;
+}
+/* Add radius if it's the first element in a non-tab element */
+.ipsFieldRow__section:not(.ipsTabs__panel *):first-child{
+	border-top-left-radius: var(--i-box--bo-ra);
+	border-top-right-radius: var(--i-box--bo-ra);
+}
+
+/* Matrix rows: These should occpuy the full form width, since they don't have a label */
+.ipsFieldRow--matrix{
+	display: block;
+	padding: 0;
+}
+
+/* Reduce size of labels in ACP */
+.ipsFieldRow__label{
+	font-size: inherit;
+}
+
+/* Make some labels bolder */
+.ipsFieldList label{
+	font-weight: 500;
+	color: var(--i-color_hard);
+}
+
+/* Descriptions under radio labels, Eg: ACP > Editor > Settings */
+.ipsFieldList__content .ipsFieldRow__desc{
+	margin-top: 0;
+}
+
+/* Add a max-width to inputs */
+.ipsFieldRow__content :where(input, select){
+	max-width: min(35em, 100%);
+}
+
+.ipsFieldRow__content :where(select, [type="date"]){
+	width: auto;
+}
+
+.ipsFieldRow__content :where([type="number"]){
+	max-width: 8em;
+}
+
+/* Space out filters (Eg. Statistics > Member Visits) */
+.ipsForm__filtering{
+	padding: 1em;
+}
+.ipsForm__filtering :is(input, button){
+	margin: 0 .4em;
+}
+
+/* Remove border from "spectrum" color picker to prevent the checkered background issue */
+.sp-original-input-container input{
+	border-width: 0;
+}
+
+/* Social icons */
+#form_site_social_profiles .ipsField_stack{
+	max-width: 550px;
+}
+	#form_site_social_profiles .ipsFieldRow__content :where(input, select){
+		max-width: none;
+		width: 100%;
+	}
+	#form_site_social_profiles [data-ipsstack-keyvalue-name="key"]{
+		flex: 1 1 auto;
+	}
+
+/* Remove radius of update notifications */
+html .cAcpNotificationBanner{
+	border-radius: 0;;
+}
+
+/* Add padding to buttons when they're inside tabbed content */
+.ipsTabs__panel .ipsButtons--admin{
+	padding: 1em;
+}
+
+.ipsButtons--admin:has( + .ipsBox){
+	margin-bottom: 1.5em;
+}
+
+/* Always enable .ipsLinkPanel in ACP */
+.ipsLinkPanel ~ *:not(:is(a, button, input, textarea, [data-ipsTooltip])){
+	pointer-events: none;
+}
+.ipsLinkPanel ~ * :is(a, button, input, textarea, [data-ipsTooltip]){
+	pointer-events: auto;
+}
+.ipsLinkPanel ~ * a:hover{
+	text-decoration: underline;
+}
+
+/* Better alignment of user photos in admin panel tables (ie. Clubs) */
+.ipsTable .ipsUserPhoto{
+	vertical-align: middle;
+}
+
+.ipsTable .ipsUserPhoto:has( ~ a){
+	margin-inline-end: .5em;
+}
+
+/* Larger button on ACP login page */
+.ipsForm--admin-login-form .ipsButton{
+	padding: 1.1em;
+}
+
+/* ACP Off-canvas menus */
+.ipsApp_admin .ipsOffCanvas__title:first-child{
+	padding-top: 1em;
+}
+/* Add '-' before sublinks in ACP off-canvas navigation */
+.ipsApp_admin .ipsOffCanvas__nav i-details-content a::before{
+	content: "-";
+	margin-inline-end: .3em;
+	opacity: .3;
+}

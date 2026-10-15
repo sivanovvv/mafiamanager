@@ -1,0 +1,9 @@
+{
+    "front": {
+        "games": {
+            "default_controller": "index",
+            "protected": 0,
+            "default": 1
+        }
+    }
+}

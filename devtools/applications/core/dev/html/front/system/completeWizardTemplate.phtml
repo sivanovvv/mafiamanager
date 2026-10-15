@@ -1,0 +1,13 @@
+<ips:template parameters="$stepNames, $activeStep, $output, $baseUrl, $showSteps" />
+
+<div data-ipsWizard class='ipsWizard'>
+	<div data-role="wizardStepbar" class="i-padding_3 i-border-bottom_3 i-background_2 i-border-start-start-radius_box i-border-start-end-radius_box">
+		{{$completion = \intval( (string) \IPS\Member::loggedIn()->profileCompletionPercentage() );}}
+		{{$progressId = 'ipsProgress-' . mt_rand();}}
+		<progress aria-labelledby="{$progressId}" class="ipsProgress" max='100' value='{expression="\IPS\Member::loggedIn()->profileCompletionPercentage()"}'></progress>
+		<small id="{$progressId}" class='i-color_soft i-margin-top_1 i-display_block'>{lang="profile_completion_percent" sprintf="$completion . '%'"}</small>
+	</div>
+	<div data-role="wizardContent">
+		{$output|raw}
+	</div>
+</div>

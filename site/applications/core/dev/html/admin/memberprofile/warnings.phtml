@@ -1,0 +1,90 @@
+<ips:template parameters="$member, $restrictions, $flagMessage" />
+<div class='ipsAcpProfile__half acpMemberView_contentStats ipsBox'>
+	<h2 class='ipsBox__header'>
+		<i class="fa-solid fa-triangle-exclamation ipsBox__header-icon" aria-hidden="true"></i>
+		{{if settings.warn_on}}
+			{lang="warnings_and_restrictions"}
+		{{else}}
+			{lang="restrictions"}
+		{{endif}}
+		{{if member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( !$member->isAdmin() or member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) )}}
+			<a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\Warnings&id={$member->member_id}"}" class="ipsBox__header-secondary" data-ipsDialog data-ipsDialog-title="{lang="warnings_and_restrictions"}">{lang="edit"}</a>
+		{{endif}}
+	</h2>
+	<div class="i-flex i-padding_2">
+		<div class="i-flex_11">
+			{{if settings.warn_on and !$member->inGroup( explode( ',', \IPS\Settings::i()->warn_protected ) )}}
+				<p class="i-font-size_2 i-font-weight_500 {{if $member->warn_level > 0}}i-color_negative{{else}}i-color_hard{{endif}}">{lang="member_warn_level" pluralize="$member->warn_level"}</p>
+			{{endif}}
+			{{if !\count( $restrictions )}}
+				<p>{lang="no_restrictions_applied"}</p>
+			{{else}}
+				<ul class="ipsList ipsList--inline i-color_negative">
+					{{foreach $restrictions as $restriction}}
+						<li>
+							{lang="$restriction"}
+						</li>
+					{{endforeach}}
+				</ul>
+			{{endif}}
+		</div>
+		{{if $member->member_id != member.member_id}}
+			<ul class="ipsButtons">
+				{{if $member->canBeFlaggedAsSpammer() and member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+					<li>
+						{{if $member->members_bitoptions['bw_is_spammer']}}
+							<a href="{url="app=core&module=members&controller=members&do=spam&id={$member->member_id}&status=0" csrf="true"}" data-confirm data-confirmSubmessage="{lang="spam_unflag_confirm"}" class="ipsButton ipsButton--inherit ipsButton--small">{lang="spam_unflag"}</a>
+						{{else}}
+							<a href="{url="app=core&module=members&controller=members&do=spam&id={$member->member_id}&status=1" csrf="true"}" data-confirm {{if $flagMessage}}data-confirmMessage="{lang="spam_flag"}" data-confirmSubmessage="{$flagMessage}"{{endif}} class="ipsButton ipsButton--inherit ipsButton--small">{lang="spam_flag"}</a>
+						{{endif}}
+					</li>
+				{{endif}}
+				{{if member.hasAcpRestriction( 'core', 'members', 'member_ban' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_ban_admin' ) or !$member->isAdmin() ) and $member->member_id != member.member_id}}
+					<li>
+						<a href="{url="app=core&module=members&controller=members&do=ban&id={$member->member_id}"}" data-ipsDialog data-ipsDialog-title="{{if $member->temp_ban}}{lang="adjust_ban"}{{else}}{lang="ban"}{{endif}}" class="ipsButton ipsButton--inherit ipsButton--small">
+							{{if $member->temp_ban}}
+								{lang="adjust_ban"}
+							{{else}}
+								{lang="ban"}
+							{{endif}}
+						</a>
+					</li>
+				{{endif}}
+			</ul>
+		{{endif}}
+	</div>
+	{{if member.modPermission('mod_see_warn') and $warnings = $member->warnings( NULL ) and \count( $warnings )}}
+		<i-data class="i-border-top_2">
+			<ol class="ipsData ipsData--table ipsData--warnings">
+				{{foreach $warnings as $warning}}
+					<li class="ipsData__item">
+						<a href="{url="app=core&module=members&controllers=members&do=viewWarning&id={$warning->id}"}" data-ipsDialog data-ipsDialog-size='narrow' class="ipsLinkPanel" tabindex="-1" aria-hidden="true"><span>{lang="core_warn_reason_{$warning->reason}"}</span></a>
+						<div class="ipsData__icon">
+							<span class="ipsWarningPoints ipsWarningPoints--small">{$warning->points}</span>
+						</div>
+						<div class='ipsData__main'>
+							<h4 class="ipsData__title">
+								<a href="{url="app=core&module=members&controllers=members&do=viewWarning&id={$warning->id}"}" data-ipsDialog data-ipsDialog-size='narrow'>
+									{lang="core_warn_reason_{$warning->reason}"}
+									{{if settings.warnings_acknowledge}}
+										{{if $warning->acknowledged}}
+											<strong class='i-color_positive'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="warning_acknowledged"}</strong>
+										{{else}}
+											<strong class='i-color_soft'><i class='fa-regular fa-circle' aria-hidden="true"></i> {lang="warning_not_acknowledged"}</strong>
+										{{endif}}
+									{{endif}}
+								</a>
+							</h4>
+							<p class='ipsData__meta'>
+								{lang="byline_name_date" htmlsprintf="\IPS\Member::load( $warning->moderator )->name, \IPS\DateTime::ts( $warning->date )->html(TRUE)"}
+							</p>
+						</div>
+						{{if $warning->canDelete()}}
+							<a href="{url="app=core&module=members&controllers=members&do=warningRevoke&id={$warning->id}" csrf="true"}" data-confirm data-confirmMessage="{lang="warning_revoke_blurb"}" data-confirmType="verify" data-confirmButtons='{expression="json_encode( array( 'yes' => \IPS\Member::loggedIn()->language()->addToStack('warning_revoke_undo'), 'no' => \IPS\Member::loggedIn()->language()->addToStack('delete'), 'cancel' => \IPS\Member::loggedIn()->language()->addToStack('cancel') ) )" raw="true"}' class='ipsButton ipsButton--small ipsButton--text'><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> {lang="revoke"}</a>
+						{{endif}}
+					</li>
+				{{endforeach}}
+			</ol>
+		</i-data>
+	{{endif}}
+</div>

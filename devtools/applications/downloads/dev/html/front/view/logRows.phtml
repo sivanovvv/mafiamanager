@@ -1,0 +1,12 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li>
+		<div class="ipsPhotoPanel ipsPhotoPanel--mini">
+			{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $row['dmid'] ), 'mini'"}
+			<div class="ipsPhotoPanel__text">
+				<h3 class='ipsPhotoPanel__primary'>{template="userLink" app="core" group="global" params="\IPS\Member::load( $row['dmid'] )"}</h3>
+				<span class='ipsPhotoPanel__secondary'>{datetime="$row['dtime']" norelative="true"}</span>
+			</div>
+		</div>
+	</li>
+{{endforeach}}

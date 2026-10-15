@@ -1,0 +1,33 @@
+<ips:template parameters="$transaction, $log" />
+
+<li class='cTransaction_intermediate'>
+	<div class='cTransaction_icon'>
+		<i class='fa-solid fa-forward-fast' aria-hidden="true"></i>
+	</div>
+	<div class='cTransaction_info'>
+		<h3 class="ipsTitle ipsTitle--h3">
+			<strong>
+				{lang="tstatus_credited_undo"}
+			</strong>
+		</h3>
+		<br>
+		
+		{{if isset( $log['amount'] )}}
+			{{if $transaction->amount->amount->compare( new \IPS\Math\Number( $log['amount'] ) ) !== 0}}
+				<p class='i-font-size_2'>
+					<span class='cNexusPrice'>{money="$log['amount']" currency="$transaction->currency"}</span>
+				</p>
+			{{endif}}
+		{{endif}}
+		
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='i-font-size_1 i-color_soft'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+	</div>
+</li>

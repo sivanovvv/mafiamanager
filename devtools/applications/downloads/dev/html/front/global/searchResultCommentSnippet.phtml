@@ -1,0 +1,21 @@
+<ips:template parameters="$indexData, $screenshot, $url, $reviewRating, $condensed" />
+
+{{if $screenshot}}
+	<div class='ipsStreamItem__content-thumb ipsStreamItem__content-thumb--downloads'>
+		{template="thumbImage" group="global" app="core" location="front" params="$screenshot, $indexData['index_title'], 'fluid', '', 'view_this', $url, 'downloads_Screenshots', '', true"}
+	</div>
+{{endif}}
+{{if !$condensed}}
+	<div class='ipsStreamItem__content-content ipsStreamItem__content-content--downloads'>
+		{{if $reviewRating !== NULL}}
+			{template="rating" app="core" params="'medium', $reviewRating, \IPS\Settings::i()->reviews_rating_out_of" group="global"}
+		{{endif}}
+		<div class='ipsStream__comment'>
+			{{if trim( $indexData['index_content'] ) !== ''}}
+				<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+					{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+{{endif}}

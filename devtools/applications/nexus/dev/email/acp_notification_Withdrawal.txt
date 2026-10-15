@@ -1,0 +1,4 @@
+<ips:template parameters="$notification, $withdrawal, $email" />
+{$email->language->addToStack( "email_notify_withdrawal", FALSE )}
+
+{$email->language->addToStack("payout_view", FALSE)}: {url="app=nexus&module=payments&controller=payouts" base="admin" plain="true"}

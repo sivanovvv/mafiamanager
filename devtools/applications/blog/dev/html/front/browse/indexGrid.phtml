@@ -1,0 +1,49 @@
+<ips:template parameters="$entries, $featured, $blogs, $pagination, $viewMode, $category" />
+
+<header class="ipsPageHeader ipsPageHeader--blogs-grid {{if $category !== null}}ipsBox ipsPull{{endif}}">
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" class='ipsPageHeader__title'>{{if $category !== null}}{$category->_title}{{else}}{lang="blogs"}{{endif}}</h1>
+		</div>
+		{{if $category === null and ( \count( $blogs ) || \IPS\blog\Blog::canCreate() )}}
+            <div data-ips-hook="buttons">
+                {template="indexButtons" group="browse" params="$blogs, $viewMode, FALSE, $category"}
+            </div>
+        {{endif}}
+	</div>
+</header>
+
+{{if $category !== null and ( \count( $blogs ) || \IPS\blog\Blog::canCreate() )}}
+    <div data-ips-hook="buttons" class='ipsBlockSpacer'>
+        {template="indexButtons" group="browse" params="$blogs, $viewMode, FALSE, $category"}
+    </div>
+{{endif}}
+
+{{if \count( $featured )}}
+	{template="featuredEntries" group="browse" params="$featured"}
+{{endif}}
+{{if \count( $blogs ) || \IPS\blog\Blog::canCreate()}}
+	<div class="ipsResponsive_showPhone">
+		{template="indexButtons" group="browse" params="$blogs, $viewMode, TRUE, $category"}
+	</div>
+{{endif}}
+<section class='ipsBox ipsBox--blogIndexGrid ipsPull'>
+	{{if \count($entries)}}
+		<i-data>
+			<div class="ipsData ipsData--grid ipsData--blog-entries">
+				{{foreach $entries as $id => $entry}}
+					{template="indexGridEntry" app="blog" location="front" group="browse" params="$entry, true"}
+				{{endforeach}}
+			</div>
+		</i-data>
+	{{else}}
+		<p class="ipsEmptyMessage">{lang="no_entries_yet"}</p>
+	{{endif}}
+	{{if $pagination['pages'] > 1}}
+		<div class="ipsButtonBar ipsButtonBar--bottom">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" app="core" location="global" group="global" params="$pagination['url'], $pagination['pages'], $pagination['page'], $pagination['perpage'], TRUE, 'page'"}
+			</div>
+		</div>
+	{{endif}}
+</section>

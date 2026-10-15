@@ -1,0 +1,52 @@
+<ips:template parameters="$apps, $themes, $ads" />
+<div data-controller='core.admin.support.dashboard'>
+	<div class='i-padding_3' data-role="customizationsWrapper">
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--third-party-items">
+				{{if \count( $apps )}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon i-color_issue i-font-size_2"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div>
+						<div class="i-color_issue">
+							{lang="support_third_party_apps_count" pluralize="\count( $apps ), \count( $apps )"}
+						</div>
+					</li>
+				{{else}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">{lang="support_third_party_no_apps"}</div>
+					</li>
+				{{endif}}
+				{{if $themes}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon i-color_issue i-font-size_2"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div>
+						<div class="i-color_issue">
+							{lang="support_third_party_theme_count"}
+						</div>
+					</li>
+				{{else}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">{lang="support_third_party_no_theme"}</div>
+					</li>
+				{{endif}}
+				{{if \count( $ads )}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon i-color_issue i-font-size_2"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></div>
+						<div class="i-color_issue">
+							{lang="support_third_party_ads_count" pluralize="\count( $ads )"}
+						</div>
+					</li>
+				{{else}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">{lang="support_third_party_no_ads"}</div>
+					</li>
+				{{endif}}
+			</ul>
+		</i-data>
+	</div>
+	<div class="ipsSubmitRow {{if !$themes AND !\count( $ads ) AND !\count( $apps )}}ipsHide{{endif}}">
+		<button href='{url="app=core&module=support&controller=support&do=thirdparty&enable=0" csrf="true"}' class='ipsButton ipsButton--primary' data-role="disableCustomizations">{lang="health_disable_customizations"}</button>
+		<button href="{url="app=core&module=support&controller=support&do=thirdparty&enable=1&type=all" csrf="true"}" data-role="enableCustomizations" class="ipsButton ipsButton--primary ipsHide">{lang="support_third_party_enable_all"}</button>
+	</div>
+</div>

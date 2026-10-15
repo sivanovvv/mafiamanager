@@ -1,0 +1,6 @@
+<ips:template parameters="$allContent, $secret, $email" />
+{$email->language->addToStack("post_before_register_followup_text", FALSE)}
+<br><br>
+<a href='{url="app=core&module=system&controller=register&pbr={$secret}&hidereminder=1" base="front" seoTemplate="register"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("finish_this_submission", FALSE)}</a>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

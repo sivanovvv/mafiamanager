@@ -1,0 +1,94 @@
+<ips:template parameters="$promoted, $layout='grid', $isCarousel=false" />
+<header class='ipsWidget__header'>
+	<h3>{lang="block_promoted"}</h3>
+	{{if $isCarousel}}
+		{{$carouselID = 'widget--core-promoted_' . mt_rand();}}
+		{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+	{{endif}}
+</header>
+<div class="ipsWidget__content">
+	<i-data>
+		<ul class="ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--core-widget-promoted" {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+			{{foreach $promoted as $item}}
+				{{$photoCount = ( $imageObjects = $item->imageObjects() ) ? \count( $imageObjects ) : 0;}}
+				{{$staff = \IPS\Member::load( $item->added_by );}}
+				<li class='ipsData__item cPromoted cPromotedWidgetItem'>
+					<a href='{$item->object()->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$item->ourPicksTitle}</span></a>
+					<a href='{$item->object()->url()}' class='ipsData__image' aria-hidden="true" tabindex="-1">
+						{{if $photoCount}}
+							{{$firstPhoto = $item->imageObjects()[0];}}
+							<img src='{$firstPhoto->url}' alt="{$item->objectTitle}" loading='lazy'>
+						{{elseif $image = $item->object()->primaryImage()}}
+							<img src='{$image->url}' alt="{$item->objectTitle}" loading="lazy">
+						{{else}}
+							{template="defaultThumb" app="core" location="front" group="global" params=""}
+						{{endif}}
+					</a>
+					<div class='ipsData__content'>
+						<div class="ipsData__main">
+							<h4 class='ipsData__title'>
+								<a href="{$item->object()->url()}">{$item->ourPicksTitle}</a>
+							</h4>
+							{{if $text = $item->getText(true)}}
+								<div class="ipsData__desc ipsRichText">{$text|raw}</div>
+							{{endif}}
+							<p class='ipsData__meta'>{$item->objectMetaDescription|raw}</p>
+							{{if $photoCount > 1}}
+								<ul class='ipsGrid ipsGrid--widgets-promoted cPromotedImages i-gap_1 i-margin-top_2'>
+									{{foreach $item->imageObjects() as $file}}
+										<li>
+											<a href='{$file->url}' class="ipsThumb" data-ipsLightbox data-ipsLightbox-group='g{$item->id}' aria-label="Related image">
+												<img src='{$file->url}' alt='' loading='lazy'>
+											</a>
+										</li>
+									{{endforeach}}
+								</ul>
+							{{endif}}
+						</div>
+						<div class="ipsData__extra">
+							<ul class="ipsData__stats">
+								{{$reactionClass = $item->objectReactionClass;}}
+								{{if $reactionClass || $item->objectDataCount}}
+									{{if $reactionClass}}
+										<li>{template="reactionOverview" group="global" app="core" params="$reactionClass, FALSE"}</li>
+									{{endif}}
+									{{if $counts = $item->objectDataCount}}
+										<li>
+											{$counts['words']}
+										</li>
+									{{endif}}
+								{{endif}}
+							</ul>
+							<div class="ipsData__last">
+								{template="userPhoto" app="core" group="global" params="$item->object()->author(), 'tiny'"}
+								<div class="ipsData__last-text">
+									<div class="ipsData__last-primary">
+										{$item->object()->author()->link()|raw}
+									</div>
+									<div class="ipsData__last-secondary">
+										{datetime="$item->object()->mapped('date')"}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="ipsData__last" hidden>
+							{template="userPhoto" group="global" app="core" params="$staff, 'tiny'"}
+							<div class="ipsData__last-text">
+								<div class="ipsData__last-primary">
+									{lang="promoted_by"} {template="userLink" group="global" app="core" params="$staff"}
+								</div>
+								<div class="ipsData__last-secondary">
+									{datetime="$item->added"}
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+	<div class='i-padding_2 i-border-top_3 i-text-align_end'>
+		<a href='{url="app=core&module=feature&controller=featured" seoTemplate="featured_show"}' class='ipsButton ipsButton--secondary ipsButton--small'>{lang="view_all_picks"} <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a>
+	</div>
+</div>

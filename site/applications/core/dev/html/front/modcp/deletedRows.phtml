@@ -1,0 +1,61 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{if \count( $rows )}}
+	{{foreach $rows AS $row}}
+	{{if $item = $row->object()}}
+	<li class='ipsData__item i-padding_0'>
+		<article class="ipsEntry ipsEntry--simple">
+			<div class='ipsEntry__header'>
+				<div class="ipsEntry__header-align">
+					<div class="ipsPhotoPanel">
+						{template="userPhoto" group="global" params="$item->author()"}
+						<div class="ipsPhotoPanel__text">
+							<div class="ipsPhotoPanel__primary i-color_hard">
+								{{if $item->author()->member_id}}
+									<button type="button" id="user{$item->author()->member_id}_{$row->id}" popovertarget="user{$item->author()->member_id}_{$row->id}_menu">{$item->author()->name} <i class="ipsMenuCaret" aria-hidden="true"></i></button>
+									<i-dropdown popover id="user{$item->author()->member_id}_{$row->id}_menu">
+										<div class="iDropdown">
+											<ul class="iDropdown__items">
+												{{if \IPS\Member::loggedIn()->modPermission('mod_can_warn')}}
+													<li><a href='{url="app=core&module=system&controller=warnings&do=warn&id={$item->author()->member_id}" seoTemplate="warn_add" seoTitle="$item->author()->members_seo_name"}' data-ipsDialog data-ipsDialog-title="{lang="warn_member" sprintf="$item->author()->name"}" data-ipsDialog-remoteSubmit data-ipsDialog-destructOnClose data-ipsDialog-flashMessage="{lang="warning_issued"}" data-role="warnUserDialog">{lang="warn_user"}</a></li>
+												{{endif}}
+												{{if $item->author()->member_id != \IPS\Member::loggedIn()->member_id AND \IPS\Member::loggedIn()->modPermission('can_flag_as_spammer') and $item->author()->canBeFlaggedAsSpammer()}}
+													{{if $item->author()->members_bitoptions['bw_is_spammer']}}
+														<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$item->author()->member_id}&s=0" seoTemplate="flag_as_spammer" seoTitle="$item->author()->members_seo_name" csrf="true"}' data-confirm data-confirmSubMessage="{lang="spam_unflag_confirm"}" data-ipsMenuValue='spamFlagButton'>{lang="spam_unflag"}</a></li>
+													{{else}}
+														<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$item->author()->member_id}&s=1" seoTemplate="flag_as_spammer" seoTitle="$item->author()->members_seo_name" csrf="true"}' data-confirm data-ipsMenuValue='spamFlagButton'>{lang="spam_flag"}</a></li>
+													{{endif}}
+												{{endif}}
+												<li><a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$item->author()->member_id}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}">{lang="message_send"}</a></li>
+											</ul>
+										</div>
+									</i-dropdown>
+								{{else}}
+									{$item->author()->name}
+								{{endif}}
+							</div>
+							<div class="ipsPhotoPanel__secondary i-font-size_-1">
+								<ul class='ipsList ipsList--sep'>
+									<li><span class="i-color_hard i-font-weight_500"><i class='fa-solid fa-{$item::$icon} i-margin-end_icon' hidden aria-hidden="true"></i>{lang="$item::$title"}</span></li>
+									<li>{lang="date_replied" htmlsprintf="\IPS\DateTime::ts( $item->mapped('date') )->html(FALSE)"}</li>
+									{{if $row->objectContainer()}}<li>{lang="posted_in_container"} <a href="{$row->objectContainer()->url()}" class="i-color_inherit">{$row->objectContainer()->_title}</a></li>{{endif}}
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div>
+						<input type='checkbox' data-role='moderation' name="moderate[{$row->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='' class="ipsInput ipsInput--toggle">
+					</div>
+				</div>
+			</div>
+			<div class="ipsEntry__content">
+				<div class='ipsEntry__post'>
+					<h2 class="i-font-size_3 i-font-weight_600 i-margin-bottom_2"><a href="{$item->url()}" target="_blank">{$row->objectTitle()}</a></h2>
+					<div class="ipsRichText" data-controller='core.front.core.lightboxedImages'>{$item->content()|raw}</div>
+				</div>
+			</div>
+		</article>
+    </li>
+    {{endif}}
+	{{endforeach}}
+{{endif}}

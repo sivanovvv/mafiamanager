@@ -1,0 +1,2307 @@
+/* Button bar */
+.ipsButtonBar{
+	--i-co: var(--i-color_soft);
+	display: flex;
+	flex-wrap: wrap;
+	font-weight: 600;
+	font-size: max(.8em, 11px);
+	border: 0px solid var(--i-background_4);
+}
+
+	:where(.ipsBox) .ipsButtonBar{
+		background: var(--i-background_2);
+	}
+
+	.ipsButtonBar > *{
+		padding: .6em;
+	}
+
+	:where(.ipsBox) .ipsButtonBar--top{
+		border-radius: var(--i-box--bo-ra) var(--i-box--bo-ra) 0 0;
+		border-bottom-width: 1px;
+	}
+
+	:where(.ipsBox) .ipsButtonBar--bottom{
+		border-radius: 0 0 var(--i-box--bo-ra) var(--i-box--bo-ra);
+		border-top-width: 1px;
+	}
+
+	/* Remove border-radius if the buttonBar isn't the first element */
+	:where(.ipsColumns, .ipsTabs__panels, .ipsBox:has(.ipsBox__header), .ipsProfile__main) .ipsButtonBar--top{
+		border-radius: 0;
+	}
+
+	/* Tweak the button bar so it can be used between elements */
+	:where(.ipsProfile__main, .ipsColumns--followed-content) .ipsButtonBar--top{
+		border-radius: 0;
+	}
+
+	/* Hide empty pagination. This prevents an empty gap when the bars wrap on mobiles */
+	.ipsButtonBar__pagination:not(:has(a)){
+		display: none;
+	}
+
+	.ipsButtonBar__end{
+		margin-inline-start: auto;
+		display: flex;
+		flex-wrap: wrap;
+		gap: .6em;
+	}
+
+		.ipsButtonBar__end .ipsButtonBar__mod{
+			display: contents;
+		}
+
+@media (max-width: 767px){
+	.ipsButtonBar{
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.ipsButtonBar__pagination, .ipsButtonBar .ipsPagination{
+		align-self: stretch;
+	}
+	.ipsButtonBar__end{
+		order: -1;
+	}
+	.ipsPagination__next,
+	.ipsPagination__last{
+		order: 1;
+	}
+}
+
+@media (max-width: 500px){
+	.ipsButtonBar__end{
+		margin: 0;
+	}
+	/* If the pagination bar is visible, add a border to the filter bar to separate them visually */
+	.ipsButtonBar__pagination:not([hidden]) ~ .ipsButtonBar__end:not(:only-child){
+		border-bottom: 1px solid;
+		border-bottom-color: color-mix(in srgb, currentColor 10%, transparent);
+	}
+}
+
+/*
+	----------------
+	- Data filters
+	----------------
+*/
+
+.ipsDataFilters{
+	flex: 1 1 auto;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+	.ipsDataFilters + .ipsDataFilters{
+		margin-inline-start: .4em;
+	}
+
+.ipsDataFilters > li{
+	flex-grow: 1;
+}
+
+/* Prevent the auto-check icon from expanding to full width in topics on mobiles */
+.ipsDataFilters > li:has([data-ipsautocheck], [href="#elFolderSettings_menu"]){
+	flex-grow: 0;
+	margin-inline-start: auto;
+}
+
+.ipsDataFilters__button{
+	height: 100%;
+	width: 100%; /* Full-width <button> */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .5em;
+	color: var(--i-co);
+	padding: .8em 1.2em;
+	text-decoration: none;
+	text-transform: uppercase;
+	border-radius: min(var(--i-design-radius), .3em);
+	position: relative; /* For notification badge */
+}
+
+	/* Automatic contrast for some buttons (Eg. at the top of topics) */
+	.ipsDataFilters__button:where(:not(.ipsBox *, .ipsDialog *, .ipsWidget *)){
+		color: var(--i-color_contrast, var(--i-co));
+	}
+
+	@media (hover){
+		.ipsDataFilters__button:where(:hover){
+			background-color: color-mix(in srgb, currentColor 8%, transparent);
+		}
+	}
+
+	.ipsDataFilters__button--active,
+	.ipsDataFilters__button[aria-expanded="true"]{
+		--i-outline-color: var(--i-secondary);
+		background-color: var(--i-secondary);
+		color: var(--i-secondary-contrast);
+	}
+
+/*
+	----------------
+	- Data Lists/tables
+	----------------
+*/
+
+i-data{
+	display: block;
+	container: ipsData / inline-size;
+}
+
+/* List */
+.ipsData{
+	--i-data--padding: 1.3em;
+	--i-data--cell-spacing: var(--i-data--padding);
+	--i-data--icon-width: 40px;
+	--i-data--latest--width: clamp(13em, 25%, 17em);
+	--i-data--icon-ratio: 1;
+	--i-data--icon-radius: min(var(--i-design-radius), 6px);
+	--i-data--title: 1em;
+	--i-data--border: 1px;
+	--i-data--desc-truncate: 4;
+
+	/* Hide latest avatar by default */
+	--i-data--show-latest-photo: ;
+	--i-data--hide-latest-photo: initial;
+
+	/* Hide stat icons by default */
+	--i-data--show-stats-icon: ;
+	--i-data--hide-stats-icon: initial;
+
+	/* Show stat labels by default */
+	--i-data--show-stats-label: initial;
+	--i-data--hide-stats-label: ;
+
+	/* Show tags by default */
+	--i-data--show-tags: initial;
+	--i-data--hide-tags: ;
+
+	/* Hide views on small UIs by default */
+	--i-data--show-views: initial;
+	--i-data--hide-views: ;
+
+	/* Show last user by default */
+	--i-data--show-last: initial;
+	--i-data--hide-last: ;
+
+	/* Prioritize the latest replier over the original author */
+	--i-data--show-last-author: ;
+	--i-data--show-last-reply: initial;
+
+	/* Show Page fields by default */
+	--i-data--show-fields: initial;
+	--i-data--hide-fields: ;
+
+	--i-data--show-category: initial;
+	--i-data--hide-category: ;
+
+	display: grid;
+}
+
+/* Replace basis variable with i-basis_x if a class is added */
+.ipsData[class*="i-basis_"]{
+	--i-data--basis: var(--i-basis);
+}
+
+/* Widgets */
+.ipsData--compact{
+	--i-data--padding: 1em;
+	--i-data--cell-spacing: 1em;
+	--i-data--icon-width: 32px;
+}
+
+/* Global data styles */
+.ipsData__item{
+	gap: var(--i-data--cell-spacing);
+	padding: var(--i-data--padding);
+	display: flex;
+	align-items: center;
+	position: relative; /* Clickable rows */
+	/* container: ipsData__item / inline-size; */
+}
+
+/* Add container query to certain ipsData__item elements */
+.ipsData--mini-grid .ipsData__item,
+.ipsData--wallpaper .ipsData__item,
+.ipsData--grid .ipsData__item{
+	container: ipsData__item / inline-size;
+}
+
+	/* Flex gap fallback for < iOS 14.1 */
+	@supports (-webkit-touch-callout: none) and (not(translate: none)){
+		.ipsData__item > *{
+			margin: calc(var(--i-data--cell-spacing) / 2);
+		}
+	}
+
+	/* Some items need borders */
+	:is(.ipsData--table, .ipsData--minimal, .ipsData--featured, .ipsData--snippet) .ipsData__item{
+		border-bottom: var(--i-data--border) solid var(--i-data--bo-co);
+	}
+	:is(.ipsData--table, .ipsData--minimal, .ipsData--featured, .ipsData--snippet) .ipsData__item:last-child{
+		border-bottom-width: 0;
+	}
+
+	/* Warning: used in Mod Cpanel > Reported content */
+	.ipsData__item--warning {
+		--i-co: var(--i-color_moderated);
+		background-color: var(--i-background_moderated);
+	}
+		.ipsData__item--warning,
+		.ipsData__item:where(:has(+ .ipsData__item--assigned)){
+			border-color: color-mix(in srgb, var(--i-background_moderated), var(--if-light, black 8%) var(--if-dark, white 8%));
+		}
+
+	/* Assigned */
+	.ipsData__item--assigned{
+		--i-co: var(--i-color_assigned);
+		background-color: var(--i-background_assigned);
+		--i-background_hover: color-mix(in srgb, var(--i-color_assigned) 3%, transparent);
+	}
+		.ipsData__item--assigned,
+		.ipsData__item:where(:has(+ .ipsData__item--assigned)){
+			border-color: color-mix(in srgb, var(--i-background_assigned), var(--if-light, black 8%) var(--if-dark, white 8%));
+		}
+
+	/* Selected */
+	:where(.ipsData__item:has(:is(.ipsInput, [data-role="moderation"]):checked)){
+		background-color: var(--i-background_selected);
+	}
+		.ipsData__item:has(:is(.ipsInput, [data-role="moderation"]):checked),
+		.ipsData__item:where(:has(+ .ipsData__item :is(.ipsInput, [data-role="moderation"]):checked)){
+			border-color: color-mix(in srgb, var(--i-background_selected), var(--if-light, black 10%) var(--if-dark, white 8%));
+		}
+		/* :has() fallback */
+		.ipsData__item--selected {
+			background-color: var(--i-background_selected);
+		}
+
+	@supports (color: color-mix(in srgb, var(--x), transparent)){
+		:is(.ipsData__item--assigned, .ipsData__item--warning):where(:not(.ipsData__item--selected)){
+			color: var(--i-co);
+			--i-color_soft: color-mix(in srgb, var(--i-co) 65%, transparent);
+			--i-color_hard: color-mix(in srgb, var(--i-co), var(--if-light, black 15%) var(--if-dark, white 80%));
+			--i-color_root: var(--i-co);
+			--i-link--co: var(--i-color_hard);
+			--i-link-hover--co: var(--i-color_hard);
+		}
+	}
+
+			/* Extend content, or extend element if it's the only child */
+			.ipsData__content,
+			.ipsData__main,
+			.ipsData__item > :only-child{
+				flex: 999 999 100%;
+			}
+
+			/* Remove padding when ipsEntry is the only child. This happens often when viewing "Profile > See my activity" */
+			.ipsData__item:has( > .ipsEntry:only-child){
+				padding: 0;
+				border-width: 0;
+				display: block;
+			}
+
+		/* Center all icons/images */
+		.ipsData__icon{
+			flex: 0 0 auto;
+			text-align: center;
+			position: relative;
+		}
+		
+		/* Stacked user photos, for replies */
+		.ipsData__icon .ipsUserPhoto:has(~ .ipsUserPhoto){
+			transform: scale(.7);
+			transform-origin: 0 0;
+		}
+		
+		.ipsData__icon .ipsUserPhoto ~ .ipsUserPhoto{
+			position: absolute;
+			bottom: 0;
+			inset-inline-end: 0;
+			transform: scale(.6);
+			transform-origin: 100% 100%;
+			outline: 4px solid var(--i-box--ba-co);
+		}
+
+		/* Image, used for thumbnails/cover photos. Stretches to full width in the grid UI */
+		.ipsData__image{
+			flex: 0 0 var(--i-data--icon-width);
+			aspect-ratio: var(--i-data--icon-ratio);
+			display: var(--i-data--display-image, grid);
+			border-radius: var(--i-data--icon-radius);
+			/* This prevents the a:hover color from applying */
+			color: inherit;
+			/* This removes underlines when emoji are used */
+			text-decoration: none !important;
+			/* Ensure FA icons are centered within their min-width */
+			text-align: center;
+		}
+
+		/* Let icons use this as a container, for cqmin font-size */
+		.ipsData__image:has(i, .ipsIcon){
+			container-type: size;
+		}
+		/* The container-type adds a new stacking context. Remove the pointer events, and then re-add them for links below */
+		.ipsData__image:not(a):has(i, .ipsIcon){
+			pointer-events: none;
+		}
+
+		/* Add pointer-events back to links inside images. Eg. badges in Tags grid */
+		.ipsData__image a{
+			pointer-events: auto;
+		}
+		
+		.ipsData__image > *{
+			grid-area: 1/-1;
+		}
+
+			/* Adjust cover photos inside ipsData__image */
+			.ipsData__image .ipsCoverPhoto{
+				height: 100%;
+			}
+			
+				.ipsData__image .ipsCoverPhoto__container{
+					min-height: 0;
+					aspect-ratio: auto;
+				}
+
+			/* Make all child elements occupy full size */
+			.ipsData__image > i, 
+			.ipsData__image > .ipsIcon,
+			.ipsData__image > .ipsNsfwOverlay{
+				width: 100%;
+				height: 100%;
+				border-radius: inherit;
+				/* Adjust font-size for emoji and FA icons */
+				font-size: 50cqmin;
+				line-height: 1;
+				aspect-ratio: var(--i-data--icon-ratio);
+			}
+
+			/* Images */
+			.ipsData__image img,
+			.ipsData__image video{
+				border-radius: inherit;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			/* Custom uploaded icons */
+			.ipsData--table .ipsData__customIcon{
+				object-fit: scale-down;
+				border-radius: 0;
+			}
+
+			/* Emoji */
+			.ipsData__image .ipsIcon--emoji{
+				display: grid;
+				place-content: center;
+				/* Emoji should occupy the full width of the column */
+				font-size: 100cqmin;
+				height: 100%; /* Safari fix */
+			}
+
+			.ipsData__image .ipsIcon--fa{
+				display: grid;
+				place-content: center;
+			}
+
+			/* Avatars inside ipsData__image, eg Most Contributions widget */
+			.ipsData__image .ipsUserPhoto{
+				border-radius: inherit;
+				aspect-ratio: var(--i-data--icon-ratio);
+				width: 100%;
+			}
+
+			/* Remove pseudo element */
+			.ipsData__image .ipsUserPhoto::after{
+				content: none;
+			}
+
+		/* "No image" icon */
+		.ipsData__image > i{
+			display: grid;
+			place-content: center;
+		}
+		/* Style the <i></i> elements */
+		/* We don't want to style all FA icons (Quest task list) */
+		.ipsData__image > i:not([class*="fa-"]){
+			--i-co: var(--i-color_soft);
+			background: var(--i-background_3);
+			color: var(--i-co);
+			font-family: "Font Awesome 6 Free";
+			font-weight: var(--i-data--fallback-icon-weight, 900);
+			-webkit-font-smoothing: antialiased;
+			font-style: normal;
+			font-variant: normal;
+			line-height: 1;
+			text-rendering: auto;
+		}
+
+			.ipsData__image > i:not([class*="fa-"])::before{
+				content: var(--i-data--fallback-icon, "\f1c5");
+			}
+
+			/* FA icons have a background */
+			.ipsData--table .ipsData__image .ipsIcon--fa{
+				--i-co: var(--i-featured, var(--i-primary));
+				aspect-ratio: var(--i-data--icon-ratio);
+				border-radius: var(--i-design-radius);
+				background: var(--i-co);
+				color: #fff;
+			}
+
+				/* Fade icons when no new content exists */
+				[data-ips-member] .ipsData--table.ipsData--category [data-ips-read] .ipsData__image{
+					filter: var(--i-data--read-icon-filter, opacity(.25));
+					/* The filter property makes the icon sit on top of ipsLinkPanel, so we need to fix that */
+					pointer-events: none;
+				}
+
+			/* Default icons for forums */
+			.ipsData__item--discussions{
+				--i-data--fallback-icon: "\f15c";
+				--i-data--fallback-icon-weight: 400;
+			}
+			.ipsData__item--password{
+				--i-data--fallback-icon: "\f023";
+			}
+			.ipsData__item--redirect{
+				--i-data--fallback-icon: "\f061";
+			}
+
+		/* Badges on images (Tags overview) */
+		.ipsData__image .ipsBadge{
+			align-self: start;
+			justify-self: end;
+			margin: 10px;
+			background-color: oklch(from var(--i-badge) min(.44, l) min(.065, c) h);
+			color: hsl(0 0% 100%);
+			z-index: 3; /* Higher than nsfw overlay */
+		}
+
+		.ipsData__image .ipsBadge--icon{
+			font-size: 13px;
+		}
+
+			:where(.ipsData__icon a){
+				display: block;
+				text-decoration: none !important;
+			}
+
+			.ipsData__icon:has(.ipsDateBlock){
+				--i-data--icon-width: 3em;
+			}
+
+	/* Hide images based on configuration */
+	.cWidgetContainer--noImages .ipsData__icon,
+	.cWidgetContainer--noImages .ipsData__image {
+		display: none !important;
+	}
+
+	/* Indicator cells */
+	.ipsData__icon--indicator{
+		width: 2em; /* Same size as avatars, so "Moved" icon aligns neatly */
+	}
+
+	/* Thumbnails */
+	.ipsData__icon .ipsThumb{
+		aspect-ratio: var(--i-data--icon-ratio);
+	}
+
+	.ipsData__item .ipsFigure{
+		flex: 0 0 var(--i-data--icon-width);
+	}
+
+	.ipsData--cart-dropdown .ipsData__image,
+	.ipsLayout__secondary-column .ipsData__item > .ipsFigure{
+		flex-basis: 3.5em;
+	}
+
+	/* Avatars */
+	.ipsData__icon .ipsUserPhoto{
+		width: 28px;
+	}
+
+	/* Events */
+	.ipsData__item > .ipsCalendarDate{
+		flex: 0 0 clamp(34px, 10%, 3.2em);
+		align-self: start;
+	}
+
+	.ipsData--grid .ipsData__image .ipsCalendarDate:not(:only-child){
+		place-self: start;
+		width: 50px;
+		margin: 8px;
+	}
+
+	/* Experimental. This might be a poor decision */
+	.ipsData__main > :last-child{
+		margin-bottom: 0 !important;
+		/* Padding needs to be removed too due to .ipsData__title:focus-within */
+		padding-bottom: 0 !important;
+	}
+
+	.ipsData__title{
+		font-size: var(--i-data--title);
+		font-weight: 500;
+		color: var(--i-color_hard);
+		overflow-wrap: break-word;
+		line-height: 1.3;
+		/* Clear floated items such as ratings or badges */
+		display: flow-root;
+	}
+
+	/* Create a contrast-friendly version of the featured color */
+	@supports (color: hsl(from var(--i) h s 30%)) and (color: oklch(from red l c h)){
+		[style*="--i-featured"]{
+			--i-color_featured: oklch(from var(--i-featured) var(--if-light, min(l, .45)) var(--if-dark, max(l, .8)) c h);
+		}
+	}
+
+	/* Inherit the featured color */
+	:where([style*="--i-featured"] .ipsData__title) a{
+		color: inherit;
+	}
+
+	/* Apply the feature color to certain titles */
+	.ipsData--category [style*="--i-featured"] .ipsData__title,
+	[style*="--i-featured"] .ipsData--forumFeedViewParent .ipsData__title{
+		color: var(--i-color_featured, var(--i-featured));
+	}
+
+		/* Bold titles for unread content */
+		[data-ips-unread] .ipsData__title{
+			font-weight: bold;
+		}
+
+		/* Bold titles for unread content */
+		[data-ips-member] [data-ips-read] .ipsData__title{
+			font-weight: normal;
+		}
+
+	/* Align children inside .ipsData__title */
+	:where(.ipsData__title > :is(h1, h2, h3, h4, h5):not(:only-child)){
+		display: inline;
+	}
+
+	.ipsData__title > *{
+		vertical-align: top;
+	}
+
+	:where(.ipsData__title > :not(:last-child)){
+		margin-inline-end: .4em;
+	}
+
+	/* Float badges in certain layouts */
+	:is(.ipsData--wallpaper, .ipsData--grid, .ipsData--mini-grid) .ipsData__title .ipsBadges{
+		float: inline-end;
+		margin: 0;
+	}
+
+	/* Club names */
+	.ipsData__club{
+		color: var(--i-color_soft);
+		margin: .5em 0 .2em;
+		display: flex;
+		align-items: center;
+		gap: .6em;
+		font-weight: 450;
+	}
+	.ipsData__club a{
+		color: inherit;
+	}
+		.ipsData__club::before{
+			content: '\f2bd';
+			font-family: var(--i-font-awesome);
+			-webkit-font-smoothing: antialiased;
+			text-rendering: auto;
+			font-style: normal;
+			font-weight: 900;
+			opacity: .5;
+			pointer-events: none;
+		}
+
+	.ipsData__desc,
+	.ipsData__meta{
+		--i-co: var(--i-color_soft);
+		--i-link--co: var(--i-co);
+		--i-link-hover--co: var(--i-co);
+		--i-link-hover--te-de: underline;
+		color: var(--i-co);
+	}
+
+	/* Remove empty meta tags? This can happen with the Featured Content widget */
+	.ipsData__meta:empty{
+		display: none;
+	}
+
+	:where(.ipsData__meta){
+		font-size: 1em; /* Sometimes __meta uses <small> elements */
+	}
+
+	/* Always show long dates in meta */
+	.ipsData__meta .ipsTime__long{
+		display: revert;
+	}
+	.ipsData__meta .ipsTime__short{
+		display: none;
+	}
+
+	/* Prefixes can be added to meta */
+	.ipsData__meta .ipsBadges{
+		margin-inline-end: .6em;
+	}
+
+	:where(.ipsData__desc){
+		margin-top: .4em;
+	}
+
+	/* Forum catgories */
+	.ipsData__category{
+		display: var(--i-data--show-category, block) var(--i-data--hide-category, none);
+		color: var(--i-color_soft);
+		font-weight: 600;
+		font-size: .92em;
+		margin-bottom: .4em;
+	}
+		:where(.ipsData__category) a{
+			color: inherit;
+		}
+
+	/* Truncate simple descriptions using line-clamp since the text in this element is just a string */
+	.ipsData__desc:not(.ipsData__desc--all){
+		display: var(--i-data--display-desc, -webkit-box);
+		-webkit-line-clamp: var(--i-data--desc-truncate);
+		-webkit-box-orient: vertical;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	/* If a <p> tag exists, it's likely .ipsRichText. Truncate these descriptions using max-height to prevent issues with paragraphs, images, etc */
+	.ipsData__desc:has(p):not(.ipsData__desc--all){
+		display: var(--i-data--display-desc, flow-root);
+		max-height: calc(var(--i-data--desc-truncate) * 1.5em);
+		max-height: calc(var(--i-data--desc-truncate) * 1lh);
+	}
+	/* Fade out ipsData__desc if it contains large elements since they can't be truncated. A faded image looks better than a solid crop */
+	.ipsData__desc:where(:has(img, iframe, blockquote):not(.ipsData__desc--all)){
+		mask-image: linear-gradient(#000 calc((var(--i-data--desc-truncate)) * 1lh), transparent calc((var(--i-data--desc-truncate) + 2) * 1lh));
+	}
+
+	.ipsData__desc[data-truncate-expanded="true"]{
+		display: var(--i-data--display-desc, block);
+		max-height: none !important;
+		overflow: visible;
+		mask-image: none;
+	}
+
+	/* Convert br elements into a space if it's a simple truncation */
+	.ipsData__desc:not(.ipsData__desc--all, [data-truncate-expanded="true"]) > br{
+		content: "";
+		margin-inline-end: 1em;
+	}
+
+	/* Hide empty descriptions */
+	.ipsData__desc:-moz-only-whitespace{ display: none; }
+
+	.ipsData .ipsTags{
+		display: var(--i-data--show-tags, flex) var(--i-data--hide-tags, none);
+		font-size: max(.7em, 10px); /* Tags and prefixes should use the same font-size */
+		margin: .6em 0;
+	}
+
+		.ipsData__groups{
+			display: var(--i-data--display-groups, flex);
+			flex: 0 0 auto;
+			flex-wrap: wrap;
+			gap: .1em .4em;
+			line-height: 1; /* Remove empty space below icons */
+		}
+
+		@container (min-width: 750px){
+			.ipsData__groups{
+				display: var(--i-data--display-groups, grid);
+			}
+		}
+
+		.ipsData__groups img{
+			max-height: 1.2em;
+			width: auto;
+		}
+
+		.ipsData__groups .ipsBadge{
+			vertical-align: top;
+		}
+
+		.ipsData__container-title{
+			font-weight: 500;
+			color: var(--i-color_featured, var(--i-featured, var(--i-color_hard)));
+		}
+
+/*
+	----------------
+	- Stats
+	----------------
+*/
+
+.ipsData__stats{
+	color: var(--i-color_soft);
+	display: var(--i-data--display-stats, flex);
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0 clamp(1em, 6cqw, 1.8em);
+}
+
+/* Flex gap fallback for < iOS 14.1 */
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsData__stats > :not(:first-child){
+		margin-inline-start: 1.5em;
+	}
+}
+
+/* If stats include an icon, lower its opacity (Eg. Album widget) */
+.ipsData__stats .fa-regular:not(.ipsRating *),
+.ipsData__stats .fa-solid:not(.ipsRating *){
+	opacity: .4;
+	font-size: .9em;
+	margin-inline-end: .25em;
+}
+
+/* Darker and bolder stats for featured and tables */
+:where(:is(.ipsData--table, .ipsData--featured) .ipsData__stats [data-stattype*="comments"]:first-child){
+	color: var(--i-color_root);
+}
+
+/* Sometimes stats can be linked (Comments in Page listings) */
+.ipsData__stats :where(a:not([class])){
+	color: inherit;
+}
+
+/* Hide a stats list item if it contains a hidden reaction component. This is used in expanded topic lists */
+.ipsData__stats > li:has(.ipsReactOverview--none){
+	display: none;
+}
+
+/*
+	----------------
+	- Stat icons, typically shown in small UIs
+	----------------
+*/
+
+.ipsData__stats-icon{
+	display: var(--i-data--show-stats-icon, inline-flex) var(--i-data--hide-stats-icon, none);
+	align-items: baseline;
+}
+
+	/* Icon */
+	.ipsData__stats-icon::before{
+		content: var(--_i-icon, "\e473");
+		font-weight: 900;
+		font-family: "Font Awesome 6 Free";
+		font-style: normal;
+		font-size: .9em;
+		opacity: .6;
+		-webkit-font-smoothing: antialiased;
+		font-variant: normal;
+		text-rendering: auto;
+		margin-inline-end: .4em;
+	}
+
+	.ipsData__stats [data-stattype*="comments"]{ --_i-icon: "\f075" }
+	.ipsData__stats [data-stattype*="views"]{ --_i-icon: "\f06e" }
+	.ipsData__stats [data-stattype="price"]{ --_i-icon: "\f07a" }
+	.ipsData__stats [data-stattype="purchases"]{ --_i-icon: "\f291" }
+	.ipsData__stats [data-stattype="downloads"]{ --_i-icon: "\f019" }
+	.ipsData__stats [data-stattype="images"]{ --_i-icon: "\f083" }
+	.ipsData__stats [data-stattype="albums"]{ --_i-icon: "\f302" }
+	.ipsData__stats [data-stattype="image_comments"]{ --_i-icon: "\f302" }
+	.ipsData__stats [data-stattype="album_comments"]{ --_i-icon: "\f075" }
+
+	/* Value */
+	.ipsData__stats-icon[data-stat-value]::after{
+		content: attr(data-stat-value);
+	}
+
+	/* Remove the label if icons are shown */
+	.ipsData__stats-icon[data-stat-value] ~ .ipsData__stats-label{
+		display: var(--i-data--show-stats-label, inline) var(--i-data--hide-stats-label, none);
+	}
+
+	
+
+/* If the stats are inside __main (usually under description or meta), add a space */
+:where(.ipsData__main :is(.ipsData__desc, .ipsData__meta) ~ .ipsData__stats){
+	margin-top: .6em;
+}
+
+	.ipsData__stats-hot {
+		background: #da621a;
+		color: #fff;
+		font-size: max(.9em, 12px);
+		font-weight: 500;
+		display: inline-block;
+		padding: 0 .4em;
+		position: relative;
+		vertical-align: middle;
+		border-radius: 4px;
+		white-space: nowrap;
+	}
+
+		.ipsData__stats-hot::before {
+			content: attr(data-text);
+			text-transform: uppercase;
+			font-size: .8em;
+			opacity: 0.6;
+			margin-inline-end: .4em;
+			vertical-align: .1em;
+		}
+
+		@container (max-width: 500px){
+
+			/* Use short dates for small UI */
+			:where(.ipsData__item) .ipsTime__long{
+				display: none;
+			}
+			:where(.ipsData__item) .ipsTime__short{
+				display: revert;
+			}
+
+			/* Hide views by default, with option of restoring */
+			.ipsData__stats [data-stattype*="views"]{
+				display: var(--i-data--show-views, block) var(--i-data--hide-views, none);
+			}
+		
+		}
+
+/*
+	----------------
+	- Active users
+	----------------
+*/
+
+/* Hide element if it's empty, otherwise it occupies space in the mobile UI due to the grid gap */
+.ipsData [data-role="activeUsers"]:empty{
+	display: none;
+}
+
+
+/*
+	----------------
+	- Latest content
+	- Inline by default, with a stacked version for large tables
+	----------------
+*/
+
+.ipsData__last{
+	display: var(--i-data--show-last, flex) var(--i-data--hide-last, none);
+	align-items: center;
+	gap: 0 .8em;
+}
+
+/*
+	Some data lists will display the last commenter in the "extra row", but some UI's might prefer the original author
+	The following lets us display the original author instead of the last commenter
+	Hide the original author by default
+*/
+.ipsData__last--author{
+	display: var(--i-data--show-last-author, flex) var(--i-data--show-last-reply, none);
+}
+
+/* Optionally show the meta/original author instead of the latest reply */
+/* When the original author is shown, hide the reply data and the meta since we don't want to display duplicated content */
+.ipsData__last--author ~ .ipsData__last{
+	display: var(--i-data--show-last-author, none) var(--i-data--show-last-reply, flex);
+}
+.ipsData__item:has(.ipsData__last--author) .ipsData__meta{
+	display: var(--i-data--show-last-author, none) var(--i-data--show-last-reply, block);
+}
+
+/* Gap fallback for < iOS 14.1 */
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsData__last > :not(:first-child){
+		margin-inline-start: .7em;
+	}
+}
+
+:where(.ipsData__last-secondary) a{
+	color: inherit;
+}
+
+.ipsData__last .ipsUserPhoto{
+	flex: 0 0 auto;
+	width: 1.4em; /* Width is required to fix premature wrapping bug */
+	display: var(--i-data--show-latest-photo, block) var(--i-data--hide-latest-photo, none);
+}
+
+/* Inline latest content */
+.ipsData__last-text{
+	flex: 1 1 100%;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 .4em;
+	align-items: baseline;
+}
+
+/* Flex gap fallback for < iOS 14.1 */
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsData__last-text > :not(:first-child){
+		margin-inline-start: .6em;
+	}
+}
+
+:where(.ipsData__last-primary a:not(.ipsUsername)){
+	color: var(--i-color_hard);
+}
+
+/* Bold "last" and "comment stat" for unread entries */
+:where(.ipsData--table.ipsData--category [data-ips-unread] .ipsData__last-primary){
+	color: var(--i-color_hard);
+	font-weight: 700;
+}
+
+/* Add middot between latest author and date */
+:where(.ipsData__last:has(.ipsData__last-primary):has(.ipsData__last-secondary)) .ipsData__last-text::after{
+	content: "\00B7";
+}
+
+:where(.ipsData__last-secondary){
+	font-size: 1em; /* Reset font-size for <small> elements */
+	color: var(--i-color_soft);
+	order: 1;
+}
+
+
+/* Improved alignment for stats/latest */
+.ipsData__extra{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: .5em 1em;
+	margin-top: .75em;
+}
+
+/* Move stats to end and flip them so most prominent one is at the end */
+:where(.ipsData__extra .ipsData__stats){
+	order: 1;
+	flex-direction: row-reverse;
+}
+
+/* Sometimes stats can have a checkbox (Downloads Grid UI). Ensure it's always last in the list */
+:where(.ipsData__extra .ipsData__stats > li:has(.ipsInput)){
+	order: -1;
+}
+
+/* And then move rating to the start */
+:where(.ipsData__extra .ipsData__stats li:has(.ipsRating)){
+	order: 3;
+}
+
+@container (max-width: 750px){
+
+	/* Smaller font-size in small UI */
+	.ipsData__meta, .ipsData__extra{
+		font-size: max(11px, .92em);
+	}
+
+	.ipsData--category .ipsData__extra{
+		margin-top: .5em;
+	}
+
+	/* Soft "last content" in small entries UI */
+	:is(.ipsData--table, .ipsData--minimal, .ipsData--mini-grid) [data-ips-read] .ipsData__last-primary{
+		color: var(--i-color_soft);
+	}
+
+}
+
+/* If a username exists in the meta area and if there are more than 0 comments, we can assume that the username in the "last" area has replied to the content. Prepend a "replied icon" */
+:where(.ipsData__item:has(.ipsData__meta .ipsUsername):not(:has([data-stattype*="comments"][data-v="0"]))) .ipsData__last:not(.ipsData__last--author) .ipsData__last-text::after{
+	content: "\f3e5";
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-weight: 900;
+	font-size: .7em;
+	color: var(--i-color_soft);
+	opacity: .7;
+}
+
+/* Mod checkbox */
+.ipsData__mod{
+	flex: 0 0 auto;
+}
+.ipsData__mod .ipsInput{
+	display: flex;
+}
+
+/* Snippet */
+.ipsData--snippet-topic-list{
+	--i-data--icon-width: 3em;
+}
+.ipsData--snippet-topic-list .ipsData__icon{
+	align-self: flex-start;
+}
+.ipsData--snippet-topic-list .ipsData__desc{
+	margin-top: .8em;
+}
+.ipsData--snippet-topic-list .ipsData__last .ipsUserPhoto{
+	width: 1.2em;
+}
+
+/*
+	----------------
+	- Pages Fields
+	----------------
+*/
+
+.ipsData__fields{
+	align-items: center;
+	display: var(--i-data--show-fields, flex) var(--i-data--hide-fields, none);
+	flex-wrap: wrap;
+	gap: 1em;
+	margin-top: 1em;
+}
+
+.ipsData__fields:not(:has(li)){
+	display: none;
+}
+
+/*
+	----------------
+	- Data statuses
+	----------------
+*/
+
+/* Statuses */
+.ipsModerated:not(:has([data-role="moderation"]:checked)){
+	--i-co: var(--i-color_moderated);
+	--i-link--co: var(--i-color_moderated);
+	--i-link-hover--co: var(--i-color_moderated);
+	--i-color_root: var(--i-color_moderated);
+	--i-color_soft: var(--i-color_moderated);
+	--i-color_hard: var(--i-color_moderated);
+	background-color: var(--i-background_moderated) !important;
+	border-color: var(--i-background_moderated);
+	border-color: color-mix(in srgb, var(--i-color_moderated) 60%, transparent);
+	color: var(--i-co) !important;
+	outline: 4px solid color-mix(in srgb, var(--i-color_moderated) 15%, transparent);
+}
+.ipsData__item:has(+ .ipsModerated [data-role="moderation"]:not(:checked)){
+	border-color: color-mix(in srgb, var(--i-color_moderated) 60%, transparent);
+}
+.ipsModerated:not(:has([data-role="moderation"]:checked)) *{
+	--i-co: var(--i-color_moderated) !important;
+}
+
+/* :has polyfill */
+/* This version means that "selected moderated" entries still have red text */
+@supports not selector(a:has(b)){
+	.ipsModerated:not(.ipsSelected, .ipsEntry--selected){
+		--i-co: var(--i-color_moderated);
+		--i-link--co: var(--i-color_moderated);
+		--i-link-hover--co: var(--i-color_moderated);
+		--i-color_root: var(--i-color_moderated);
+		--i-color_soft: var(--i-color_moderated);
+		--i-color_hard: var(--i-color_moderated);
+		background-color: var(--i-background_moderated) !important;
+		border-color: var(--i-background_moderated);
+		border-color: color-mix(in srgb, var(--i-background_moderated), var(--if-light, black) var(--if-dark, white) 12%);
+		color: var(--i-co) !important;
+	}
+	.ipsModerated:not(.ipsSelected, .ipsEntry--selected) *{
+		--i-co: var(--i-color_moderated) !important;
+	}
+}
+
+:where(.ipsBox, .ipsWidget, .ipsDialog) .ipsModerated{
+	outline-width: 0 !important;
+}
+
+.ipsSelected{
+	background-color: var(--i-background_selected) !important;
+}
+
+/* Sublists */
+.ipsSubList{
+	display: var(--i-data--display-subforums, flex);
+	flex-wrap: wrap;
+	margin-top: 1.2em;
+	font-size: 0.9em;
+	color: var(--i-color_root);
+}
+
+	.ipsSubList a{
+		color: inherit;
+		display: block;
+		text-decoration: none !important;
+		padding: .5em 1.2em;
+		border-radius: min(var(--i-design-radius), 5px);
+	}
+
+		.ipsSubList a::before{
+			content: "\e185";
+			font-family: var(--i-font-awesome);
+			font-weight: 900;
+			-webkit-font-smoothing: antialiased;
+			display: inline-block;
+			font-style: normal;
+			font-variant: normal;
+			line-height: 1;
+			text-rendering: auto;
+			vertical-align: 1px;
+			margin-inline-end: .6em;
+			font-size: .8em;
+			/* Prevents layout shift */
+			width: 1em;
+		}
+
+		/* Display 'read' status only to members */
+		[data-ips-member] .ipsSubList__item--unread{
+			font-weight: bold;
+			color: var(--i-color_hard);
+		}
+
+			[data-ips-member] .ipsSubList__item--read a::before{
+				font-weight: 400;
+				opacity: .7;
+			}
+
+@media (any-hover:hover){
+	.ipsSubList a:hover{
+		background-color: color-mix(in srgb, currentColor 8%, transparent);
+	}
+}
+
+/* Rating */
+.ipsData .ipsRating{
+	display: var(--i-data--display-rating, flex);
+	margin: .6em 0;
+	flex: 0 0 auto;
+}
+
+/*
+	----------------
+	- Contextual data tables
+	----------------
+*/
+
+/* Active */
+.ipsData__item--active {
+	--i-co: var(--i-primary-contrast);
+	--i-color_root: var(--i-primary-contrast);
+	--i-color_soft: color-mix(in srgb, var(--i-co) 80%, transparent);
+	--i-color_hard: var(--i-co);
+	background: var(--i-primary) !important;
+	color: var(--i-co);
+}
+
+	.ipsData__item--active .ipsIndicator,
+	.ipsData__item--active .ipsData__title a{
+		color: inherit;
+	}
+
+@container (max-width: 750px){
+
+	/* Relocate mod checkbox in some tables to left side on mobiles */
+	.ipsData__item--snippet .ipsData__mod{
+		position: absolute;
+		bottom: var(--i-data--padding);
+		inset-inline-start: var(--i-data--padding);
+	}
+
+	.ipsData--snippet-topic-list .ipsData__mod{
+		align-self: end;
+	}
+
+}
+
+
+/*
+	----------------
+	- Tables
+	----------------
+*/
+
+.ipsData--table{
+	--i-data--title: 1.1em;
+	--i-data--padding: clamp(1em, 2cqw, 1.3em);
+	--i-data--desc-truncate: 2;
+
+	--i-data--show-last-author: ;
+	--i-data--show-last-reply: initial;
+}
+@supports not (padding: 1cqw){
+	.ipsData--table{
+		--i-data--padding: 1em;
+	}
+}
+
+/* Large */
+@container (min-width: 750.1px){
+
+	.ipsData--table .ipsData__content{
+		display: contents;
+	}
+	.ipsData--table .ipsData__main{
+		flex: 1 1 auto;
+	}
+
+	.ipsData--table .ipsData__extra{
+		display: contents;
+	}
+
+	.ipsData--table .ipsData__stats{
+		flex: 0 0 11ch;
+		display: grid;
+		align-content: center;
+		justify-items: end; /* Aligns text and ratings to the end */
+		/* The below prevents unintended wrapping in certain scenarios, such as:
+			0
+			replies
+		*/
+		min-width: fit-content;
+		margin-inline-end: 1em;
+
+		/* Overwrite the "small" design, which moves stats to the end */
+		order: unset;
+	}
+
+	/* If group badges exist, add a basis to stats so they vertically align neatly */
+	.ipsData--table:has(.ipsData__groups) .ipsData__stats{
+		flex: 0 0 10ch;
+	}
+
+	/* Large stats: Place the stats in a row, with each value/label stacked vertically */
+	.ipsData--table .ipsData__stats--large{
+		display: var(--i-data--display-stats, flex);
+		gap: 2em;
+		line-height: 1.1;
+		flex: 0 0 auto;
+		text-align: center;
+	}
+	
+		:where(.ipsData--table .ipsData__stats--large li){
+			display: grid;
+			gap: .25em;
+		}
+		:where(.ipsData--table .ipsData__stats--large span:first-of-type){
+			font-size: 1.3em;
+			color: var(--i-color_root);
+		}
+
+	/* v5 todo: Relocate live activity to meta position? */
+	.ipsData--table .ipsData__stats .ipsLiveActivity{
+		margin-inline-end: -.5em;
+	}
+	.ipsData--table .ipsData__last{
+		flex: 0 0 var(--i-data--latest--width);
+		order: 1; /* Move latest to end in table UI */
+	}
+	.ipsData--table .ipsData__mod{
+		order: 2;
+	}
+
+	/* Remove middot/replied icon */
+	.ipsData--table .ipsData__last::after{
+		display: none;
+	}
+
+	/* Stacked "latest" column in large tables */
+	.ipsData--table .ipsData__last .ipsUserPhoto{
+		width: 2.4em;
+	}
+	.ipsData--table .ipsData__last-text{
+		display: grid;
+	}
+	/* Remove middot/reply icon */
+	.ipsData--table .ipsData__last-text::after{
+		display: none;
+	}
+
+}
+
+/* Small */
+@container (max-width: 750px){
+
+	.ipsData--table{
+		--i-data--show-stats-icon: initial;
+		--i-data--hide-stats-icon: ;
+
+		--i-data--show-stats-label: ;
+		--i-data--hide-stats-label: initial;
+	}
+
+	/* Align the image to the start */
+	.ipsData--table :is(.ipsData__image, .ipsFigure, .ipsData__icon){
+		align-self: start;
+	}
+
+	/* Space out all content elements when stacked */
+	.ipsData--table .ipsData__content{
+		display: grid;
+		gap: .3em;
+	}
+	.ipsData--table.ipsData--category .ipsData__content{
+		gap: 1em;
+	}
+
+	/* Floated assigned badges */
+	.ipsData--table .ipsBadge--assigned{
+		float: inline-end;
+		margin-inline-end: 0;
+	}
+
+	/* .1em is used since 0em causes touch-target concerns with Lighthouse */
+	.ipsData--table .ipsData__extra{
+		margin-top: .1em;
+	}
+
+	.ipsData--table .ipsData__mod{
+		align-self: end;
+	}
+
+	/* Stack the last into in category tables, in small contexts. The primary slot often contains long topic titles, and when they wrap, the middot is placed poorly. So lets just keep everything on 2 rows with no middots */
+	.ipsData--grid.ipsData--category .ipsData__last-text{
+		display: grid;
+	}
+	.ipsData--grid.ipsData--category .ipsData__last-text::after{
+		display: none;
+	}
+}
+
+
+/* Categories */
+.ipsData--category{
+	--i-data--icon-width: 32px;
+	--i-data--latest--width: clamp(16em, 33%, 22em);
+	--i-data--title: 1.2em;
+	--i-data--desc-truncate: 99;
+
+	--i-data--show-latest-photo: initial;
+	--i-data--hide-latest-photo: ;
+}
+
+/* Ensure indicators in categorys are always centered, since the text is always centered here */
+.ipsData--category .ipsData__item > .ipsIndicator{
+	align-self: center;
+}
+
+/*
+	----------------
+	- Wallpaper
+	----------------
+*/
+.ipsData--wallpaper{
+	--i-data--basis: 290px;
+	--i-data--padding: 1.4em;
+	--i-data--radius: var(--i-design-radius);
+	--i-data--title: 1.2em;
+	--i-data--gap: 1em;
+	--i-data--max: 99;
+	--i-data--min: 1;
+	--i-data--icon-ratio: auto;
+	--i-data--wallpaper-height: min(110%, 400px);
+
+	--i-data--display-desc: none;
+
+	--i-data--show-tags: ;
+	--i-data--hide-tags: initial;
+
+	--i-data--show-stats-icon: initial;
+	--i-data--hide-stats-icon: ;
+
+	--i-data--show-stats-label: ;
+	--i-data--hide-stats-label: initial;
+
+	--i-data--show-last-author: initial;
+	--i-data--show-last-reply: ;
+
+	--i-data--display-groups: none;
+
+	grid-template-columns: repeat(auto-fill, minmax(
+		min(
+			100% / var(--i-data--min) - var(--i-data--gap),
+			max(
+				var(--i-data--basis),
+				100% / var(--i-data--max) - var(--i-data--gap)
+			)
+		)
+		, 1fr
+	));
+	gap: var(--i-data--gap);
+	padding: var(--i-data--gap);
+}
+
+:where(.ipsWidget i-data:last-child .ipsData--wallpaper) {
+	overflow: hidden;
+	border-bottom-left-radius: var(--i-box--bo-ra);
+	border-bottom-right-radius: var(--i-box--bo-ra);
+}
+
+/* If Wallpaper carousels are added to a widget group which displays widgets as columns, ensure the Wallpaper carousels occupy 100% of their widget height, otherwise a tall widget next to a Wallpaper Carousel can leave empty space below the carousel */
+:where(.ipsWidget:has(.ipsData--wallpaper.ipsData--carousel)){
+    display: flex;
+    flex-direction: column;
+}
+:where(.ipsWidget:has(.ipsData--wallpaper.ipsData--carousel) .ipsWidget__content){
+    flex: 1 1 auto;
+    display: grid;
+}
+:where(.ipsData--wallpaper.ipsData--carousel){
+    min-height: 100%;
+}
+
+/* If the gap is removed, change the scrollbar to white so it's easier to see */
+.cWidgetContainer--isWidget[style*="--i-widget--gap:0px"] .ipsData--wallpaper.ipsData--carousel{
+	scrollbar-color: hsl(0 0% 100% / .5) transparent;
+}
+
+/* If placed within a widget, let the widget settings control the variables */
+:where(.cWidgetContainer--isWidget) .ipsData--wallpaper {
+	--i-data--basis: var(--i-widget--size, 290px);
+	--i-data--gap: var(--i-widget--gap, 1em);
+}
+
+@media (any-hover:hover){
+	.ipsData--wallpaper .ipsData__item:hover > .ipsLinkPanel{
+		background-color: hsl(0 0% 100% / .15);
+	}		
+}
+
+.ipsData--wallpaper .ipsData__item{
+	display: grid;
+	padding: 0;
+	overflow: hidden;
+	border-radius: min(var(--i-data--radius), var(--i-data--gap)); /* Wallpaper grids with 0px gap should have 0px radius */
+	background: var(--i-background_dark); /* Added here to ensure the background appears even if images/icons don't exist */
+	isolation: isolate; /* This helps with moving the absolute positioned image to the back */
+}
+
+/* Pseudo element is needed since height is controlled by percentage (based on width) */
+.ipsData--wallpaper .ipsData__item::before{
+	content: "";
+	padding-top: var(--i-data--wallpaper-height);
+	grid-area: 1/1;
+}
+
+.ipsData--wallpaper .ipsData__item > *{
+	grid-area: 1/1;
+}
+
+/* Flex gap fallback for < iOS 14.1 */
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsData--wallpaper .ipsData__item > *{
+		margin: 0;
+	}
+}
+
+.ipsData--wallpaper .ipsData__image,
+.ipsData--wallpaper .ipsFigure{
+	align-self: stretch;
+	border-radius: 0;
+	position: absolute;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.ipsData--wallpaper .ipsData__image > i{
+	color: hsl(0 0% 100% / .3);
+	background-color: transparent;
+	font-size: 30cqmin;
+}
+
+.ipsData--wallpaper .ipsData__image > i::before{
+	height: 1em;
+}
+
+.ipsData--wallpaper .ipsData__content{
+	--i-color_soft: hsl(0 0% 100% / .8);
+	--i-color_hard: hsl(0 0% 100%);
+	--i-color_root: hsl(0 0% 100%);
+	--i-link--co: var(--i-color_hard);
+	--i-link-hover--co: var(--i-color_hard);
+	color: var(--i-color_root);
+
+	align-self: end;
+	display: grid;
+	gap: .6em;
+
+	padding: var(--i-data--padding);
+	padding-top: 8em;
+	background-image: linear-gradient(hsl(220 22% 10% / 0), hsl(220 22% 10% / .7) 8em);
+}
+
+/* Brighten the category name and indicator, since dark colors won't have enough contrast */
+.ipsData--wallpaper .ipsIndicator,
+.ipsData--wallpaper .ipsContainerTitle{
+	color: inherit;
+}
+
+.ipsData--wallpaper .ipsBadge--prefix{
+	/* display: flex;
+	width: fit-content; */
+}
+
+.ipsData--wallpaper .ipsData__meta{
+	flex: 1 1 auto;
+}
+
+.ipsData--wallpaper .ipsRating{
+	margin: 0;
+}
+
+/* Tags */
+.ipsData--wallpaper .ipsTags__item:not(.ipsTags__item--prefix), 
+.ipsData--wallpaper .ipsTags__more{
+	color: inherit;
+}
+
+.ipsData--wallpaper .ipsData__extra{
+	margin-top: 0;
+}
+
+.ipsData--wallpaper .ipsData__stats-icon::before,
+.ipsData--wallpaper .ipsData__stats :is(.fa-regular, .fa-solid){
+	opacity: 1;
+}
+
+/* Move mod checkbox to top right */
+.ipsData--wallpaper .ipsData__mod{
+	place-self: start end;
+	padding: 1em;
+}
+
+.ipsData--wallpaper .ipsInput:where([type="checkbox"], [type="radio"]){
+	--i-input--ba-co: hsl(0 0% 100%);
+	--i-input--bo-wi: 0px;
+	box-shadow: hsl(0 0% 0% / .5) 0px 0px 0px 1px;
+}
+
+/* Add outline to selected wallpaper items */
+.ipsData--wallpaper .ipsData__item:has(:is(.ipsInput, [data-role="moderation"]):checked){
+	outline: 2px solid var(--i-primary);
+	outline-offset: 2px;
+}
+
+/*
+	----------------
+	- Mini grid
+	----------------
+*/
+.ipsData--mini-grid{
+	--i-data--basis: 330px;
+	--i-data--cell-spacing: 1em;
+	--i-data--padding: 1.2em;
+	--i-data--border: 1px;
+	--i-data--icon-ratio: 1;
+	--i-data--icon-width: 4em;
+	--i-data--icon-radius: min(5px, var(--i-design-radius));
+	--i-data--gap: var(--i-data--border);
+	--i-data--display-meta: none;
+	--i-data--display-desc: none;
+
+	--i-data--show-stats-icon: initial;
+	--i-data--hide-stats-icon: ;
+
+	--i-data--show-stats-label: ;
+	--i-data--hide-stats-label: initial;
+
+	--i-data--show-last-author: initial;
+	--i-data--show-last-reply: ;
+
+	--i-data--show-tags: ;
+	--i-data--hide-tags: initial;
+
+	--i-data--show-fields: ;
+	--i-data--hide-fields: initial;
+
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--i-data--basis)), 1fr));
+	gap: var(--i-data--gap);
+	padding: max(0px, var(--i-data--gap) - 1px);
+	overflow: hidden;
+}
+
+/* If placed within a widget, let the widget settings control the variables */
+:where(.cWidgetContainer--isWidget) .ipsData--mini-grid {
+	--i-data--basis: var(--i-widget--size, 300px);
+	--i-data--gap: max(1px, var(--i-widget--gap) + var(--i-data--border)); /* We need at least 1px gap for grids */
+}
+
+	.ipsData--mini-grid.ipsData--carousel:has(.ipsData__item:nth-child(6)){
+		display: grid;
+		grid-template-rows: repeat(2, auto);
+		grid-template-columns: none;
+		grid-auto-flow: column;
+		grid-auto-columns: min(var(--i-data--basis), 80%);
+	}
+
+	.ipsData--mini-grid.ipsData--carousel:has(.ipsData__item:nth-child(9)){
+		grid-template-rows: repeat(3, auto);
+	}
+
+	.ipsData--mini-grid .ipsData__item{
+		border-width: 0;
+		outline: var(--i-data--border) solid var(--i-data--bo-co);
+	}
+
+	.ipsData--mini-grid .ipsRating{
+		margin: .4em 0;
+	}
+
+	/* Make the last content soft, otherwise it's a little too much... */
+	.ipsData--mini-grid .ipsData__last-primary{
+		color: var(--i-color_soft);
+	}
+
+	.ipsData--mini-grid .ipsData__fields{
+		margin-top: 0;
+	}
+
+
+/*
+	----------------
+	- Grid
+	----------------
+*/
+.ipsData--grid{
+	--i-data--basis: 320px;
+	--i-data--icon-ratio: 16/10;
+	--i-data--icon-width: 100%;
+	--i-data--radius: 0px;
+	--i-data--border: 1px;
+	--i-data--gap: 0px;
+	--i-data--max: 99;
+	--i-data--min: 1;
+	--i-data--padding: 1.2em;
+	--i-data--cell-spacing: 1.2em;
+	--i-data--desc-truncate: 3;
+
+	--i-data--show-stats-icon: initial;
+	--i-data--hide-stats-icon: ;
+
+	--i-data--show-stats-label: ;
+	--i-data--hide-stats-label: initial;
+	
+	/* Show latest photo */
+	--i-data--show-latest-photo: initial;
+	--i-data--hide-latest-photo: ;
+
+	grid-template-columns: repeat(auto-fill, minmax(
+        min(
+            100% / (var(--i-data--min) + .99), 
+            max(
+                var(--i-data--basis),
+                100% / (var(--i-data--max) + .99)
+            )
+        ), 1fr
+	));
+	gap: max(1px, var(--i-data--gap));
+	padding: var(--i-data--gap);
+	overflow: hidden;
+}
+
+.ipsData--grid:has(.ipsData__image){
+	--i-data--padding: 1.5em;
+	--i-data--title: 1.15em;
+}
+
+.ipsData--grid.ipsData--category{
+	--i-data--title: 1.3em;
+}
+
+/* Inherit border-radius */
+:where(.ipsWidget__content > .ipsData--grid:only-child){
+	border-bottom-left-radius: var(--i-box--bo-ra);
+	border-bottom-right-radius: var(--i-box--bo-ra);
+}
+
+/* If placed within a widget, let the widget settings control the variables */
+:where(.cWidgetContainer--isWidget) .ipsData--grid{
+	--i-data--basis: var(--i-widget--size, 320px);
+	--i-data--gap: var(--i-widget--gap, var(--i-data--border));
+}
+
+	/* Add border using outline so we can fall down to a 1px border */
+	.ipsData--grid .ipsData__item{
+		align-items: stretch;
+		border-width: 0;
+		outline: var(--i-data--border) solid var(--i-data--bo-co);
+		border-radius: var(--i-data--radius);
+
+		/* Always stack grid items? Add this to the legacy code if it's moved to a :has() selector */
+		flex-direction: column;
+	}
+
+	/* Cover photos */
+	.ipsData--grid .ipsData__image{
+		background: var(--i-background_3);
+		flex: 0 0 auto;
+		margin: calc(var(--i-data--padding) * -.3);
+		margin-bottom: 0;
+	}
+
+		/* If the __image element contains an image, hide the fallback icons */
+		.ipsData--grid .ipsData__image img ~ :is(.ipsIcon, i:not[class]){
+			display: none !important;
+		}
+
+		/* Emoji and icons */
+		.ipsData--grid .ipsData__image > :is(.ipsIcon, i:not[class]){
+			font-size: 50cqmin;
+		}
+
+	/* We need flex here so we can push the latest reply to the bottom */
+	.ipsData--grid .ipsData__content{
+		display: flex;
+		flex-direction: column;
+		gap: .6em;
+	}
+
+	/* Flex gap fallback for < iOS 14.1 */
+	@supports (-webkit-touch-callout: none) and (not(translate: none)){
+		.ipsData--grid .ipsData__content > :not(:first-child){
+			margin-top: .6em;
+		}
+	}
+
+	.ipsData--grid .ipsData__main{
+		margin-bottom: auto;
+		flex: 0 0 auto;
+	}
+
+	/* Increase margin of descriptions in grid categories */
+	.ipsData--grid .ipsData__desc{
+		margin-top: .6em;
+	}
+	
+	/* Push everything down after description/meta */
+	.ipsData--grid .ipsData__desc,
+	.ipsData--grid .ipsData__meta{
+		margin-bottom: auto;
+	}
+
+		/* If the cell contains both desc and meta, remove the auto margin from meta */
+		.ipsData--grid .ipsData__desc ~ .ipsData__meta{
+			margin-bottom: 0;
+		}
+
+	/* Inline stats */
+	.ipsData--grid .ipsData__stats {
+		text-align: start;
+		gap: 0.3em 1.5em;
+	}
+	.ipsData--grid .ipsData__last + .ipsData__stats{
+		/* Ensure stats are always at the end, even if they've wrapped onto their own line due to a long username in ipsData__last */
+		margin-inline-start: auto;
+	}
+
+/* Reposition mod checkbox to top right */
+.ipsData--grid .ipsData__mod{
+	position: absolute;
+	padding: 6px;
+	top: 5px;
+	inset-inline-end: 5px;
+	background: var(--i-box--ba-co);
+	border-radius: 6px;
+}
+
+/*
+	----------------
+	- Minimal
+	----------------
+*/
+.ipsData--minimal{
+	--i-data--padding: 1em;
+	--i-data--cell-spacing: 1em;
+	--i-data--icon-width: 30px;
+
+	--i-data--display-desc: none;
+	
+	--i-data--show-stats-icon: initial;
+	--i-data--hide-stats-icon: ;
+
+	--i-data--show-stats-label: ;
+	--i-data--hide-stats-label: initial;
+
+	--i-data--show-tags: ;
+	--i-data--hide-tags: initial;
+
+	--i-data--show-last-author: initial;
+	--i-data--show-last-reply: ;
+
+	--i-data--show-fields: ;
+	--i-data--hide-fields: initial;
+
+	--i-data--show-category: ;
+	--i-data--hide-category: initial;
+}
+.ipsData--minimal .ipsData__title{
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.ipsData--minimal .ipsData__extra{
+	margin-top: .2em;
+}
+.ipsData--minimal .ipsData__stats{
+	gap: .7em 2em;
+}
+/* Flex gap fallback for < iOS 14.1 */
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsData--minimal .ipsData__stats > :not(:first-child){
+		margin-inline-start: 2em;
+	}
+}
+.ipsData--minimal .ipsData__extra .ipsData__stats{
+	order: 1;
+	margin-inline-start: auto;
+}
+
+/* Hide certain elements */
+.ipsData--minimal .ipsBadge--prefix,
+.ipsData--minimal .ipsRating,
+.ipsData--minimal .ipsTime__long{
+	display: none;
+}
+.ipsData--minimal .ipsTime__short{
+	display: revert;
+}
+
+/* If placed within a widget, let the widget settings control the variables */
+:where(.cWidgetContainer--isWidget) .ipsData--carousel.ipsData--minimal {
+	--i-data--basis: var(--i-widget--size, 300px);
+}
+
+/* Minimal carousels always have a 1px border between items */
+.ipsData--carousel.ipsData--minimal {
+	--i-data--gap: 1px;
+	scroll-padding-inline: 0px;
+}
+
+	.ipsData--carousel.ipsData--minimal .ipsData__item{
+		border-width: 0;
+		outline: 1px solid var(--i-data--bo-co);
+	}
+
+
+/*
+	----------------
+	- Featured
+	----------------
+*/
+
+.ipsData--featured{
+	--i-data--icon-width: min(180px, 20%);
+	--i-data--title: clamp(1.1em, 1em + 0.7cqw, 1.5em);
+	--i-data--padding: clamp(1.1em, 3cqw, 2.2em);
+	/* Reset gap and basis, since these should always be 0px and 100% for Featured */
+	--i-data--gap: 1px;
+	--i-data--basis: 100%;
+}
+@supports not (padding: 1cqw){
+	.ipsData--featured{
+		--i-data--title: 1.2em;
+		--i-data--padding: 1em;
+	}
+}
+
+@container (max-width: 500px){
+	:where(.ipsData--featured .ipsData__title .ipsBadges){
+		float: inline-end;
+	}
+}
+
+/* Show stats icons if they exist on small UI */
+@container (max-width: 600px){
+	.ipsData--featured{
+		--i-data--show-stats-icon: initial;
+		--i-data--hide-stats-icon: ;
+
+		--i-data--show-stats-label: ;
+		--i-data--hide-stats-label: initial;
+	}
+}
+
+/* Display more of the description on large UI */
+@container (min-width: 800px){
+	.ipsData--featured{
+		--i-data--desc-truncate: 6;
+		/* Show latest photo */
+		--i-data--show-latest-photo: initial;
+		--i-data--hide-latest-photo: ;
+	}
+}
+
+.ipsData--featured .ipsData__item{
+	align-items: start;
+}
+
+.ipsData--featured .ipsData__content{
+	align-self: center;
+	display: flex;
+	flex-direction: column;
+}
+
+.ipsData--featured .ipsData__desc{
+	--i-co: var(--i-color_root);
+	margin: .5em 0;
+}
+
+@container (min-width: 600px){
+	
+	.ipsData--featured .ipsData__content{
+		align-self: stretch;
+		align-content: space-between;
+		gap: 1em;
+	}
+
+	.ipsData--featured .ipsTags{
+		margin-top: 1.5em;
+	}
+
+	.ipsData--featured .ipsData__extra{
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1em;
+		margin-top: auto;
+	}
+
+	.ipsData--featured .ipsData__stats {
+		order: 1;
+		margin-inline-start: auto;
+		flex-direction: row-reverse;
+	}
+}
+
+
+/*
+	----------------
+	- Align stats/latest correctly in certain designs
+	----------------
+*/
+
+:where(.ipsData--wallpaper, .ipsData--grid, .ipsData--mini-grid) .ipsData__extra{
+	margin-top: .3em;
+}
+
+/*
+	----------------
+	- Carousel
+	----------------
+*/
+
+:where(.ipsData--carousel){
+	--i-data--basis: 100%; /* Give carousels 100% width by default, but allow other classes like .ipsData--grid to overwrite them */
+
+	/* Set defaults, but let other classes overwrite, such as .ipsData--grid */
+	--i-data--gap: 0px;
+	--i-data--border: 1px;
+}
+
+/* If placed within a widget, let the widget settings control the variables */
+:where(.cWidgetContainer--isWidget .ipsData--carousel){
+	--i-data--basis: var(--i-widget--size, 100%);
+	--i-data--gap: var(--i-widget--gap, 0px);
+}
+
+.ipsData--carousel{
+	display: flex;
+	--i-data--min: 1;
+	--i-data--max: 99;
+	gap: max(1px, var(--i-data--gap));
+	overflow: auto;
+	overscroll-behavior-x: contain;
+	/* Snap padding should cater for the border, otherwise the border of the "out of view" element is visible */
+	scroll-padding-inline: max(0px, var(--i-data--gap));
+	scroll-behavior: smooth;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, var(--i-co) 40%, transparent) transparent;
+	position: relative; /* Required for scrollLeft as part of i-carousel-navigation */
+}
+
+/* Scroll-padding prevents entry.isIntersecting from working in RTL Safari. Without this fix, carousel arrow navigation can break. Last tested in 26.1 */
+@supports (-webkit-hyphens: auto){
+	[dir="rtl"] .ipsData--carousel::after{
+		content: "";
+		flex: 0 0 max(var(--i-data--padding) - var(--i-data--gap), 1px);
+	}
+}
+
+/* Carousel items */
+.ipsData--carousel .ipsData__item{
+	scroll-snap-align: start;
+	border-width: 0;
+	flex: 0 0 200px;
+	flex-basis:
+		min(
+			(100% - (var(--i-data--gap) * (var(--i-data--min) - 1))) / var(--i-data--min),
+			clamp(
+				var(--i-data--basis),
+				(100% - (var(--i-data--gap) * (var(--i-data--max) - 1))) / var(--i-data--max),
+				100%
+			)
+		)
+	;
+}
+
+.ipsData--carousel .ipsData__item:last-child{
+	scroll-snap-align: end;
+}
+
+.ipsData--carousel:has(:focus-visible):focus-within .ipsData__item:not(:focus-within){
+	scroll-snap-align: none;
+}
+
+.ipsData--carousel ~ .ipsCarouselNav{
+	border-top: 1px solid var(--i-background_3);
+	padding: 1em;
+}
+
+
+/* Non-JS moderation bar */
+.ipsData__modBar{
+	background: var(--i-background_4);
+	padding: var(--i-sp_2);
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--i-sp_2);
+}
+
+
+/*
+	----------------
+	- Link panels
+	----------------
+*/
+
+.ipsLinkPanelWrap{
+	isolation: isolate;
+	position: relative;
+}
+
+.ipsLinkPanel{
+	position: absolute;
+	top: 0; left: 0; right: 0; bottom: 0; /* Inset isn't used here as it prevents the linkpanel from working in ancient browsers */
+	border-radius: inherit;
+	grid-column: initial; /* Ensure ipsLinkPanel isn't restricted by any grid areas (such as .ipsData--grid) */
+}
+
+/* Hide panels if disabled via settings */
+[data-ips-theme-setting-link-panels="0"] .ipsLinkPanel{
+	display: none;
+}
+
+/* isolation: isolate; doesn't work correctly in Safari in this context. Last tested in 18.3 */
+:where(:is(.ipsLinkPanelWrap, .ipsStreamItem, .ipsData__item) :is(a, button, input, textarea, [data-ipsTooltip], iframe, abbr, select, summary)){
+	position: relative;
+}
+@media (any-hover:hover){
+	:where([data-ips-theme-setting-link-panels="1"] :is(.ipsLinkPanelWrap, .ipsStreamItem, .ipsData__item)) a:hover{
+		text-decoration: underline;
+	}
+}
+
+	.ipsLinkPanel span{
+		clip-path: inset(50%);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	@media (any-hover:hover){
+		:hover > .ipsLinkPanel{
+			background: var(--i-background_hover);
+		}		
+	}
+
+/* Apply border-radius to last row in certain situations */
+:where(.ipsWidget, .ipsBox:not(:has(.ipsButtonBar--bottom)) .ipsData__item:last-child .ipsLinkPanel){
+	border-radius: 0 0 var(--i-box--bo-ra) var(--i-box--bo-ra);
+}
+
+/*
+	----------------
+	- Hide elements in certain widgets/sizes
+	----------------
+*/
+
+.ipsData--featured :is([data-show-on]:not([data-show-on~="featured"]), [data-hide-on~="featured"]),
+.ipsData--grid :is([data-show-on]:not([data-show-on~="grid"]), [data-hide-on~="grid"]),
+.ipsData--minimal :is([data-show-on]:not([data-show-on~="minimal"]), [data-hide-on~="minimal"]),
+.ipsData--mini-grid :is([data-show-on]:not([data-show-on~="mini-grid"]), [data-hide-on~="mini-grid"]),
+.ipsData--table :is([data-show-on]:not([data-show-on~="table"]), [data-hide-on~="table"]),
+.ipsData--wallpaper :is([data-show-on]:not([data-show-on~="wallpaper"]), [data-hide-on~="wallpaper"]){
+	display: none !important;
+}
+
+@container (max-width: 750px){
+	/* Hide pagination from the topic feed when it's small */
+	.ipsData--topic-feed-widget:is(.ipsData--table, .ipsData--minimal, .ipsData--mini-grid) .ipsMiniPagination{
+		display: none;
+	}
+}
+
+/*
+	----------------
+	- Adjust certain data elements
+	----------------
+*/
+
+/* Messenger */
+.ipsData__item--messenger{
+	--i-data--cell-spacing: .8em;
+	--i-data--padding: 1.2em;
+	--i-data--icon-width: 26px;
+}
+
+/* Increase snippet in postFeed */
+.ipsData--widget-forums-postFeed.ipsData--table{
+	--i-data--desc-truncate: 10;
+}
+.ipsData--widget-forums-postFeed.ipsData--table .ipsData__icon{
+	align-self: start;
+}
+.ipsData--widget-forums-postFeed .ipsData__meta{
+	margin-top: .5em;
+}
+
+/* Notifications dropdown */
+.ipsData--user-notifications{
+	--i-data--title: 1em;
+}
+.ipsData__item--notification[data-ips-read] .ipsData__title a{
+	color: var(--i-color_soft);
+}
+
+
+/*
+	----------------
+	- Loading skeletons. Eg, used in Events Overview and Fluid forum view 
+	----------------
+*/
+
+@keyframes ipsData__item--loading {
+	0% { opacity: .5 }
+}
+
+.ipsData__item--loading :is(.ipsData__icon, .ipsData__image, .ipsData__title, .ipsData__meta, .ipsData__desc){
+	background: var(--i-background_3);
+	animation: ipsData__item--loading 1s infinite alternate;
+}
+
+.ipsData__item--loading .ipsData__title{
+	height: 1em;
+	height: 1lh;
+	max-width: min(20ch, 70%);
+}
+.ipsData__item--loading .ipsData__meta{
+	height: .7em;
+	height: .7lh;
+	max-width: min(32ch, 90%);
+	margin-top: .3em;
+}
+.ipsData__item--loading .ipsData__desc{
+	height: 3em;
+	height: 3lh;
+	margin-top: .5em;
+	display: block; /* Ensure description is shown, since it is hidden due to .ipsData__desc:-moz-only-whitespace */
+}
+
+.ipsData__item--loading .ipsData__stats::before,
+.ipsData__item--loading .ipsData__stats::after,
+.ipsData__item--loading .ipsData__last::before,
+.ipsData__item--loading .ipsData__last::after{
+	content: '';
+	display: block;
+	background: var(--i-background_3);
+	height: .8em;
+	height: .8lh;
+	width: 9ch;
+	margin: .1lh 0;
+}
+.ipsData__item--loading .ipsData__stats::after{
+	width: 8ch;
+}
+
+/* View All row */
+.ipsViewAll a{
+	text-align: end;
+	display: block;
+	background: var(--i-background_2);
+	border-top: 1px solid var(--i-background_4);
+	padding: .9em;
+	color: var(--i-color_root);
+	font-weight: 550;
+	font-size: .92em;
+}
+
+:where(.ipsWidget, .ipsBox) .ipsViewAll a{
+	border-bottom-left-radius: var(--i-box--bo-ra);
+	border-bottom-right-radius: var(--i-box--bo-ra);
+}
+
+@media (any-hover:hover){
+	.ipsViewAll a:hover{
+		color: var(--i-color_hard);
+	}
+}
+
+/*
+	----------------
+	- Legacy browsers
+	----------------
+*/
+
+@supports not selector(a:has(b)){
+	/* The container-type is assigned using :has(), so we need to reset font-sizes if :has() isnt' supported */
+	.ipsData__image > i, 
+	.ipsData__image > .ipsIcon,
+	.ipsData__image > .ipsNsfwOverlay,
+	.ipsData__image .ipsIcon--emoji,
+	.ipsData--wallpaper .ipsData__image > i,
+	.ipsData--grid .ipsData__image > :is(.ipsIcon, i:not[class]){
+		font-size: 1em;
+	}
+}
+
+@supports not (aspect-ratio: 1){
+	.ipsData__image::before{
+		content: '';
+		display: block;
+		padding-top: 100%;
+	}
+	.ipsData--grid .ipsData__image::before{
+		padding-top: 56.25%;
+	}
+	.ipsData__image img{
+		position: absolute;
+	}
+}
+
+@supports not (container-type: inline-size){
+	.ipsData__image{
+		position: relative;
+	}
+	.ipsData__image:not(a){
+		pointer-events: none;
+	}
+	.ipsData__stats{
+		gap: 0 2em;
+	}
+	.ipsData--table{
+		--i-data--padding: 1.3em;
+	}
+}

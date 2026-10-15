@@ -1,0 +1,24 @@
+<ips:template parameters="" />
+{{$adsForceSidebar = ( \IPS\Settings::i()->ads_force_sidebar AND \IPS\core\Advertisement::loadByLocation( 'ad_sidebar' ) );}}
+{{if \IPS\Output::i()->showSidebar()}}
+	<aside id='ipsLayout_sidebar' class='ipsLayout__secondary-column' data-controller='core.front.widgets.sidebar'>
+		<div class="ipsLayout__secondary-sticky-outer">
+			<div class="ipsLayout__secondary-sticky-inner" data-ips-hook="sidebar">
+				{{if $announcements = \IPS\core\Announcements\Announcement::loadAllByLocation( 'sidebar' ) AND \IPS\Output::i()->sidebarHasContent()}}
+					{template="announcementSidebar" group="global" app="core" params="$announcements"}
+				{{endif}}
+				{{if isset( \IPS\Output::i()->sidebar['contextual'] ) and !empty( trim( \IPS\Output::i()->sidebar['contextual'] ) )}}
+					<div id="elContextualTools" {{if isset( \IPS\Output::i()->sidebar['sticky'] )}}data-class="i-position_sticky-top"{{endif}} data-ips-hook="contextualSidebar">
+						{expression="\IPS\Output::i()->sidebar['contextual']" raw="true"}
+					</div>
+				{{endif}}
+				{{if $adsForceSidebar OR ( \IPS\core\Advertisement::loadByLocation( 'ad_sidebar' ) AND \IPS\Output::i()->sidebarHasContent() )}}
+					<div data-role='sidebarAd' data-ips-hook="adSidebar">
+						{advertisement="ad_sidebar"}
+					</div>
+				{{endif}}
+				{template="widgetContainer" group="global" app="core" params="'sidebar', 'vertical'"}
+			</div>
+		</div>
+	</aside>
+{{endif}}

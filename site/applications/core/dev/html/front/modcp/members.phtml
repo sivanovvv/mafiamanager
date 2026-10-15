@@ -1,0 +1,19 @@
+<ips:template parameters="$content, $tabs, $activeTab, $form" />
+<div class='ipsBox__padding i-border-bottom_1 ipsFieldRow ipsFieldRow--primary' id='elModCPMemberSearch'>
+	{$form|raw}
+</div>
+<i-tabs class='ipsTabs' id='elmodCPTabs' data-ipsTabBar data-ipsTabBar-contentArea='#elmodCPTabs_content'>
+	<div role='tablist'>
+		{{foreach $tabs as $key => $tab}}
+			<a href='{url="app=core&module=modcp&tab=members&area=$key" seoTemplate="modcp_members"}' id='elmodCPTabs_{$key}' class='ipsTabs__tab' role="tab" aria-controls="elmodCPTabs_{$key}_panel" aria-selected="{{if $activeTab == $tab}}true{{else}}false{{endif}}">
+				{lang="modcp_members_{$key}"}
+			</a>
+		{{endforeach}}
+	</div>
+	{template="tabScrollers" app="core" group="global" location="global"}
+</i-tabs>
+<section id='elmodCPTabs_content' class='ipsTabs__panels'>
+	<div id="elmodCPTabs_{$activeTab}_panel" class="ipsTabs__panel" role="tabpanel" aria-labelledby="elmodCPTabs_{$activeTab}">
+		{$content|raw}
+	</div>
+</section>

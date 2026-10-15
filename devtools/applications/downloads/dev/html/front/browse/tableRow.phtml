@@ -1,0 +1,94 @@
+<ips:template parameters="$file, $table" />
+<li
+    class='ipsData__item {$file->ui( "css" )}  {{if method_exists( $file, "tableClass" ) && $file->tableClass()}}ipsData__item--{$file->tableClass()}{{endif}} {{if $file->hidden()}}ipsModerated{{endif}}'
+    data-rowid="{$file->id}"
+    {{if $file->unread()}}data-ips-unread{{else}}data-ips-read{{endif}}
+    {$file->ui( 'dataAttributes' )}
+>
+	<a href='{$file->url( "getPrefComment" )}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$file->name}</span></a>
+	<a href="{$file->url( 'getPrefComment' )}" class='ipsData__image' aria-hidden="true" tabindex="-1">
+		{{if $screenshot = $file->primary_screenshot_thumb}}
+			<img src='{$screenshot->url}' alt='' loading='lazy'>
+		{{else}}
+			<i aria-hidden="true"></i>
+		{{endif}}
+	</a>
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			<div class='ipsData__title' data-ips-hook='main'>
+				<div class='ipsBadges' data-ips-hook='badges'>
+					{{foreach $file->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</div>
+				{{if $file->prefix()}}
+					{template="prefix" group="global" app="core" params="$file->prefix( TRUE ), $file->prefix()"}
+				{{endif}}
+				{{if $file->unread()}}
+					<span class='ipsIndicator' data-ipsTooltip title='{{if $file->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'></span>
+				{{endif}}
+				<h4 data-ips-hook='title'><a href='{$file->url( "getPrefComment" )}' title='{lang="view_this_file" sprintf="$file->name"} {{if $file->canEdit()}}{lang="click_hold_edit"}{{endif}}' {{if $file->canEdit()}}data-role="editableTitle"{{endif}}>{$file->name}</a></h4>
+			</div>
+			<div class='ipsData__desc'>{$file->truncated()|raw}</div>
+			<div class="i-flex i-align-items_center i-gap_2 i-flex-wrap_wrap">
+				{{if $file->container()->bitoptions['reviews']}}
+					{template="rating" group="global" location="front" app="core" params="'small', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $file->memberReviewRating()"}
+				{{endif}}
+				{{if \count( $file->tags() )}}
+					{template="tags" group="global" app="core" params="$file->tags(), TRUE"}
+				{{endif}}
+			</div>
+		</div>
+		<div class="ipsData__extra">
+			<ul class='ipsData__stats' data-ips-hook='stats'>
+				{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+					<li data-stattype="price">
+						{{if $file->isPaid()}}
+							{{if $price = $file->priceToDisplay()}}
+								<span class='ipsData__stats-label'>{$price|raw}</span>
+							{{endif}}
+						{{else}}
+							<span class='ipsData__stats-label'>{lang="file_free"}</span>
+						{{endif}}
+					</li>
+				{{endif}}
+				{{if $file->isPaid() and !$file->nexus and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) ) and $file->purchaseCount()}}
+					<li data-stattype="purchases">
+						<span class='ipsData__stats-icon' data-stat-value='{$file->purchaseCount()}' aria-hidden="true" data-ipstooltip title='{$file->purchaseCount()} {lang="idm_purchases"}'></span>
+						<span class='ipsData__stats-label'>{$file->purchaseCount()} {lang="idm_purchases"}</span>
+					</li>
+				{{endif}}
+				{{if !$file->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) ) and $file->downloads}}
+					<li data-stattype="downloads">
+						<span class='ipsData__stats-icon' data-stat-value='{number="$file->downloads"}' aria-hidden="true" data-ipstooltip title='{number="$file->downloads"} {lang="downloads"}'></span>
+						<span class='ipsData__stats-label'>{number="$file->downloads"} {lang="downloads"}</span>
+					</li>
+				{{endif}}
+				{{if $file->container()->bitoptions['comments'] and $file->comments}}
+					<li data-stattype="comments">
+						<span class='ipsData__stats-icon' data-stat-value='{$file->comments}' aria-hidden="true" data-ipstooltip title='{$file->comments} {lang="total_comments"}'></span>
+						<span class='ipsData__stats-label'>{$file->comments} {lang="total_comments"}</span>
+					</li>
+				{{endif}}
+			</ul>
+			<div class="ipsData__last">
+				{template="userPhoto" app="core" group="global" params="$file->author(), 'fluid'"}
+				<div class="ipsData__last-text" data-ips-hook='details'>
+					<div class="ipsData__last-primary">
+						{lang="byline_nodate" htmlsprintf="$file->author()->link( NULL, NULL, $file->isAnonymous() )"}
+						{{if \IPS\Request::i()->app != 'downloads'}}
+							{lang="in"} <a href="{$file->container()->url()}">{$file->container()->_title}</a>
+						{{endif}}
+					</div>
+					<div class="ipsData__last-secondary">
+						{{if $file->updated == $file->submitted}}{lang="submitted"} {datetime="$file->submitted" lowercase="true"}{{else}}{lang="updated"} {datetime="$file->updated" lowercase="true"}{{endif}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	{{if $table AND method_exists( $table, 'canModerate' ) AND $table->canModerate()}}
+		<label class="ipsData__mod">
+			<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+		    <input type='checkbox' data-role='moderation' name="moderate[{$file->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $file ) )"}" data-state='{{if $file->tableStates()}}{$file->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+		</label>
+	{{endif}}
+</li>

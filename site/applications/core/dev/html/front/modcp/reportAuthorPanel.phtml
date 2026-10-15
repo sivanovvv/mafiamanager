@@ -1,0 +1,59 @@
+<ips:template parameters="$report, $ref" />
+{{if $report->author}}
+	<div class="ipsPhotoPanel i-flex_11">
+		{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $report->author ), 'fluid'"}
+		<div class="ipsPhotoPanel__text">
+			<div class="ipsPhotoPanel__primary"><button type="button" id="user{$report->author}" popovertarget="user{$report->author}_menu">{member="name" id="$report->author"}<i class="fa-solid fa-caret-down i-margin-start_icon" aria-hidden="true"></i></button></div>
+			<div class="ipsPhotoPanel__secondary">
+				{{if \IPS\Member::load( $report->author )->mod_posts}}
+					<span class="ipsBadge ipsBadge--warning" data-ipsTooltip title="{{if \IPS\Member::load( $report->author )->mod_posts == -1}}{lang="moderation_modq_perm"}{{else}}{lang="moderation_modq_temp" sprintf="\IPS\DateTime::ts( \IPS\Member::load( $report->author )->mod_posts )"}{{endif}}">
+						{lang="moderation_modq"}
+					</span>
+				{{endif}}
+				{{if \IPS\Member::load( $report->author )->restrict_post}}
+					<span class="ipsBadge ipsBadge--warning" data-ipsTooltip title="{{if \IPS\Member::load( $report->author )->restrict_post == -1}}{lang="moderation_nopost_perm"}{{else}}{lang="moderation_nopost_temp" sprintf="\IPS\DateTime::ts( \IPS\Member::load( $report->author )->restrict_post )"}{{endif}}">
+						{lang="moderation_nopost"}
+					</span>
+				{{endif}}
+				{{if \IPS\Member::load( $report->author )->temp_ban}}
+					<span class="ipsBadge ipsBadge--warning" data-ipsTooltip title="{{if \IPS\Member::load( $report->author )->temp_ban == -1}}{lang="moderation_banned_perm"}{{else}}{lang="moderation_banned_temp" sprintf="\IPS\DateTime::ts( \IPS\Member::load( $report->author )->temp_ban )"}{{endif}}">
+						{lang="moderation_banned"}
+					</span>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+	<i-dropdown popover id="user{$report->author}_menu">
+		<div class="iDropdown">
+			<ul class="iDropdown__items">
+				{{if member.canWarn( \IPS\Member::load( $report->author ) )}}
+					<li><a href='{url="app=core&module=system&controller=warnings&do=warn&id={$report->author}&ref={$ref}" seoTemplate="warn_add" seoTitle="\IPS\Member::load( $report->author )->members_seo_name"}' data-ipsDialog data-ipsDialog-title="{lang="warn_member" sprintf="\IPS\Member::load( $report->author )->name"}" data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="warning_issued"}" data-role="warnUserDialog">{lang="warn_user"}</a></li>
+				{{endif}}
+				{{if $report->author != \IPS\Member::loggedIn()->member_id and \IPS\Member::loggedIn()->modPermission('can_flag_as_spammer') and \IPS\Member::load( $report->author )->canBeFlaggedAsSpammer()}}
+					{{if \IPS\Member::load( $report->author )->members_bitoptions['bw_is_spammer']}}
+						<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$report->author}&s=0" seoTemplate="flag_as_spammer" seoTitle="\IPS\Member::load( $report->author )->members_seo_name" csrf="true"}' data-ipsMenuValue='spamUnFlagButton'>{lang="spam_unflag"}</a></li>
+					{{else}}
+						<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$report->author}&s=1" seoTemplate="flag_as_spammer" seoTitle="\IPS\Member::load( $report->author )->members_seo_name" csrf="true"}' data-ipsMenuValue='spamFlagButton'>{lang="spam_flag"}</a></li>
+					{{endif}}
+				{{endif}}
+				<li><a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$report->author}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}">{lang="message_send"}</a></li>
+			</ul>
+		</div>
+	</i-dropdown>
+	{{if \IPS\Member::loggedIn()->modPermission('mod_see_warn')}}
+		{{if !\count(\IPS\Member::load( $report->author )->warnings( 1 ))}}
+			<div class='i-color_soft i-font-weight_500'>
+				<i class="fa-regular fa-circle-check i-margin-end_icon" aria-hidden="true"></i>{lang="no_previous_warnings"}
+			</div>
+		{{endif}}
+	{{endif}}
+{{else}}
+	<div class="ipsPhotoPanel">
+		{template="userPhoto" app="core" group="global" params="\IPS\Member::load( 0 ), 'fluid'"}
+		<div class="ipsPhotoPanel__text">
+			<div class="ipsPhotoPanel__primary">
+				{member="name" id="0"}
+			</div>
+		</div>
+	</div>
+{{endif}}

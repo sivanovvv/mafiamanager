@@ -1,0 +1,33 @@
+<ips:template parameters="$form, $solvedCount, $recommendedCount, $startTime, $endTime" />
+<div class='ipsBox' data-ips-template="statsTypeWrapper">
+	<h1 class='ipsBox__header'>{lang="stats_posts_by_type"}</h1>
+	<div>
+		{$form|raw}
+	</div>
+</div>
+<div class='i-margin-top_3' data-ips-template="statsTypeWrapper">
+	<div class="ipsTableScroll">
+		<table class="ipsTable ipsTable_zebra " data-role="table">
+			<thead>
+				<tr class="i-background_3">
+					<th>{lang="stats_posts_type_type"}</th>
+					<th>{lang="stats_posts_type_count"}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="">
+					<td class="">
+						{lang="stats_posts_type_solved"}
+					</td>
+					<td><a href='{url="app=forums&module=stats&controller=posts&do=showSolvedPosts&startTime={$startTime}&endTime={$endTime}"}' data-ipsDialog data-ipsDialog-title='{lang="stats_posts_type_solved"}' title="{lang="stats_posts_show_posts"}" data-ipsTooltip>{$solvedCount}</a></td>
+				</tr>
+				<tr>
+					<td class=" ipsTable_wrap ipsTable_primary ">
+						{lang="stats_posts_type_recommended"}
+					</td>
+					<td><a href='{url="app=forums&module=stats&controller=posts&do=showRecommendedPosts&startTime={$startTime}&endTime={$endTime}"}' data-ipsDialog data-ipsDialog-title='{lang="stats_posts_type_recommended"}' title="{lang="stats_posts_show_posts"}" data-ipsTooltip>{$recommendedCount}</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

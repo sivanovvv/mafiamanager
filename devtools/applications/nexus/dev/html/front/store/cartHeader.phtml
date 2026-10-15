@@ -1,0 +1,68 @@
+<ips:template parameters="" />
+{{$location = NULL;}}
+{{if isset( $_SESSION['cart'] ) and \count( $_SESSION['cart'] ) and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'nexus', 'store' ) )}}
+	{{$subtotal = new \IPS\Math\Number('0');}}
+	<li data-el='cart' id='elCart_container'>
+		<button type="button" id="elCart" popovertarget="elCart_menu" class="ipsUserNav__link" data-ipsTooltip title='{lang="your_cart"}'>
+			<i class="fa-solid fa-basket-shopping ipsUserNav__icon" aria-hidden="true"></i>
+			<span class="ipsUserNav__text">{lang="cart"}</span>
+			<span class='ipsNotification'>{expression="\IPS\nexus\Application::cartCount()"}</span>
+		</button>
+		<i-dropdown popover id="elCart_menu">
+			<div class="iDropdown">
+				<div class="iDropdown__header">
+					<p class='iDropdown__headerTitle'>{lang="your_cart"}</p>
+				</div>
+				<div class='iDropdown__content'>
+					<i-data>
+						<ul class="ipsData ipsData--table ipsData--compact ipsData--cart-dropdown" data-role='cartList' id='elCartContent'>
+							{{foreach $_SESSION['cart'] as $id => $item}}
+								<li class='ipsData__item'>
+									<div class='ipsData__image' aria-hidden="true">
+										{{if $image = $item->image()}}
+											<img src="{$image->url}" alt="{$item->name}" loading="lazy">
+										{{elseif $icon = $item::$icon}}
+											<i class='fa fa-solid fa-{$icon}' aria-hidden="true"></i>
+										{{else}}
+											<i aria-hidden="true"></i>
+										{{endif}}
+									</div>
+									<div class='ipsData__main'>
+										<div class='ipsData__title'>{$item->name}</div>
+										<p class="ipsData__meta">&times;{$item->quantity}</p>
+									</div>
+									<div class='cNexusPrice'>
+										<strong>
+											{{if settings.nexus_show_tax}}
+												{{$location = $location ?: \IPS\nexus\Customer::loggedIn()->estimatedLocation();}}
+												{{$linePrice = $item->grossLinePrice( $location );}}
+											{{else}}
+												{{$linePrice = $item->linePrice();}}
+											{{endif}}
+											{$linePrice}
+											{{$subtotal = $subtotal->add( $linePrice->amount );}}
+										</strong>
+										{{if $item->quantity > 1}}
+											<p class='i-font-size_-2 i-color_soft'>
+												{lang="each_short" sprintf="$item->price"}
+											</p>
+										{{endif}}
+									</div>
+								</li>
+							{{endforeach}}
+							<li class='ipsData__item cNexusMenuCart_totalRow'>
+								<div class='ipsData__main i-font-size_2 i-text-align_end'>
+									<strong>{lang="subtotal"}</strong>
+								</div>
+								<div class='i-basis_100 cNexusPrice i-font-size_2 i-text-align_end'>
+									<strong>{money="$subtotal"}</strong>
+								</div>
+							</li>
+						</ul>
+					</i-data>
+				</div>
+				<a href='{url="app=nexus&module=store&controller=cart" seoTemplate="store_cart"}' class='iDropdown__footer'>{lang="review_and_checkout"}</a>
+			</div>
+		</i-dropdown>
+	</li>
+{{endif}}

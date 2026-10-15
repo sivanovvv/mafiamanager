@@ -1,0 +1,30 @@
+<ips:template parameters="$members, $memberCount, $guests, $anonymous, $layout='table', $isCarousel=false" />
+<div style="border-radius:inherit">
+    <h3 class='ipsWidget__header'>
+        <span>
+            {lang="block_whosOnline"}
+        </span>
+        <span class='ipsWidget__header-secondary'>
+            {{if isset($orientation) and $orientation == 'horizontal'}}
+                <span><span data-memberCount="{$memberCount}">{lang="block_whos_online_info_members" pluralize="$memberCount"}</span>, {lang="block_whos_online_info_anonymous" pluralize="$anonymous"}, {lang="block_whos_online_info_guests" pluralize="$guests"}</span>&nbsp; &nbsp;
+            {{endif}}
+            <a href='{url="app=core&module=online&controller=online" seoTemplate="online"}'>{lang="see_full_list"}</a>
+        </span>
+    </h3>
+    <div class='ipsWidget__content ipsWidget__padding'>
+        <ul class='ipsList ipsList--csv'>
+            {{if $memberCount}}
+                {{foreach $members as $row}}
+                    <li data-memberId="{$row['member_id']}">{template="userLinkFromData" group="global" app="core" params="$row['member_id'], $row['member_name'], $row['seo_name'], $row['member_group'], TRUE"}</li>
+                {{endforeach}}
+            {{else}}
+                <li class='i-color_soft' data-noneOnline>{lang="whos_online_users_empty"}</li>
+            {{endif}}
+        </ul>
+        {{if isset($orientation) and $orientation == 'vertical' and $memberCount > 60}}
+            <p>
+                <a href='{url="app=core&module=online&controller=online" seoTemplate="online"}'>{lang="and_x_others" pluralize="$memberCount - 60"}</a>
+            </p>
+        {{endif}}
+    </div>
+</div>

@@ -1,0 +1,982 @@
+/* Overwrite front-end variables */
+:root{
+	--i-layout-gutter: 15px;
+}
+
+/* ACP Charts */
+svg[style*="hidden"] rect[fill="#ffffff"],
+svg[style*="hidden"] path[fill="#ffffff"]{
+	fill: var(--i-background_1);
+}
+
+svg[style*="hidden"] rect[fill="#edf0f5"]{
+	fill: var(--i-background_1);
+}
+
+svg[style*="hidden"] text[fill="#444444"]{
+	fill: var(--i-color_soft);
+}
+
+svg[style*="hidden"] text[fill="#222222"]{
+	fill: var(--i-color_hard);
+}
+
+svg[style*="hidden"] text[fill="#000000"]{
+	fill: var(--i-color_hard);
+}
+
+svg[style*="hidden"] rect[width="1"],
+svg[style*="hidden"] rect[height="1"]{
+	fill: var(--i-background_3);
+}
+
+#elLogo {
+	height: 62px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+	#elLogo img {
+		width: 30px;
+	}
+
+#acpAppList .ipsNotification {
+	top: 3px;
+	inset-inline-end: 3px;
+}
+
+	#acpAppList .acpAppList__sub .ipsNotification {
+		position: static;
+		margin-inline-start: 1em;
+	}
+
+/* Hide menu stuff */
+#acpAppList #elHideMenu {
+	width: 16px;
+	height: 32px;
+	line-height: 32px;
+	position: fixed;
+	bottom: 0;
+	z-index: 6000;
+	background: var(--i-background_1);
+	border-radius: 5px 0 0 0;
+}
+
+	#acpAppList #elHideMenu a{
+		color: inherit !important;
+	}
+
+	body.cAdminDevModeOn #acpAppList #elHideMenu {
+		bottom: 60px;
+	}
+
+	#acpAppList #elHideMenu {
+		inset-inline-start: 54px;
+		inset-inline-start: calc(60px - 16px);
+	}
+	
+	#acpAppList #elHideMenu a {
+		padding: 0 !important;
+		height: 100% !important;
+	}
+
+/* ACP search bar */
+.acpSearch{
+	background: var(--i-background_3);
+	color: var(--i-color_root);
+	border-radius: 6px;
+	flex: 1 1 100%;
+	display: flex;
+	align-items: center;
+	height: 41px;
+	margin-inline-end: 10px;
+}
+
+	.acpSearch:focus-within {
+		background: var(--i-background_1);
+		outline: 2px solid var(--i-primary);
+		outline-offset: -1px;
+	}
+
+	.acpSearch .fa-magnifying-glass{
+		margin: 0 1em;
+		opacity: .6;
+	}
+
+	#acpSearchKeyword {
+		border: 0;
+		background: transparent;
+		max-width: 100%;
+		padding: .75em 0;
+		color: inherit;
+		box-shadow: none;
+		flex: 1 1 100%;
+		outline: none;
+	}
+
+	@media (hover: none) and (max-width: 1024px) {
+		#acpSearchKeyword{
+			font-size: max(16px, 1em);
+		}
+	}
+
+	#acpSearchKeyword::-webkit-input-placeholder {
+		color: var(--i-color_soft);
+		opacity: 1;
+	}
+	#acpSearchKeyword::placeholder {
+		color: var(--i-color_soft);
+		opacity: 1;
+	}
+
+	.acpSearch__close{
+		display: none;
+	}
+
+/* Admin controls */
+#elAdminControls {
+	display: flex;
+	align-items: center;
+	flex: 0 0 auto;
+	font-size: 13px;
+	font-weight: 600;
+	margin-inline-start: auto;
+}
+
+	#elAdminControls > li > a,
+	#elAdminControls > li > button {
+		color: inherit;
+		display: flex;
+		align-items: center;
+		gap: .5em;
+		padding: 0 15px;
+		border-radius: 4px;
+		min-height: 40px;
+	}
+	@media (hover){
+		#elAdminControls > li > a:hover,
+		#elAdminControls > li > button:hover {
+			background: var(--i-background_3);
+		}
+	}
+
+		.acpHighlightLink_wrap{
+			position: relative;
+		}
+
+		#elAdminControls .acpHighlightLink {
+			color: hsl(129 70% 40%);
+		}
+		[data-ips-scheme="dark"] #elAdminControls .acpHighlightLink {
+			color: hsl(129 60% 70%);
+		}
+
+			#elAdminControls .acpHighlightLink_wrap:hover .acpHighlightLink{
+				background: color-mix(in srgb, currentColor 12%, transparent);
+			}
+
+		#elAdminControls .acpHighlightLink_close{
+			position: absolute;
+			top: -6px;
+			inset-inline-end: -6px;
+			opacity: 0;
+		}
+
+		#elAdminControls .acpHighlightLink_close a{
+			font-size: 11px;
+			width: 1.9em;
+			height: 1.9em;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 20px;
+			color: #fff;
+			background: hsl(129 30% 50%);
+		}
+
+		[data-ips-scheme="dark"] #elAdminControls .acpHighlightLink_close a{
+			background: hsl(129 40% 30%);
+		}
+
+			#elAdminControls .acpHighlightLink_wrap:hover .acpHighlightLink_close{
+				opacity: 100%;
+			}
+
+			#elAdminControls .acpHighlightLink_close i{
+				opacity: 1;
+			}
+
+	/* Notifications icon */
+	#elAdminControls .ipsNotification{
+		top: 0;
+		inset-inline-end: 0;
+	}
+
+	#elAdminControls .fa-angle-down{
+		opacity: .5;
+		font-size: .8em;
+	}
+
+	#elAdminUser{
+		padding: 0 15px;
+		cursor: pointer;
+	}
+
+		#elAdminUser .ipsUserPhoto{
+			width: 36px;
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+	#elAdminControls .ipsUserPhoto{
+		margin: 0;
+		margin-inline-end: 5px;
+	}
+
+/* Page titles */
+#acpPageHeader {
+	padding: 25px 15px 10px 15px;
+	position: relative;
+}
+
+	#acpPageHeader .ipsType_pageTitle {
+		color: inherit;
+		font-weight: 500;
+		font-size: 26px;
+		min-width: 0;
+	}
+
+	.ipsBreadcrumb--acp {
+		margin-bottom: 10px;
+	}
+
+.acpPageHeader_flex {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1em;
+}
+
+/* Main content area */
+#acpContent {
+	padding: 15px var(--i-layout-gutter);
+	/* Bad idea? */
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+
+/* Prevent content areas from collapsing (Statistics overview) */
+#acpContent > *{
+	flex: 0 0 auto;
+}
+	.acpNoPadding #acpContent {
+		padding: 0;
+	}
+
+	/* Non-responsive pages don't display properly */
+	#acpContent > .ipsResponsive_hidePhone {
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+	}
+
+/* Password hovercard */
+.ipsHovercard[data-role="advicePopup"] {
+    display: none;
+	width: 300px;
+}
+	.ipsHovercard[data-role="advicePopup"] > div {
+		min-height: 60px;
+	}
+		.ipsHovercard[data-role="advicePopup"] > div .ipsTitle {
+			font-size: 16px;
+		}
+
+.ipsHovercard[data-role="advicePopup"].cStem_ltr .ipsHovercard_stem {
+	right: 100%;
+	top: 25px;
+}
+	.ipsHovercard[data-role="advicePopup"].cStem_ltr .ipsHovercard_stem:before {
+		border-right-color: inherit;
+		left: -1px;
+	}
+	.ipsHovercard[data-role="advicePopup"].cStem_ltr .ipsHovercard_stem:after {
+		border-right-color: var(--i-background_3);
+	}
+	
+.ipsHovercard[data-role="advicePopup"].cStem_rtl .ipsHovercard_stem {
+	left: 100%;
+	top: 25px;
+	border-left-color: inherit;
+}
+	.ipsHovercard[data-role="advicePopup"].cStem_rtl .ipsHovercard_stem:before {
+		border-left-color: inherit;
+		right: -1px;
+	}
+	.ipsHovercard[data-role="advicePopup"].cStem_rtl .ipsHovercard_stem:after {
+		border-left-color: var(--i-background_3);
+	}
+	
+.ipsHovercard[data-role="advicePopup"].cStem_above .ipsHovercard_stem {
+	left: 50%;
+	margin-inline-start: -15px;
+	top: 100%;
+}
+	.ipsHovercard[data-role="advicePopup"].cStem_above .ipsHovercard_stem:before {
+		border-top-color: inherit;
+		bottom: -1px;
+	}
+	.ipsHovercard[data-role="advicePopup"].cStem_above .ipsHovercard_stem:after {
+		border-top-color: var(--i-background_3);
+	}
+
+/* Hover fallbacks for non-js */
+.ipsJS_none #acpAppList:hover > li:not( #elReorderAppMenu ) > a {
+	background: transparent;
+}
+
+.ipsJS_none #acpAppList > li:not( #elReorderAppMenu ):hover > a {
+	color: #fff;
+	background: #394248;
+}
+
+.ipsJS_none #acpAppList:hover > li > .acpAppList__sub {
+	display: none;
+}
+
+.ipsJS_none #acpAppList > li:hover > a + .acpAppList__sub {
+	display: block;
+	opacity: 1;
+}
+
+/* MISC */
+.cACPkeywords{
+	--_co: currentColor;
+	color: inherit;
+	background: var(--i-background_3);
+	background: color-mix(in srgb, var(--_co) 10%, transparent);
+	font-weight: 700;
+	cursor: pointer;
+}
+#acpPageHeader .cACPkeywords{
+	font-size: 12px;
+	vertical-align: middle;
+	margin-inline-start: 1em;
+}
+.ipsTabs .cACPkeywords{
+	margin-inline-start: 1em;
+}
+.ipsFieldRow__label .cACPkeywords:not(.ipsFieldRow__required ~ *){
+	margin-inline-start: auto;
+}
+
+
+/* NOTIFICATIONS */
+
+.cAcpNotifications {
+	font-size: 20px;
+	position: relative;
+}
+
+@keyframes notificationAnimate
+{
+    0% {transform: rotateZ(8deg) scale(1);}
+    20% {transform: rotateZ(-8deg) scale(1.2);}
+    40% {transform: rotateZ(8deg) scale(1.4);}
+    60% {transform: rotateZ(-8deg) scale(1.4);}
+    80% {transform: rotateZ(8deg) scale(1.2);}
+    100% {transform: rotateZ(0deg) scale(1);}
+}
+
+.cAcpNotifications_animate {
+	animation: notificationAnimate 0.8s ease;
+}
+
+.cNotification_error {
+	border-inline-start: 7px solid var(--i-color_negative);
+}
+.cNotification_warning {
+	border-inline-start: 7px solid var(--i-color_warning);
+}
+.cNotification_information {
+	border-inline-start: 7px solid var(--i-secondary);
+}
+.cNotification_expire {
+	border-inline-start: 7px solid var(--i-background_5);
+}
+
+/* NEW FEATURES TOUR */
+.acpNewFeature {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+
+.acpNewFeature_wrap {
+	width: 340px;
+	height: 475px;
+	background: var(--i-background_2);
+	border-radius: 3px;
+	box-shadow: 0px 5px 35px rgba(0,0,0,0.1);
+	position: relative;
+	pointer-events: auto;
+}
+
+	.acpNewFeature_inner {
+		position: absolute;
+		padding: 20px;
+		inset: 0;
+		overflow: hidden;
+	}
+
+.acpNewFeature_mainTitle {
+	font-size: 17px;
+	color: var(--i-color_root);
+	font-weight: 400;
+	text-align: center;
+	margin: 0;
+}
+
+.acpNewFeature_cardWrap {
+	margin: 20px 0;
+	position: relative;
+}
+
+	.acpNewFeature_card {
+		position:absolute;
+		inset: 0;
+	}
+
+.acpNewFeature_dots {
+	text-align: center;
+	position: absolute;
+	bottom: 10px;
+	left: 20px;
+	right: 20px;
+}
+
+	.acpNewFeature_dot {
+		display: inline-block;
+	}
+
+	.acpNewFeature_dot > a {
+		display: block;
+		border: 1px solid #3D6594;
+		border-color: var(--i-primary);
+		border-radius: 11px;
+		width: 11px;
+		height: 11px;
+		margin-inline-end: 2px;
+	}
+
+		.acpNewFeature_dot.acpNewFeature_active > a {
+			background: #3D6594;
+			background: var(--i-primary);
+		}
+
+	.acpNewFeature_dot:last-child > a {
+		margin-inline-end: 0;
+	}
+
+.acpNewFeature_info {
+	text-align: center;
+}
+
+.acpNewFeature_title {
+	text-align: center;
+	font-size: 17px;
+	margin-bottom: 0;
+	margin-top: 20px;
+}
+
+.acpNewFeature_desc {
+	text-align: center;
+	font-size: 14px;
+	margin-top: 10px;
+	opacity: 0.8;
+	max-height: 150px;
+	overflow-y: auto;
+}
+
+.acpNewFeature_image {
+	width: 340px;
+	height: 150px;
+	margin-inline-start: -20px;
+	background: var(--i-background_4);
+	border-top: 1px solid rgba(0,0,0,0.1);
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.acpNewFeature_close {
+	background: #111;
+	color: #fff;
+	font-family: 'arial', sans-serif;
+	font-size: 19px;
+	font-weight: 300;
+	width: 30px;
+	height: 30px;
+	border-radius: 30px;
+	line-height: 30px;
+	display: block;
+	position: absolute;
+	top: -10px;
+	inset-inline-end: -10px;
+	text-align: center;
+	z-index: 100;
+}
+
+	.acpNewFeature_close:hover {
+		color: #fff;
+	}
+
+.acpNewFeature_arrow {
+	font-size: 50px;
+	color: #fff;
+	position: absolute;
+	top: 50%;
+	margin-top: -30px;
+	transition: 0.2s all ease-in-out;
+	width: 60px;
+	height: 60px;
+	text-align: center;
+}
+
+	.acpNewFeature_arrow:hover {
+		color: #fff;
+	}
+
+	.acpNewFeature_prev {
+		inset-inline-start: -60px;
+	}
+	.acpNewFeature_next {
+		inset-inline-end: -60px;
+	}
+
+/* PHONES */
+@media screen and (max-width: 767px) {
+	.acpNewFeature_arrow {
+		top: auto;
+		bottom: -70px;
+	}
+	.acpNewFeature_prev {
+		inset-inline-start: 20%;
+	}
+	.acpNewFeature_next {
+		inset-inline-end: 20%;
+	}
+}
+
+/* Data rows */
+.ipsDataItem{
+	border-bottom-color: var(--i-background_3);
+}
+
+/* Hover cards */
+/* USER HOVERCARDS */
+.cUserHovercard {
+	min-height: 200px;
+}
+
+.cUserHovercard .ipsPageHead_special {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: bottom;
+	height: 85px;
+	width: 100%;
+	background-color: var(--i-background_dark);
+}
+
+.cUserHovercard .ipsPageHead_special .ipsUserPhoto {
+	position: absolute;
+	top: 35px;
+	inset-inline-start: 15px;
+}
+
+.cUserHovercard .ipsPageHead_special .ipsType_sectionHead, 
+.cUserHovercard .ipsPageHead_special p {
+	position: absolute;
+	color: #fff;
+	inset-inline-start: 110px;
+}
+.cUserHovercard .ipsPageHead_special p {
+	top: 60px;
+}
+
+.cUserHovercard .ipsPageHead_special .ipsTitle {
+	top: 28px;
+	font-size: 24px;
+	max-width: 325px;
+	line-height: 36px;
+}
+
+.cUserHovercard .cUserHovercard_data {
+	max-width: 330px;
+	margin-inline-start: 105px;
+}
+
+.cUserHovercard .ipsRepBadge {
+    width: 80px;
+    position: absolute;
+    top: 120px;
+    text-align: center;
+	inset-inline-start: 20px;
+}
+
+/* Fix white corners on color pickers in the theme settings */
+.sp-colorize-container{
+	border-radius: 4px;
+}
+
+/*
+	V5 ACP Layout
+*/
+
+.cAdminDevModeWarning {
+	display: grid;
+	place-content: center;
+	position: fixed;
+	bottom: 8px;
+	inset-inline-start: 8px;
+	width: 2.3em;
+	height: 2.3em;
+	background: #f4b738;
+	font-size: 18px;
+	color: #fff;
+	z-index: 5010;
+	transition: 0.2s background ease-in-out;
+	border-radius: 5px;
+}
+
+	.cAdminDevModeWarning:hover {
+		color: #fff;
+		background: #ce9929;
+		cursor: help;
+	}
+
+/* Columns */
+#acpMainLayout{
+	display: flex;
+}
+
+:root{
+	--acp-nav--ba-co: #0e1d30;
+	--acp-sub--ba-co: var(--i-background_1);
+}
+[data-ips-scheme="dark"]{
+	--acp-nav--ba-co: var(--i-background_1);
+	--acp-sub--ba-co: var(--i-background_2);
+}
+
+#acpAppMenu{
+	--menu-width: 220px;
+	--icon-width: 60px;
+	background: var(--acp-nav--ba-co);
+	position: sticky;
+	top: 0;
+	align-self: start;
+	height: 100vh;
+	flex: 0 0 calc(var(--menu-width) + var(--icon-width));
+}
+
+#acpAppList{
+	overflow: auto;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	overscroll-behavior: contain;
+}
+
+@media (max-width: 1899px){
+	/* Cater for Development Mode icon */
+	.cAdminDevModeOn #acpAppList{
+		padding-bottom: 60px;
+	}
+}
+
+	#acpAppList .ipsScrollbar::-webkit-scrollbar-thumb { 
+		background-color: rgba(0,0,0,0.05);
+	}
+	#acpAppList:hover .ipsScrollbar::-webkit-scrollbar-thumb { 
+		background-color: rgba(0,0,0,0.2);
+	}
+	#acpAppList .ipsScrollbar::-webkit-scrollbar-track-piece { 
+		background-color: transparent;
+	}
+	
+	.acpAppList_icon {
+		font-size: 20px;
+	}
+
+	.acpAppList__label{
+		display: none;
+	}
+
+	#acpAppList > li {
+		width: var(--icon-width);
+		flex: 0 0 auto;
+	}
+
+		#acpAppList > li > a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: var(--icon-width);
+			color: rgba(255,255,255,0.7);
+			position: relative;
+			font-weight: 550;
+		}
+
+			#acpAppList > li.acpAppList_dragging .acpAppList__sub {
+				display: none !important;
+			}
+
+			#acpAppList > li.acpAppList_active > a {
+				color: #fff;
+				background: rgba(255,255,255,0.05);
+			}
+
+		#acpAppList > li.acpAppList_active .acpAppList__sub {
+			display: block;
+		}
+
+		.acpAppList__sub {
+			color: var(--i-color_soft);
+			background: var(--acp-sub--ba-co);
+			border-inline-end: 1px solid var(--i-background_4);
+			width: var(--menu-width);
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			inset-inline-start: var(--icon-width);
+			display: none;
+			z-index: 3500;
+			line-height: 1.8;
+		}
+
+		.acpAppList__sub > ul{
+			position: sticky;
+			top: 0;
+			max-height: 100vh;
+			overflow-y: auto;
+			overscroll-behavior: contain;
+		}
+
+			:where(.acpAppList__sub > ul) > li{
+				margin-bottom: 1em;
+				padding: 0 1em;
+			}
+
+			.acpAppList_header {
+				color: var(--i-color_hard);
+				font-size: 17px;
+				font-weight: 600;
+				display: block;
+				line-height: 61px;
+				padding-inline-start: 1.5em;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				margin: 0;
+			}
+
+			.acpAppList__sub a {
+				color: var(--i-color_soft);
+				display: block;
+				padding: .25em 1em;
+				border-radius: 5px;
+			}
+
+				.acpAppList__sub a:hover{
+					color: var(--i-color_hard);
+					background: var(--i-background_2);
+				}
+
+				:where([data-ips-scheme="dark"]) .acpAppList__sub a:hover{
+					background: var(--i-background_3);
+				}
+
+				.acpAppList__sub .acpAppListItem_active a{
+					color: var(--i-color_hard);
+					background: var(--i-background_3);
+					font-weight: 600;
+				}
+				
+				:where([data-ips-scheme="dark"]) .acpAppList__sub .acpAppListItem_active a{
+					background: var(--i-background_4);
+				}
+
+			.acpAppList__sub h3 {
+				color: var(--i-color_hard);
+				padding: 1em;
+				padding-bottom: 0;
+				text-transform: uppercase;
+				font-weight: bold;
+				background: var(--acp-sub--ba-co);
+				position: -webkit-sticky;
+				position: sticky;
+				top: 0;
+				z-index: 1;
+			}
+
+			.acpAppList__sub > li {
+				margin-bottom: 20px;
+			}
+
+			.acpAppList__sub .acpModuleMenu_active {
+				font-weight: bold;
+			}
+
+/* Wider menu on larger screens */
+@media (min-width: 1900px){
+	#acpAppMenu{
+		--icon-width: 250px;
+		--menu-width: 280px;
+	}
+	#elLogo{
+		justify-content: start;
+	}
+	.acpAppList_icon{
+		font-size: 1.2em;
+		flex: 0 0 1.4em;
+		text-align: center;
+		margin-inline-end: .6em;
+	}
+	#acpAppList > li > a{
+		height: auto;
+		padding: 1em;
+		justify-content: start;
+		margin-inline: 1em;
+		border-radius: 5px;
+	}
+	.acpAppList__label{
+		display: block;
+	}
+	.acpAppList_header{
+		display: none;
+	}
+	#acpAppList .ipsNotification {
+		position: static;
+		margin-inline-start: auto;
+	}
+}
+
+/* Reorder navigation */
+#elReorderAppMenu {
+	margin-top: auto;
+	padding: 8px;
+	display: flex;
+}
+
+/* Move icon to bottom right on large screens */
+@media (min-width: 1900px){
+	#elReorderAppMenu{
+		justify-content: end;
+	}
+}
+
+/* Reorder/save buttons */
+#elReorderAppMenu button{
+	width: 2.3em;
+	height: 2.3em;
+	display: grid;
+	place-content: center;
+	font-size: 18px;
+}
+
+/* Drag handles */
+[data-role="reorder"] {
+	border-radius: 50%;
+	font-size: 11px;
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
+	text-align: center;
+	display: block;
+	cursor: grab;
+	pointer-events: auto;
+	position: absolute;
+	inset-inline-end: 0;
+}
+
+	/* Drag handles on icons */
+	#acpAppList > li > a > [data-role="reorder"] {
+		background: #f5f5f5;
+		color: #000;
+		top: calc(50% - 9px);
+		inset-inline-end: 5px;
+		z-index: 3;
+	}
+
+/* Grab cursor */
+#acpAppList > .ui-sortable-handle,
+.acpAppList__sub .ui-sortable > li{
+	cursor: grab;
+}
+.ui-sortable-handle .acpAppList__sub{
+	cursor: initial;
+}
+/* Submenus */
+.acpAppList__sub .ui-sortable > li:hover{
+	background: var(--i-background_2);
+}
+/* Remove sticky headers */
+.acpAppList__sub .ui-sortable h3{
+	background: none;
+	position: relative;
+}
+/* Placeholders while dragging */
+.acpAppList__sub .ui-sortable-placeholder{
+	outline: 2px solid currentColor;
+	outline-offset: -4px;
+	visibility: visible !important;
+	z-index: 1001;
+	position: relative;
+	border-radius: 10px;
+	opacity: .3;
+	pointer-events: none;
+}
+/* Prevent links from being clicked while reordering menus */
+#acpAppList .ui-sortable-handle a{
+	pointer-events: none;
+}
+
+	/*
+		Hide the reorder icon for the logo since it can't be repositioned
+		!important is needed to overwrite inline style tag
+	*/
+	#acpAppList #elLogo [data-role="reorder"]{
+		display: none !important;
+	}
+
+#acpMainArea{
+	flex: 1 1 100%;
+}
+
+/* Header */
+#ipsLayout_header {
+	background: var(--i-background_1);
+	color: var(--i-color_hard);
+	display: flex;
+	align-items: center;
+	position: sticky;
+	top: 0;
+	z-index: var(--i-z-index_headerPrimary);
+	box-sizing: content-box;
+	height: 61px;
+	padding: 0 10px;
+	padding-top: env(safe-area-inset-top);
+	box-shadow: hsl(0 0% 0% / .1) 0px 1px 0px 0px;
+}
+
+/* Mobile */
+@media (max-width: 979px){
+	#acpAppMenu{
+		display: none;
+	}
+}

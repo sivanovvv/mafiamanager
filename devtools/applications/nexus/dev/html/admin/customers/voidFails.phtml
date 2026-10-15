@@ -1,0 +1,7 @@
+<ips:template parameters="$fails" />
+{lang="void_account_fails"}
+<ul>
+	{{foreach $fails as $id}}
+		<li><a href='{url="app=nexus&module=payments&controller=transactions&do=view&id={$id}"}'>{lang="transaction_number" sprintf="$id"}</a></li>
+	{{endforeach}}
+</ul>

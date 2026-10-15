@@ -1,0 +1,50 @@
+<ips:template parameters="$categories" />
+
+{{if \count( $categories )}}
+	<ul class='ipsGrid i-basis_300 i-text-align_center'{{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+		{{foreach $categories as $category}}
+			<li class="{$category->ui( 'css' )}" {$category->ui( 'dataAttributes' )}>
+				<figure class='ipsFigure i-margin-bottom_2'>
+					<a href='{$category->url()}' class='ipsFigure__main i-aspect-ratio_8'>
+						{{if $category->lastImage() && $category->lastImage()->media && !$category->cover_img_id}}
+							<video preload="metadata" loading="lazy"{{if $category->lastImage()->masked_file_name }} poster="{file="$category->lastImage()->masked_file_name" extension="gallery_Images"}"{{endif}}>
+								<source src="{file="$category->lastImage()->original_file_name" extension="gallery_Images"}{{if !$category->lastImage()->masked_file_name }}#t=1{{endif}}" type='{$category->lastImage()->file_type}' />
+							</video>
+							<i class="ipsFigure__play" aria-hidden="true"></i>
+						{{elseif $category->coverPhoto('small') !== NULL}}
+							<img src="{$category->coverPhoto('small')}" alt="" loading="lazy">
+						{{else}}
+							<i class="ipsFigure__icon" aria-hidden="true"></i>
+						{{endif}}
+						<span class="ipsInvisible">{$category->_title}</span>
+					</a>
+					{{if $category->lastImage() && $category->lastImage()->media && !$category->cover_img_id}}
+						{template="nsfwOverlay" app="gallery" location="front" group="global" params="$category->lastImage()"}
+					{{elseif $category->coverPhoto('small') !== NULL}}
+		                {template="nsfwOverlay" app="gallery" location="front" group="global" params="$category->coverPhotoObject()"}
+					{{endif}}
+				</figure>
+
+				<h2 class='ipsTitle ipsTitle--h5 ipsTitle--margin'>
+					<a href='{$category->url()}'>{$category->_title}</a>
+				</h2>
+				{{if settings.clubs and settings.club_nodes_in_apps and $club = $category->club()}}
+					<div class='i-color_soft'><a href='{$club->url()}'>{$club->name}</a></div>
+				{{endif}}
+				<ul class='ipsList ipsList--inline i-color_soft i-justify-content_center i-font-size_-1'>
+					{{if $category->lastImage() !== NULL}}<li><i class='fa-regular fa-clock' aria-hidden="true"></i> {datetime="$category->lastImage()->date"}</li>{{endif}}
+					{{if $category->allow_comments && $category->_commentsForDisplay > 0}}
+						<li data-ipsTooltip title='{lang="cat_comment_count" pluralize="$category->_commentsForDisplay"}'><i class='fa-solid fa-comment' aria-hidden="true"></i> {$category->_commentsForDisplay}</li>
+					{{endif}}
+					{{if $category->allow_albums && $category->public_albums > 0}}
+						<li data-ipsTooltip title='{lang="cat_album_count" pluralize="$category->public_albums"}'><i class='fa-solid fa-table-cells-large' aria-hidden="true"></i> {$category->public_albums}</li>
+					{{endif}}
+					{{$count = \IPS\gallery\Image::contentCount( $category );}}
+					{{if $count > 0}}
+						<li data-ipsTooltip title='{lang="cat_img_count" pluralize="$count"}'><i class='fa-solid fa-camera' aria-hidden="true"></i> {number="$count"}</li>
+					{{endif}}
+				</ul>
+			</li>
+		{{endforeach}}
+	</ul>
+{{endif}}

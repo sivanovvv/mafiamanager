@@ -1,0 +1,18 @@
+<ips:template parameters="$mostHelpful" />
+{{if ( $mostHelpful[0]['comment']->hidden() == 0 OR ( \in_array( $mostHelpful[0]['comment']->hidden(), array( 1, -1 ) ) AND $mostHelpful[0]['comment']->canUnhide() ) )}}
+ <div data-role="mostHelpful">
+	<div class='ipsBox ipsBox--padding'>
+		<div class='ipsColumns i-align-items_center i-gap_3'>
+			<div class='ipsColumns__primary'>
+				<h4 class='ipsTitle ipsTitle--h5 ipsTitle--margin'>{lang="most_helpful_byline" htmlsprintf="$mostHelpful[0]['comment']->author()->name"}<span class='i-color_soft'>, {datetime="$mostHelpful[0]['comment']->mapped('date')"}</span></h4>
+				<div>
+					{$mostHelpful[0]['comment']->truncated()|raw}
+				</div>
+			</div>
+			<div class="ipsColumns__secondary">
+				<a href="{$mostHelpful[0]['comment']->url()}" rel="nofollow" class='ipsButton ipsButton--secondary ipsButton--small'><span>{lang="helpful_go_to_most_helpful"}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+			</div>
+		</div>
+	</div>
+</div>
+{{endif}}

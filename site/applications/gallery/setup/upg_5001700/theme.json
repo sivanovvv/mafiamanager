@@ -1,0 +1,29 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/global\/searchResultAlbumCommentSnippet",
+            "front\/global\/searchResultAlbumSnippet",
+            "front\/global\/searchResultCommentSnippet",
+            "front\/global\/searchResultImageSnippet",
+            "front\/submit\/postingInformation",
+            "front\/view\/image",
+            "front\/view\/imageInfo"
+        ],
+        "removed": [
+            "front\/view\/imageLightbox",
+            "front\/view\/imageLightboxFrame",
+            "front\/view\/imageLightboxInfo"
+        ]
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

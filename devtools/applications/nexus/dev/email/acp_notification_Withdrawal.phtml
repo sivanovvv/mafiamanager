@@ -1,0 +1,42 @@
+<ips:template parameters="$notification, $withdrawal, $email" />
+{$email->language->addToStack( "email_notify_withdrawal", FALSE )}
+<br><br>
+<a href='{url="app=nexus&module=payments&controller=payouts" base="admin"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("payout_view", FALSE)}</a>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>
+<br><br>
+<table cellpadding="10" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_3">
+			<strong>{$email->language->addToStack("payout_details", FALSE)}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f9f9f9" class="background_2">
+			<table width="100%" cellpadding="2" cellspacing="0" border="0">
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px"><strong>{$email->language->addToStack("payout_status", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">&nbsp;&nbsp;{$email->language->addToStack("payout_pending", FALSE)}</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px"><strong>{$email->language->addToStack("po_gateway", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">&nbsp;&nbsp;{$withdrawal->gateway}</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px; vertical-align: top;"><strong>{$email->language->addToStack("po_member", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+						&nbsp;&nbsp;{$withdrawal->member->cm_name} ({$withdrawal->member->email})
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px"><strong>{$email->language->addToStack("po_date", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">&nbsp;&nbsp;{$withdrawal->date}</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px"><strong>{$email->language->addToStack("po_amount", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">&nbsp;&nbsp;{$withdrawal->amount}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,37 @@
+<ips:template parameters="$member, $forcePass, $passSetKey, $email" />
+{expression="$email->language->addToStack( 'email_admin_reg', FALSE, array( 'sprintf' => array( \IPS\Settings::i()->board_name ) ) )"}
+<br><br>
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}'>
+			<table width='100%' cellpadding='0' cellspacing='0' border='0' style='background: #f9f9f9;' class='background_2 responsive_table'>
+				{{if $member->name}}
+					<tr class='responsive_row'>
+						<td dir='{dir}' width='150' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;"><strong>{$email->language->addToStack("username", FALSE)}:</strong></td>
+						<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">{$member->name}</td>
+					</tr>
+				{{endif}}
+				{{if $member->email}}
+					<tr class='responsive_row'>
+						<td dir='{dir}' width='150' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;"><strong>{$email->language->addToStack("email_address", FALSE)}:</strong></td>
+						<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px;">{$member->email}</td>
+					</tr>
+				{{endif}}
+			</table>
+		</td>
+	</tr>
+</table>
+<br><br>
+{{if $forcePass}}
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}' align='center'>
+			<a href='{url="app=core&module=system&controller=register&do=setPassword&mid={$member->member_id}&passkey={$passSetKey}" base="front" seoTemplate="register"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("set_password", FALSE)}</a>
+		</td>
+	</tr>
+</table>
+<br><br>
+{{endif}}
+<a href='{setting="base_url"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 12px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{expression="$email->language->addToStack( 'email_go_to_site', FALSE, array( 'sprintf' => array( \IPS\Settings::i()->board_name ) ) )"}</a>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

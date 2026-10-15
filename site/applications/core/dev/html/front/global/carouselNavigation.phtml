@@ -1,0 +1,6 @@
+<ips:template parameters="$id, $classes='', $hiddenByDefault = FALSE" />
+
+<i-carousel-navigation class='ipsCarouselNav {{if $classes}}{$classes}{{endif}}' data-carousel='{$id}' {{if $hiddenByDefault}}hidden{{endif}}>
+	<button type="button" class='ipsCarouselNav__button' data-carousel-arrow='prev'><span class="ipsInvisible">{lang="carousel_prev"}</span><i class='fa-ips' aria-hidden="true"></i></button>
+	<button type="button" class='ipsCarouselNav__button' data-carousel-arrow='next'><span class="ipsInvisible">{lang="carousel_next"}</span><i class='fa-ips' aria-hidden="true"></i></button>
+</i-carousel-navigation>

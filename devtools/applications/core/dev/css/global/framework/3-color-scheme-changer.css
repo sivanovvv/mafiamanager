@@ -1,0 +1,32 @@
+.ipsColorSchemeChanger{
+	flex: 0 0 auto;
+	display: flex;
+	gap: 1px;
+}
+
+	.ipsColorSchemeChanger button{
+		display: grid;
+		place-content: center;
+		width: 2.8em;
+		height: 2.8em;
+		border-radius: min(var(--i-design-radius), 4px);
+	}
+
+		.ipsColorSchemeChanger button:hover{
+			background-color: hsl(0 0% 100% / .1);
+			background-color: color-mix(in srgb, currentColor 10%, transparent);
+		}
+
+		.ipsColorSchemeChanger button[aria-current]{
+			background-color: hsl(0 0% 100% / .2);
+			background-color: color-mix(in srgb, currentColor 20%, transparent);
+		}
+
+	.ipsColorSchemeChanger [aria-current] :is(.fa-lightbulb, .fa-moon){
+		font-weight: bold;
+	}
+
+/* Hide if the setting says so */
+[data-ips-theme-setting-change-scheme="0"] [data-controller="core.front.core.colorScheme"]{
+	display: none;
+}

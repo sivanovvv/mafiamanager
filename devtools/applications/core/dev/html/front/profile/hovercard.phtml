@@ -1,0 +1,158 @@
+<ips:template parameters="$member, $addWarningUrl" />
+{{$rnd = mt_rand();}}
+{{$referrer = \IPS\Request::i()->referrer();}}
+{{$coverPhoto = $member->coverPhoto();}}
+<!-- When altering this template be sure to also check for similar in main profile view -->
+<div class="cUserHovercard" id="elUserHovercard_{$member->member_id}{$rnd}">
+	<div class='ipsCoverPhoto cUserHovercard__header' id='elProfileHeader_{$rnd}' data-controller='core.global.core.coverPhoto' data-url="{$member->url()->csrf()}" data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}'>
+		{{if $coverPhoto->file}}
+			<div class='ipsCoverPhoto__container'>
+				<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' alt='' loading='lazy'>
+			</div>
+		{{else}}
+			<div class='ipsCoverPhoto__container'>
+				<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$member->coverPhotoBackgroundColor()};"></div>
+			</div>
+		{{endif}}
+	</div>
+	<div class='cUserHovercard__grid i-grid i-gap_lines'>
+		<div class='i-padding_2 i-flex i-align-items_center'>
+			<div class='i-flex_11 ipsPhotoPanel'>
+				<a href='{$member->url()}' class="ipsUserPhoto">
+					<img src='{$member->photo}' alt='' loading="lazy">
+				</a>
+				<div class='ipsPhotoPanel__text'>
+					<div class='ipsTitle ipsTitle--h4'>
+						<a href='{$member->url()}'>{$member->name}</a>
+						{{if \IPS\Member::loggedIn()->member_id AND \IPS\Member::loggedIn()->member_id === $member->member_id AND $member->isOnlineAnonymously()}}
+							<span class='cProfileHeader_history' title='{lang="member_is_currently_anon"}' data-ipsTooltip>
+								<i class='fa-solid fa-eye-slash' aria-hidden="true"></i>
+							</span>
+						{{endif}}
+					</div>
+					<div class='ipsPhotoPanel__secondary i-font-weight_600'>
+						{expression="\IPS\Member\Group::load( $member->member_group_id )->formattedName" raw="true"}
+					</div>
+				</div>
+			</div>
+			{{if ( \IPS\Member::loggedIn()->modPermission('can_flag_as_spammer') AND $member->member_id != \IPS\Member::loggedIn()->member_id ) || member.canWarn( $member ) || \IPS\Member::loggedIn()->modPermission('can_manage_alerts')}}
+				<button type="button" id="elUserHovercard_{$member->member_id}{$rnd}_more" popovertarget="elUserHovercard_{$member->member_id}{$rnd}_more_menu" title='{lang="moderator_tools"}...' data-ipsTooltip class='i-flex_00 ipsButton ipsButton--inherit'><i class="fa-solid fa-ellipsis" aria-hidden="true"></i><span class="ipsInvisible">{lang="moderator_tools"}...</span></button>
+				<i-dropdown popover id="elUserHovercard_{$member->member_id}{$rnd}_more_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{if member.modPermission('can_flag_as_spammer') and $member->member_id != member.member_id and $member->canBeFlaggedAsSpammer()}}
+								{{if $member->members_bitoptions['bw_is_spammer']}}
+									<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$member->member_id}&s=0&referrer={$referrer}" seoTemplate="flag_as_spammer" seoTitle="$member->members_seo_name" csrf="true"}' data-confirm data-confirmSubMessage="{lang="spam_unflag_confirm"}"><i class="fa-solid fa-flag" aria-hidden="true"></i> {lang="spam_unflag"}</a></li>
+								{{else}}
+									<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$member->member_id}&s=1&referrer={$referrer}" seoTemplate="flag_as_spammer" seoTitle="$member->members_seo_name" csrf="true"}' data-confirm><i class="fa-solid fa-flag" aria-hidden="true"></i> {lang="spam_flag"}</a></li>
+								{{endif}}
+							{{endif}}
+							{{if member.canWarn( $member )}}
+								<li><a href="{$addWarningUrl}" title='{lang="warn_user_title"}' data-ipsDialog data-ipsDialog-title='{lang="warn_user"}' data-ipsDialog-destructOnClose><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {lang="warn_user"}</a></li>
+							{{endif}}
+							{{if \IPS\Member::loggedIn()->modPermission('can_manage_alerts')}}
+								<li><a href='{url="app=core&module=modcp&controller=modcp&tab=alerts&action=create&user={$member->member_id}" seoTemplate="modcp_alerts"}' title='{lang="alert_send"}' data-ipsDialog data-ipsDialog-title='{lang="alert_send"}' data-ipsDialog-destructOnClose><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> {lang="alert_send"}</a></li>
+							{{endif}}
+						</ul>
+					</div>
+				</i-dropdown>
+			{{endif}}
+		</div>
+		<div class='i-flex i-flex-wrap_wrap i-justify-content_space-between i-align-items_center'>
+			<div>
+				<div class='i-color_soft i-font-weight_500'>{lang="members_joined"}</div>
+				<div class='i-color_hard i-font-size_2 i-font-weight_600'>{datetime="$member->joined"}</div>
+			</div>
+			{{if $member->last_activity && ( ( !$member->isOnlineAnonymously() ) OR ( $member->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+				<div class='i-text-align_end'>
+					<div class='i-color_soft i-font-weight_500'>
+						{{if $member->isOnline() AND ( !$member->isOnlineAnonymously() OR ( $member->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+							<span class='ipsOnline' data-ipsTooltip title='{{if $member->isOnlineAnonymously()}}{lang="online_now_anon" sprintf="$member->name"}{{elseif $member->isOnline()}}{lang="online_now" sprintf="$member->name"}{{endif}}'></span> {lang="members_online_now"}
+						{{elseif $member->last_activity}}
+							<div>{lang="members_last_visit"}</div>
+							<div class='i-color_hard i-font-size_2 i-font-weight_600'>{datetime="$member->last_activity"}</div>
+						{{endif}}
+					</div>
+				</div>
+			{{endif}}
+		</div>
+		<div class="ipsFluid i-gap_lines i-padding_0" data-ips-hook="profileHoverStats">
+			<div class='i-grid i-place-content_center i-text-align_center i-padding_1'>
+				<div class='i-color_hard i-font-size_3 i-font-weight_600'>{number="$member->member_posts" format="short"}</div>
+				<div class='i-color_soft i-font-weight_500'>{lang="members_member_posts"}</div>
+			</div>
+			{{if settings.reputation_enabled and settings.reputation_show_profile}}
+				<div class='i-grid i-place-content_center i-text-align_center i-padding_1'>
+					<div class='i-color_hard i-font-size_3 i-font-weight_600'>{number="$member->pp_reputation_points" format="short"}</div>
+					<div class='i-color_soft i-font-weight_500'>{lang="reputation_title"}</div>
+				</div>
+			{{endif}}
+			{{if $member->canHaveAchievements() and \IPS\core\Achievements\Badge::show() AND \IPS\core\Achievements\Badge::getStore()}}
+				<div class='i-grid i-place-content_center i-text-align_center i-padding_1'>
+					<div class='i-color_hard i-font-size_3 i-font-weight_600'>{number="$member->badgeCount()" format="short"}</div>
+					<div class='i-color_soft i-font-weight_500'>{lang="badges"}</div>
+				</div>
+			{{endif}}
+		</div>
+		{{if $member->canHaveAchievements() and \IPS\core\Achievements\Rank::show() AND ( \count( \IPS\core\Achievements\Rank::getStore() ) && $member->rank() ) || ( \count( \IPS\core\Achievements\Badge::getStore() ) && \count( $member->recentBadges( 5 ) ) )}}
+			<div class='i-flex i-align-items_center i-flex-wrap_wrap'>
+				<div class='i-flex i-align-items_center i-gap_2'>
+					{{if \IPS\core\Achievements\Rank::getStore() && $rank = $member->rank()}}
+						<div class='i-flex_00' style="width:30px">{$rank->html( '' )|raw}</div>
+						<div>
+							<div class='i-color_hard i-font-weight_600'>{$rank->_title}</div>
+							{{if $rankEarned = $member->rankEarned()}}
+								<p class='i-color_soft i-font-weight_500'>{datetime="$rankEarned" format="short"}</p>
+							{{endif}}
+						</div>
+					{{endif}}
+				</div>
+				{{if \IPS\core\Achievements\Badge::show() AND \IPS\core\Achievements\Badge::getStore()}}
+					{{$recentBadges = $member->recentBadges( 5 );}}
+					{{if \count( $recentBadges )}}
+						<ul class="i-margin-start_auto i-flex i-gap_1">
+							{{foreach $recentBadges as $badge}}
+								<li style="width:30px">
+									{$badge->html( 'ipsCaterpillar__badge', TRUE, TRUE )|raw}
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+				{{endif}}
+			</div>
+		{{endif}}
+		{{if \IPS\Settings::i()->warn_on and !$member->inGroup( explode( ',', \IPS\Settings::i()->warn_protected ) ) and ( \IPS\Member::loggedIn()->modPermission('mod_see_warn') or ( \IPS\Settings::i()->warn_show_own and \IPS\Member::loggedIn()->member_id == $member->member_id ) )}}
+			<p class='i-text-align_center'>
+				<i class="fa-regular fa-thumbs-down i-margin-end_icon" aria-hidden="true"></i>{lang="member_warn_level" pluralize="$member->warn_level"}
+			</p>
+		{{endif}}
+		{{if \IPS\Member::loggedIn()->modPermission('can_see_emails')}}
+			<p class='i-text-align_center'>
+				<i class="fa-regular fa-envelope i-margin-end_icon" aria-hidden="true"></i><a href='mailto:{$member->email}' title='{lang="email_this_user"}'>{$member->email}</a>
+			</p>
+		{{endif}}
+		<div class='i-border-end-start-radius_box i-border-end-end-radius_box'>
+			<div class='ipsButtons ipsButtons--fill' data-ips-hook="profileHoverButtons">
+				{{if ( \IPS\Member::loggedIn()->member_id and \IPS\Member::loggedIn()->member_id !== $member->member_id ) && !$member->members_disable_pm and !\IPS\Member::loggedIn()->members_disable_pm and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+					<a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$member->member_id}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}" data-ipsDialog-forceReload class='ipsButton ipsButton--inherit'><i class="fa-regular fa-envelope" aria-hidden="true"></i><span>{lang="message_send"}</span></a>
+				{{endif}}
+				{{if \IPS\Member::loggedIn()->member_id && $member->canBeIgnored() and \IPS\Member::loggedIn()->member_id !== $member->member_id }}
+					<a href="{url="app=core&module=system&controller=ignore&id={$member->member_id}" seoTemplate="ignore"}" class='ipsButton ipsButton--inherit'><i class="fa-solid fa-user-slash" aria-hidden="true"></i><span>{lang="add_ignore"}</span></a>
+				{{endif}}
+				<a href="{url="app=core&module=members&controller=profile&do=content&id={$member->member_id}" base="front" seoTemplate="profile_content" seoTitle="$member->members_seo_name"}" class='ipsButton ipsButton--primary'><i class="fa-regular fa-file-lines" aria-hidden="true"></i><span>{lang="find_content"}</span></a>
+			</div>
+		</div>
+	</div>
+
+{{if \IPS\core\DataLayer::enabled()}}
+<script>
+    if ( IpsDataLayerConfig && !window.IpsDataLayerConfig && IpsDataLayerConfig._events.social_view.enabled ) {
+        $('body').trigger( 'ipsDataLayer', {
+            _key: 'social_view',
+            _properties: {expression="json_encode(\IPS\core\DataLayer::i()->getMemberProfileEventProperties( $member, ['view_location' => 'hovercard'] ))" raw="true"}
+        } );
+    }
+</script>
+{{endif}}
+
+</div>

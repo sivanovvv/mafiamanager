@@ -1,0 +1,21 @@
+<ips:template parameters="$notification, $extra, $email" />
+{{if $notification->extra === 'missing' or $notification->extra === 'url'}}
+	{$email->language->addToStack("license_error_none")}
+	<br><br>
+{{else}}
+	{{if $notification->extra === 'expireSoon'}}
+		{$email->language->addToStack("license_renewal_soon_email")}<br>
+	{{else}}
+		{$email->language->addToStack("license_expired_email")}<br>
+	{{endif}}
+	<br>
+	{$email->language->addToStack("license_benefits_info")}
+	<br><br>
+	<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+		<tr>
+			<td dir='{dir}' align='center'>
+				<a href='{url="renew_my_license" ips="true"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("license_renew_now", FALSE)}</a>
+			</td>
+		</tr>
+	</table>
+{{endif}}

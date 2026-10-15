@@ -1,0 +1,8 @@
+<ips:template parameters="$points" />
+{{if $rank = \IPS\core\Achievements\Rank::fromPoints( $points )}}
+	{$rank->html('ipsTree__thumb')|raw}
+	{$rank->_title}
+	<span class="i-color_soft i-font-size_-1">({lang="achievements_awards_points_short" pluralize="$points"})</span>
+{{else}}
+	<span class="i-color_soft">{lang="achievements_awards_points_short" pluralize="$points"}</span>
+{{endif}}

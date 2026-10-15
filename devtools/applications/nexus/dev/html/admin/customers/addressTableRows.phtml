@@ -1,0 +1,34 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{$billing = null;}}
+
+{{foreach $rows as $row}}
+	{{if $row['primary_billing'] == true}}
+		{{$billing = $row;}}
+	{{endif}}
+{{endforeach}}
+
+{{if $billing}}
+	<div class='ipsSpanGrid'>
+		{{if $billing}}
+			<div class='ipsSpanGrid__6 i-background_2 i-padding_3'>
+				<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_1'>{lang="address_default_billing"}</h2>
+				{template="addressItem" group="customers" app="nexus" params="$billing"}
+			</div>
+		{{endif}}
+	</div>
+{{endif}}
+
+<hr class='ipsHr'>
+
+{{if ( $billing && \count( $rows ) > 1 ) || ( !$billing && \count( $rows ) )}}
+	<ul class='ipsGrid i-basis_340'>
+		{{foreach $rows as $row}}
+			{{if !$row['primary_billing']}}
+				<li>
+					{template="addressItem" group="customers" app="nexus" params="$row"}
+				</li>
+			{{endif}}
+		{{endforeach}}
+	</ul>
+{{endif}}

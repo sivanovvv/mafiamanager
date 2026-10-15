@@ -1,0 +1,24 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if empty( $rows )}}
+	<li class='ipsData__item'>
+		<div class='ipsEmptyMessage'>
+			{lang="no_results"}
+		</div>
+	</li>
+{{else}}
+	{{foreach $rows as $r}}
+		<li class='ipsData__item'>
+			<div class='ipsData__content'>
+				{{foreach $r as $k => $v}}
+					<div class='i-basis_180'>
+						{{if $k === '_buttons'}}
+							{template="controlStrip" params="$v" group="global" app="core"}
+						{{else}}
+							{$v|raw}
+						{{endif}}
+					</div>
+				{{endforeach}}
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

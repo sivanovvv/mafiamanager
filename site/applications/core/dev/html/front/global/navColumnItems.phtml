@@ -1,0 +1,64 @@
+<ips:template parameters="$roots, $subBars=NULL, $parent=0, $preview=FALSE" />
+{{foreach $roots as $id => $item}}
+	{{if $preview or ( $item->canView() and $item->isAvailableFor( \IPS\Theme::i()->getLayoutValue('global_view_mode') === 'side' ? 'sidebar' : 'header' ))}}
+		{{$active = $item->activeOrChildActive();}}
+		{{if $active}}
+			{{\IPS\core\FrontNavigation::i()->activePrimaryNavBar = $item->id;}}
+		{{endif}}
+		<li {{if $active}}aria-current="page"{{endif}} data-navApp="{expression="mb_substr( \get_class( $item ), 4, mb_strpos( \get_class( $item ), '\\', 4 ) - 4 )"}" data-ips-hook="navColumnItem">
+			{{$children = $item->children();}}
+			{{if $children}}
+				<details {{if !$item->isSideBarItemCollapsed()}}open{{endif}} data-action="collapseLinks" data-id="{$item->id}">
+					<summary>
+						<span class="ipsNavPanel__icon" aria-hidden="true">
+							{{if $item->getIconData()}}
+								{$item->getIconData()|raw}
+							{{else}}
+								<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+							{{endif}}
+						</span>
+						<span>{$item->title()}</span>
+						<i class="fa-solid fa-angle-down ipsNavPanel__toggle-list" aria-hidden="true"></i>
+					</summary>
+					<i-details-content>
+						<ul id='elNavSecondary_{$item->id}'>
+							{template="navColumnChildren" app="core" group="global" location="front" params="$children, $preview"}
+						</ul>
+					</i-details-content>
+				</details>
+			{{else}}
+				{{if $subBars && isset( $subBars[ $id ] ) && \count( $subBars[ $id ] )}}
+					<details {{if !$item->isSideBarItemCollapsed()}}open{{endif}} data-action="collapseLinks" data-id="{$item->id}">
+						<summary>
+							<span class="ipsNavPanel__icon" aria-hidden="true">
+								{{if $item->getIconData()}}
+									{$item->getIconData()|raw}
+								{{else}}
+									<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+								{{endif}}
+							</span>
+							<span>{$item->title()}</span>
+							<i class="fa-solid fa-angle-down ipsNavPanel__toggle-list" aria-hidden="true"></i>
+						</summary>
+						<i-details-content>
+							<ul id='elNavSecondary_{$item->id}'>
+								{template="navColumnItems" app="core" group="global" location="front" params="$subBars[ $id ], NULL, $item->id, $preview"}
+							</ul>
+						</i-details-content>
+					</details>
+				{{else}}
+					<a href="{{if $item->link()}}{$item->link()}{{else}}#{{endif}}" {{if method_exists( $item, 'target' ) AND $item->target()}}target='{$item->target()}'{{if $item->target() == '_blank'}} rel="noopener"{{endif}}{{endif}} data-navItem-id="{$item->id}">
+						<span class="ipsNavPanel__icon" aria-hidden="true">
+							{{if $item->getIconData()}}
+								{$item->getIconData()|raw}
+							{{else}}
+								<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+							{{endif}}
+						</span>
+						<span>{$item->title()}</span>
+					</a>
+				{{endif}}
+			{{endif}}
+		</li>
+	{{endif}}
+{{endforeach}}

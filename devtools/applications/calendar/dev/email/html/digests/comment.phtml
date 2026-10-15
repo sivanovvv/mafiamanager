@@ -1,0 +1,42 @@
+<ips:template parameters="$comment, $email" />
+<tr style='border-bottom: 1px solid #eeeeee' class='border-bottom'>
+	<td dir='{dir}' width='120' valign='top' align='center'>
+		<table width='120' cellpadding='10' cellspacing='0' border='0' bgcolor='#fafafa' class="background_2">
+			<tr>
+				<td dir='{dir}'>
+					<table width='100' cellpadding='0' cellspacing='0' border='0' bgcolor='#ffffff' style='border: 1px solid #cccccc;' class="background_1">
+						<tr>
+							<td dir='{dir}' align='center' style="color: #a93848; font-size: 18px; line-height: 30px; text-transform: uppercase; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-weight: bold; padding-top: 5px;">
+								{$comment->item()->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->monthNameShort}
+							</td>
+						</tr>
+						<tr>
+							<td dir='{dir}' align='center' style="line-height: 40px; font-size: 44px; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-weight: 300; padding-bottom: 10px">
+								{$comment->item()->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->mday}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+	<td dir='{dir}' align='left'>
+		<p style='font-family: system-ui, "Helvetica Neue", helvetica, sans-serif; margin: 0; font-size: 13px; font-weight: bold'>
+			{$email->language->addToStack("x_commented_event", FALSE, array( 'sprintf' => array( $comment->author()->name ) ) )}
+		</p>
+		<h2 style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; font-weight: 500 !important; margin: 0">
+			<a href='{$comment->item()->url()}' style='text-decoration: none;'>{$comment->item()->name}</a>
+		</h2>
+		<p style='font-family: system-ui, "Helvetica Neue", helvetica, sans-serif; margin: 0; font-size: 13px;' class="color_soft">
+			{$email->language->addToStack("digest_event_on", FALSE)} {$comment->item()->_start_date->dayName} {$comment->item()->_start_date->mday} {$comment->item()->_start_date->monthName} {$comment->item()->_start_date->year}{{if !$comment->item()->all_day}}, {$comment->item()->_start_date->localeTime( FALSE )}{{endif}}
+			{{if $comment->item()->_end_date}}
+				&nbsp;&nbsp;&raquo;&nbsp;&nbsp;
+				{$comment->item()->_end_date->dayName} {$comment->item()->_end_date->mday} {$comment->item()->_end_date->monthName} {$comment->item()->_end_date->year}{{if !$comment->item()->all_day}}, {$comment->item()->_end_date->localeTime( FALSE )}{{endif}}
+			{{endif}}
+		</p>
+		<div style='font-family: system-ui, "Helvetica Neue", helvetica, sans-serif; line-height: 22px; margin-top: 10px; margin-bottom: 10px; border-left: 3px solid #8c8c8c; padding-left: 15px; font-size: 14px; margin-left: 15px'>
+			{$email->parseTextForEmail( $comment->content(), $email->language )|raw}
+		</div>
+		
+	</td>
+</tr>

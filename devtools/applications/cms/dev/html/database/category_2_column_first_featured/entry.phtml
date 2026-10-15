@@ -1,0 +1,67 @@
+<ips:template parameters="$record, $database, $id, $featured = TRUE" />
+<article class='ipsCmsEntries__item ipsBox {{if $record->hidden()}}ipsModerated{{endif}} {{if $featured}}ipsCmsEntries__item--featured{{endif}}'>
+	<div class="ipsCmsEntries__align">
+		<div class="ipsCmsEntries__primary">
+			<header class="ipsCmsEntries__header">
+				<h2 class='ipsTitle ipsTitle--h4'>
+					<span class="ipsBadges">
+						{template="assignmentBadge" app="core" group="global" params="$record, ''"}
+						{{if $record->prefix()}}
+							{template="prefix" group="global" app="core" params="$record->prefix( TRUE ), $record->prefix()"}
+						{{endif}}
+						{{foreach $record->badges() as $badge}}{$badge|raw}{{endforeach}}
+					</span>
+					{{if $record->unread()}}
+						<a href='{$record->url("getNewComment")}' class='ipsIndicator' data-ipsTooltip='{lang="cms_unread_record"}'><span class="ipsInvisible">{lang="cms_unread_record"}</span></a>
+					{{endif}}
+					<a href='{$record->url( "getPrefComment" )}' title='{lang="read_more_about" sprintf="$record->_title"}'>{wordbreak="$record->_title"}</a>
+				</h2>
+			</header>
+			{{if \count( $record->customFieldsForDisplay('listing') )}}
+				<div class='ipsCmsEntries__fields i-color_soft'>
+					{{foreach $record->customFieldsForDisplay('listing') as $fieldId => $fieldValue}}
+						{{if $fieldValue}}
+							{$fieldValue|raw}
+						{{endif}}
+					{{endforeach}}
+				</div>
+			{{endif}}
+			<section class='ipsCmsEntries__snippet ipsRichText ipsTruncate_7'>
+				{$record->truncated()|raw}
+			</section>
+			{{if \count( $record->tags() )}}
+				<div class="ipsCmsEntries__tags">
+					{template="tags" group="global" app="core" params="$record->tags()"}
+				</div>
+			{{endif}}				
+		</div>
+		<div class="ipsCmsEntries__thumb">
+			<a href='{$record->url( "getPrefComment" )}' title='{lang="read_more_about" sprintf="$record->_title"}' tabindex="-1" aria-hidden="true" class="ipsThumb">
+				{{if $record->record_image}}
+					<img src='{file="$record->record_image" extension="cms_Records"}' loading="lazy" alt="">
+				{{else}}
+					<i class="fa-regular fa-image" aria-hidden="true"></i>
+				{{endif}}
+			</a>
+		</div>
+	</div>
+	<div class="ipsCmsEntries__meta i-border-top_2 i-padding_2 i-flex i-align-items_center i-gap_2 i-flex-wrap_wrap i-color_soft">
+		<div class='ipsPhotoPanel ipsPhotoPanel--small i-align-items_center i-margin-end_auto'>
+			{template="userPhoto" app="core" params="$record->author()" group="global"}
+			<div class='ipsPhotoPanel__text'>
+				<div>
+					{lang="cms_byline" htmlsprintf="$record->author()->link( NULL, NULL, $record->isAnonymous() ), $record->container()->url(), $record->container()->_title"} &middot; {datetime="$record->mapped( 'date' )"}
+				</div>
+			</div>
+		</div>
+		<ul class='ipsList ipsList--inline'>
+			{{if $record::database()->options['reviews']}}
+				<li>{template="rating" app="core" params="'small', $record->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $record->memberReviewRating()" group="global"}</li>
+			{{elseif $record->container()->allow_rating}}
+				<li>{template="rating" group="global" location="front" app="core" params="'small', $record->rating_value, \IPS\Settings::i()->reviews_rating_out_of"}
+			{{endif}}
+			{{if $record::database()->options['comments']}}<li><a href='{$record->url()}#comments' title='{lang="view_comments"}'>{lang="num_comments" pluralize="$record->record_comments"}</a></li>{{endif}}
+			<li>{lang="num_views_with_number" pluralize="$record->record_views"}</li>
+		</ul>
+	</div>
+</article>

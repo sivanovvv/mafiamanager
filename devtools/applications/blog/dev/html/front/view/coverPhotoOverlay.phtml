@@ -1,0 +1,45 @@
+<ips:template parameters="$blog" />
+<div class="ipsCoverPhotoMeta">
+	{{if ( $blog->owner() instanceof \IPS\Member ) && \IPS\Request::i()->module == 'view'}}
+		<div class='ipsCoverPhoto__avatar'>
+			{template="userPhoto" group="global" app="core" params="$blog->owner(), 'fluid'"}
+		</div>
+	{{endif}}
+	
+	<div class='ipsCoverPhoto__titles'>
+		<div class='ipsCoverPhoto__title' data-ips-hook='title'>
+			<h1>
+				<a href='{$blog->url()}' title='{lang="go_to_blog" sprintf="$blog->_title"}'>{$blog->_title}</a>
+			</h1>
+			{{if $blog->pinned}}
+				<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa-solid fa-thumbtack' aria-hidden="true"></i></span>
+			{{endif}}
+		</div>
+		<div class='ipsCoverPhoto__subTitle' data-ips-hook='metadata'>
+			{{if $blog->owner() instanceof \IPS\Member}}
+				{lang="blog_by" htmlsprintf="$blog->owner()->link(), $blog->category()->link()"}
+			{{elseif $club = $blog->club()}}
+				<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="club_blog_for" sprintf="$club->name"}
+			{{else}}
+				<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="group_blog_by" htmlsprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $blog->id ), $blog->category()->link()"}
+			{{endif}}
+		</div>
+	</div>
+	<ul class='ipsCoverPhoto__stats' data-ips-hook='stats'>
+		<li>
+			<h4 class='ipsCoverPhoto__statTitle'>{lang="blog_entries" pluralize="$blog->_items"}</h4>
+			<span class='ipsCoverPhoto__statValue'>{number="$blog->_items"}</span>
+		</li>
+		<li>
+			<h4 class='ipsCoverPhoto__statTitle'>{lang="blog_comments" pluralize="$blog->_comments"}</h4>
+			<span class='ipsCoverPhoto__statValue'>{number="$blog->_comments"}</span>
+		</li>
+		<li>
+			<h4 class='ipsCoverPhoto__statTitle'>{lang="blog_views" pluralize="$blog->num_views"}</h4>
+			<span class='ipsCoverPhoto__statValue'>{number="$blog->num_views"}</span>
+		</li>
+	</ul>
+	<div class='ipsCoverPhoto__buttons' data-ips-hook='buttons'>
+		{template="follow" app="core" group="global" params="'blog', 'blog', $blog->_id, \IPS\blog\Entry::containerFollowerCount( $blog )"}
+	</div>
+</div>

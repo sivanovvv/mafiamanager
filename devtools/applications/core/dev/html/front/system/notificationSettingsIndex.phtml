@@ -1,0 +1,92 @@
+<ips:template parameters="$categories" />
+<div class="ipsBox ipsBox--notificationOptions ipsPull">
+	<h1 class="ipsBox__header">{lang="notification_options"}</h1>
+	<div class='ipsBox__content'>
+		<ul class="cNotificationTypes" >
+			{{foreach $categories as $k => $enabled}}
+				{template="notificationSettingsIndexRow" group="system" params="$k, $enabled"}
+			{{endforeach}}
+		</ul>
+	</div>
+</div>
+<div class="ipsBox ipsBox--notificationReceive ipsPull">
+	<h2 class="ipsBox__header">{lang="where_you_receive_notifications"}</h2>
+	<div class="ipsFluid i-gap_lines i-basis_300 i-border-end-start-radius_box i-border-end-end-radius_box i-overflow_hidden">
+		<div class="i-padding_3 i-flex i-gap_3">
+			<div class="i-font-size_6 i-flex_00">
+				<i class="fa-regular fa-bell" aria-hidden="true"></i>
+			</div>
+			<div class="i-flex_11">
+				<h3 class="ipsTitle ipsTitle--h5">{lang="member_notifications_inline"}</h3>
+				<p class="i-color_soft">{lang="member_notifications_inline_desc"}</p>
+			</div>
+		</div>
+		{{if \IPS\Notification::webPushEnabled() || \count( \IPS\Member::loggedIn()->getPwaAuths() )}}
+			<div class="i-padding_3">
+				<div class="i-flex i-gap_3">
+					<div class="i-font-size_6 i-flex_00">
+						<i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+					</div>
+					<div class="i-flex_11">
+						<h3 class="ipsTitle ipsTitle--h5">{lang="member_notifications_push"}</h3>
+						<p class="i-color_soft">{lang="member_notifications_push_desc"}</p>
+					</div>
+				</div>
+				{{if \IPS\Notification::webPushEnabled()}}
+					<i-push-notifications-prompt data-persistent hidden class="ipsPushNotificationsPrompt i-margin-top_3">
+						<div data-role="content"></div>
+						<template data-value="default">
+							<button class="ipsButton ipsButton--positive ipsButton--wide" type="button" data-click="requestPermission">
+								<i class="fa-solid fa-bell" aria-hidden="true"></i>
+								<span>{lang="mobile_enable_push_button"}</span>
+							</button>
+						</template>
+						<template data-value="granted">
+							<button class="ipsPushNotificationsPrompt__button" type="button" popovertarget="iPushNotificationsPromptPopover">
+								<i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+								<span class="i-flex_11">{lang="mobile_push_enabled_thanks"} {lang="mobile_push_learn_disable"}</span>
+							</button>
+						</template>
+						<template data-value="denied">
+							<button class="ipsPushNotificationsPrompt__button i-color_negative" type="button" popovertarget="iPushNotificationsPromptPopover">
+								<i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
+								<span class="i-flex_11">{lang="mobile_push_rejected_button"}</span>
+							</button>
+						</template>
+					</i-push-notifications-prompt>
+				{{endif}}
+			</div>
+		{{endif}}
+		<div class="i-padding_3 i-flex i-gap_3">
+			<div class="i-font-size_6 i-flex_00">
+				<i class="fa-regular fa-envelope" aria-hidden="true"></i>
+			</div>
+			<div class="i-flex_11">
+				<h3 class="ipsTitle ipsTitle--h5">{lang="member_notifications_email"}</h3>
+				<p class="i-color_soft">{lang="member_notifications_email_desc" sprintf="\IPS\Member::loggedIn()->email"}</p>
+				<div class='ipsButtons ipsButtons--start i-margin-top_2'>
+					<a href="{url="app=core&module=system&controller=notifications&do=disable&type=email" csrf="true"}" class='ipsButton ipsButton--small ipsButton--inherit' data-confirm><span>{lang="member_notifications_email_stop"}</span><i class='fa-solid fa-angle-right' aria-hidden="true"></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{if \IPS\core\Stream\Subscription::hasSubscribedStreams() }}
+	<div class="ipsBox ipsBox--notificationSubscriptions ipsPull">
+	    <h2 class='ipsBox__header'>{lang='stream_subscriptions'}</h2>
+		<i-data>
+			<ul class='ipsData ipsData--table ipsData--stream-subscriptions'>
+				{{foreach \IPS\core\Stream\Subscription::getSubscribedStreams() as $stream }}
+					<li class='ipsData__item'>
+						<div class='ipsData__main'>
+							<a href="{$stream->stream->url()}">{$stream->stream->_title}</a>
+						</div>
+						<div>
+						<a href="{$stream->stream->url()->setQueryString('do','unsubscribe')->csrf()}" data-confirm data-confirmSubMessage="{lang="stream_unsubscribe_confirm"}" >{lang="stream_unsubscribe"}</a>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

@@ -1,0 +1,72 @@
+<ips:template parameters="$blog, $url" />
+<div class='ipsRichEmbed ipsRichEmbed--blog'>
+	<div class='ipsRichEmbed_header'>
+		{{if !( $blog->owner() instanceof \IPS\Member ) and \count( $blog->contributors() )}}
+			<div>
+				<p class='i-font-weight_600 i-color_hard ipsTruncate_1'>
+					<a href='{$blog->url()}'>{$blog->_title}</a>
+				</p>
+				{{if $blog->latestEntry()}}
+					<p class='i-color_soft ipsTruncate_1 i-link-color_inherit'>
+						<a href='{$blog->url()}'>{lang="blog_last_entry_date" htmlsprintf="\IPS\DateTime::ts( $blog->latestEntry()->mapped('date') )->html( false )"}</a>
+					</p>
+				{{endif}}
+			</div>
+		{{else}}
+			<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+				{template="userPhoto" app="core" group="global" params="$blog->owner(), 'tiny'"}
+				<div class='ipsPhotoPanel__text'>
+					<p class='ipsPhotoPanel__primary ipsTruncate_1'>
+						<a href='{$blog->url()}'>{lang="x_created_blog" sprintf="$blog->owner()->name"}</a>
+					</p>
+					{{if $blog->latestEntry()}}
+						<p class='ipsPhotoPanel__secondary ipsTruncate_1'>
+							<a href='{$blog->url()}'>{lang="blog_last_entry_date" htmlsprintf="\IPS\DateTime::ts( $blog->latestEntry()->mapped('date') )->html( false )"}</a>
+						</p>
+					{{endif}}
+				</div>
+			</div>
+		{{endif}}
+		<a href='{$blog->url()}' class='ipsRichEmbed_openItem'><i class='fa-solid fa-arrow-up-right-from-square' aria-hidden="true"></i></a>
+	</div>
+	{{if $blog->coverPhoto() && $blog->coverPhoto()->file}}
+		{{$photo = $blog->coverPhoto()->file;}}
+		<a href='{$blog->url()}' class='ipsRichEmbed_masthead' title='{$blog->_title}'>
+			<img src='{$photo->url}' alt='{$blog->_title}' loading="lazy">
+		</a>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+
+		<ul class='ipsList ipsList--inline'>
+			<li>{lang="num_blog_entries" pluralize="$blog->_items"}</li>
+			<li>{lang="num_blog_comments" pluralize="$blog->_comments"}</li>
+			<li>{lang="num_blog_views" pluralize="$blog->num_views"}</li>
+		</ul>
+
+		{{if $blog->description}}
+			<div class='ipsRichEmbed__snippet'>
+				{$blog->description|raw}
+			</div>
+		{{endif}}
+
+		{{if $blog->latestEntry()}}
+			<hr class='ipsHr'>
+			<p class='i-margin-top_2'>
+				<span class='i-color_soft'>{lang="latest_entry"}:</span> <a href='{$blog->latestEntry()->url( "getPrefComment" )}' title="{$blog->latestEntry()->mapped('title')}">{$blog->latestEntry()->mapped('title')}</a>
+			</p>
+		{{endif}}
+	</div>
+
+	{{if !( $blog->owner() instanceof \IPS\Member ) and \count( $blog->contributors() )}}
+		<div class='ipsRichEmbed_moreInfo'>
+			<h3 class='ipsMinorTitle ipsTruncate_1 i-link-color_inherit'>{lang="num_contributors_to_this" pluralize="\count( $blog->contributors() )"}</h3>
+			<ul class='ipsList ipsList--inline i-gap_0 i-margin-top_2'>
+				{{foreach $blog->contributors() as $idx => $contributor}}
+					<li>
+						{template="userPhoto" group="global" app="core" params="$contributor['member'], 'mini'"}<span class='ipsNotification'>{$contributor['contributions']}</span>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+</div>

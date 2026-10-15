@@ -1,0 +1,34 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if \count( $rows )}} 
+	{{foreach $rows as $item}}
+		<!--{$item->id}-->
+		<li class='ipsData__item {{if $item->failed}}ipsData__item--warning{{endif}}' itemprop="itemListElement" {{if $item->scheduled > time()}}data-ips-unread{{else}}data-ips-read{{endif}}>
+			<div class='ipsData__icon'>
+				{template="userPhoto" app="core" group="global" params="$item->author(), 'tiny'"}
+			</div>
+			<div class='ipsData__content'>
+				<div class='ipsData__main'>
+					<div class='ipsData__title'>
+						<h4><a href="{$item->object()->url()}" class='{{if $item->failed and $item->failed > 3}}i-color_soft{{endif}}'>{$item->objectTitle}</a></h4>
+						{{$photoCount = ( $item->imageObjects() !== NULL ) ? \count( $item->imageObjects() ) : 0;}}
+						{{if $photoCount}}
+							<span class="i-color_soft"><i class="fa-regular fa-image" aria-hidden="true"></i> {lang="promote_photo_count" pluralize="$photoCount"}</span>
+						{{endif}}
+					</div>
+					<div class='ipsData__desc'>
+                        {{$object = $item->object();}}
+                        <i class='fa-solid fa-{$object::$icon}' aria-hidden="true"></i>
+                        {$item->objectMetaDescription()}
+                    </div>
+				</div>
+				{{$internalText = $item->getText();}}
+				<div class='ipsButtons {{if $internalText}}cPromoteModCP_edit{{endif}}'>
+					<a href="{$item->object()->url()->csrf()->setQueryString( array( 'do' => 'unfeature' ) )}" data-action="delete" class="ipsButton ipsButton--small ipsButton--soft ipsButton--icon" data-ipsToolTip title="{lang="delete"}" data-confirm><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i></a>
+					{{if $internalText and $item->object()->canFeature()}}
+						<a href="{$item->object()->url()->setQueryString( array( 'do' => 'editFeatured' ) )}" data-ipsDialog data-ipsDialog-title="{lang="edit"}" data-action="edit" class="ipsButton ipsButton--small ipsButton--soft ipsButton--icon" data-ipsToolTip title="{lang="edit"}"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a>
+					{{endif}}
+				</div>
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

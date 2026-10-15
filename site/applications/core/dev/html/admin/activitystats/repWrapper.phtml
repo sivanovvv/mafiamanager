@@ -1,0 +1,14 @@
+<ips:template parameters="$form, $count, $table" />
+<div data-ips-template="repWrapper">
+	<div class='ipsBox'>
+		<h1 class='ipsBox__header'>{lang="rep_date"}</h1>
+		<div>
+			{$form|raw}
+		</div>
+	</div>
+</div>
+{{if $count !== NULL}}
+	<div class='i-margin-top_4'>
+		{$table|raw}
+	</div>
+{{endif}}

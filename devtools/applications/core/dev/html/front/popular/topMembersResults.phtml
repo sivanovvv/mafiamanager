@@ -1,0 +1,21 @@
+<ips:template parameters="$filter, $title, $results" />
+<div>
+	{{if $title}}
+		<h2 class="ipsTitle ipsTitle--h3 ipsTitle--padding i-background_2">{$title}</h2>
+	{{endif}}
+	{{if \count( $results )}}
+		<ol class="ipsMembers ipsGrid i-gap_lines i-basis_320 i-border-top_3 i-border-bottom_3">
+			{{foreach $results as $member}}
+				{{if \in_array( $filter, \IPS\Member::topMembersMemberFilters() )}}
+					{template="memberRow" group="popular" app="core" params="$member, null, 0, '', $filter"}
+				{{else}}
+					{template="memberRow" group="popular" app="core" params="$member, NULL, 0, $filter::$title . '_pl_lc', '_customCount'"}
+				{{endif}}
+			{{endforeach}}
+		</ol>
+	{{else}}
+		<p class='ipsEmptyMessage'>
+			{lang="no_results"}
+		</p>
+	{{endif}}
+</div>

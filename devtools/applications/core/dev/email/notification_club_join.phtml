@@ -1,0 +1,10 @@
+<ips:template parameters="$club, $member, $email" />
+{$email->language->addToStack("notification__club_join", FALSE, array( 'sprintf' => array( $member->name, $club->name ) ) )}
+<br><br>
+<table width='100%' cellpadding='15' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}' align='center'>
+			<a href='{$club->url()}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("club_view", FALSE)}</a>
+		</td>
+	</tr>
+</table>

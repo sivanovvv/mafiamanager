@@ -1,0 +1,385 @@
+@property --i-card--backdrop-scroll{
+	syntax: "<percentage>";
+	inherits: true;
+	initial-value: 100%;
+}
+@property --i-card--backdrop-transition{
+	syntax: "<percentage>";
+	inherits: true;
+	initial-value: 0%;
+}
+
+i-card{
+	--i-card--ba-co: var(--i-box--ba-co);
+	--i-card--bo-sh: hsl(0 0% 0% / .4) 0px 20px 60px;
+	--i-card--tr-du: .2s;
+	--i-card--bo-ra: 14px;
+	--i-card--backdrop-transition: 0%;
+	--i-card--backdrop-scroll: 100%;
+	--i-card--translate-closed: 0% 100%;
+	display: flex;
+	flex-direction: column;
+	scrollbar-width: none;
+	transition-property: display, overlay, --i-card--backdrop-transition;
+	transition-behavior: allow-discrete;
+	transition-timing-function: ease-in;
+	transition-duration: var(--i-card--tr-du);
+	/* Reset popover styles */
+	inset: 0;
+	width: auto;
+	height: auto;
+	/* Polyfill */
+	position: fixed;
+	top: 0; left: 0; right: 0; bottom: 0;
+	/* Used for mobile and off-canvas */
+	overflow: auto;
+	overscroll-behavior: contain;
+	scroll-snap-type: both mandatory;
+}
+
+/* Prevents Chrome 133 from crashing when closing the popover */
+@supports (-webkit-app-region: drag) and (not (appearance: base-select)) {
+	i-card{
+		transition-behavior: normal;
+	}
+}
+
+[data-ips-scheme="dark"] i-card{
+	--i-card--bo-sh: inset hsl(0 0% 100% / .1) 0px 1px 0px, hsl(0 0% 0% / 0.9) 0px 30px 60px, hsl(0 0% 0% / .3) 0px 0px 0px 1px;
+}
+
+html:has(i-card:popover-open){
+	/* Prevent page from being scrolled */
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+html:has(i-card.\:popover-open){
+	overflow: hidden;
+}
+
+i-card:popover-open{
+	--i-card--backdrop-transition: 100%;
+}
+i-card.\:popover-open{
+	--i-card--backdrop-transition: 100%;
+}
+@starting-style{
+	i-card:popover-open{
+		--i-card--backdrop-transition: 0%;
+	}
+}
+
+/* We need to use a pseudo element here since Safari instantly deletes the ::backdrop from the DOM on close. Last checked in 26.2 */
+i-card::before{
+	content: "";
+	position: fixed;
+	pointer-events: none;
+	inset: inherit;
+	background: hsl(0 0% 0% / .6);
+	opacity: var(--i-card--backdrop-transition);
+	-webkit-backdrop-filter: blur(1px);
+	backdrop-filter: blur(1px);
+}
+
+i-card::-webkit-scrollbar{
+	-webkit-appearance: none;
+	display: none;
+	width: 0px;
+}
+
+/* Prevent outside styles from leaking in */
+.iCard:not(#x){
+	font-size: var(--i-rem);
+	font-style: normal;
+	font-weight: normal;
+	letter-spacing: normal;
+	text-align: start;
+	text-shadow: none;
+	text-transform: none;
+}
+
+/* Card */
+.iCard{
+	flex: 0 0 auto;
+	background: var(--i-card--ba-co);
+	color: var(--i-color_root);
+	border-radius: var(--i-card--bo-ra, 8px);
+	box-shadow: var(--i-card--bo-sh);
+	display: flex;
+	flex-direction: column;
+	/* Sit on top of fixed background */
+	position: relative;
+	min-height: 15em;
+	max-height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 30px);
+	transition-property: opacity, translate;
+	transition-timing-function: ease-in-out;
+	transition-duration: var(--i-card--tr-du);
+}
+
+i-card:not(:popover-open) > .iCard{
+	translate: var(--i-card--translate-closed);
+}
+@starting-style{
+	:popover-open > .iCard{
+		translate: var(--i-card--translate-closed);
+	}
+}
+
+/* Swipe to dismiss */
+.iCardSwipe{
+	flex: 0 0 20px;
+	display: block;
+	margin-bottom: 20px;
+	scroll-snap-align: start;
+}
+	/* Repaint Safari to prevent excess overscroll. Last tested in 26.2 */
+	@supports (-webkit-hyphens: auto){
+		i-card:popover-open .iCardSwipe{
+			transition: var(--i-card--tr-du);
+		}
+		@starting-style{
+			i-card:popover-open .iCardSwipe{
+				flex-basis: 21px;
+			}
+		}
+	}
+
+/* Light dismiss button */
+.iCardDismiss{
+	/* Ensure this element is hidden but still usable, since parent styles can leak in (background colors, etc) */
+	opacity: 0;
+	-webkit-tap-highlight-color: transparent;
+	width: 100%;
+	height: 100%;
+	flex: 0 0 auto;
+}
+
+/* Scroll snapping: Used for mobiles and offcanvas */
+.iCardSnap{
+	order: 1; /* This is prepended via JS, so move it to the end */
+	flex: 0 0 1px; /* This element must occupy space for snapping to occur (Firefox bug) */
+	scroll-snap-align: end;
+}
+
+/* Large screens: Centered card */
+@media (min-width: 601px){
+	i-card{
+		--i-card--translate-closed: 0% 100px;
+	}
+	.iCard{
+		margin: auto;
+		width: min(800px, 100% - 40px);
+		opacity: 0;
+	}
+	:popover-open > .iCard{
+		opacity: 1;
+	}
+	.\:popover-open > .iCard{
+		opacity: 1;
+	}
+	@starting-style{
+		:popover-open > .iCard{
+			opacity: 0;
+		}
+	}
+	/* Hide swipe-to-dismiss and snap on large screens */
+	.iCardSnap,
+	.iCardSwipe{
+		display: none;
+	}
+	/* Full-screen dismiss button */
+	.iCardDismiss{
+		position: fixed;
+	}
+}
+
+/* Small screens: Card is attached to bottom of screen */
+@media (max-width: 600px){
+	i-card{
+		--i-card--translate-closed: 0 calc(100% + 20px);
+	}
+	/* Fading backdrop */
+	i-card::before{
+		opacity: min(var(--i-card--backdrop-scroll), var(--i-card--backdrop-transition));
+	}
+	.iCard{
+		flex: 0 0 auto;
+		/* Full width, touching bottom of screen */
+		width: auto;
+		margin: 5px;
+		margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 5px);
+		margin-top: auto;
+	}
+
+	/* Touch enhancements */
+	@media (hover:none){
+		/* Drag handle */
+		i-card:defined .iCard::before{
+			content: "";
+			display: block;
+			background: hsl(0 0% 100% / .6);
+			box-shadow: inset 0px 1px 0px hsl(0 0% 100% / .5);
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			border-radius: 6px;
+			width: 50px;
+			height: 6px;
+			position: absolute;
+			top: -14px;
+			left: calc(50% - 25px);
+			pointer-events: none;
+		}
+	}
+
+	/* Zero-JS fallback: */
+	/* 1. Prevent the dismiss button from causing a scrollbar since swipe-to-dismiss isn't available */
+	i-card:not(:defined) .iCardDismiss{
+		flex: 1 1 auto;
+	}
+	/* 2. Ensure tapping backdrop closes dropdowns */
+	html:has(i-card:not(:defined):popover-open){
+		pointer-events: none;
+	}
+	i-card:not(:defined) .iCard{
+		pointer-events: auto;
+	}
+}
+
+/* Fade out the backdrop when scrolling to dismiss */
+@supports ((animation-timeline: scroll()) and (animation-range: 0 100%)){
+	@keyframes iCardScroll{
+		from{
+			--i-card--backdrop-scroll: 0%;
+		}
+	}
+	i-card:defined{
+		animation: iCardScroll linear forwards;
+		animation-timeline: scroll(self);
+		animation-range: 0 100%;
+	}
+}
+
+/* Off-canvas cards */
+i-card.ipsOffCanvas{
+	--i-card--translate-closed: 100% 0%;
+	flex-direction: row;
+	/* Inline scroll animation */
+	animation-timeline: scroll(self inline);
+	/* Keep the footer visible */
+	bottom: var(--i-mobileFooter--he);
+}
+/* Align content to the end for undefined cards */
+i-card.ipsOffCanvas:not(:defined){
+	justify-content: end;
+}
+	/* RTL: To keep the JS simple, cards always animate in from the right side */
+	:where([dir="rtl"] .ipsOffCanvas){
+		direction: ltr;
+	}
+		:where([dir="rtl"] .ipsOffCanvas > .iCard){
+			direction: rtl;
+		}
+	/* Fading backdrop */
+	.ipsOffCanvas::before{
+		opacity: min(var(--i-card--backdrop-scroll), var(--i-card--backdrop-transition));
+	}
+	/* Hide drag handle */
+	.ipsOffCanvas:defined .iCard::before{
+		content: none;
+	}
+	.ipsOffCanvas .iCard{
+		width: min(100% - 10px, 400px);
+		margin: 5px;
+		margin-top: calc(env(safe-area-inset-top, 0px) + 5px);
+		max-height: none;
+		opacity: 1;
+	}
+	/* Display snap/swipe elements */
+	.ipsOffCanvas .iCardSnap,
+	.ipsOffCanvas .iCardSwipe{
+		display: block;
+	}
+	/* Let dismiss occupy space */
+	.ipsOffCanvas .iCardDismiss{
+		position: static;
+	}
+
+.iCard__header{
+	flex: 0 0 auto;
+	padding: 1.2em 1.5em;
+	color: var(--i-color_hard);
+	border-bottom: 1px solid var(--i-background_5);
+	display: flex;
+	align-items: center;
+	font-size: 1.2em;
+	font-weight: 700;
+}
+
+:where(.iCard__header) a{
+	color: inherit;
+}
+:where(.iCard__header a):hover{
+	text-decoration: underline;
+}
+
+.iCard__headerButtons{
+	margin: -.8em;
+	margin-inline-start: auto;
+	flex: 0 0 auto;
+	display: flex;
+}
+
+.iCard__headerButtons a,
+.iCard__headerButtons button{
+	width: max(44px, 2.5em);
+	height: max(44px, 2.5em);
+	display: grid;
+	place-content: center;
+	border-radius: min(var(--i-design-radius), 5px);
+	opacity: .6;
+	text-decoration: none;
+}
+@media(hover:hover){
+	.iCard__headerButtons a:hover,
+	.iCard__headerButtons button:hover{
+		background: color-mix(in hsl, currentColor 10%, transparent);
+	}
+}
+
+.iCard__content{
+	overflow: auto;
+	scrollbar-width: thin;
+	flex: 1 1 auto;
+	scroll-snap-type: both mandatory;
+}
+
+.iCard__footer{
+	flex: 0 0 auto;
+	padding: 1em;
+	color: var(--i-color_soft);
+	border-top: 1px solid var(--i-background_5);
+	font-weight: 500;
+}
+
+a.iCard__footer{
+	display: block;
+	text-align: center;
+	border-bottom-left-radius: inherit;
+	border-bottom-right-radius: inherit;
+}
+
+a.iCard__footer:hover{
+	background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+/* This instantly hides the popover after the swipe gesture. It prevents a "backdrop flash" in Safari caused by the -scroll variable reverting back to 100% once the swipe gesture has occurred. Last tested in 26.1 */
+/* And ensure menus with [autofocus] inputs sit above the keyboard in iOS. Without this, the keyboard overlaps the menu. Fixed in iOS 26 */
+i-card[hidden-via-swipe],
+i-card:has([autofocus]):popover-open{
+	--i-card--tr-du: 0s;
+}
+
+/* Prevent the menu from closing when the keyboard is active, since a vertical swipe can often close the menu accidentally */
+i-card:has(input:focus, textarea:focus){
+	overflow: hidden;
+}

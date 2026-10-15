@@ -1,0 +1,20 @@
+<ips:template parameters="$field" />
+<select class="ipsInput ipsInput--select" name="{$field->name}[0]">
+	<option value="n" data-control="toggle" data-toggles="{$field->name}_nop" {{if $field->value[0] === 'n'}}selected{{endif}}>{lang="number_of_purchases"}</option>
+	<option value="v" data-control="toggle" data-toggles="{$field->name}_tas" {{if $field->value[0] === 'v'}}selected{{endif}}>{lang="total_amount_spent"}</option>
+</select>
+{lang="is"}
+<select class="ipsInput ipsInput--select" name="{$field->name}[1]">
+	<option value="g" {{if $field->value[1] === 'g'}}selected{{endif}}>{lang="greater_than"}</option>
+	<option value="e" {{if $field->value[1] === 'e'}}selected{{endif}}>{lang="exactly"}</option>
+	<option value="l" {{if $field->value[1] === 'l'}}selected{{endif}}>{lang="less_than"}</option>
+</select>
+&nbsp;
+<input id="{$field->name}_nop" type="number" class="ipsInput ipsField_tiny" name="{$field->name}[2]" value="{$field->value[2]}">
+<div id="{$field->name}_tas">
+	<br>
+	{template="money" app="nexus" group="forms" location="global" params="$field->name . '[3]', json_decode( ( $field->value[2] ?? '[]' ), TRUE ), array( 'unlimitedLang' => NULL )"}
+</div>
+<br> {lang="or"} 
+<input type="checkbox" class="ipsInput ipsInput--toggle" name="{$field->name}[4]" id="{$field->name}_nr" data-control="unlimited" {{if !$field->value[1]}}checked{{endif}}>
+<label for="{$field->name}_nr" class='ipsField_unlimited'>{lang="no_restriction"}</label>

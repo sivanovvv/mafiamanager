@@ -1,0 +1,13 @@
+<ips:template parameters="$content, $member, $email" />
+
+{{if $content->author()->member_id}}
+{$email->language->addToStack("email_new_content_unapproved_plain", FALSE, array( 'htmlsprintf' => array( $content->author()->name, $content->indefiniteArticle( $email->language ) ) ) )} {$content->mapped('title')}
+{{else}}
+{$email->language->addToStack("email_new_content_unapproved_plain", FALSE, array( 'htmlsprintf' => array( $content->author()->real_name ? $email->language->addToStack( 'guest_name_shown', FALSE, array( 'htmlsprintf' => array( $content->author()->real_name ) ) ) : $email->language->addToStack( 'guest_name_shown', FALSE, array( 'htmlsprintf' => array( $email->language->addToStack('guest') ) ) ), $content->indefiniteArticle( $email->language ) ) ) )} {$content->mapped('title')}
+{{endif}}
+
+
+
+{$content->emailContent( $email, 'plaintext' )|raw}
+
+-- {setting="board_name"}

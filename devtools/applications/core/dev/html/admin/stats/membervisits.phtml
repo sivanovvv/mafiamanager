@@ -1,0 +1,12 @@
+<ips:template parameters="$form, $count, $members, $activeTab" />
+<div class='ipsBox' data-ips-template="membervisits">
+	<h1 class='ipsBox__header'>{{if $activeTab == 'total'}}{lang="visits_totals"}{{else}}{lang="visit_date"}{{endif}}</h1>
+	<div>
+		{$form|raw}
+	</div>
+</div>
+{{if $count !== NULL}}
+	<div class='i-margin-top_3'>
+		{$members|raw}
+	</div>
+{{endif}}

@@ -1,0 +1,47 @@
+<ips:template parameters="$images, $captions, $urls, $options, $layout='table', $isCarousel=false" />
+
+{{if ! \is_array( $images )}}
+	<figure class="ipsFigure {{if !$options['showBackdrop']}}ipsFigure--transparent{{endif}} ipsFigure--contain" style="{{if $options['showBackdrop']}}--_backdrop: url('{$images}');{{endif}} {{if $options['maxHeight']}}--_height: {$options['maxHeight']}px;{{endif}}">
+		{{if isset( $urls[0] )}}
+			<a href="{$urls[0]}" {{if $options['tab']}}target='_blank'{{endif}} class='ipsFigure__main' aria-label="{$captions[0]}">
+		{{else}}
+			<div class='ipsFigure__main'>
+		{{endif}}
+			<img src="{$images}" alt='' loading="lazy">
+		{{if isset( $urls[0] )}}
+			</a>
+		{{else}}
+			</div>
+		{{endif}}
+		{{if !empty( $captions[0] )}}
+			<figcaption class="ipsFigure__footer i-text-align_center">{$captions[0]}</figcaption>
+		{{endif}}
+	</figure>
+
+{{else}}
+	{{$carouselID = 'page-builder-image-widget_' . mt_rand();}}
+	<!-- Lazy loading isn't used here as it prevents the carousel arrows from showing -->
+	<ul class='ipsCarousel ipsCarousel--padding ipsCarousel--images ipsCarousel--page-builder-image-widget' id='{$carouselID}' tabindex="0">
+		{{foreach $images as $id => $image}}
+			<li>
+				<figure class='ipsFigure {{if !$options['showBackdrop']}}ipsFigure--transparent{{endif}} ipsFigure--contain' style="{{if $options['showBackdrop']}}--_backdrop: url('{$image}');{{endif}} {{if $options['maxHeight']}}--_height: {$options['maxHeight']}px;{{endif}}">
+					{{if isset( $urls[ $id ] ) and $urls[ $id ] != ''}}
+						<a href="{$urls[ $id ]}" {{if $options['tab']}}target='_blank'{{endif}} class='ipsFigure__main' aria-label="{$captions[0]}">
+					{{else}}
+						<div class='ipsFigure__main'>
+					{{endif}}
+						<img src="{$image}" alt=''>
+					{{if isset( $urls[ $id ] )}}
+						</a>
+					{{else}}
+						</div>
+					{{endif}}
+					{{if !empty( $captions[ $id ] )}}
+						<figcaption class="ipsFigure__footer i-text-align_center">{$captions[ $id ]}</figcaption>
+					{{endif}}
+				</figure>
+			</li>
+		{{endforeach}}
+	</ul>
+	{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+{{endif}}

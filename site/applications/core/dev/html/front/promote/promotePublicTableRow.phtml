@@ -1,0 +1,70 @@
+<ips:template parameters="$item" />
+<!--{$item->id}-->
+{{$photoCount = $item->imageObjects() ? \count( $item->imageObjects() ) : 0;}}
+{{$staff = \IPS\Member::load( $item->added_by );}}
+{{$itemUrl = ( $item->object() instanceof \IPS\Content\Item ) ? $item->object()->url( "getPrefComment" ) : $item->object()->url();}}
+<article class='cPromoted ipsData__item'>
+	<a href='{$itemUrl}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$item->ourPicksTitle}</span></a>
+	<div class="ipsData__image" aria-hidden="true">
+		{{if $photoCount}}
+		    {{$firstPhoto = $item->imageObjects()[0];}}
+		    <img src='{$firstPhoto->url}' alt='{$item->ourPicksTitle}' loading='lazy'>
+		{{elseif $image = $item->object()->primaryImage()}}
+		    <img src='{$image->url}' alt='{$item->ourPicksTitle}' loading='lazy'>
+		{{else}}
+			<i aria-hidden="true"></i>
+		{{endif}}
+	</div>
+	<div class="ipsData__content">
+		<div class="ipsData__main">
+			<h2 class='ipsData__title cPromotedTitle'>
+				{{if member.member_id and $item->objectIsUnread}}
+					{{if $item->object() instanceof \IPS\Content\Item}}
+						<a href='{$item->object()->url( 'getNewComment' )}' data-ipsTooltip='{lang="first_unread_post"}' class='ipsIndicator'><span class="ipsInvisible">{lang="first_unread_post"}</span></a>
+					{{elseif $item->object() instanceof \IPS\Content\Comment}}
+						<a href='{$item->object()->item()->url( 'getNewComment' )}' data-ipsTooltip='{lang="first_unread_post"}' class='ipsIndicator'><span class="ipsInvisible">{lang="first_unread_post"}</span></a>
+					{{else}}
+						<a href="{$item->object()->url()}" class='ipsIndicator'><span class="ipsInvisible">{lang="unread"}</span></a>
+					{{endif}}
+				{{endif}}
+				<a href="{$itemUrl}">{$item->ourPicksTitle}</a>
+			</h2>
+			<p class='ipsData__meta'>{$item->objectMetaDescription|raw}</p>
+			{{if $text = $item->getText(true)}}
+				<div class="ipsData__desc ipsRichText" data-ipsTruncate>{$text|raw}</div>
+			{{endif}}
+			{{if $photoCount and $photoCount > 1}}
+				<ul class='ipsGrid ipsGrid--promote-images i-basis_70 i-gap_2 i-margin-top_2 cPromotedImages'>
+					{{foreach $item->imageObjects() as $file}}
+						<li>
+							<a href='{$file->url}' data-ipsLightbox data-ipsLightbox-group='g{$item->id}' class='ipsThumb'>
+								<img src='{$file->url}' alt='' loading='lazy'>
+							</a>
+						</li>
+					{{endforeach}}
+				</ul>
+			{{endif}}
+			{{if $item->objectReactionClass AND \IPS\IPS::classUsesTrait( $item->objectReactionClass, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+				<div class="i-margin-top_2 i-flex i-justify-content_end">
+					{template="reactionOverview" group="global" app="core" params="$item->objectReactionClass, FALSE"}
+				</div>
+			{{endif}}
+		</div>
+		<div class="ipsData__extra">
+			{{if $counts = $item->objectDataCount}}
+				<ul class='ipsData__stats'>
+					<li>{$counts['words']}</li>
+				</ul>
+			{{endif}}
+			{{if $item->added_by}}
+				<div class='ipsData__last'>
+					{template="userPhoto" group="global" app="core" params="$staff, 'fluid'"}
+					<div class='ipsData__last-text'>
+						<h3 class='ipsData__last-primary'>{lang="promoted_by"} {template="userLink" group="global" app="core" params="$staff"}</h3>
+						<div class='ipsData__last-secondary'>{datetime="$item->added"}</div>
+					</div>
+				</div>
+			{{endif}}
+		</div>
+	</div>
+</article>

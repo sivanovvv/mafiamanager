@@ -1,0 +1,70 @@
+<ips:template parameters="$url, $client, $scopes, $login, $error" />
+<div data-controller="core.global.core.framebust" class='i-margin-top_3'>
+	<form accept-charset='utf-8' method='post' action='{$login->url}'>
+		<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+		{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+		{{$buttonMethods = $login->buttonMethods();}}
+		{{if $usernamePasswordMethods and $buttonMethods}}
+			{{if $error}}
+				<div class="ipsMessage ipsMessage--error">{lang="$error"}</div>
+			{{endif}}
+			<div class='ipsColumns'>
+				<div class='ipsColumns__primary'>
+					<div class='{{if !request.isAjax()}}ipsBox{{endif}} i-padding_3 ipsPull'>
+						<h1 class='ipsTitle ipsTitle--h3'>{lang="oauth_authorize_title" sprintf="\IPS\Settings::i()->board_name"}</h1>
+						{{if \IPS\Login::registrationType() != 'disabled'}}
+							<p class='i-font-size_2 i-color_soft'>
+								{lang="dont_have_an_account"}
+								{{if \IPS\Login::registrationType() == 'redirect'}}
+									<a href='{expression="\IPS\Settings::i()->allow_reg_target"}' target="_blank" rel="noopener">
+								{{else}}
+									<a href='{expression="\IPS\Http\Url::internal( 'oauth/authorize/?register', 'interface' )"}'>
+								{{endif}}
+								{lang="sign_up"}</a>
+							</p>
+							<hr class='ipsHr i-margin-block_3'>
+						{{endif}}
+						{template="loginForm" app="core" group="system" params="$login"}
+					</div>
+				</div>
+				<div class='ipsColumns__secondary i-basis_360'>
+					<div class='{{if !request.isAjax()}}ipsBox{{endif}} i-padding_3 ipsPull'>
+						<h2 class='ipsTitle ipsTitle--h3'>{lang="sign_in_faster"}</h2>
+						{{if \count( $buttonMethods ) > 1}}
+							<p class='i-color_soft'>{lang='sign_in_with_these'}</p>
+						{{endif}}
+						<div class='i-gap_2 i-margin-top_2'>
+							{{foreach $buttonMethods as $method}}
+								<div class='i-text-align_center'>
+									{$method->button()|raw}
+								</div>
+							{{endforeach}}
+						</div>
+					</div>
+				</div>
+			</div>
+		{{elseif $usernamePasswordMethods}}
+			<div class='cLogin_single'>
+			{{if $error}}
+				<p class="ipsMessage ipsMessage--error">{lang="$error"}</p>
+			{{endif}}
+				<div class="{{if !request.isAjax()}}ipsBox{{endif}} i-padding_3">
+					{template="loginForm" app="core" group="system" params="$login"}
+				</div>
+			</div>
+		{{elseif $buttonMethods}}
+			<div class="cLogin_single">
+				{{if $error}}
+					<p class="ipsMessage ipsMessage--error">{lang="$error"}</p>
+				{{endif}}
+				<div class='i-gap_2 i-margin-top_2'>
+					{{foreach $buttonMethods as $method}}
+						<div class='i-text-align_center'>
+							{$method->button()|raw}
+						</div>
+					{{endforeach}}
+				</div>
+			</div>
+		{{endif}}
+	</form>
+</div>

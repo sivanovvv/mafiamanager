@@ -1,0 +1,11 @@
+<ips:template parameters="$menu"/>
+<button type="button" popovertarget="{$menu->id}_menu" class="{$menu->css}" {{if $menu->tooltip}}data-ipstooltip title='{$menu->tooltip}'{{endif}}>
+	{{if $menu->customLinkHtml}}
+    	{$menu->customLinkHtml|raw}
+    {{else}}
+	    {{if $menu->icon}}
+		    <i class="{$menu->icon}" aria-hidden="true"></i>
+	    {{endif}}
+	    <span class="ipsMenuLabel">{lang="$menu->title"}</span>{{if $menu->showCaret}}<i class='ipsMenuCaret' aria-hidden="true"></i>{{endif}}
+	{{endif}}
+</button>

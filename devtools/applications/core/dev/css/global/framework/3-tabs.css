@@ -1,0 +1,217 @@
+/*
+	----------------
+	- Tabs
+	----------------
+*/
+
+.ipsTabs {
+	--co: var(--i-color_soft);
+	--i-co: var(--i-color_soft);
+	--_ba-co: initial;
+
+	--_hover-co: var(--i-color_hard);
+	--_hover-ba-co: var(--i-background_3);
+
+	--_active-co: var(--i-secondary-contrast);
+	--_active-ba-co: var(--i-secondary);
+	display: block;
+	text-align: center;
+	position: relative;
+	padding: .8em;
+}
+
+:where(.ipsBox, .ipsWidget) .ipsTabs{
+	/* Chrome struggles to render color-mix in box-shadows. Adding it to a variable fixes it */
+	--_bo-sh: color-mix(in srgb, var(--i-co) 15%, transparent) 0px 1px 0px 0px;
+	box-shadow: var(--_bo-sh);
+}
+
+:where([data-ips-scheme="dark"]) .ipsTabs{
+	--_active-co: var(--i-color_hard);
+	--_active-ba-co: var(--i-background_6);
+}
+
+/* Hide tabs if < 2 tabs exists */
+.ipsTabs:has([role="tablist"] > :only-child){
+	display: none;
+}
+
+.ipsTabs--sticky{
+	position: sticky;
+	top: var(--i-sticky-offset, 0px);
+	z-index: var(--i-z-index_sticky);
+}
+
+:where(.ipsTabs--sticky),
+.ipsPwaStickyFix--ipsTabs{
+	background-color: var(--i-background_2);
+}
+
+.ipsTabs--inner{
+	--_bo-sh: color-mix(in srgb, var(--i-co) 15%, transparent) 0px 1px 0px 0px, color-mix(in srgb, var(--i-co) 15%, transparent) 0px -1px 0px 0px;
+}
+
+	.ipsTabs [role="tablist"] {
+		display: flex;
+		gap: 2px;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scrollbar-width: none;
+	}
+
+	.ipsTabs [role="tablist"]::-webkit-scrollbar {
+		-webkit-appearance: none;
+		height: 0px;
+		display: none;
+	}
+
+		.ipsTabs [role="tab"]{
+			flex: 0 0 auto;
+		}
+
+		:is(.ipsTabs--small, .ipsTabs--stretch) [role="tab"]{
+			flex-grow: 1;
+		}
+
+		/* Wrap tabs when they're being reordered (Clubs) */
+		.ipsTabs .ui-sortable{
+			flex-wrap: wrap;
+		}
+
+			.ipsTabs .ui-sortable [role="tab"]{
+				flex-grow: 0;
+			}
+
+.ipsTabs__tab {
+	--i-outline-offset: -2px;
+	display: block;
+	padding: .7em 1.3em;
+	border-radius: 5px;
+	font-weight: 600;
+	color: var(--i-co);
+}
+
+	@media (any-hover:hover){
+		.ipsTabs__tab:where(:hover) {
+			color: var(--_hover-co);
+			background: var(--_hover-ba-co);
+		}
+	}
+
+	.ipsTabs__tab[aria-selected="true"] {
+		--i-outline-offset: -4px;
+		color: var(--_active-co);
+		background: var(--_active-ba-co);
+	}
+
+	.ipsTabs__tab--disabled {
+		opacity: 0.6;
+		font-style: italic;
+		pointer-events: none;
+	}
+
+	.ipsTabs--small .ipsTabs__tab {
+		font-size: .9em;
+	}
+
+		.ipsTabs--withIcons .ipsTabs__tab :is(.fa-solid, .fa-regular) {
+			font-size: 1.4em;
+			display: block;
+			margin-bottom: .5em;
+		}
+
+		.ipsTabs .fa-circle-exclamation{
+			color: var(--i-color_negative);
+		}
+
+/* Scrollable buttons */
+.ipsTabs__scrollers{
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	display: flex;
+	overflow: hidden;
+}
+
+	.ipsTabs__scrollers button{
+		pointer-events: auto;
+		transition: .3s;
+		padding: 0 .4em;
+		margin: .8em 0;
+		touch-action: manipulation;
+		display: block !important;
+	}
+
+		.ipsTabs__scrollers button[hidden]{
+			visibility: hidden;
+			opacity: 0;
+		}
+
+	.ipsTabs__scrollers button:first-child{
+		padding-inline-end: 1em;
+		transform-origin: 0 50%;
+	}
+
+	.ipsTabs__scrollers button:last-child{
+		margin-inline-start: auto;
+		padding-inline-start: 1em;
+		transform-origin: 100% 50%;
+	}
+
+	.ipsTabs__scrollers [hidden]:first-child{
+		transform: translateX(10px);
+	}
+
+	.ipsTabs__scrollers [hidden]:last-child{
+		transform: translateX(-10px);
+	}
+
+	/* Icons in scrollable buttons */
+	.ipsTabs__scrollers button .fa-solid{
+		display: grid;
+		width: 2.6em;
+		height: 100%;
+		place-content: center;
+		border-radius: min(var(--i-design-radius), 5px);
+		background: color-mix(in srgb, var(--_ba-co, var(--i-background_1)), var(--i-co) 18%);
+	}
+
+		@media (any-hover:hover){
+			.ipsTabs__scrollers button:hover .fa-solid{
+				background: color-mix(in srgb, var(--_ba-co, var(--i-background_1)), var(--i-co) 26%);
+			}
+		}
+
+.ipsTabs__panel {
+	min-height: 100%;
+}
+
+.ipsTabs__panels--padded .ipsTabs__panel {
+	padding: var(--i-sp_2);
+}
+
+.ipsTabs_loadingContent {
+	min-height: 150px;
+}
+
+@media (max-width: 600px){
+	.ipsTabs [role="tab"]{
+		flex-grow: 1;
+	}
+}
+
+/* Edit widget pop-up menu */
+:where(.ipsMenu, .ipsDialog) .ipsTabs{
+	background: var(--i-background_2);
+	border: 1px solid var(--i-background_4);
+	border-width: 1px 0;
+}
+
+/* Tabs inside a select tree (Community / Clubs) */
+.ipsSelectTree .ipsTabs{
+	border-top-width: 0;
+	padding: 0.4em;
+	border-top-left-radius: var(--i-input--bo-ra);
+	border-top-right-radius: var(--i-input--bo-ra);
+}

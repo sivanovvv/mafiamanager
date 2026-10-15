@@ -1,0 +1,62 @@
+<ips:template parameters="$announcement" />
+
+{{if !\IPS\Request::i()->isAjax()}}
+	<div class="ipsBox ipsBox--soloAnnouncement ipsPull">
+		<div class="ipsPageHeader">
+			<div class="ipsPageHeader__row">
+				<h1 class='ipsPageHeader__title'>{$announcement->mapped( 'title' )}</h1>
+				{{if !$announcement->active}}
+					<p class='ipsPageHeader__desc'>{lang="announcement_not_active"}</p>
+				{{endif}}
+			</div>
+		</div>
+{{endif}}
+
+<div class="ipsEntry">
+	<div {{if \IPS\Request::i()->isAjax()}}class='ipsEntry__header i-background_2 i-border-top_3 i-border-bottom_3' style='padding-bottom: calc(var(--i-rem) * 1.3);'{{else}}class='ipsEntry__header'{{endif}}>
+		<div class="ipsEntry__header-align">
+			<div class="ipsPhotoPanel">
+				{template="userPhoto" app="core" group="global" params="$announcement->author(), 'tiny'"}
+				<div class="ipsPhotoPanel__text">
+					<p class='ipsPhotoPanel__primary i-color_hard'>
+						{lang="byline_nodate" htmlsprintf="$announcement->author()->link()"}
+					</p>
+					{{if $announcement->start}}
+						<p class='ipsPhotoPanel__secondary'>{datetime="$announcement->start" dateonly="true"}</p>
+					{{endif}}
+				</div>
+			</div>
+		</div>
+	</div>
+	<article class='ipsEntry__post i-padding_3'>
+		<section class='ipsRichText' data-controller='core.front.core.lightboxedImages'>
+			{$announcement->mapped( 'content' )|raw}
+		</section>
+	</article>
+	{{if \IPS\Member::loggedIn()->modPermission('can_manage_announcements') and ( $announcement->canEdit() or $announcement->canDelete() )}}
+		<div class="ipsEntry__footer">
+			<menu class="ipsEntry__controls">
+				<li>
+					<button type="button" id="elAnnouncementActions{$announcement->id}" popovertarget="elAnnouncementActions{$announcement->id}_menu">{lang="announce_actions"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				</li>
+			</menu>
+			<i-dropdown popover id="elAnnouncementActions{$announcement->id}_menu">
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						{{if $announcement->canEdit()}}
+							<li><a href='{$announcement->url( 'create' )}' data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-destructOnClose='true' data-ipsDialog-title='{lang="edit_announcement"}' data-action='ipsMenu_ping'>{lang="edit"}</a></li>
+						{{endif}}
+						{{if $announcement->canDelete()}}
+							<li><a href='{$announcement->url( 'delete' )->csrf()}' data-confirm  title='{lang="delete"}'>{lang="delete"}</a></li>
+						{{endif}}
+						<li><a href='{$announcement->url( 'status' )->csrf()}' title='{{if $announcement->active}}{lang="announce_mark_inactive"}{{else}}{lang="announce_mark_active"}{{endif}}'>{{if $announcement->active}}{lang="announce_mark_inactive"}{{else}}{lang="announce_mark_active"}{{endif}}</a></li>
+					</ul>
+				</div>
+			</i-dropdown>
+		</div>
+	{{endif}}
+</div>
+
+{{if \IPS\Request::i()->isAjax()}}
+	</div>
+{{endif}}

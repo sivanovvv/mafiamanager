@@ -1,0 +1,11 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+<div data-baseurl='{$table->baseUrl}' data-resort='{$table->resortKey}' data-pageParam='albumPage' data-controller='core.global.core.table{{if $table->canModerate()}},core.front.core.moderation{{endif}}'>
+	<div data-role="tablePagination" class='i-margin-bottom_3 {{if $table->pages <= 1}}ipsHide{{endif}}'>
+		{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, 'albumPage'"}
+	</div>
+
+	<ol class='' data-role='tableRows' id='elTable_{$table->uniqueId}'>
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+	</ol>
+</div>

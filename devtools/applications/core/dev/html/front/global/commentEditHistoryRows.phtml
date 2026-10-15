@@ -1,0 +1,58 @@
+<ips:template parameters="$table, $headers, $rows"/>
+{{if !empty( $rows )}}
+    {{foreach $rows as $edit}}
+    <article class='ipsEntry ipsEntry--simple ipsEntry--edit-history'>
+        <header class='ipsEntry__header'>
+            <div class='ipsEntry__header-align'>
+				<div class='ipsPhotoPanel'>
+                    <div>{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $edit['member'] ), 'mini'"}</div>
+                    <div class='ipsPhotoPanel__text'>
+                        <h3 class='ipsPhotoPanel__primary'>
+                            {expression="\IPS\Member::load( $edit['member'] )->link()" raw="true"}
+                        </h3>
+                        <p class='ipsPhotoPanel__secondary'>
+                            {datetime="$edit['time']"}
+                            {{if $edit['reason']}}
+                            <br>
+                            {$edit['reason']}
+                            {{endif}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class='ipsEntry__post'>
+            <div class='ipsRichText'>
+                {$edit['new']|raw}
+            </div>
+        </div>
+    </article>
+    {{endforeach}}
+
+    {{if $table->page == $table->pages AND $table->extra instanceof \IPS\Content}}
+    <article class='ipsEntry ipsEntry--simple ipsEntry--edit-history'>
+        <header class='ipsEntry__header'>
+            <div class='ipsEntry__header-align'>
+				<div class='ipsPhotoPanel'>
+                    <div>{template="userPhoto" app="core" group="global" params="$table->extra->author(), 'mini'"}</div>
+                    <div class='ipsPhotoPanel__text'>
+                        <h3 class='ipsPhotoPanel__primary>
+                            {$table->extra->author()->link(  NULL, NULL, \IPS\IPS::classUsesTrait( $table->extra, 'IPS\Content\Anonymous' ) ? $table->extra->isAnonymous() : FALSE )|raw}
+                        </h3>
+                        <p class='ipsPhotoPanel__secondary'>
+                            {datetime="$table->extra->mapped('date')"}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class='ipsEntry__post'>
+            <div class='ipsRichText'>
+                {$edit['old']|raw}
+            </div>
+        </div>
+    </article>
+    {{endif}}
+{{else}}
+    <p class='ipsEmptyMessage'>{lang="no_edit_history"}</p>
+{{endif}}

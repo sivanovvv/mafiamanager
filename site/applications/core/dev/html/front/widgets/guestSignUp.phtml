@@ -1,0 +1,33 @@
+<ips:template parameters="$login, $text, $title, $layout='table', $isCarousel=false" />
+{{$buttonMethods = $login->buttonMethods();}}
+{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+{{$ref = \IPS\Request::i()->externalref ?: base64_encode( \IPS\Request::i()->url() ); }}
+<div class='ipsWidget__content'>
+	<div class='ipsWidget__padding'>
+		<h2 class="ipsTitle ipsTitle--h3 ipsTitle--margin">{$title}</h2>
+		<div class="ipsRichText">{$text|raw}</div>
+	</div>
+	<div class="ipsSubmitRow i-flex i-flex-wrap_wrap i-gap_1 i-justify-content_space-between">
+		{{if $usernamePasswordMethods}}
+			<ul class="ipsButtons ipsButtons--fill">
+				<li>
+					<a href='{url="app=core&module=system&controller=register" seoTemplate="register"}' class="ipsButton ipsButton--primary"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>{lang="sign_up"}</span></a>
+				</li>
+				<li>
+					<a href='{url="app=core&module=system&controller=login" seoTemplate="login"}' class="ipsButton ipsButton--inherit"><i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i><span>{lang="sign_in_short"}</span></a>
+				</li>
+			</ul>
+		{{endif}}
+		{{if $buttonMethods}}
+			<form accept-charset='utf-8' method='post' action='{$login->url}' target="_parent">
+				<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+				<input type="hidden" name="ref" value="{$ref}">
+				<div class='ipsButtons ipsButtons--fill'>
+					{{foreach $buttonMethods as $method}}
+						{$method->button()|raw}
+					{{endforeach}}
+				</div>
+			</form>
+		{{endif}}
+	</div>
+</div>

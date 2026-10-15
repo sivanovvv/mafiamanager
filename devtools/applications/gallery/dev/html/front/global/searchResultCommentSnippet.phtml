@@ -1,0 +1,28 @@
+<ips:template parameters="$indexData, $itemData, $image, $url, $reviewRating, $condensed" />
+{{if $image}}
+{{$imageObj = \IPS\gallery\Image::constructFromData( $itemData, FALSE );}}
+{{endif}}
+{{if $image}}
+	<div class='ipsStreamItem__content-thumb ipsStreamItem__content-thumb--gallery'>
+		<figure class='ipsFigure ipsFigure--ratio'>
+			<a href='{$url}' title='{lang="view_this_image" sprintf="$itemData['image_caption']"}' class='ipsFigure__main'>
+				<img src='{file="$image" extension="gallery_Images"}' alt="{$itemData['image_caption']}" loading="lazy">
+			</a>
+			{template="nsfwOverlay" app="gallery" location="front" group="global" params="$imageObj, FALSE"}
+		</figure>
+	</div>
+{{endif}}
+{{if !$condensed}}
+	<div class='ipsStreamItem__content-content ipsStreamItem__content-content--gallery'>
+		{{if $reviewRating !== NULL}}
+			{template="rating" app="core" params="'medium', $reviewRating" group="global"}
+		{{endif}}
+		<div class='ipsStream__comment'>
+			{{if trim( $indexData['index_content'] ) !== ''}}
+				<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+					{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+{{endif}}

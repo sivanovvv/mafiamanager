@@ -1,0 +1,17 @@
+<ips:template parameters="$comment, $email" />
+<tr style='border-bottom: 1px solid #eeeeee' class='border-bottom'>
+	<td dir='{dir}' width='120' align='center' valign='top'>
+		<img src='{file="$comment->item()->small_file_name" extension="gallery_Images"}' style='border: 1px solid #000; vertical-align: middle;' width='100' height='100'>
+	</td>
+	<td dir='{dir}' align='left'>
+		<p style='font-family: system-ui, "Helvetica Neue", helvetica, sans-serif; margin: 0; font-size: 13px; font-weight: bold'>
+			{$email->language->addToStack("x_commented_photo", FALSE, array( 'sprintf' => array( $comment->author()->name ) ) )}
+		</p>
+		<h2 style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; font-weight: 500 !important; margin: 0;">
+			<a href='{$comment->item()->url()}' style='text-decoration: none;'>{$comment->item()->mapped('name')}</a>
+		</h2>
+		<div style='font-family: system-ui, "Helvetica Neue", helvetica, sans-serif; line-height: 22px; margin-top: 10px; margin-bottom: 10px; border-left: 3px solid #8c8c8c; padding-left: 15px; font-size: 14px; margin-left: 15px;'>
+			{$email->parseTextForEmail( $comment->content(), $email->language )|raw}
+		</div>
+	</td>
+</tr>

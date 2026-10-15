@@ -1,0 +1,64 @@
+<ips:template parameters="$albums, $title, $layout='table', $isCarousel=false" />
+{{if !empty( $albums ) }}
+	<header class='ipsWidget__header'>
+		<h3>{$title}</h3>
+		{{if $isCarousel}}
+			{{$carouselID = 'widget-gallery-albums_' . mt_rand();}}
+			{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+		{{endif}}
+	</header>
+	<div class='ipsWidget__content'>
+		<i-data>
+			<ul class="ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--widget-gallery-albums" {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+				{{foreach $albums as $album}}
+					<li class='ipsData__item {$album->ui('css')}' {$album->ui("dataAttributes")}>
+						<a href='{$album->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$album->name}</span></a>
+						<div class="ipsData__image" aria-hidden="true">
+							{{if $album->asNode()->coverPhoto('masked')}}
+								<img src="{$album->asNode()->coverPhoto('masked')}" alt="" loading="lazy">
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+						</div>
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<h2 class='ipsData__title'><a href='{$album->url()}'>{$album->name}</a></h2>
+								{{if \in_array( $layout, array("table", "grid", "featured"))}}
+									<div class="ipsData__desc ipsRichText">{$album->description|raw}</div>
+								{{endif}}
+							</div>
+							<div class="ipsData__extra">
+								<ul class='ipsData__stats'>
+									<li data-statType='images'>
+										<span class='ipsData__stats-icon' data-stat-value="{$album->count_imgs}" aria-hidden="true" data-ipstooltip title='{lang="cat_img_count" pluralize="$album->count_imgs"}'></span>
+										<span class='ipsData__stats-label'>{lang="cat_img_count" pluralize="$album->count_imgs"}</span>
+									</li>
+									{{if $album->use_comments && $album->comments > 0}}
+										<li data-statType='album_comments'>
+											<span class='ipsData__stats-icon' data-stat-value="{$album->comments}" aria-hidden="true" data-ipstooltip title='{lang="num_comments" pluralize="$album->comments"}'></span>
+											<span class='ipsData__stats-label'>{lang="num_comments" pluralize="$album->comments"}</span>
+										</li>
+									{{endif}}
+									{{if $album->allow_comments && $album->count_comments > 0}}
+										<li data-statType='image_comments'>
+											<span class='ipsData__stats-icon' data-stat-value="{$album->count_comments}" aria-hidden="true" data-ipstooltip title='{lang="gallery_image_comments_s" pluralize="$album->count_comments"}'></span>
+											<span class='ipsData__stats-label'>{lang="gallery_image_comments_s" pluralize="$album->count_comments"}</span>
+										</li>
+									{{endif}}
+								</ul>
+								<div class="ipsData__last">
+									<div class="ipsData__last-text">
+										<div class="ipsData__last-primary">{lang="byline" sprintf="$album->author()->name"}</div>
+										{{if $album->count_imgs and $album->mapped( 'updated' )}}
+										<div class="ipsData__last-secondary">{datetime="$album->mapped('updated')"}</div>
+										{{endif}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

@@ -1,0 +1,20 @@
+<ips:template parameters="$screen, $url" />
+<div id='elTwoFactorAuthentication' class='ipsModal' data-controller='core.global.core.2fa'>
+	<div>
+        {{if \IPS\Dispatcher::i()->controllerLocation !== 'admin'}}
+            <a class="ipsButton ipsButton--text ipsModal__close" href="{$url->setQueryString( array( '_mfaCancel' => 1 ) )->csrf()}" data-ipsTooltip title="{lang="mfa_back"}">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+				<span class="ipsInvisible">{lang="mfa_back"}</span>
+            </a>
+        {{endif}}
+        <h1 class='i-text-align_center ipsTitle ipsTitle--h3 i-margin-top_3'>{lang="mfa_popup_title"}</h1>
+		<form action="{$url}" method="post" accept-charset='utf-8' data-ipsForm class="ipsForm ipsForm--fullWidth">
+			<input type="hidden" name="mfa_auth" value="1">
+			<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+			{$screen|raw}
+			<div class="i-background_2 i-text-align_center i-padding_2 cOtherMethod">
+				<a href='{$url->setQueryString( array( '_mfa' => 'alt', '_mfaMethod' => '' ) )}' class='ipsButton ipsButton--inherit ipsButton--wide'>{lang="mfa_try_another_method"} <i class='fa-solid fa-angle-right' aria-hidden="true"></i></a>
+			</div>
+		</form>
+	</div>
+</div>

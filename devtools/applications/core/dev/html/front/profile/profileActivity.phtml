@@ -1,0 +1,14 @@
+<ips:template parameters="$member, $latestActivity" />
+<div>
+	{{if !\count( $latestActivity )}}
+		<div class='i-padding_3 i-text-align_center i-font-size_2 i-color_soft'>
+			{lang="no_recent_activity" sprintf="$member->name"}
+		</div>
+	{{else}}
+		<ol class='ipsStream' data-role='activityStream' id='elProfileActivityOverview'>
+			{{foreach $latestActivity as $activity}}
+				{$activity->html()|raw}
+			{{endforeach}}
+		</ol>
+	{{endif}}
+</div>

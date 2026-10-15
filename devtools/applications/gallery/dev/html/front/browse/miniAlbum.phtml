@@ -1,0 +1,31 @@
+<ips:template parameters="$album" />
+
+<ol class='ipsMasonry ipsMasonry--mini-album i-basis_70 i-margin-bottom_2'>
+	{{foreach $album->_latestImages as $image}}
+		{{if $image->small_file_name}}
+			{{$imageWidth=isset( $image->_dimensions['small'][0] ) ? $image->_dimensions['small'][0] : 0;}}
+      		{{$imageHeight=isset( $image->_dimensions['small'][1] ) ? $image->_dimensions['small'][1] : 0;}}
+			<li class='ipsMasonry__item' {{if $imageWidth && $imageHeight}}style='--i-ratio:{$imageWidth}/{$imageHeight}'{{endif}} data-imageID='{$image->id}'>
+				<figure class='ipsFigure'>
+					<a href='{$image->url()->setQueryString( 'browse', 1 )}' title='{$image->caption}' class='ipsFigure__main'>
+						<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy">
+					</a>
+				</figure>
+			</li>
+		{{else}}
+			<li class='ipsMasonry__item' data-imageID='{$image->id}'>
+				<figure class='ipsFigure'>
+					<a href='{$image->url()->setQueryString( 'browse', 1 )}' title='{$image->caption}' class='ipsFigure__main'>
+						{{if $image->media }}
+							<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+								<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+							</video>
+							<i class="ipsFigure__play" aria-hidden="true"></i>
+						{{endif}}
+					</a>
+				</figure>
+			</li>
+		{{endif}}
+	{{endforeach}}
+</ol>
+<a href='{$album->url()}' class='i-color_soft i-font-weight_600'><i class="fa-regular fa-images" aria-hidden="true"></i> {lang="view_entire_album" sprintf="$album->name"}</a>

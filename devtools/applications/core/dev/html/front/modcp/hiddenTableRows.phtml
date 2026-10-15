@@ -1,0 +1,13 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if !empty( $rows )}}
+{{foreach $rows as $row}}
+<li class='ipsData__item i-padding_0'>
+    {$row['index_content']|raw}
+</li>
+{{endforeach}}
+{{else}}
+<div class="ipsEmpty">
+	<i class="fa-solid fa-check" aria-hidden="true"></i>
+	<p>{lang="modcp_hidden_empty"}</p>
+</div>
+{{endif}}

@@ -1,0 +1,5 @@
+<ips:template parameters="$content, $email" />
+
+{$email->language->addToStack("email_account_del_request_rejected")}
+
+-- {setting="board_name"}

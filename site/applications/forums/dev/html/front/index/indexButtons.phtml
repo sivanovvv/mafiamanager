@@ -1,0 +1,13 @@
+<ips:template parameters="$showViewButtons=TRUE, $showFilterButton=FALSE" />
+
+{{if $showFilterButton}}
+<div class='i-margin-top_2 ipsResponsive_hideDesktop'>
+	<ul class='ipsButtons ipsButtons--fill'>
+		<li>
+			<button type="button" class="ipsButton ipsButton--secondary ipsButton--small" data-ipsDialog data-ipsDialog-title='{lang="forums_simple_dialog_title"}' data-ipsDialog-content='#elFluidFormFilters'>
+				<i class="fa-solid fa-list-check" aria-hidden="true"></i><span data-role='fluidForumMobileDesc'>{lang="forums_simple_filter_by"}</span>
+			</button>
+		</li>
+	</ul>
+</div>
+{{endif}}

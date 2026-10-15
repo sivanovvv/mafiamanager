@@ -1,0 +1,15 @@
+{
+    "files": {
+        "added": [],
+        "edited": [
+            "core\/front\/controllers\/system\/ips.system.register.js",
+            "global\/library\/underscore\/underscore.js"
+        ],
+        "removed": []
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

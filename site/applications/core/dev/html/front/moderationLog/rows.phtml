@@ -1,0 +1,16 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+		<li class="ipsData__item">
+			<div class='ipsData__icon'>
+				{template="userPhoto" group="global" app="core" params="\IPS\Member::load( $row['member_id'] ), 'tiny'"}
+			</div>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>{$row['action']}</h4>
+				<p class='ipsData__meta'>
+					{expression="\IPS\Member::load( $row['member_id'] )->name"}, {datetime="$row['ctime']"}
+				</p>
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

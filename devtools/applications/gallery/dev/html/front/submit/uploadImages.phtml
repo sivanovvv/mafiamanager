@@ -1,0 +1,34 @@
+<ips:template parameters="$form, $category" />
+
+<form accept-charset='utf-8' method="post" action="{$form->action}" id='elGallerySubmit' enctype="multipart/form-data">
+	<div class='cGallerySubmit_uploadImages' data-controller='gallery.front.submit.uploadImages'>
+	{{if $form->error}}
+		<div class="ipsMessage ipsMessage--error i-margin-bottom_3">
+			{$form->error}
+		</div>
+	{{endif}}
+		<input type="hidden" name="{$form->id}_submitted" value="1">
+		{{foreach $form->hiddenValues as $k => $v}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endforeach}}
+
+		<div class='ipsHide'>
+			{$form->elements['']['credit_all']->html()|raw}
+			{$form->elements['']['copyright_all']->html()|raw}
+			{$form->elements['']['tags_all']->html()|raw}
+			{$form->elements['']['prefix_all']->html()|raw}
+			{$form->elements['']['images_order']->html()|raw}
+			{$form->elements['']['images_info']->html()|raw}
+			{{if settings.gallery_nsfw}}{$form->elements['']['nsfw_all']->html()|raw}{{endif}}
+			{{if \IPS\Member::loggedIn()->member_id}}{$form->elements['']['images_autofollow_all']->html()|raw}{{endif}}
+		</div>
+
+		<div id='elGallerySubmit_imageUploader' class=''>
+			{$form->elements['']['images']->html( $form )|raw}
+			{{if $form->elements['']['images']->error}}
+				<br>
+				<span class="i-color_warning">{lang="$form->elements['']['images']->error"}</span>
+			{{endif}}
+		</div>
+	</div>
+</form>

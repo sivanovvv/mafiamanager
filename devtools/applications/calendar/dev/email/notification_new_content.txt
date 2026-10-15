@@ -1,0 +1,6 @@
+<ips:template parameters="$content, $email" />
+{$email->language->addToStack("email_new_calevent_plain", FALSE, array( 'htmlsprintf' => array( $content->author()->name, $content->indefiniteArticle( $email->language ), $content->mapped( 'title' ), $content->fixedDateTimeDescription( $email->language ) ) ) )}
+
+{$content->emailContent( $email, 'plaintext' )|raw}
+
+-- {setting="board_name"}

@@ -1,0 +1,22 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "admin\/blocks\/embedCode",
+            "front\/global\/uploadDisplay",
+            "admin\/templates\/menu",
+            "front\/widgets\/pagebuilderupload"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

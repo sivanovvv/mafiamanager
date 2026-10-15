@@ -1,0 +1,6 @@
+<ips:template parameters="$content, $comment, $solver, $email" />
+
+
+{$email->language->addToStack("mail_your_content_is_solved", FALSE, array( 'htmlsprintf' => array( $comment->url('find'), $content->url(), $content->mapped('title'), $content->definiteArticle( $email->language ) ) ) )}
+
+-- {setting="board_name"}

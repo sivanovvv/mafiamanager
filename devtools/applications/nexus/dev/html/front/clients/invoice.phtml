@@ -1,0 +1,172 @@
+<ips:template parameters="$invoice" />
+
+<div class='ipsBox ipsBox--commerceInvoice i-padding_3 i-margin-bottom_3'>
+	<div class='i-flex i-justify-content_space-between i-margin-bottom_2'>
+		<div>
+			<h1 class='ipsTitle ipsTitle--h3'>{lang="order_title"} #{$invoice->id}</h1>
+			<p class='i-color_soft'>{lang="order_placed"} {datetime="$invoice->date" lowercase="true"}</p>
+		</div>
+		<div class='i-flex i-flex-direction_column i-align-items_stretch i-justify-content_center i-gap_1'>
+			<a href='{{if $invoice->guest_data and isset( $invoice->guest_data['guestTransactionKey'] )}}{$invoice->url()->setQueryString( array( 'do' => 'printout', 'key' => $invoice->guest_data['guestTransactionKey'] ) )}{{else}}{$invoice->url()->setQueryString( 'do', 'printout' )}{{endif}}' target="_blank" rel='noopener' class='ipsButton ipsButton--small ipsButton--soft ipsButton--wide'>{lang="order_invoice_print"}</a>
+			{{if $invoice->po}}
+				<p class='i-margin-block_2'>
+					{lang="invoice_po_number"}: {$invoice->po} <a href="{$invoice->url()->setQueryString( array( 'do' => 'poNumber' ) )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_po_number_dialog"}' class='i-font-size_-2' title='{lang="order_po_number"}'>({lang="edit"})</a>
+				</p>
+			{{else}}
+				<a href="{$invoice->url()->setQueryString( array( 'do' => 'poNumber' ) )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_po_number_dialog"}' title='{lang="order_po_number_add_title"}' class='ipsButton ipsButton--small ipsButton--text ipsButton--wide'>{lang="order_po_number_add"}</a>
+			{{endif}}
+		</div>
+	</div>
+
+	<hr class='ipsHr'>
+
+	<div class='ipsSpanGrid i-margin-top_3 cNexusInvoiceView'>
+		<div class='ipsSpanGrid__6'>
+			{{if $invoice->billaddress}}
+				<div class='ipsSpanGrid i-margin-bottom_4'>
+					{{if $invoice->billaddress }}
+						<div class='ipsSpanGrid__6'>
+							<h3 class='ipsTitle ipsTitle--h3'>{lang="billing_address"}</h3>
+							<div class='i-margin-top_3'>
+								{$invoice->billaddress->toString('<br>')|raw}
+							</div>
+						</div>
+					{{endif}}
+				</div>
+			{{endif}}
+
+			{{if $invoice->notes}}
+				<h2 class='ipsTitle ipsTitle--h3'>{lang="invoice_notes"}</h2>
+				<div class='i-margin-bottom_2'>
+					{expression="nl2br( htmlspecialchars( $invoice->notes, ENT_QUOTES | ENT_DISALLOWED, 'UTF-8', FALSE ) )" raw="true"}
+				</div>
+				<a href="{$invoice->url()->setQueryString( array( 'do' => 'notes' ) )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_edit_invoice_notes"}'>({lang="edit"})</a>
+			{{else}}
+				<p class='i-margin-top_3'><a href="{$invoice->url()->setQueryString( array( 'do' => 'notes' ) )}" class='ipsButton ipsButton--soft ipsButton--small' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="order_edit_invoice_notes"}' title='{lang="order_add_invoice_notes"}'>{lang="order_add_invoice_notes"}</a></p>
+			{{endif}}
+		</div>
+		<div class='ipsSpanGrid__6 i-text-align_center'>
+			<div class='ipsInnerBox i-padding_3'>
+				<h2 class='ipsMinorTitle'>{lang="order_order_total"}</h2>
+				<span class='cNexusOrderBadge cNexusOrderBadge_{$invoice->status}'>{lang="istatus_{$invoice->status}"}</span> &nbsp;&nbsp;&nbsp;<span class='cNexusPrice'>{$invoice->total}</span>
+
+				{{if $invoice->status === $invoice::STATUS_PENDING}}
+					<ul class='i-grid i-gap_2'>
+						<li><a href="{$invoice->checkoutUrl()}" class='ipsButton ipsButton--primary ipsButton--wide ipsButton--small' title="{lang="order_pay_now_title"}">{lang="order_pay_now"}</a></li>
+						<li><a href="{$invoice->url()->setQueryString( 'do', 'cancel' )->csrf()}" class='ipsButton ipsButton--soft ipsButton--wide ipsButton--small' data-confirm title='{lang="order_cancel_invoice"}'>{lang="cancel"}</a></li>
+					</ul>
+				{{elseif $invoice->status === $invoice::STATUS_EXPIRED}}
+					<p class='i-text-align_center i-color_soft i-margin-top_3'>
+						{lang="order_invoice_expired"}
+					</p>
+				{{elseif $invoice->status === $invoice::STATUS_CANCELED}}
+					<p class='i-text-align_center i-color_soft i-margin-top_3'>
+						{lang="order_invoice_cancelled"}
+					</p>
+				{{elseif $invoice->status === $invoice::STATUS_PAID}}
+					<p class='i-text-align_center i-color_soft i-margin-top_3'>
+						{lang="order_invoice_paid"}<br>
+						{{if $invoice->billaddress AND \count( $invoice->transactions( array( \IPS\nexus\Transaction::STATUS_PAID, \IPS\nexus\Transaction::STATUS_WAITING, \IPS\nexus\Transaction::STATUS_HELD, \IPS\nexus\Transaction::STATUS_REVIEW, \IPS\nexus\Transaction::STATUS_REFUSED, \IPS\nexus\Transaction::STATUS_REFUNDED, \IPS\nexus\Transaction::STATUS_PART_REFUNDED, \IPS\nexus\Transaction::STATUS_GATEWAY_PENDING ) ) ) > 0 }}
+							<a href='#elPaymentDetails' data-ipsDialog data-ipsDialog-content='#elPaymentDetails' data-ipsDialog-title='{lang="order_payment_details"}' data-ipsDialog-size='narrow'>{lang="order_view_payment"}</a>
+						{{endif}}
+					</p>
+
+					{{if $invoice->billaddress}}
+						<div id='elPaymentDetails' class='i-text-align_start ipsJS_hide'>
+							{template="paymentLog" group="clients" app="nexus" params="$invoice"}
+						</div>
+					{{endif}}
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{{$summary = $invoice->summary();}}
+<div class='ipsBox ipsBox--commerceOrderDetails'>
+    <h2 class='ipsBox__header'>{lang="order_details"}</h2>
+    <div class='ipsBox__content'>
+        <i-data>
+			<ul class="ipsData ipsData--table ipsData--order-details">
+				{{foreach $summary['items'] as $k => $item}}
+					{{if !( $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount )}}
+						<li class='ipsData__item'>
+							<div class="ipsData__image" aria-hidden="true">
+								{{if $image = $item->image()}}
+									<img src="{$image->url}" alt='' loading='lazy'>
+								{{elseif $item::$icon}}
+									<i class='fa-solid fa-{$item::$icon}' aria-hidden="true"></i>
+								{{else}}
+									<i aria-hidden="true"></i>
+								{{endif}}
+							</div>
+							<div class='ipsData__content'>
+								<div class='ipsData__main'>
+									<h2 class='ipsData__title'>
+										{{if $url = $item->url()}}
+											<a href="{$url}"><span class='i-color_soft'>{$item->quantity} x</span> {$item->name}</a>
+										{{else}}
+											<span class='i-color_soft'>{$item->quantity} x</span> {$item->name}
+										{{endif}}
+									</h2>
+									<dl class='cNexusPurchase_info'>
+										{$item->detailsForDisplay( 'invoice' )|raw}
+									</dl>
+								</div>
+								<div class='i-basis_140 i-text-align_end i-align-self_start'>
+									<span class='cNexusPrice i-font-size_2'>
+										{$item->linePrice()}
+									</span>
+									{{if $item->quantity > 1}}
+									<p class='i-font-size_-2 i-color_soft'>
+										{lang="each_short" sprintf="$item->price"}
+									</p>
+									{{endif}}
+								</div>
+							</div>
+						</li>
+					{{endif}}
+				{{endforeach}}
+				{{foreach $summary['items'] as $item}}
+					{{if $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount}}
+						<li class='ipsData__item cNexusCheckout_coupon'>
+							<div class='ipsData__main i-text-align_end'>
+								<strong>{lang="coupon"} {$item->name}</strong>
+							</div>
+							<div class='i-basis_100 i-text-align_end cNexusPrice'>
+								{$item->linePrice()}
+							</div>
+						</li>
+					{{endif}}
+				{{endforeach}}
+				<li class='ipsData__item cNexusCheckout_subtotal'>
+					<div class='ipsData__main i-text-align_end'>
+						<strong>{lang="subtotal"}</strong>
+					</div>
+					<div class='i-basis_100 i-text-align_end cNexusPrice'>
+						{$summary['subtotal']}
+					</div>
+				</li>
+				{{foreach $summary['tax'] as $taxId => $tax}}
+					<li class='ipsData__item'>
+						<div class='ipsData__main i-text-align_end'>
+							<strong>{lang="nexus_tax_{$taxId}"} ({expression="$tax['rate']*100"}%)</strong>
+						</div>
+						<div class='i-basis_100 i-text-align_end cNexusPrice'>
+							{$tax['amount']}
+						</div>
+					</li>
+				{{endforeach}}
+				<li class='ipsData__item i-font-size_2 cNexusCheckout_subtotal'>
+					<div class='ipsData__main i-text-align_end'>
+						<strong>{lang="total"}</strong>
+					</div>
+					<div class='i-basis_100 i-text-align_end cNexusPrice'>
+						<strong>{$summary['total']}</strong>
+					</div>
+				</li>
+			</ul>
+		</i-data>
+    </div>
+</div>

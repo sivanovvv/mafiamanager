@@ -1,0 +1,40 @@
+<ips:template parameters="$package" />
+
+<li class='ipsData__item {$package->ui( "css" )}' {$package->ui( 'dataAttributes' )}>
+	<a href='{$package->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$package->_title}</span></a>
+	<a href='{$package->url()}' class='ipsData__image' aria-hidden="true" tabindex="-1">
+		{{if $package->image}}
+			<img src="{$package->image}" alt='{$package->_title}' loading='lazy'>
+		{{else}}
+			<i class="fa-solid fa-box-open" aria-hidden="true"></i>
+		{{endif}}
+	</a>
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			<div class="ipsData__title">
+				<h3>
+					<a href="{$package->url()}" data-role='productLink'>{$package->_title}</a>
+				</h3>
+			</div>
+			{template="packageBlockPrice" app="nexus" group="store" params="$package->fullPriceInfo()"}
+			{{$stockLevel = $package->stockLevel();}}
+			{{if $stockLevel === 0}}
+				<span class='ipsCommerceStock ipsCommerceStock--out'>{lang="out_of_stock"}</span>
+			{{else}}
+				<span class='ipsCommerceStock ipsCommerceStock--in'>
+					{{if $stockLevel and settings.nexus_show_stock}}
+						{lang="x_in_stock" pluralize="$stockLevel"}
+					{{else}}
+						{lang="in_stock"}
+					{{endif}}
+				</span>
+			{{endif}}
+			{{if $package->reviewable}}
+				<div class='i-margin-top_2'>
+					{template="rating" group="global" app="core" params="'medium', $package->item()->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $package->item()->memberReviewRating()"}
+					<span class='i-color_soft'>({$package->item()->reviews})</span>
+				</div>
+			{{endif}}
+		</div>
+	</div>
+</li>

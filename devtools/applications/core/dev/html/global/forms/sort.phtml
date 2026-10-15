@@ -1,0 +1,25 @@
+<ips:template parameters="$name, $value, $options" />
+<div class="ipsField_stack" data-ipsStack data-ipsStack-sortable data-ipsStack-fieldName="{$name}">
+	<ul data-role="stack">
+	{{$i = 0;}}
+	{{foreach $value as $id => $val}}
+		{{$i++;}}
+		<li class='ipsField_stackItem' data-role="stackItem">
+			<input type="hidden" name="{$name}[{$id}]" value="{$val}">
+			<span class='ipsField_stackDrag ipsDrag' data-action='stackDrag'>
+				<i class='fa-solid fa-bars ipsDrag_dragHandle' aria-hidden="true"></i>
+			</span>
+			<div data-ipsStack-wrapper>
+				{{if $options['checkboxes']}}
+					<input type="checkbox" name="{$name}_checkboxes[{$id}]" value="1" {{if $val}}checked{{endif}} id="elCheckbox_{$name}_{$id}" class="ipsInput ipsInput--toggle">
+					<label for="elCheckbox_{$name}_{$id}">
+						{lang="{$options['checkboxes']}{$id}"}
+					</label>
+				{{else}}
+					<div data-action='stackDrag'>{$val}</div>
+				{{endif}}
+			</div>
+		</li>
+	{{endforeach}}
+	</ul>
+</div>

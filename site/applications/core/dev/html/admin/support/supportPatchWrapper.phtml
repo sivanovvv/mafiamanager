@@ -1,0 +1,11 @@
+<ips:template parameters="$updates" />
+<a href='#supportPatchAvailable' data-ipsDialog data-ipsDialog-content='#supportPatchAvailable' data-ipsDialog-title='{lang="self_service"}'>{lang="health__patch_before_proceed"}</a>
+
+<div class='ipsHide' id='supportPatchAvailable'>
+	<div class='i-padding_4 i-font-size_2'>
+		{template="patchAvailable" app="core" location="admin" group="support" params="$updates"}
+	</div>
+	<div class='ipsSubmitRow i-border-end-start-radius_box i-border-end-end-radius_box'>
+		<a href='{url="app=core&module=system&controller=upgrade&_new=1&patch=1"}' class="ipsButton ipsButton--inherit">{lang="upgrade_apply_patch"}</a>
+	</div>
+</div>

@@ -1,0 +1,15 @@
+<ips:template parameters="$member=NULL" />
+<em>{lang="members_name_missing_as_reserved"}</em>
+{{if $member->members_bitoptions['created_externally']}}
+	<br><span data-ipsTooltip class="ipsBadge ipsBadge--negative">{lang="member_reserved_external"}</span>
+{{elseif ( $member->last_visit == 0 and $member->joined->getTimestamp() > ( time() - 3600 ) )}}
+	{{$mins = ceil( ( $member->joined->getTimestamp() - ( time() - 3600 ) ) / 60 );}}
+	<br><span title="{lang="members_name_missing_as_reserved_tt"}" class="ipsBadge ipsBadge--negative">{lang="member_reserved_pending_deletion" sprintf="$mins"}</span>
+{{endif}}
+	
+
+
+
+
+
+

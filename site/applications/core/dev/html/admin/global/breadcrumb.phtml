@@ -1,0 +1,19 @@
+<ips:template parameters="" />
+
+{{if \count( \IPS\Output::i()->breadcrumb )}}
+	<nav class='ipsBreadcrumb ipsBreadcrumb--acp'>
+		<ol itemscope="" itemtype="https://schema.org/BreadcrumbList" class="ipsBreadcrumb__list">
+			{{$i = 0;}}
+			{{foreach \IPS\Output::i()->breadcrumb as $k => $b}}
+				<li>
+					{{if $b[0] === NULL}}
+						<span>{lang="$b[1]"}</span>
+					{{else}}
+						<a href='{$b[0]}'>{lang="$b[1]"}</a>
+					{{endif}}
+				</li>
+				{{$i++;}}
+			{{endforeach}}
+		</ol>
+	</nav>
+{{endif}}

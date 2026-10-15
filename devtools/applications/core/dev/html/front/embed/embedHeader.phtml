@@ -1,0 +1,16 @@
+<ips:template parameters="$content, $lang, $date, $url" />
+
+<div class='ipsRichEmbed_header'>
+	<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+		{template="userPhoto" app="core" group="global" params="$content->author(), 'tiny', $content->warningRef()"}
+		<div class='ipsPhotoPanel__text'>
+			<p class='ipsPhotoPanel__primary ipsTruncate_1'>
+				<a href='{{if $url}}{$url}{{else}}{$content->url( "getPrefComment" )}{{endif}}'>{$lang}</a>
+			</p>
+			<p class='ipsPhotoPanel__secondary ipsTruncate_1'>
+				<a href='{{if $url}}{$url}{{else}}{$content->url( "getPrefComment" )}{{endif}}'>{datetime="$date"}</a>
+			</p>
+		</div>
+	</div>
+	<a href='{{if $url}}{$url}{{else}}{$content->url( "getPrefComment" )}{{endif}}' class='ipsRichEmbed_openItem'><i class='fa-solid fa-arrow-up-right-from-square' aria-hidden="true"></i></a>
+</div>

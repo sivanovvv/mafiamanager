@@ -1,0 +1,143 @@
+<ips:template parameters="$club, $memberStatus" />
+
+{{if \is_array( $memberStatus ) AND \in_array( $memberStatus['status'], array( $club::STATUS_INVITED, $club::STATUS_INVITED_BYPASSING_PAYMENT ) ) && $club->canJoin()}}
+    {{if $memberStatus['invited_by']}}
+    	{{$invitedBy = \IPS\Member::load( $memberStatus['invited_by'] );}}
+    	<div class='ipsBox ipsBox--clubInvitedBy i-padding_3'>
+	    	<div class='i-flex i-align-items_center i-justify-content_center i-flex-wrap_wrap i-gap_2'>
+	    		<div class='i-flex_11'>
+					<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+						{template="userPhoto" group="global" app="core" params="$invitedBy, 'tiny'"}
+						<div>
+							<h3 class='i-font-size_2'>{lang="club_youre_invited"}</h3>
+							<p>
+								{{if $memberStatus['status'] === $club::STATUS_INVITED_BYPASSING_PAYMENT}}
+									{lang="club_invited_bypassing_payment" sprintf="$invitedBy->name"}
+								{{else}}
+									{lang="club_youre_invited_desc" sprintf="$invitedBy->name"}
+								{{endif}}
+							</p>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div  class='i-flex i-gap_2 i-row-gap_0'>
+						<div class='i-flex_00'>
+							<a class="ipsButton ipsButton--wide ipsButton--positive" href="{$club->url()->setQueryString('do', 'join')->csrf()}" {{if $club->isPaid() and $memberStatus['status'] !== $club::STATUS_INVITED_BYPASSING_PAYMENT}}data-confirm data-confirmIcon="info" data-confirmMessage="{lang="club_membership_item"}" data-confirmSubmessage="{$club->memberFeeMessage()}"{{endif}}>
+								{lang="club_join"}
+							</a>
+						</div>
+						<div class='i-flex_00'>
+							<a class="ipsButton ipsButton--wide ipsButton--negative" href="{$club->url()->setQueryString('do', 'leave')->csrf()}" data-confirm>
+								{lang="club_decline_invite"}
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr class='ipsHr'>
+    {{endif}}
+{{elseif \is_array( $memberStatus ) AND $memberStatus['status'] == \IPS\Member\Club::STATUS_BANNED}}
+	<div class='ipsBox ipsBox--clubBanned i-padding_3 i-margin-bottom_3'>
+		<div class='ipsPhotoPanel ipsPhotoPanel--tiny cClubStatus'>
+			<i class='fa-solid fa-xmark i-font-size_2' aria-hidden="true"></i>
+			<div>
+				<h3 class='i-font-size_2'>{lang="club_banned_title"}</h3>
+				<p>
+					{lang="club_banned_desc"}
+				</p>
+			</div>
+		</div>
+	</div>
+{{elseif \is_array( $memberStatus ) AND \in_array( $memberStatus['status'], array( \IPS\Member\Club::STATUS_EXPIRED, \IPS\Member\Club::STATUS_EXPIRED_MODERATOR ) )}}
+	<div class='ipsBox ipsBox--clubExpired i-padding_3 i-margin-bottom_3'>
+    	<div class='ipsColumns'>
+    		<div class='ipsColumns__primary'>
+				<div class='ipsPhotoPanel ipsPhotoPanel--tiny cClubStatus'>
+					<i class='fa-solid fa-triangle-exclamation i-font-size_2' aria-hidden="true"></i>
+					<div>
+						<h3 class='i-font-size_2'>{lang="club_expired_title"}</h3>
+						<p>
+							{lang="club_expired_desc"}
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class='ipsColumns__secondary i-basis_200'>
+				<a class="ipsButton ipsButton--wide ipsButton--positive" href="{$club->url()->setQueryString('do', 'renew')->csrf()}">
+					{lang="club_renew_now"}
+				</a>
+			</div>
+		</div>
+	</div>
+	<hr class='ipsHr'>
+{{elseif !$club->canRead()}}
+	<div class='ipsBox ipsBox--clubRequested i-padding_3 i-margin-bottom_3'>
+		{{if \is_array( $memberStatus ) AND $memberStatus['status'] === $club::STATUS_REQUESTED}}
+			<div class='ipsPhotoPanel ipsPhotoPanel--tiny cClubStatus'>
+				<i class='fa-regular fa-clock i-font-size_2' aria-hidden="true"></i>
+				<div>
+					<h3 class='i-font-size_2'>{lang="club_requested_title"}</h3>
+					<p>
+						{{if $club->isPaid()}}
+							{lang="club_requested_desc_paid"}
+						{{else}}
+							{lang="club_requested_desc"}
+						{{endif}}
+					</p>
+				</div>
+			</div>
+		{{elseif \is_array( $memberStatus ) AND $memberStatus['status'] === $club::STATUS_WAITING_PAYMENT}}
+			<div class='ipsColumns'>
+	    		<div class='ipsColumns__primary'>
+					<div class='ipsPhotoPanel ipsPhotoPanel--tiny cClubStatus'>
+						<i class='fa-solid fa-check i-font-size_2' aria-hidden="true"></i>
+						<div>
+							<h3 class='i-font-size_2'>{lang="club_awaiting_payment_title"}</h3>
+							<p>
+								{lang="club_awaiting_payment_desc"}
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class='ipsColumns__secondary i-basis_120'>
+					<a class="ipsButton ipsButton--wide ipsButton--positive" href="{$club->url()->setQueryString('do', 'join')->csrf()}">
+						{lang="club_pay_membership_fee"}
+					</a>
+				</div>
+			</div>			
+		{{elseif \is_array( $memberStatus ) AND $memberStatus['status'] === \IPS\Member\Club::STATUS_DECLINED}}
+			<div class='ipsPhotoPanel ipsPhotoPanel--tiny cClubStatus'>
+				<i class='fa-solid fa-xmark i-font-size_2' aria-hidden="true"></i>
+				<div>
+					<h3 class='i-font-size_2'>{lang="club_denied_title"}</h3>
+					<p>
+						{lang="club_denied_desc"}
+					</p>
+				</div>
+			</div>
+		{{else}}
+			<div class='ipsColumns'>
+	    		<div class='ipsColumns__primary'>
+					<div class='ipsPhotoPanel ipsPhotoPanel--tiny cClubStatus'>
+						<i class='fa-solid fa-lock i-font-size_2' aria-hidden="true"></i>
+						<div>
+							<h3 class='i-font-size_2'>{lang="club_closed_title"}</h3>
+							<p>
+								{lang="club_closed_desc"}
+							</p>
+						</div>
+					</div>
+				</div>
+				{{if $club->canJoin()}}
+				<div class='ipsColumns__secondary i-basis_120'>
+					<a class="ipsButton ipsButton--wide ipsButton--positive" href="{$club->url()->setQueryString('do', 'join')->csrf()}" {{if $club->isPaid() and \is_array( $memberStatus ) AND $memberStatus['status'] !== $club::STATUS_INVITED_BYPASSING_PAYMENT}}data-confirm data-confirmIcon="info" data-confirmMessage="{lang="club_membership_item"}" data-confirmSubmessage="{$club->memberFeeMessage()}"{{endif}}>
+						{lang="club_join"}
+					</a>
+				</div>
+				{{endif}}
+			</div>
+		{{endif}}
+	</div>
+{{endif}}

@@ -1,0 +1,52 @@
+<ips:template parameters="$billingAgreements" />
+
+<h1 class='ipsTitle ipsTitle--h3'>{lang="billing_agreements_title"}</h1>
+
+<p class='i-margin-bottom_3'>
+	{lang="billing_agreements_info"}
+</p>
+
+{{if !\count( $billingAgreements )}}
+	<div class='ipsBox ipsEmptyMessage'>
+		{lang="billing_agreements_none"}
+	</div>
+{{else}}
+	<i-data>
+		<ol class="ipsData ipsData--table ipsData--billing-agreements">
+			{{foreach $billingAgreements as $billingAgreement}}
+				<li class='ipsData__item'>
+					<div class='i-flex_00'>
+						{{if $billingAgreement['status'] === \IPS\nexus\Customer\BillingAgreement::STATUS_ACTIVE}}
+							<span class='ipsBadge ipsBadge--icon ipsBadge--positive' data-ipsTooltip title='{lang="billing_agreement_active"}'>
+								<i class='fa-solid fa-check i-font-size_2' aria-hidden="true"></i>
+							</span>
+						{{elseif $billingAgreement['status'] === \IPS\nexus\Customer\BillingAgreement::STATUS_SUSPENDED}}
+							<span class='ipsBadge ipsBadge--icon ipsBadge--neutral'  data-ipsTooltip title='{lang="billing_agreement_suspended"}'>
+								<i class='fa-regular fa-clock i-font-size_2' aria-hidden="true"></i>
+							</span>
+						{{elseif $billingAgreement['status'] === \IPS\nexus\Customer\BillingAgreement::STATUS_CANCELED}}
+							<span class='ipsBadge ipsBadge--icon ipsBadge--negative'  data-ipsTooltip title='{lang="billing_agreement_canceled"}'>
+								<i class='fa-solid fa-xmark i-font-size_2' aria-hidden="true"></i>
+							</span>
+						{{else}}
+							<span class='ipsBadge ipsBadge--icon ipsBadge--neutral'  data-ipsTooltip title='{lang="billing_agreement_unknown"}'>
+								<i class='fa-solid fa-question i-font-size_2' aria-hidden="true"></i>
+							</span>
+						{{endif}}
+					</div>
+					<div class='ipsData__content'>
+						<div class='ipsData__main'>
+							<strong class='i-font-size_2'>{$billingAgreement['id']}</strong>
+							<p class='ipsData__meta cNexusPrice'>
+								{$billingAgreement['term']}
+							</p>
+						</div>
+						<div class=''>
+							<a href="{$billingAgreement['url']}" class='ipsButton ipsButton--inherit ipsButton--small'>{lang="billing_agreement_view"}</a>
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ol>
+	</i-data>
+{{endif}}

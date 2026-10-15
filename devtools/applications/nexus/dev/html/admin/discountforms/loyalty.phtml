@@ -1,0 +1,30 @@
+<ips:template parameters="$field, $nodeSelect" />
+
+<div class='cNexusStack cNexusStack_usergroup'>
+	<ol>
+		<li data-step='{lang="discount_if"}'>
+			<strong class='i-font-size_1'>{lang="discount_after_purchasing"}</strong><br>
+			<input type="number" name="{$field->name}[owns]" class="ipsInput ipsField_short ipsField_stackItemNoMargin" name="{$field->name}[owns]" {{if \is_array( $field->value )}}value="{$field->value['owns']}"{{endif}}> {lang="discount_or_more"}<br>
+			<input type="checkbox" name="{$field->name}[active]" {{if \is_array( $field->value ) and isset( $field->value['active'] ) and $field->value['active']}}checked{{endif}}> {lang="discount_active_only"}<br>
+		</li>
+		<li data-step='{lang="discount_of"}'>
+			<input type="radio" name="{$field->name}[this]" id="{$field->name}_this_this" value="1" {{if !\is_array( $field->value ) or !$field->value['package']}}checked{{endif}} > <label for="{$field->name}_this_this">&nbsp;<strong class='i-font-size_1'>{lang="discount_this_product"}</strong></label><br>
+			<input type="radio" name="{$field->name}[this]" id="{$field->name}_this_other" value="0" data-control='toggle' data-toggles='p_loyalty_discounts_nodeSelect{$field->htmlId}' {{if \is_array( $field->value ) and $field->value['package']}}checked{{endif}} > <label for="{$field->name}_this_other">&nbsp;<strong class='i-font-size_1'>{lang="discount_different_product"}</strong></label><br>
+			<div id="p_loyalty_discounts_nodeSelect{$field->htmlId}">
+				{$nodeSelect|raw}
+			</div>
+		</li>
+		<li data-step='{lang="discount_then"}'>
+			<strong class='i-font-size_1'>{lang="discount_price_becomes"}</strong><br>
+			<ul>
+				{{foreach \IPS\nexus\Money::currencies() as $currency}}
+					<li>
+						<input type="number" class="ipsInput ipsField_short ipsField_stackItemNoMargin" name="{$field->name}[price][{$currency}]" {{if \is_array( $field->value )}}value="{$field->value['price'][$currency]}"{{endif}} step="0.01"> {$currency}
+					</li>
+				{{endforeach}}
+			</ul>
+			<br>
+			{lang="discount_price_becomes_always"}
+		</li>
+	</ol>
+</div>

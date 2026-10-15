@@ -1,0 +1,40 @@
+<ips:template parameters="$url, $layout='table', $isCarousel=false" />
+{{$catClass = '\IPS\cms\Categories' . \IPS\cms\Databases\Dispatcher::i()->databaseId;}}
+{{$categories = $catClass::roots();}}
+{{if !empty( $categories )}}
+	<div class='ipsWidget__header'>
+		<h3>{lang="categories"}</h3>
+		<a href="{$url->setQueryString('show','categories')}" class='ipsWidget__header-secondary'>{lang="cms_show_categories_short"}</a>
+	</div>
+	<div class='ipsSideMenu ipsSideMenu--truncate ipsCategoriesMenu'>
+		<ul class='ipsSideMenu__list'>
+			{{foreach $categories as $category}}
+				<li>
+					<a href="{$category->url()}" class='ipsSideMenu_item'>
+						<strong class='ipsSideMenu__text'>{$category->_title}</strong>
+						<span class="ipsSideMenu__count">{expression="\IPS\cms\Records::contentCount( $category )"}</span>
+					</a>
+					{{if $category->hasChildren()}}
+						<ul class="ipsSideMenu__list">
+							{{$counter = 0;}}
+							{{foreach $category->children() as $idx => $subcategory}}
+							{{$counter++;}}
+								<li>
+									{{if $counter >= 5}}
+										<a href='{$category->url()}' class='ipsSideMenu_item'><span class='i-color_soft i-font-size_-2'>{lang="and_x_more" pluralize="\count( $category->children() ) - 4"}</span></a>
+										{{break;}}
+									{{else}}
+										<a href="{$subcategory->url()}" class='ipsSideMenu_item'>
+											<span class='ipsSideMenu__text'>{$subcategory->_title}</span>
+											<span class="ipsSideMenu__count">{expression="\IPS\cms\Records::contentCount( $subcategory )"}</span>
+										</a>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+{{endif}}

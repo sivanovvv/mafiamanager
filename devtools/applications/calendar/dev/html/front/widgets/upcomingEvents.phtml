@@ -1,0 +1,86 @@
+<ips:template parameters="$events, $today, $layout='table', $isCarousel=false" />
+<header class='ipsWidget__header'>
+	<h3>{lang="block_upcomingEvents"}</h3>
+	{{if $isCarousel}}
+		{{$carouselID = 'widget--upcoming-events_' . mt_rand();}}
+		{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+	{{endif}}
+</header>
+<div class='ipsWidget__content'>
+	{{if !empty( $events ) }}
+		<i-data>
+			<ul class="ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--upcoming-events" {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+				{{foreach $events as $event}}
+					<li class='ipsData__item {$event->ui('css')}' {$event->ui('dataAttributes')}>
+						<a href="{$event->url( "getPrefComment" )}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$event->title}</span></a>							
+						{{if \in_array( $layout, array("grid", "wallpaper", "featured"))}}
+							<div class="ipsData__image" aria-hidden="true">
+								{{if $image = $event->primaryImage()}}
+									<img src="{$image->url}" alt="{$event->title}" loading="lazy">
+								{{else}}
+									<i aria-hidden="true"></i>
+								{{endif}}
+							</div>
+						{{else}}
+							{{if $event->nextOccurrence( $today, 'startDate' )}}
+								<time datetime='{$event->nextOccurrence( $today, 'startDate' )->mysqlDatetime()}' class='ipsCalendarDate'>
+									<span class='ipsCalendarDate__month' data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( $today, 'startDate' )->format('c')}" data-format="%b">{$event->nextOccurrence( $today, 'startDate' )->monthNameShort}</span>
+									<span class='ipsCalendarDate__date' data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( $today, 'startDate' )->format('c')}" data-format="%d">{$event->nextOccurrence( $today, 'startDate' )->mday}</span>
+								</time>
+							{{else}}
+								<time datetime='{$event->lastOccurrence( 'startDate' )->mysqlDatetime()}' class='ipsCalendarDate'>
+									<span class='ipsCalendarDate__month' data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="%b">{$event->lastOccurrence( 'startDate' )->monthNameShort}</span>
+									<span class='ipsCalendarDate__date' data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="%d">{$event->lastOccurrence( 'startDate' )->mday}</span>
+								</time>
+							{{endif}}
+						{{endif}}
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<h4 class='ipsData__title'>
+									<a href="{$event->url( "getPrefComment" )}" title='{lang="view_this_event" sprintf="$event->title"}'>{$event->title}</a>
+								</h4>
+								<div class='ipsData__desc'>
+									{$event->truncated()|raw}
+								</div>
+								<div class='ipsData__meta i-color_root i-margin-block_1'>
+									{{if $event->nextOccurrence( $today, 'startDate' )}}
+										<strong class="i-font-weight_600" data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( $today, 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}} {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"} {{endif}}">{$event->nextOccurrence( $today, 'startDate' )->calendarDate()}{{if !$event->all_day}} {$event->nextOccurrence( $today, 'startDate' )->localeTime( FALSE )} {{endif}}</strong>
+										{{if $event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' ) }}
+											{{$sameDay = (bool) ( $event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' ) and ( $event->nextOccurrence( $today, 'startDate' ) and $event->nextOccurrence( $today, 'startDate' )->calendarDate() == $event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' )->calendarDate() ) );}}
+											<span class="i-color_soft">{lang="until"}</span>
+											{{if !$sameDay}}
+												<strong class="i-font-weight_600" data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}} {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}{{endif}}">
+													{$event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' )->calendarDate()}
+													{{if !$event->all_day}} {$event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' )->localeTime( FALSE )}{{endif}}
+												</strong>
+											{{else}}
+												{{if !$event->all_day}}
+													<strong class="i-font-weight_600" data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+														{$event->nextOccurrence( $event->nextOccurrence( $today, 'startDate' ) ?: $today, 'endDate' )->localeTime( FALSE )}
+													</strong>
+												{{endif}}
+											{{endif}}
+										{{endif}}
+									{{else}}
+										<strong class="i-font-weight_600" data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}} {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"} {{endif}}">{$event->lastOccurrence( 'startDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'startDate' )->localeTime( FALSE )} </strong>{{endif}}
+										{{if $event->lastOccurrence( 'endDate' ) }}
+											<span class="i-color_soft">{lang="until"}</span>
+											<strong class="i-font-weight_600" data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'endDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}} {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}{{endif}}">{$event->lastOccurrence( 'endDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'endDate' )->localeTime( FALSE )}{{endif}}</strong>
+										{{endif}}
+									{{endif}}
+								</div>
+							</div>
+							{{if $event->container()->allow_comments}}
+								<ul class="ipsData__stats">
+									<li>{lang="num_comments" pluralize="$event->comments"}</li>
+								</ul>
+							{{endif}}
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	{{else}}
+		<div class='ipsEmptyMessage'>{lang="no_upcoming_events"}</div>
+	{{endif}}
+</div>

@@ -1,0 +1,6 @@
+<ips:template parameters="" />
+<div class="i-padding-top_2">
+	<a class="ipsButton ipsButton--inherit ipsButton--small" href="{url="app=core&module=customization&controller=themes&do=toggleDesignerMode"}" data-confirm data-confirmSubMessage="{{if ! \IPS\Settings::i()->theme_designer_mode}}{lang="theme_designer_mode_enable_confirm"}{{else}}{lang="theme_designer_mode_disable_confirm"}{{endif}}">
+		<i class="fa-solid fa-code" aria-hidden="true"></i> {{if ! \IPS\Settings::i()->theme_designer_mode}}{lang="theme_designer_mode_enable"}{{else}}{lang="theme_designer_mode_disable"}{{endif}}
+	</a>
+</div>

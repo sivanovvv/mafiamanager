@@ -1,0 +1,87 @@
+<ips:template parameters="" />
+<i-card popover id="iPushNotificationsPromptPopover">
+	<button class="iCardDismiss" type="button" tabindex="-1" popovertarget="iPushNotificationsPromptPopover" popovertargetaction="hide">{lang="dropdown_close"}</button>
+	<div class="iCard">
+		<div class="iCard__header">
+			<h4>{lang="mobile_enable_header"}</h4>
+			<button class="iCard__close" type="button" popovertarget="iPushNotificationsPromptPopover"><span class="ipsInvisible">{lang="close"}</span></button>
+		</div>
+		<div class="iCard__content">
+			<i-tabs class='ipsTabs ipsTabs--stretch ipsTabs--sticky' id='ipsTabs_pushNotifications' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_pushNotifications_content'>
+				<div role='tablist'>
+					<button type="button" id='ipsTabs_pushNotifications_chrome' class="ipsTabs__tab" role="tab" aria-controls='ipsTabs_pushNotifications_chrome_panel' aria-selected="true"><i class="fa-brands fa-chrome i-margin-end_icon" aria-hidden="true"></i> {lang="mobile_enable_chrome"}</button>
+					<button type="button" id='ipsTabs_pushNotifications_safari' class="ipsTabs__tab" role="tab" aria-controls='ipsTabs_pushNotifications_safari_panel' aria-selected="false"><i class="fa-brands fa-safari i-margin-end_icon" aria-hidden="true"></i> {lang="mobile_enable_safari"}</button>
+					<button type="button" id='ipsTabs_pushNotifications_edge' class="ipsTabs__tab" role="tab" aria-controls='ipsTabs_pushNotifications_edge_panel' aria-selected="false"><i class="fa-brands fa-edge i-margin-end_icon" aria-hidden="true"></i> {lang="mobile_enable_edge"}</button>
+					<button type="button" id='ipsTabs_pushNotifications_firefox' class="ipsTabs__tab" role="tab" aria-controls='ipsTabs_pushNotifications_firefox_panel' aria-selected="false"><i class="fa-brands fa-firefox-browser i-margin-end_icon" aria-hidden="true"></i> {lang="mobile_enable_firefox"}</button>
+				</div>
+				{template="tabScrollers" app="core" group="global" location="global"}
+			</i-tabs>
+			<div id='ipsTabs_pushNotifications_content' class='ipsTabs__panels'>
+				<div id='ipsTabs_pushNotifications_chrome_panel' class="ipsTabs__panel ipsTabs__panel--chrome" role="tabpanel" aria-labelledby="ipsTabs_pushNotifications_chrome">
+					<div class="ipsFluid i-basis_300 i-gap_4 i-padding_3">
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_chrome_android"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_chrome_android_desc"}
+							</ol>
+						</div>
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_chrome_desktop"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_chrome_desktop_desc"}
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div id='ipsTabs_pushNotifications_safari_panel' class="ipsTabs__panel ipsTabs__panel--safari" role="tabpanel" aria-labelledby="ipsTabs_pushNotifications_safari" hidden>
+					<div class="ipsFluid i-basis_300 i-gap_4 i-padding_3">
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_safari_ios"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_safari_ios_desc"}
+							</ol>
+						</div>
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_safari_macos"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_safari_macos_desc"}
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div id='ipsTabs_pushNotifications_edge_panel' class="ipsTabs__panel ipsTabs__panel--edge" role="tabpanel" aria-labelledby="ipsTabs_pushNotifications_edge" hidden>
+					<div class="ipsFluid i-basis_300 i-gap_4 i-padding_3">
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_edge_android"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_edge_android_desc"}
+							</ol>
+						</div>
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_edge_desktop"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_edge_desktop_desc"}
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div id='ipsTabs_pushNotifications_firefox_panel' class="ipsTabs__panel ipsTabs__panel--firefox" role="tabpanel" aria-labelledby="ipsTabs_pushNotifications_firefox" hidden>
+					<div class="ipsFluid i-basis_300 i-gap_4 i-padding_3">
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_firefox_android"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_firefox_android_desc"}
+							</ol>
+						</div>
+						<div>
+							<h5 class="i-color_hard i-font-weight_600 i-font-size_2 i-margin-bottom_2">{lang="mobile_enable_firefox_desktop"}</h5>
+							<ol class="ipsList ipsList--bullets">
+								{lang="mobile_enable_firefox_desktop_desc"}
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</i-card>

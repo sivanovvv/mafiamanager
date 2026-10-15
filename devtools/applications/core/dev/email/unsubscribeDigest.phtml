@@ -1,0 +1,7 @@
+<ips:template parameters="$member, $email" />
+<tr>
+	<td dir='{dir}' valign='middle' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 12px; line-height: 18px;">
+		{$email->language->addToStack("unsubscribe_blurb", FALSE)} <a href="{url="app=core&module=system&controller=followed&filter=digest" base="front" seoTemplate="followed_content"}" style='color: #000; text-decoration: underline; font-weight: 600; display: inline-block' class="text-link">{$email->language->addToStack( 'adjust_digest_prefs', FALSE )}</a> or <a href="{url="app=core&module=system&controller=notifications&do=options" base="front" seoTemplate="notifications_options"}" style='color: #000; text-decoration: underline; font-weight: 600; display: inline-block' class="text-link">{$email->language->addToStack( 'adjust_digest_stop_email', FALSE )}</a>.
+		<br>
+	</td>
+</tr>

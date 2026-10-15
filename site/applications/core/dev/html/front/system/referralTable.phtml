@@ -1,0 +1,22 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div class='cReferal_members' data-baseurl='{$table->baseUrl}' data-resort='{$table->resortKey}' data-controller='core.global.core.table{{if $table->canModerate()}},core.front.core.moderation{{endif}}' {{if $table->getPaginationKey() != 'page'}}data-pageParam='{$table->getPaginationKey()}'{{endif}} data-tableID='{expression="md5($table->baseUrl->stripQueryString($table->getPaginationKey()))"}'>
+	{{if $table->title}}
+		<h2 class='ipsBox__header'>{lang="$table->title"}</h2>
+	{{endif}}
+    {{if \count( $rows )}}
+		<i-data>
+			<ol class="ipsData ipsData--mini-grid ipsData--referral-table i-border-top_3" id='elTable_{$table->uniqueId}' data-role="tableRows">
+				{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+			</ol>
+		</i-data>
+	    {{if $table->pages > 1}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination" data-role="tablePagination">
+					{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+				</div>
+			</div>
+		{{endif}}
+	{{else}}
+		<p class='ipsEmptyMessage'>{lang="referral_no_referrals"}</p>
+	{{endif}}
+</div>

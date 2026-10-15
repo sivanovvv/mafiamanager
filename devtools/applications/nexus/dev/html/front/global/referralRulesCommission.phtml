@@ -1,0 +1,31 @@
+<ips:template parameters="$rules" />
+{{if settings.nexus_com_rules AND \count(  iterator_to_array( $rules ) )}}
+	<h3 class='ipsTitle ipsTitle--h5 i-padding-inline_3 i-margin-top_4 i-margin-bottom_2'>{lang="referrals_title"}</h3>
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--referrals">
+			{{foreach $rules as $rule}}
+			<li class='ipsData__item'>
+				<div class='i-flex_00'>
+					<span class='cReferralBadge'>{$rule->commission}%</span>
+				</div>
+				<div class='ipsData__main'>
+					<strong class='ipsData__title'>{$rule->description()}</strong>
+					{{$limit = $rule->commissionLimit();}}
+					{{if $rule->purchase_packages or $limit != ''}}<p class='ipsData__desc'>({{endif}}
+					{{if $rule->purchase_packages}}
+						{{if $rule->purchase_package_limit}}
+							{lang="ref_comm_limit_yes"}
+						{{else}}
+							{lang="ref_comm_limit_no"}
+						{{endif}}
+					{{endif}}
+					{{if $rule->commission_limit}}
+						{$rule->commissionLimit()}
+					{{endif}}
+					{{if $rule->purchase_packages or $limit != ''}})</p>{{endif}}
+				</div>
+			</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+{{endif}}

@@ -1,0 +1,39 @@
+{
+    "1": {
+        "method": "addIndex",
+        "params": [
+            "core_member_badges",
+            {
+                "type": "key",
+                "name": "badge_stats",
+                "columns": [
+                    "badge",
+                    "member"
+                ],
+                "length": [
+                    null,
+                    null
+                ]
+            }
+        ]
+    },
+    "2": {
+        "method": "changeColumn",
+        "params": [
+            "core_widget_areas",
+            "tree",
+            {
+                "name": "tree",
+                "type": "MEDIUMTEXT",
+                "length": null,
+                "decimals": null,
+                "values": null,
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": false,
+                "auto_increment": false
+            }
+        ]
+    }
+}

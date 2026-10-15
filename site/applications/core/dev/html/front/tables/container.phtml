@@ -1,0 +1,7 @@
+<ips:template parameters="$table, $header=NULL" />
+<header class='ipsPageHeader ipsPageHeader--table-container'>
+	<h1 class='ipsPageHeader__title'>{{if $header}}{$header}{{else}}{expression="\IPS\Output::i()->title"}{{endif}}</h1>
+</header>
+<div class='ipsBox ipsBox--tableContainer'>
+	{$table|raw}
+</div>

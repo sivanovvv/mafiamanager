@@ -1,0 +1,34 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+<form accept-charset='utf-8' class="ipsForm {$class} ipsForm--customer-info" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	{{if $form->error}}
+		<div class="ipsMessage ipsMessage--error">
+			{$form->error}
+		</div>
+	{{endif}}
+
+	<ul>
+		{{foreach $elements as $collection}}
+			{{foreach $collection as $inputName => $input}}
+				{$input|raw}
+			{{endforeach}}
+		{{endforeach}}
+	</ul>
+	<div class='ipsSubmitRow'>
+		<button type='submit' class='ipsButton ipsButton--primary'>{lang="continue_to_review"} <i class='fa-solid fa-chevron-right' aria-hidden="true"></i></button>
+	</div>
+</form>

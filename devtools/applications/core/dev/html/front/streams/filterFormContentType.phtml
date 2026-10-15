@@ -1,0 +1,6 @@
+<ips:template parameters="$elements, $key, $type, $checked=FALSE" />
+{{if \in_array( $type, array_keys( $elements['']['stream_classes']->options['toggles'] ) )}}
+	<i-dropdown popover id="elMenu_{$key}_menu" data-role="streamContainer" data-contentKey="{$key}" data-className="{$type}">
+		<div class="iDropdown i-padding_3"></div>
+	</i-dropdown>
+{{endif}}

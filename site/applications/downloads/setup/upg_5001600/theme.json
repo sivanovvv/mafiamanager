@@ -1,0 +1,45 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/browse\/categoriesSidebar",
+            "front\/browse\/category",
+            "front\/browse\/categoryButtons",
+            "front\/browse\/featuredFile",
+            "front\/browse\/fileGrid",
+            "front\/browse\/index",
+            "front\/browse\/indexBlock",
+            "front\/browse\/rows",
+            "front\/browse\/tableRow",
+            "front\/global\/commentTableHeader",
+            "front\/global\/embedFile",
+            "front\/global\/embedFileItemSnippet",
+            "front\/global\/manageFollowRow",
+            "front\/global\/searchResultFileSnippet",
+            "admin\/nexus\/fileInfo",
+            "front\/submit\/linkedScreenshotField",
+            "front\/submit\/submissionForm",
+            "front\/view\/comments",
+            "front\/view\/downloadButton",
+            "front\/view\/downloadTeaser",
+            "front\/view\/pendingView",
+            "front\/view\/reviews",
+            "front\/view\/view",
+            "front\/widgets\/downloadsCommentFeed",
+            "front\/widgets\/downloadsReviewFeed",
+            "front\/widgets\/downloadStats",
+            "front\/widgets\/fileRow"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

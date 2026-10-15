@@ -1,0 +1,40 @@
+<ips:template parameters="$preview=FALSE" />
+{{$firstHiddenLink = FALSE;}}
+{{if isset(\IPS\Request::i()->cookie['moreMenuLink'])}}
+	{{$firstHiddenLink = IPS\Request::i()->cookie['moreMenuLink'];}}
+{{endif}}
+<nav data-ips-hook="navBar" class='ipsNav' aria-label="Primary">
+	<i-navigation-menu {{if theme.i-nav-hover-menus}}data-hover{{endif}}>
+		<ul class='ipsNavBar' data-role="menu">
+			{template="navBarItems" app="core" group="global" location="front" params="\IPS\core\FrontNavigation::i()->roots( $preview ), \IPS\core\FrontNavigation::i()->subBars( $preview ), 0, FALSE, $firstHiddenLink"}
+			<li data-role="moreLi" {{if !$firstHiddenLink}}hidden{{endif}}>
+				<button popovertarget="nav__more" type="button">
+					<span class="ipsNavBar__icon" aria-hidden="true">
+						<i class="fa-solid fa-bars" aria-hidden="true"></i>
+					</span>
+					<span class="ipsNavBar__text">
+						<span class="ipsNavBar__label">{lang="more"}</span>
+						<i class="fa-solid fa-angle-down" aria-hidden="true"></i>
+					</span>
+				</button>
+				<ul class='ipsNav__dropdown' id="nav__more" popover data-role="moreMenu"></ul>
+			</li>
+		</ul>
+		<div class="ipsNavPriority js-ipsNavPriority" aria-hidden="true">
+			<ul class='ipsNavBar' data-role="clone">
+				<li data-role="moreLiClone">
+					<button popovertarget="nav__more" type="button">
+						<span class="ipsNavBar__icon" aria-hidden="true">
+							<i class="fa-solid fa-bars" aria-hidden="true"></i>
+						</span>
+						<span class="ipsNavBar__text">
+							<span class="ipsNavBar__label">{lang="more"}</span>
+							<i class="fa-solid fa-angle-down" aria-hidden="true"></i>
+						</span>
+					</button>
+				</li>
+				{template="navBarItems" app="core" group="global" location="front" params="\IPS\core\FrontNavigation::i()->roots( $preview ), \IPS\core\FrontNavigation::i()->subBars( $preview ), 0, TRUE, FALSE"}
+			</ul>
+		</div>
+	</i-navigation-menu>
+</nav>

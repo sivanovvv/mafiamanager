@@ -1,0 +1,14 @@
+<ips:template parameters="$title, $blurb='', $rawBlurb=FALSE" />
+
+<header data-ips-hook="pageHeader" class='ipsPageHeader ipsPageHeader--general ipsBox ipsPull'>
+	<h1 class='ipsPageHeader__title'>{$title}</h1>
+	{{if $blurb}}
+		<div class='ipsPageHeader__desc'>
+			{{if !$rawBlurb}}
+				{$blurb}
+			{{else}}
+				{$blurb|raw}
+			{{endif}}
+		</div>
+	{{endif}}
+</header>

@@ -1,0 +1,64 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<form {{if \IPS\Request::i()->isAjax() }}data-controller='core.front.core.followForm'{{endif}} accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--follow {{if !\IPS\Request::i()->isAjax() }}ipsBox ipsBox--followForm{{endif}}" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm >
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<div>
+		<h2 class='{{if \IPS\Request::i()->isAjax() }}ipsTitle ipsTitle--h4 ipsTitle--padding i-border-bottom_3{{else}}ipsBox__header{{endif}}'>{expression="\IPS\Output::i()->title"}</h2>
+		{{if \IPS\Notification::webPushEnabled()}}
+			<i-push-notifications-prompt data-persistent hidden class="ipsPushNotificationsPrompt i-padding_1">
+				<div data-role="content"></div>
+				<template data-value="default">
+					<button class="ipsPushNotificationsPrompt__button" type="button" data-click="requestPermission">
+						<i class="fa-solid fa-bell" aria-hidden="true"></i>
+						<span class="i-flex_11">{lang="mobile_enable_push_button"}</span>
+						<span><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></span>
+					</button>
+				</template>
+				<template data-value="granted">
+					<button class="ipsPushNotificationsPrompt__button" type="button" data-click="hideMessage">
+						<i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+						<span class="i-flex_11">{lang="mobile_push_enabled_thanks"}</span>
+						<span><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
+					</button>
+				</template>
+				<template data-value="denied">
+					<button class="ipsPushNotificationsPrompt__button" type="button" popovertarget="iPushNotificationsPromptPopover">
+						<i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
+						<span class="i-flex_11">{lang="mobile_push_rejected_button"}</span>
+						<span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+					</button>
+				</template>
+			</i-push-notifications-prompt>
+		{{endif}}
+		<ul class='ipsForm {$class} ipsForm--follow'>
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $input}}
+					{{if \is_string( $input )}}
+						<li>
+							{$input|raw}
+						</li>
+					{{elseif $input instanceof \IPS\Helpers\Form\Radio}}
+						<li class="ipsFieldRow">
+							<strong class="ipsFieldRow__label">{lang="follow_send_me"}</strong>
+							<div class="ipsFieldRow__content">{$input->html($form)|raw}</div>
+						</li>
+					{{elseif $input instanceof \IPS\Helpers\Form\Checkbox}}
+						<li class="ipsFieldRow">{$input->html($form)|raw}</li>
+					{{else}}
+						<li class="ipsFieldRow">{$input->rowHtml($form)|raw}</li>
+					{{endif}}
+				{{endforeach}}
+			{{endforeach}}
+		</ul>
+	</div>
+	<div class="ipsSubmitRow ipsButtons">
+		{$actionButtons[0]|raw} {{if isset( $actionButtons[1] )}}{$actionButtons[1]|raw}{{endif}}
+		<a data-action="followSettings" href="{url="app=core&module=system&controller=notifications&do=options&do=options&type=core_Content&fromFollowButton=1" seoTemplate="notifications_options"}" class="ipsButton ipsButton--text" data-ipsDialog data-ipsDialog-forceReload data-ipsDialog-remoteSubmit data-ipsDialog-title="{lang="follow_button_notification_settings"}">{lang="follow_button_notification_settings"}</a>
+	</div>
+</form>

@@ -1,0 +1,149 @@
+<ips:template parameters="" />
+
+<div id='elMetaTagEditor' class='ipsToolbox ipsScrollbar' data-controller="core.front.system.metaTagEditor" data-defaultPageTitle='{expression="\IPS\Output::i()->defaultPageTitle"}'>
+	<form accept-charset='utf-8' method='post' action="{url="app=core&module=system&controller=metatags&do=save"}" data-ipsForm>
+		<h3 class='ipsToolbox_sectionTitle'>{lang="live_meta_tag_editor"}</h3>
+
+		<input type='hidden' name='meta_url' value='{expression="\IPS\Output::i()->metaTagsUrl"}'>
+		<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+
+		{{foreach \IPS\Output::i()->autoMetaTags as $name => $content}}
+			<input type='hidden' name='defaultMetaTag[{$name}]' value='{$content}'>
+		{{endforeach}}
+
+		<h4 class='ipsToolbox_sectionTitle'>{lang="metatags_page_title"}</h4>
+		<ul class="ipsForm ipsForm--vertical">
+			<li class='ipsFieldRow'><input name='meta_tag_title' type='text' class="ipsInput ipsInput--text" value="{expression="\IPS\Output::i()->metaTagsTitle"}"></li>
+		</ul>
+
+		<h4 class='ipsToolbox_sectionTitle'>{lang="meta_tags_custom_header"}</h4>
+		<ul class='ipsToolbox__list' id='elMetaTagEditor_customTags'>
+			<li class='ipsEmptyMessage {{if \count( \IPS\Output::i()->customMetaTags )}}ipsHide{{endif}}' data-role='noCustomMetaTagsMessage'>{lang="meta_tags_none_custom"}</li>
+			{{if \count( \IPS\Output::i()->customMetaTags )}}
+				{{foreach \IPS\Output::i()->customMetaTags as $name => $content}}
+					{{if $content !== NULL}}
+						<li data-role='metaTagRow'>
+							<ul class='ipsForm ipsForm--vertical'>
+								<li class='ipsFieldRow'>
+									<div class='i-flex i-gap_2'>
+										<select name='meta_tag_name[]' data-role='metaTagChooser' class="ipsInput ipsInput--select i-flex_11">
+											<option value='keywords' {{if $name == 'keywords'}}selected{{endif}}>{lang="meta_keywords"}</option>
+											<option value='description' {{if $name == 'description'}}selected{{endif}}>{lang="meta_description"}</option>
+											<option value='robots' {{if $name == 'robots'}}selected{{endif}}>{lang="meta_robots"}</option>
+											<option value='other' {{if !\in_array( $name, array( 'keywords', 'description', 'robots' ) )}}selected{{endif}}>{lang="meta_other"}</option>
+										</select>
+										<button type="button" class="i-flex_00 ipsButton ipsButton--small ipsButton--negative"  data-action='deleteMeta' title='{lang="delete"}'><i class='fa-solid fa-trash' aria-hidden="true"></i></button>
+									</div>
+								</li>
+								<li class='ipsFieldRow ipsFieldRow--fullWidth{{if \in_array( $name, array( 'keywords', 'description', 'robots' ) )}} ipsHide{{endif}}' data-role='metaTagName'>
+									<input name='meta_tag_name_other[]' type='text' class="ipsInput ipsInput--text" value="{{if !\in_array( $name, array( 'keywords', 'description', 'robots' ) )}}{$name}{{endif}}" placeholder='{lang="metatags_name"}'>
+								</li>
+								<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+									<input name='meta_tag_content[]' type='text' class="ipsInput ipsInput--text" value="{$content}" placeholder='{lang="metatags_content"}'>
+								</li>
+							</ul>
+						</li>
+					{{endif}}
+				{{endforeach}}
+			{{endif}}
+		</ul>
+
+		<div class="i-padding_2">
+			<button type="button" class='ipsJS_show ipsButton ipsButton--secondary ipsButton--wide ipsButton--small' data-action='addMeta'><i class='fa-solid fa-plus' aria-hidden="true"></i> {lang="add_another_meta_tag"}</button>
+		</div>
+
+		<h4 class='ipsToolbox_sectionTitle'>{lang="meta_tags_default_header"}</h4>
+		<ul id='elMetaTagEditor_defaultTags'>
+			{{if \count( \IPS\Output::i()->metaTags ) !== \count( \IPS\Output::i()->customMetaTags )}}
+				<li class='i-padding_3 i-opacity_6'>
+					{lang="meta_tags_automatic_notice"}
+				</li>
+				{{if \count( \IPS\Output::i()->customMetaTags )}}
+					{{foreach \IPS\Output::i()->customMetaTags as $name => $content}}
+						{{if $content === NULL}}
+							<li data-role='metaTagRow'>
+								<ul class='ipsForm ipsForm--vertical'>
+									<li class='ipsFieldRow'>
+										<div class='i-flex i-gap_2'>
+											<div class='i-flex_11 i-color_soft'>
+												{lang="meta_tag_deleted" sprintf="$name"}
+											</div>
+											<button type="button" class="i-flex_00 ipsButton ipsButton--small ipsButton--soft"  data-action='restoreMeta' data-tag='{$name}' title='{lang="meta_tag_restore"}'><i class='fa-solid fa-rotate-left' aria-hidden="true"></i></button>
+										</div>
+									</li>
+								</ul>
+							</li>
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+				{{foreach \IPS\Output::i()->metaTags as $name => $content}}
+					{{if !\array_key_exists( $name, \IPS\Output::i()->customMetaTags ) AND $name != 'title'}}
+						<li data-role='metaTagRow'>
+							<ul class='ipsForm ipsForm--vertical'>
+								<li class='ipsFieldRow'>
+									<div class='i-flex i-gap_2'>
+										<select name='meta_tag_name[]' data-role='metaTagChooser' class="ipsInput ipsInput--select i-flex_11">
+											<option value='keywords' {{if $name == 'keywords'}}selected{{endif}}>{lang="meta_keywords"}</option>
+											<option value='description' {{if $name == 'description'}}selected{{endif}}>{lang="meta_description"}</option>
+											<option value='robots' {{if $name == 'robots'}}selected{{endif}}>{lang="meta_robots"}</option>
+											<option value='other' {{if !\in_array( $name, array( 'keywords', 'description', 'robots' ) )}}selected{{endif}}>{lang="meta_other"}</option>
+										</select>
+										<button type="button" class="i-flex_00 ipsButton ipsButton--small ipsButton--negative" data-action='deleteDefaultMeta' title='{lang="delete"}'><i class='fa-solid fa-trash' aria-hidden="true"></i></button>
+									</div>
+								</li>
+								<li class='ipsFieldRow ipsFieldRow--fullWidth{{if \in_array( $name, array( 'keywords', 'description', 'robots' ) )}} ipsHide{{endif}}' data-role='metaTagName'>
+									<input name='meta_tag_name_other[]' type='text' class="ipsInput ipsInput--text" value="{{if !\in_array( $name, array( 'keywords', 'description', 'robots' ) )}}{$name}{{endif}}" placeholder='{lang="metatags_name"}'>
+								</li>
+								<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+									<input name='meta_tag_content[]' type='text' class="ipsInput ipsInput--text" value="{$content}" placeholder='{lang="metatags_content"}'>
+								</li>
+							</ul>
+						</li>
+					{{endif}}
+				{{endforeach}}
+			{{endif}}
+		</ul>
+
+		<div id='elMetaTagEditor_submit'>
+			<div class="ipsButtons ipsButtons--fill">
+				<button class='ipsButton ipsButton--positive' type='submit'>{lang="save"}</button>
+				<a href="{url="app=core&module=system&controller=metatags&do=end" csrf="true"}" class='ipsButton ipsButton--inherit i-color_inherit'>{lang="end_metatags"}</a>
+			</div>
+		</div>
+	</form>
+	<ul class='ipsHide'>
+		<li class='ipsHide' data-role='metaTemplate'>
+			<ul class='ipsForm ipsForm--vertical'>
+				<li class='ipsFieldRow'>
+					<div class='i-flex i-gap_2'>
+						<select name='meta_tag_name[]' class="ipsInput ipsInput--select i-flex_11" data-role='metaTagChooser'>
+							<option value='keywords'>{lang="meta_keywords"}</option>
+							<option value='description'>{lang="meta_description"}</option>
+							<option value='robots'>{lang="meta_robots"}</option>
+							<option value='other'>{lang="meta_other"}</option>
+						</select>
+						<button type="button" class="i-flex_00 ipsButton ipsButton--small ipsButton--negative" data-action='deleteMeta' title='{lang="delete"}'><i class='fa-solid fa-trash' aria-hidden="true"></i></button>
+					</div>
+				</li>
+				<li class='ipsFieldRow ipsFieldRow--fullWidth ipsHide' data-role='metaTagName'>
+					<input name='meta_tag_name_other[]' type='text' class="ipsInput ipsInput--text" value="" placeholder='{lang="metatags_name"}'>
+				</li>
+				<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+					<input name='meta_tag_content[]' type='text' class="ipsInput ipsInput--text" value="" placeholder='{lang="metatags_content"}'>
+				</li>
+			</ul>
+		</li>
+		<li class='ipsHide' data-role='metaDefaultDeletedTemplate'>
+			<ul class='ipsForm ipsForm--vertical'>
+				<li class='ipsFieldRow'>
+					<div class='i-flex i-gap_2'>
+						<div class='i-flex_11 i-color_soft' data-role='metaDeleteMessage'>
+							
+						</div>
+						<button type="button" class="i-flex_00 ipsButton ipsButton--small ipsButton--soft"  data-action='restoreMeta' title='{lang="meta_tag_restore"}'><i class='fa-solid fa-rotate-left' aria-hidden="true"></i></button>
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>

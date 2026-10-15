@@ -1,0 +1,41 @@
+<ips:template parameters="$comment, $item, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--gallery-image-comment' {{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+	{template="embedHeader" group="embed" app="core" params="$comment, $item->mapped('title'), $comment->mapped('date'), $url"}
+	<div class='i-padding_3'>
+		<div class='i-margin-bottom_3'>
+			<div>
+				<figure class='ipsFigure'>
+					{{if $item->media }}
+						<a href='{$item->url()}' title='{lang="view_this_video" sprintf="$item->caption"}' class='ipsFigure__main'>
+							<video data-role="video" preload="metadata" loading="lazy" {{if $item->masked_file_name }} poster="{file="$item->masked_file_name" extension="gallery_Images"}"{{endif}}>
+								<source src="{file="$item->original_file_name" extension="gallery_Images"}" type='{$item->file_type}' />
+							</video>
+							<i class="ipsFigure__play" aria-hidden="true"></i>
+						</a>
+					{{else}}
+						<a href='{$item->url()}' title='{lang="view_this_image" sprintf="$item->caption"}' class='ipsFigure__main'>
+							<img src='{file="$item->small_file_name" extension="gallery_Images"}' alt="{$item->caption}" loading="lazy">
+						</a>
+					{{endif}}
+					{template="nsfwOverlay" app="gallery" location="front" group="global" params="$item"}
+				</figure>
+				<div class='i-padding-top_3'>
+					{template="embedOriginalItem" group="embed" app="core" params="$item"}
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

@@ -1,0 +1,6 @@
+<ips:template parameters="$value" />
+{{if $value === '*' }}
+	<span class='ipsBadge ipsBadge--positive'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {lang="unrestricted"}</span>
+{{else}}
+	<span class='ipsBadge ipsBadge--intermediary'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i> {lang="restricted"}</span>
+{{endif}}

@@ -1,0 +1,232 @@
+/* Remove stacked styles which happens if .ipsBox--tree is placed inside .ipsBox */
+.ipsBox .ipsBox--tree{
+	border-width: 0;
+	box-shadow: none;
+	background-color: transparent;
+}
+
+/* Indent child trees */
+.ipsTree .ipsTree{
+	margin-inline-start: 3em
+}
+
+
+.ipsTree_row {
+	display: flex;
+	align-items: center;
+	padding: 1.2em;
+	gap: 1em;
+	border-bottom: 1px solid var(--i-background_3);
+}
+
+.ipsTree_open,
+.ipsTree_parent:not(.ipsTree_noToggle):hover{
+	background-color: var(--i-background_2);
+}
+
+	.ipsTree_row.ipsTree_draggingInto {
+		background: var(--i-background_3);
+	}
+
+	.ipsTree_swatch {
+		display: inline-block;
+		width: 12px;
+		height: 12px;
+		border-radius: 3px;
+		background-color: var(--i-featured, var(--i-background_3));
+		vertical-align: middle;
+		margin-inline-end: 6px;
+	}
+	.ipsTree_row + form > .ipsTree_rows {
+		padding-inline-start: 1em;
+	}
+
+.ipsTree_loadingRow {
+	padding: 10px;
+	padding-inline-start: 40px;
+}
+	.ipsTree_loadingRow::before {
+		inset-inline-start: 20px;
+	}
+
+/* Drag */
+.ipsTree_drag{
+	flex: 0 0 auto;
+}
+.ipsTree_dragHandle {
+	cursor: move;
+	display: block;
+	text-align: center;
+	min-width: 30px;
+}
+.ipsTree_dragHandle:not(:hover){
+	opacity: .2;
+}
+
+/* Align data */
+.ipsTree_align{
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: inherit;
+}
+
+.ipsTree_rowData {
+	flex: 999 1 50%;
+	position: relative;
+	font-weight: 500;
+	color: var(--i-color_hard);
+}
+  
+	.ipsTree__icon{
+		color: var(--i-color_soft);
+		text-align: center;
+		width: 1.25em;
+	}
+
+	.ipsTree__icon:where(:not(:has(.ipsFlag, .ipsIcon--emoji))){
+		opacity: .5;
+	}
+
+.ipsTree__thumb {
+	width: 24px;
+	vertical-align: middle;
+	margin-inline-end: .6em;
+}
+
+/* Larger icons if it's the first child, eg. Ranks */
+.ipsTree_row > .ipsTree__thumb:first-child{
+	width: 64px;
+}
+
+/* Titles */
+.ipsTree_title{
+	font-weight: 500;
+	color: var(--i-color_hard);
+	font-size: 1.08em;
+}
+	.ipsTree_title a {
+		color: inherit;
+	}
+	.ipsTree_title strong{
+		font-weight: inherit;
+	}
+
+/* Fix alignment of "Enabled"/"Disabled" badge */
+.ipsTree_toggleEnable,
+.ipsTree_toggleDisable{
+	display: flex;
+}
+
+/* Stack styles */
+.ipsTree_parent:not(.ipsTree_noToggle) {
+	cursor: pointer;
+}
+
+/* Expand arrow */
+.ipsTree_align::before {
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-weight: 900;
+	font-size: 11px;
+	opacity: .5;
+	transition: .2s all linear;
+	align-self: center;
+	width: 1em;
+}
+
+	:where([dir="rtl"]) .ipsTree_parent .ipsTree_align::before {
+		transform: rotate(180deg);
+	}
+
+	.ipsTree_open .ipsTree_align::before {
+		transform: rotate(90deg);
+		opacity: 1;
+	}
+
+	/* Show arrow */
+	.ipsTree_parent:not(.ipsTree_noToggle) .ipsTree_align::before {
+		content: '\f054' !important;
+	}
+
+	/* Indent all sibling trees of .ipsTree_parent */
+	.ipsTree:has(> li > .ipsTree_parent:not(.ipsTree_noToggle)) > li > .ipsTree_row > .ipsTree_align::before{
+		content: '';
+	}
+
+	/* Remove pointer-events from expandable tree categories. This prevents new pages from opening when trees should instead expand */
+	.ipsTree_parent > .ipsTree_align > .ipsTree_rowData > .ipsTree_title a{
+		pointer-events: none;
+	}
+
+/* Nested sortable classes */
+.mjs-nestedSortable-error {
+	border: 1px solid #e85959 !important;
+	background: #f3d9d9 !important;
+	min-height: 48px !important;
+	position: relative;
+}
+
+	.mjs-nestedSortable-error:before,
+	.mjs-nestedSortable-error:after {
+		display: block;
+		position: absolute;
+		line-height: 48px;
+		font-size: 11px;
+		color: #e85959;
+	}
+
+	.mjs-nestedSortable-error:before {
+		content: attr(data-error);
+		inset-inline-start: 30px;
+	}
+
+	.mjs-nestedSortable-error:after {
+		content: '\f071';
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		inset-inline-start: 10px;
+	}
+
+.sortable-placeholder {
+	border: 1px solid var(--i-primary);
+	background: var(--i-background_selected);
+	min-height: 68px;
+}
+
+.ipsTree_row .ipsTree_row_cells {
+	font-weight: 500;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5em 2em;
+	color: var(--i-color_soft);
+}
+
+:where(.ipsTree_row .ipsTree_row_cells) a{
+	color: inherit;
+}
+
+.ipsTree_controls{
+	align-self: center;
+}
+
+/* Sometimes .ipsTree_controls have different button amounts. This makes them all the same width */
+.ipsTree:has(.ipsControlStrip > li:nth-child(2)) .ipsControlStrip{
+	min-width: calc((2.4em + 4px) * 2);
+}
+.ipsTree:has(.ipsControlStrip > li:nth-child(3)) .ipsControlStrip{
+	min-width: calc((2.4em + 4px) * 3);
+}
+.ipsTree:has(.ipsControlStrip > li:nth-child(4)) .ipsControlStrip{
+	min-width: calc((2.4em + 4px) * 4);
+}
+
+@media (max-width: 500px){
+	.ipsTree .ipsTree_controls{
+		flex: 1 1 100%;
+	}
+}

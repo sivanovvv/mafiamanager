@@ -1,0 +1,9 @@
+<ips:template parameters="$stream, $results, $title, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{$title}</h3>
+<div class='ipsWidget__content'>
+	<ol class="ipsStream ipsStream_withTimeline ipsStream--widget">
+		{{foreach $results AS $result}}
+			{$result->html('horizontal', $stream->include_comments ? 'last_comment' : 'date', TRUE, $result->asArray()['template'] )|raw}
+		{{endforeach}}
+	</ol>
+</div>

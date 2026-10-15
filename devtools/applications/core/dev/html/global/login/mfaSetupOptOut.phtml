@@ -1,0 +1,7 @@
+<ips:template parameters="" />
+{{if settings.mfa_required_groups != '*' and !\IPS\Member::loggedIn()->inGroup( explode( ',', settings.mfa_required_groups ) )}}
+{{$url = \IPS\Request::i()->url()->stripQueryString();}}
+<div class="i-background_2 i-text-align_center i-padding_2 cOtherMethod">
+	<a href='{$url->setQueryString( '_mfa', 'optout' )->csrf()}' class='ipsButton ipsButton--text ipsButton--wide' data-confirm {{if member.language()->checkKeyExists('security_questions_opt_out_warning_value')}}data-confirmSubMessage="{lang="security_questions_opt_out_warning_value"}"{{endif}}>{lang="mfa_opt_out"}</a>
+</div>
+{{endif}}

@@ -1,0 +1,15 @@
+<ips:template parameters="$stream, $items, $recipient, $subscription, $viewMore, $email" />
+{{if $subscription['frequency'] == 'daily'}}{$email->language->addToStack( 'email_core_activity_stream_subscription_daily', FALSE, ['sprintf' => $stream->_title])}{{else}}{$email->language->addToStack( 'email_core_activity_stream_subscription_weekly', FALSE, ['sprintf' => $stream->_title])}{{endif}}
+
+{{foreach $items as $item}}{{$content = $item['object'];}}{{$itemClass = $item['itemClass'];}}
+{$item['itemData'][ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}
+{expression="\IPS\DateTime::ts( $item['indexData']['index_date_created'] )->localeDate( $recipient )"}: {$item['summaryLanguage']} {expression="strip_tags( $item['containerTitle'] )"}
+-------{{$emailContent = $email->parseTextForEmail( $content->content(), $email->language, ( \IPS\Settings::i()->email_truncate ? 150 : NULL ) );}}
+{$emailContent|raw}{{if \IPS\Settings::i()->email_truncate AND \mb_strlen( $content->content() ) > 150}}...{{endif}}
+-------
+URL: {$content->url()}
+
+
+=========================
+
+{{endforeach}}

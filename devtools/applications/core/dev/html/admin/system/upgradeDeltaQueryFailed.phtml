@@ -1,0 +1,21 @@
+<ips:template parameters="$mr, $e" />
+<div class="i-padding_3">
+	<div class="i-margin-bottom_1">
+		<h2 class='ipsTitle ipsTitle--h3'>{lang="upgrade_delta_query_fail_title"}</h2>
+	</div>
+	<p class="i-margin-bottom_1">
+		{{if \IPS\CIC}}
+			{lang="upgrade_delta_query_fail_cic"}
+		{{else}}
+			{lang="upgrade_delta_query_fail_nocic"}
+		{{endif}}
+	</p>
+	<div class="ipsMessage ipsMessage--error">{$e->getMessage()}</div>
+	<div class="i-flex i-flex-wrap_wrap i-gap_1">
+		<textarea rows="5" readonly class="i-flex_91 i-basis_300 ipsInput ipsInput--text i-font-family_monospace">{expression="\IPS\Db::_replaceBinds( $e->query, $e->binds )"}</textarea>
+		<button type="button" class="i-flex_00 ipsButton ipsButton--primary" data-ipscopy data-ipscopy-text="{expression="\IPS\Db::_replaceBinds( $e->query, $e->binds )"}">{lang="copy"}</button>
+	</div>
+</div>
+<div class="ipsSubmitRow" data-role="querySuccessButtons">
+	<a href="{url="app=core&module=system&controller=upgrade&mr={$mr}&query_has_been_ran=1"}" class="ipsButton ipsButton--primary" data-action="redirectContinue">{lang="continue_anyway"}</a>
+</div>

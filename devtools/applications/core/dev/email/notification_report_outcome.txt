@@ -1,0 +1,8 @@
+<ips:template parameters="$reportIndex, $reportType, $userReport, $email" />
+{{$date = \IPS\DateTime::ts( $userReport['date_reported'] )->localeDate();}}
+{$email->language->addToStack("report_outcome_email_blurb", FALSE, array( 'sprintf' => array( $date, $reportIndex->mapped('title'), $reportType->_title ) ) )}
+
+{$email->language->addToStack("report_outcome_email_prelude")}
+
+{$reportIndex->getReportOutcomeBlurb( $userReport['id'] )}
+

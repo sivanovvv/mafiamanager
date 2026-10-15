@@ -1,0 +1,61 @@
+<ips:template parameters="$editorId, $width, $height, $maximumWidth, $maximumHeight, $float, $link, $ratioWidth, $ratioHeight, $imageAlt, $editorUniqueId" />
+<div class=" ipsForm ipsForm--vertical ipsForm--editor-image" data-imageWidthRatio='{$ratioWidth}' data-imageHeightRatio='{$ratioHeight}' data-editorid='{$editorId}' data-editorUniqueId='{$editorUniqueId}'>
+	<form method='get' action='#'>
+		<div class='i-padding_3'>
+			<div class="ipsFieldRow ipsFieldRow--fullWidth ipsFieldRow--primary">
+				<label class='ipsFieldRow__label'>{lang="image_link"}</label>
+				<input type="text" class="ipsInput ipsInput--text" value="{$link}" data-role="imageLink">
+			</div>
+
+			<div class="ipsFieldRow ipsFieldRow--fullWidth ipsFieldRow--primary">
+				<label class='ipsFieldRow__label'>{lang="image_alt"}</label>
+				<input type="text" class="ipsInput ipsInput--text" value="{$imageAlt}" data-role="imageAlt">
+				<span class='i-color_soft'>{lang="image_alt_desc"}</span>
+			</div>
+
+			<div class="ipsFieldRow ipsFieldRow--primary">
+				<label class='ipsFieldRow__label'>{lang="image_size"}</label>
+				<div class='ipsComposeArea_imageDims'>
+					<input type="number" class="ipsInput ipsInput--text ipsField_short" value="{$width}" max="{$maximumWidth}" data-role="imageWidth">
+					<span class='i-font-size_-2 i-color_soft'>{lang="image_width_help"}</span>
+				</div> &times; 
+				<div class='ipsComposeArea_imageDims'>
+					<input type="number" class="ipsInput ipsInput--text ipsField_short" value="{$height}" max="{$maximumHeight}" data-role="imageHeight">
+					<span class='i-font-size_-2 i-color_soft'>{lang="image_height_help"}</span>
+				</div> {lang="px"}
+				<p class='i-margin-top_2'>
+					<input type='checkbox' name='image_aspect_ratio' id='elEditorImageRatio' {{if round( \IPS\Request::i()->actualWidth / \IPS\Request::i()->actualHeight, 2 ) == round( $width / $height, 2 )}}checked{{endif}} class="ipsInput ipsInput--toggle">
+					<label for='elEditorImageRatio'>{lang="image_aspect"}</label>
+				</p>
+				<br>
+				<span class="i-color_warning" data-role="imageSizeWarning"></span>
+			</div>
+			<div class="ipsFieldRow ipsFieldRow--primary">
+				<label class='ipsFieldRow__label'>{lang="image_align"}</label>
+				<ul class='ipsButtonGroup ipsButton--small ipsComposeArea_imageAlign'>
+					<li>
+						<input type='radio' name='image_align' value='left' id='image_align_left' data-role="imageAlign" {{if $float == 'left'}}checked{{endif}}>
+						<label for='image_align_left' class='ipsButton {{if $float == 'left'}}ipsButton--active{{endif}}'>
+							{lang="image_align_left"}
+						</label>
+					</li>
+					<li>
+						<input type='radio' name='image_align' value='' id='image_align_none' data-role="imageAlign" {{if $float != 'left' and $float != 'right'}}checked{{endif}}>
+						<label for='image_align_none' class='ipsButton {{if $float !== 'left' && $float !=='right'}}ipsButton--active{{endif}}'>
+							{lang="none"}
+						</label>
+					</li>
+					<li>
+						<input type='radio' name='image_align' value='right' id='image_align_right' data-role="imageAlign" {{if $float == 'right'}}checked{{endif}}>
+						<label for='image_align_right' class='ipsButton {{if $float == 'right'}}ipsButton--active{{endif}}'>
+							{lang="image_align_right"}
+						</label>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class='i-padding_3 i-background_3 ipsFieldRow'>
+			<button type='submit' class="ipsButton ipsButton--primary ipsButton--wide" autofocus>{lang="update"}</button>
+		</div>
+	</form>
+</div>

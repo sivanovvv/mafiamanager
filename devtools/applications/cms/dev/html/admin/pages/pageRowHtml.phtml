@@ -1,0 +1,6 @@
+<ips:template parameters="$page, $groupNames" />
+{{if $page->default == \IPS\cms\Pages\Page::PAGE_DEFAULT}}
+<span class='ipsBadge ipsBadge--positive'>{lang="default_page"}</span>
+{{elseif $groupNames}}
+<span class='ipsBadge ipsBadge--intermediary'>{lang="group_defaults" sprintf="$groupNames"}</span>
+{{endif}}

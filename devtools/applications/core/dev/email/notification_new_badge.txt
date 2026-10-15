@@ -1,0 +1,4 @@
+<ips:template parameters="$member, $badge, $email" />
+{$email->language->addToStack("notification__new_badge")}
+
+-- {setting="board_name"}

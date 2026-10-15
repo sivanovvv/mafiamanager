@@ -1,0 +1,141 @@
+/* RESET FORM STYLES */
+.ipsWidthHeight {
+	background: #fff;
+	border: 1px dashed #000;
+	margin-bottom: 10px;
+}
+/* jQuery UI doesn't support resizing RTL */
+[dir="rtl"] .ipsWidthHeight {
+	display: none;
+}
+
+.ui-icon-gripsmall-diagonal-se {
+	background: url('{resource="resizable.png" app="core" location="global" inCss="true"}');
+}
+
+.ui-resizable {
+	position: relative;
+}
+.ui-resizable-handle {
+	position: absolute;
+	font-size: 0.1px;
+	display: block;
+}
+.ui-resizable-se {
+	cursor: nwse-resize;
+	width: 12px;
+	height: 12px;
+	right: 0px;
+	bottom: 0px;
+}
+
+/* Highlighted search result */
+[data-ips-scheme="light"] .ipsFieldRow_searchResult {
+	background-color: #f4e5c4;
+	border-color: #ebc46f;
+	color: #7a5206;
+}
+[data-ips-scheme="dark"] .ipsFieldRow_searchResult {
+	background-color: #534531;
+	border-color: #786743;
+	color: #f8e5d4;
+}
+
+/* Convert the Badge creator form into a grid UI */
+[data-controller="ips.core.badgepreview"] svg {
+    width: 180px;
+}
+
+@media (min-width: 1100px){
+	.ipsBadgePicker--form {
+		display: grid;
+		grid-template-columns: 220px 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+		:where(.ipsBadgePicker--form > li){
+			grid-column: 1/-1;
+		}
+
+		.ipsFieldRow--badge-creator-preview .ipsFieldRow__content{
+			position: sticky;
+			top: 90px;
+		}
+
+		.ipsFieldRow--badge-creator {
+			grid-column: span 2;
+			align-content: start !important;
+		}
+
+		.ipsFieldRow--badge-creator:not(.ipsHide, [hidden]){
+			display: grid !important;
+			grid-template-columns: 1fr !important;
+		}
+
+			.ipsFieldRow--badge-creator .ipsFieldRow__label{
+				text-align: start !important;
+				display: flex !important;
+			}
+
+			.ipsFieldRow--badge-creator .ipsFieldRow__required{
+				flex: 0 0 auto !important;
+			}
+
+			.ipsFieldRow--badge-creator .sp-colorize{
+				max-width: none;
+			}
+
+		.ipsFieldRow--badge-creator-preview:not([hidden], .ipsHide, #x) {
+			grid-column: 1/2;
+			grid-row-end: span 5;
+			display: block !important;
+		}
+		.ipsFieldRow--badge-creator-preview > .ipsFieldRow__content {
+			padding: 1em;
+		}
+
+		.ipsFieldRow--badge-creator-icon {
+			grid-column: span 4;
+		}
+
+		.ipsBadgePicker--include-number-overlay .ipsFieldRow--badge-creator-icon {
+			grid-column: span 2;
+		}
+
+		[data-controller="ips.core.badgepreview"] svg,
+		.ipsFieldRow--badge-creator .sp-colorize-container{
+			width: 100%;
+		}
+
+		.ipsFieldRow--badge-creator [data-controller="core.admin.core.nodeCopySetting"] {
+			display: none;
+		}
+}
+
+[data-controller="ips.core.badgepreview"] svg {
+	-webkit-filter: drop-shadow( 2px 2px 4px var(--i-color_root));
+	filter: drop-shadow( 2px 2px 4px var(--i-color_root));
+}
+
+/* Remove redundant borders and improve spacing for tabbed content, ie. ACP > Settings */
+.acpFormTabContent .ipsBox{
+	border-width: 0;
+	border-radius: 0;
+}
+
+/* Sticky submit row */
+.ipsSubmitRow{
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: 0;
+	z-index: 3; /* High enough to overlap editor */
+}
+
+/* When an editor dropdown menu is open, increase the z-index of the toolbar to ensure the toolbar/dropdown sits above the sticky .ipsSubmitRow element */
+.ipsEditor__toolbar--main:has(.ipsEditor__anchored-panel:not([hidden])){
+	z-index: 4;
+}
+
+/* Remove sticky footer when selectTree is active, otherwise the footer overlaps it */
+.ipsForm:has(.ipsSelectTree_active) + .ipsSubmitRow{
+	position: static;
+}

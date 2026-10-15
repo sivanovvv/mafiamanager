@@ -1,0 +1,42 @@
+<ips:template parameters="$login" />
+<i-dropdown popover id="elUserSignIn_menu">
+	<div class="iDropdown">
+		<form accept-charset='utf-8' method='post' action='{$login->url}'>
+			<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+			<input type="hidden" name="ref" value="{expression="base64_encode( \IPS\Request::i()->url() )"}">
+			<div data-role="loginForm">
+				{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+				{{$buttonMethods = $login->buttonMethods();}}
+				{{if $usernamePasswordMethods and $buttonMethods}}
+					<div class='ipsColumns ipsColumns--lines'>
+						<div class='ipsColumns__primary' id='elUserSignIn_internal'>
+							{template="loginPopupForm" app="core" group="global" params="$login"}
+						</div>
+						<div class='ipsColumns__secondary i-basis_280'>
+							<div id='elUserSignIn_external'>
+								<p class='ipsTitle ipsTitle--h3 i-padding_2 i-padding-bottom_0 i-color_soft'>{lang="sign_in_with_these"}</p>
+								<div class='i-grid i-gap_2 i-padding_2'>
+									{{foreach $buttonMethods as $method}}
+										<div>
+											{$method->button()|raw}
+										</div>
+									{{endforeach}}
+								</div>
+							</div>
+						</div>
+					</div>
+				{{elseif $usernamePasswordMethods}}
+					{template="loginPopupForm" app="core" group="global" params="$login"}
+				{{elseif $buttonMethods}}
+					<div class="i-grid i-gap_2 cLogin_popupSingle i-padding_2">
+						{{foreach $buttonMethods as $method}}
+							<div>
+								{$method->button()|raw}
+							</div>
+						{{endforeach}}
+					</div>
+				{{endif}}
+			</div>
+		</form>
+	</div>
+</i-dropdown>

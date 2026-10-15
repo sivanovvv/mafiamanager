@@ -1,0 +1,43 @@
+<ips:template parameters="$cards" />
+
+<div class='i-flex i-align-items_center i-gap_2'>
+	<h1 class='ipsTitle ipsTitle--h3'>{lang="cards_title"}</h1>
+	<a href='{url="app=nexus&module=clients&controller=cards&do=add" seoTemplate="clientscards"}' class='ipsButton ipsButton--primary ipsButton--small' title="{lang="cards_add_title"}">{lang="cards_add"}</a>
+</div>
+
+<p class='i-margin-bottom_3'>
+	{lang="cards_info"}
+</p>
+
+{{if \count( $cards )}}
+	<ul class='ipsList ipsList--inline cNexusCards i-margin-top_3 ipsBox i-padding_3'>
+		{{foreach $cards as $card}}
+			<li>
+				{{if $card['card_type'] === 'paypal' or $card['card_type'] === 'venmo'}}
+					<div class='cNexusCards_name'>{$card['card_number']}</div>
+				{{else}}
+					<span class='cNexusCards_number'>
+						{{if $card['card_type'] == 'american_express' OR $card['card_type'] == 'diners_club'}}
+							XXXX XXXXXX X{$card['card_number']}
+						{{else}}
+							XXXX XXXX XXXX {$card['card_number']}
+						{{endif}}
+					</span>
+				{{endif}}
+				{{if $card['card_type']}}
+					<span class='cNexusCards_type cPayment cPayment_{$card['card_type']}'><span class='ipsInvisible'>{lang="card_type_{$card['card_type']}"}</span></span>
+				{{endif}}
+				{{if $card['card_expire']}}
+					<span class='cNexusCards_expTitle'>{lang="cards_exp"}</span>
+					<span class='cNexusCards_exp'>{$card['card_expire']}</span>
+				{{endif}}
+				
+				<a href="{url="app=nexus&module=clients&controller=cards&do=delete&id={$card['id']}" seoTemplate="clientscards" csrf="true"}" class='cNexusCards_delete' data-confirm data-ipsTooltip title='{lang="delete_this_card"}'>&times;</a>
+			</li>
+		{{endforeach}}
+	</ul>
+{{else}}
+	<p class='ipsEmptyMessage'>
+		{lang="no_credit_cards"}
+	</p>
+{{endif}}

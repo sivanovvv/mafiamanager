@@ -1,0 +1,25 @@
+<ips:template parameters="$stats, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_stats"}</h3>
+<div class='ipsWidget__content'>
+	<ul class='ipsList ipsList--stats ipsList--stacked ipsList--border ipsList--fill'>
+		<li>
+			<strong class='ipsList__value'>{number="$stats['member_count']"}</strong>
+			<span class='ipsList__label'>{lang="stats_total_members"}</span>
+		</li>
+		<li>
+			<strong class='ipsList__value' data-ipsTooltip title='<time data-norelative="true">{$stats['most_online']['time']}</time>'>{number="$stats['most_online']['count']"}</strong>
+			<span class='ipsList__label'>{lang="stats_most_online"}</span>
+		</li>
+		{{if $stats['last_registered'] instanceof \IPS\Member}}
+			<li class='i-padding_2 i-grid i-place-content_center'>
+				<div class='ipsPhotoPanel i-align-items_center i-text-align_start'>
+					{template="userPhoto" app="core" group="global" params="$stats['last_registered'], ''"}
+					<div class='ipsPhotoPanel__text'>
+						<strong class='ipsPhotoPanel__primary'>{$stats['last_registered']->link()|raw}</strong>
+						<small class='ipsPhotoPanel__secondary'>{lang="stats_newest_member"} <span class='i-color_soft'> &middot; <time>{$stats['last_registered']->joined->getTimestamp()}</time></span></small>
+					</div>
+				</div>
+			</li>
+		{{endif}}
+	</ul>
+</div>

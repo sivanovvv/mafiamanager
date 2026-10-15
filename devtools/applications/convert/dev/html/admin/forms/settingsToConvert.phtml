@@ -1,0 +1,8 @@
+<ips:template parameters="$settingsToConvert" />
+
+<div class='ipsMessage ipsMessage--info'>{lang="converting_settings_desc"}</div>
+<ul class='i-padding_3'>
+	{{foreach $settingsToConvert AS $setting}}
+		<li><em>{$setting['title']}</em> {lang="to"} <em>{$setting['our_title']}</em>: {$setting['value']}</li>
+	{{endforeach}}
+</ul>

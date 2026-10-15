@@ -1,0 +1,17 @@
+<ips:template parameters="$content, $tabs, $activeTab" />
+<i-tabs class='ipsTabs' id='ipsTabs_unapproved' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_unapproved_content'>
+	<div role='tablist'>
+		{{foreach $tabs as $key => $tab}}
+			<a href='{url="app=core&module=modcp&tab=approval&area=$key"}' id='ipsTabs_unapproved_{$key}' class='ipsTabs__tab' role="tab" aria-controls="ipsTabs_unapproved_{$key}_panel" aria-selected="{{if $activeTab == $tab}}true{{else}}false{{endif}}">
+				{lang="$tab"}
+			</a>
+		{{endforeach}}
+	</div>
+	{template="tabScrollers" app="core" group="global" location="global"}
+</i-tabs>
+<section id='ipsTabs_unapproved_content' class='ipsTabs__panels ipsTabs__panels--padded'>
+	<div id="ipsTabs_unapproved_{$activeTab}_panel" class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_unapproved_{$activeTab}">
+		{$content|raw}
+	</div>
+</section>
+	

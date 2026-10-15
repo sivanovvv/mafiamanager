@@ -1,0 +1,8 @@
+<ips:template parameters="$form, $made, $allowed, $since, $days" />
+<div class='i-padding_3 i-border-bottom_3'>
+	<h2 class='ipsTitle ipsTitle--h3'>{lang="change_username"}</h2>
+</div>
+{{if \IPS\Member::loggedIn()->group['g_dname_changes'] != -1}}
+	<p class="ipsMessage i-margin_1">{lang="change_username_explain" sprintf="$made, $allowed, $since->localeDate(), $days" pluralize="$allowed"}</p>
+{{endif}}
+{$form|raw}

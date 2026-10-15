@@ -1,0 +1,49 @@
+<ips:template parameters="$content, $includeLinks, $includeAuthor, $email" />
+{{if $includeAuthor}}
+<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	<tr>
+		<td dir='{dir}' width='60' valign='top' class='hidePhone'>
+			<img src='{$content->author()->get_photo( true, true )}' width='40' height='40' style='border-radius: 6px;' class="avatar">
+		</td>
+		<td dir='{dir}' valign='top'>
+{{endif}}
+<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	<tr>
+		<td dir='{dir}' width='120' align='center' valign='top'>
+			<img src='{file="$content->small_file_name" extension="gallery_Images"}' style='border: 1px solid #000; vertical-align: middle;' width='100' height='100'>
+		</td>
+		<td dir='{dir}' align='left'>
+			<table width='100%' cellpadding='5' cellspacing='0' border='0'>
+				{{if $container = $content->containerWrapper()}}
+					<tr>
+						<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px; color: #4b4b4b" class="color_soft">
+							{$email->language->addToStack("email_posted_in", FALSE, array( 'sprintf' => array( $container->getTitleForLanguage( $email->language ) ) ) )}
+						</td>
+					</tr>
+				{{endif}}
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px;">
+						<strong>{$content->mapped('title')}</strong>
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px;">
+						{$email->parseTextForEmail( $content->content(), $email->language )|raw}
+					</td>
+				</tr>
+				{{if $includeLinks}}
+					<tr>
+						<td dir='{dir}'>
+							<a href='{$content->url()}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("go_to_this_x", FALSE, array( 'sprintf' => array( mb_strtolower( $email->language->addToStack( $content::$title, FALSE ) ) ) ) )}</a>
+						</td>
+					</tr>
+				{{endif}}
+			</table>
+		</td>
+	</tr>
+</table>
+{{if $includeAuthor}}
+		</td>
+	</tr>
+</table>
+{{endif}}

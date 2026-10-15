@@ -1,0 +1,23 @@
+<ips:template parameters="" />
+
+{{if $announcements = \IPS\core\Announcements\Announcement::loadAllByLocation('top')}}
+	<i-announcement-banner class='ipsAnnouncements ipsAnnouncements--top'>
+		{{foreach $announcements as $announcement}}
+			{{ $announcementCookie = 'announcement_' . $announcement->id; }}
+			{{if !isset(\IPS\Request::i()->cookie[$announcementCookie])}}
+				<div class='ipsAnnouncement ipsAnnouncement--{$announcement->color}' data-announcementId="{$announcement->id}">
+					<div class="ipsWidth">
+						{{if $announcement->type == \IPS\core\Announcements\Announcement::TYPE_CONTENT}}
+							<a href='{$announcement->url()}' class='ipsAnnouncement__link' data-ipsDialog data-ipsDialog-title="{$announcement->title}"><i class="fa-solid fa-bullhorn ipsAnnouncement__icon" aria-hidden="true"></i>{$announcement->title}</a>
+						{{elseif $announcement->type == \IPS\core\Announcements\Announcement::TYPE_URL}}
+							<a href='{$announcement->url}' class='ipsAnnouncement__link' target="_blank" rel='noopener'><i class="fa-solid fa-arrow-up-right-from-square ipsAnnouncement__icon" aria-hidden="true"></i>{$announcement->title}</a>
+						{{else}}
+							<div class='ipsAnnouncement__text'><i class="fa-solid fa-bullhorn ipsAnnouncement__icon" aria-hidden="true"></i>{$announcement->title}</div>
+						{{endif}}
+						<button type="button" data-role="dismissAnnouncement"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span class="ipsInvisible">{lang="announce_hide"}</span></button>
+					</div>
+				</div>
+			{{endif}}
+		{{endforeach}}
+	</i-announcement-banner>
+{{endif}}

@@ -1,0 +1,19 @@
+<ips:template parameters="" />
+{{if !\IPS\Output::i()->bypassDataLayer}}
+<!-- IPS Data Layer Start -->
+<script>
+    /* IPS Configuration */
+    {expression="\IPS\core\DataLayer::i()->jsConfig" raw="true"}
+
+    /* IPS Context */
+    {expression="\IPS\core\DataLayer::i()->jsContext" raw="true"}
+
+    /* IPS Events */
+    {expression="\IPS\core\DataLayer::i()->jsEvents" raw="true"}
+</script>
+{{\IPS\core\DataLayer::i()->clearCache();/* Safe to clear data layer session cache here since we just loaded the events */}}
+{{$handlerInserts = \IPS\core\DataLayer\Handler::loadForTemplates();}}
+{$handlerInserts['headInserts']|raw}
+
+<!-- IPS Data Layer End -->
+{{endif}}

@@ -1,0 +1,2 @@
+<ips:template parameters="$image, $email" />
+{$email->language->addToStack("x_added_image_in", FALSE, array( 'htmlsprintf' => array( $image->author()->name, $image->container()->getTitleForLanguage( $email->language ) ) ) )}: {$image->mapped('name')} ({$image->url()})

@@ -1,0 +1,86 @@
+<ips:template parameters="" />
+
+<ul class="ipsColorSchemeChanger" data-controller="core.front.core.colorScheme" data-ips-hook="themeList">
+	<li data-ipstooltip title='{lang="theme_light_mode"}'>
+		<button data-ips-prefers-color-scheme="light">
+			<i class="fa-regular fa-lightbulb" aria-hidden="true"></i>
+			<span class='ipsInvisible'>{lang="theme_light_mode"}</span>
+		</button>
+	</li>
+	<li data-ipstooltip title='{lang="theme_dark_mode"}'>
+		<button data-ips-prefers-color-scheme="dark">
+			<i class="fa-regular fa-moon" aria-hidden="true"></i>
+			<span class='ipsInvisible'>{lang="theme_dark_mode"}</span>
+		</button>
+	</li>
+	<li data-ipstooltip title='{lang="theme_system"}'>
+		<button data-ips-prefers-color-scheme="system">
+			<i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+			<span class='ipsInvisible'>{lang="theme_system"}</span>
+		</button>
+	</li>
+</ul>
+{{if \IPS\Settings::i()->site_social_profiles AND $links = json_decode( \IPS\Settings::i()->site_social_profiles, TRUE ) AND \count( $links )}}
+	<ul data-ips-hook="socialProfiles" class='ipsSocialIcons'>
+		{template="siteSocialProfiles" app="core" group="global" location="front"}
+	</ul>
+{{endif}}
+<hr>
+{{if ( \IPS\Settings::i()->site_online || \IPS\Member::loggedIn()->group['g_access_offline'] ) and ( \IPS\Dispatcher::i()->application instanceof \IPS\Application AND \IPS\Dispatcher::i()->application->canAccess() )}}
+	<ul data-ips-hook="links" class='ipsFooterLinks'>
+		{{$languages = \IPS\Lang::getEnabledLanguages();}}
+		{{if \count( $languages ) > 1}}
+			<li data-ips-hook="languages">
+				<button type="button" id="elNavLang" popovertarget="elNavLang_menu">{lang='language'} <i class='fa-solid fa-angle-down' aria-hidden="true"></i></button>
+				<i-dropdown id="elNavLang_menu" popover data-i-dropdown-append>
+					<div class="iDropdown">
+						<form action="{url="app=core&module=system&controller=language" noprotocol="true" csrf="true" seoTemplate="language"}" method="post" class="iDropdown__content">
+							<input type="hidden" name="ref" value="{expression="base64_encode( (string) request.url() )"}">
+							<ul class="iDropdown__items">
+								{{foreach $languages as $id => $lang }}
+									<li>
+										<button type='submit' name='id' value='{$id}'  {{if \IPS\Member::loggedIn()->language()->id == $id || ( $lang->default && \IPS\Member::loggedIn()->language === 0 )}}aria-selected="true"{{endif}}>{{if $lang->get__icon()}}<i class='{$lang->get__icon()}' aria-hidden="true"></i> {{endif}}{$lang->title} {{if $lang->default}}{lang="default"}{{endif}}</button>
+									</li>
+								{{endforeach}}
+							</ul>
+						</form>
+					</div>
+				</i-dropdown>
+			</li>
+		{{endif}}
+		{{if !(\IPS\Member::loggedIn()->isEditingTheme() and \IPS\Theme::i()->edit_in_progress)}}
+			{{$themes = \IPS\Theme::getThemesWithAccessPermission();}}
+			{{if \count( $themes ) > 1 }}
+				<li data-ips-hook="themes">
+					<button type="button" id="elNavTheme" popovertarget="elNavTheme_menu">{lang='skin'} <i class='fa-solid fa-angle-down' aria-hidden="true"></i></button>
+					<i-dropdown id="elNavTheme_menu" popover data-i-dropdown-append data-i-dropdown-selectable="radio">
+						<div class="iDropdown">
+							<form action="{url="app=core&module=system&controller=theme" noprotocol="true" csrf="true" seoTemplate="theme"}" method="post" class="iDropdown__content">
+								<input type="hidden" name="ref" value="{expression="base64_encode( (string) request.url() )"}">
+								<ul class="iDropdown__items">
+									{{foreach $themes as $id => $set }}
+										<li>
+											<button type='submit' name='id' value='{$id}' {{if \IPS\Theme::i()->id == $id}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="$set->_title"} {{if $set->is_default}}{lang="default"}{{endif}}</button>
+										</li>
+									{{endforeach}}
+								</ul>
+							</form>
+						</div>
+					</i-dropdown>
+				</li>
+			{{endif}}
+		{{endif}}
+		{{if \IPS\Settings::i()->privacy_type != "none"}}
+			<li><a href='{{if \IPS\Settings::i()->privacy_type == "internal"}}{url="app=core&module=system&controller=privacy" seoTemplate="privacy"}{{else}}{setting="privacy_link"}{{endif}}'>{lang="privacy"}</a></li>
+		{{endif}}
+		{{if \IPS\Member::loggedIn()->canUseContactUs() and !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'contact' )}}
+			<li><a rel="nofollow" href='{url="app=core&module=contact&controller=contact" seoTemplate="contact"}' {{if \IPS\Settings::i()->contact_type != 'contact_redirect' and (member.member_id or \IPS\Helpers\Form\Captcha::supportsModal())}}data-ipsdialog {{if member.member_id OR !settings.contact_email_verify}}data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage='{lang="contact_sent_blurb"}'{{endif}} data-ipsdialog-title="{lang="contact"}"{{endif}}>{lang='contact'}</a></li>
+		{{endif}}
+		<li><a rel="nofollow" href='{url="app=core&module=system&controller=cookies" seoTemplate="cookies"}'>{lang='cookies_about'}</a></li>
+		{{if \count( \IPS\Output::i()->rssFeeds )}}
+			<li>
+				{template="rssMenu" group="global" app="core" params=""}
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}

@@ -1,0 +1,4 @@
+<ips:template parameters="$referrer" />
+<p>
+	{expression="sprintf( \IPS\Member::loggedIn()->language()->get( 'contact_form_referrer' ), $referrer, $referrer )" raw="true"}
+</p>

@@ -1,0 +1,15 @@
+<ips:template parameters="$comment, $image" />
+
+<div class='i-flex i-gap_2'>
+	<div class='i-flex_00 i-basis_60'>
+		{template="thumbImage" group="global" app="core" params="$image->small_file_name, $image->caption, 'small', '', 'view_this', $image->url(), 'gallery_Images'"}
+	</div>
+	<div class='i-flex_11'>
+		<h3 class='ipsTitle ipsTitle--h4'><a href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}'>{$image->caption}</a></h3>
+		<p class='i-color_soft i-link-color_inherit'>{lang="in"} <a href='{$image->container()->url()}'>{$image->container()->_title}</a></p>
+		{{if $image->container()->allow_rating}}
+			{template="rating" group="global" location="front" app="core" params="'large', $image->rating"} &nbsp;&nbsp;
+		{{endif}}
+		<span>{{if $image->container()->allow_comments}}&nbsp;&nbsp;{{if !$image->comments}}<span class='i-color_soft'>{{endif}}<i class='fa-solid fa-comment' aria-hidden="true"></i> {$image->comments}{{endif}}{{if !$image->comments}}</span>{{endif}}</span>
+	</div>
+</div>

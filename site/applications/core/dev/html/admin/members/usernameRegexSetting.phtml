@@ -1,0 +1,73 @@
+<ips:template parameters="$name, $value, $easy" />
+<div data-controller="core.admin.members.allowedCharacters" data-easy="{{if $easy}}1{{else}}0{{endif}}">
+	<input type="hidden" name="{$name}[easy]" value="0" data-role="easyInput">
+	<div data-role="easy" class="ipsHide">
+		<ul class="ipsFieldListParent">
+			<li>
+				<strong>{lang="username_characters_letters"}</strong>
+				<ul class="ipsFieldList" role="radiogroup">
+					<li>
+						<input type="radio" class="ipsInput ipsInput--toggle" name="{$name}[letters]" value="all" id="elRadio_{$name}_letters_all" {{if !$easy or $easy['letters'] === 'all'}}checked{{endif}}>
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_letters_all'>{lang="username_characters_letters_all"}</label>
+						</div>
+					</li>
+					<li>
+						<input type="radio" class="ipsInput ipsInput--toggle" name="{$name}[letters]" value="latin" id="elRadio_{$name}_letters_latin" {{if $easy and $easy['letters'] === 'latin'}}checked{{endif}}>
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_letters_latin'>{lang="username_characters_letters_latin"}</label>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>{lang="username_characters_numbers"}</strong>
+				<ul class="ipsFieldList" role="radiogroup">
+					<li>
+						<input type="radio" class="ipsInput ipsInput--toggle" name="{$name}[numbers]" value="all" id="elRadio_{$name}_numbers_all" {{if !$easy or $easy['numbers'] === 'all'}}checked{{endif}}>
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_numbers_all'>{lang="username_characters_numbers_all"}</label>
+						</div>
+					</li>
+					<li>
+						<input type="radio" class="ipsInput ipsInput--toggle" name="{$name}[numbers]" value="arabic" id="elRadio_{$name}_numbers_arabic" {{if $easy and $easy['numbers'] === 'arabic'}}checked{{endif}}>
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_letters_latin'>{lang="username_characters_numbers_arabic"}</label>
+						</div>
+					</li>
+					<li>
+						<input type="radio" class="ipsInput ipsInput--toggle" name="{$name}[numbers]" value="none" id="elRadio_{$name}_numbers_none" {{if $easy and $easy['numbers'] === 'none'}}checked{{endif}}>
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_letters_latin'>{lang="none"}</label>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<strong>{lang="username_characters_special"}</strong>
+				<ul class="ipsFieldList" role="radiogroup">
+					<li>
+						<input type="checkbox" class="ipsInput ipsInput--toggle" name="{$name}[spaces]" value="1" id='elRadio_{$name}_spaces' {{if !$easy or $easy['spaces']}}checked{{endif}}>
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_spaces'>{lang="username_characters_spaces"}</label>
+							<div class='ipsFieldRow__desc'>{lang="username_characters_spaces_desc"}</div>
+						</div>
+					</li>
+					<li>
+						<input type="checkbox" class="ipsInput ipsInput--toggle" name="{$name}[extra_enabled]" value="1" id='elRadio_{$name}_extra' {{if !$easy or $easy['extra']}}checked{{endif}} data-control="toggle" data-toggles="elRadio_{$name}_extra_input">
+						<div class='ipsFieldList__content'>
+							<label for='elRadio_{$name}_extra'>{lang="username_characters_extra"}</label>
+							<div id="elRadio_{$name}_extra_input">
+								<input type="text" name="{$name}[extra]" value="{{if $easy}}{$easy['extra']}{{else}}_.-,{{endif}}">
+							</div>
+						</div>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<a href="#" class="ipsHide" data-action="regex">{lang="username_characters_regex"}</a>
+	</div>
+	<div data-role="regex">
+		<input type="text" name="{$name}[regex]" value="{$value}" placeholder="/^[A-Z0-9]+$/i"> <a href="#" class="ipsHide" data-action="easy">{lang="username_characters_easy"}</a>
+	</div>
+</div>

@@ -1,0 +1,38 @@
+<ips:template parameters="$version, $largeTables" />
+<form action="{url="app=core&module=system&controller=upgrade" csrf="1"}" method="post">
+	<input type="hidden" name="version" value="{$version}">
+	<input type="hidden" name="select_version_submitted" value="1">
+	<input type="hidden" name="skip_md5_check" value="1">
+    <input type="hidden" name="skip_resource_check" value="1">
+	<input type="hidden" name="skip_theme_check" value="1">
+	<input type="hidden" name="skip_large_tables_check" value="1">
+	<div class="i-padding_3">
+		<div class="i-margin-bottom_1">
+			<h2 class='ipsTitle ipsTitle--h3'>{lang="download_upgrade_initial_large_tables_title"}</h2>
+		</div>
+		<div class="i-margin-bottom_1">
+			<p>{lang="download_upgrade_initial_large_tables_explain"}</p>
+		</div>
+		<table class="ipsTable">
+			<thead>
+				<tr>
+					<th>{lang="sql_table_name"}</th>
+					<th>{lang="sql_table_rows"}</th>
+					<th>{lang="sql_table_size"}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{foreach $largeTables as $table}}
+					<tr>
+						<td>{$table}</td>
+						<td>{number="\IPS\Db::i()->cachedTableData[ $table ]['rows']"}</td>
+						<td>{filesize="\IPS\Db::i()->cachedTableData[ $table ]['size']"}</td>
+					</tr>
+				{{endforeach}}
+			</tbody>
+		</table>
+	</div>
+	<div class="ipsSubmitRow">
+		<input type="submit" class="ipsButton ipsButton--primary" name="skip_theme_check" value="{lang="continue"}">
+	</div>
+</form>

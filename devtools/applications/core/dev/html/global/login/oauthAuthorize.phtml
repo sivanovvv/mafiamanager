@@ -1,0 +1,41 @@
+<ips:template parameters="$url, $client, $scopes" />
+<div data-controller="core.global.core.framebust">
+	<div class="i-text-align_center i-margin-bottom_3">
+		{template="userPhoto" group="global" app="core" params="\IPS\Member::loggedIn(), 'large'"}
+		<h1 class='i-font-size_6 i-text-align_center'>{lang="oauth_authorize_title" sprintf="\IPS\Settings::i()->board_name"}</h1>
+	</div>
+	<form action="{$url}" method="post">
+		<input type="hidden" name="allow" value="1">
+		<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+		<div class="ipsBox i-padding_3">
+			<div class="i-font-size_2">
+				{{if $scopes and !$client->type}}
+					{lang="oauth_auth_scope_title_named" sprintf="$client->_title"}
+					<ul class="{{if $client->choose_scopes}}ipsFieldList{{else}}ipsList ipsList--bullets{{endif}} i-margin-top_3">
+						{{foreach $scopes as $key => $scope}}
+							<li>
+								{{if $client->choose_scopes}}
+									<input id="elScope_{$key}" type="checkbox" name="grantedScope[{$key}]" checked class="ipsInput ipsInput--toggle">
+									<div class="ipsFieldList__content">
+										<label for="elScope_{$key}">{$scope}</label>
+									</div>
+								{{else}}
+									{$scope}
+								{{endif}}
+							</li>
+						{{endforeach}}
+					</ul>
+				{{else}}
+					<p class="i-text-align_center">{lang="oauth_auth_no_scope" sprintf="$client->_title"}</p>
+				{{endif}}
+			</div>
+		</div>
+		<div class="ipsSubmitRow">
+			<button type="submit" class="ipsButton ipsButton--primary">{lang="oauth_authorize_approve" sprintf="\IPS\Member::loggedIn()->name"}</button>
+			<div class="ipsButtons i-margin-top_3">
+				<a href="{$url->setQueryString( 'prompt', 'login' )}" class="ipsButton ipsButton--text">{lang="oauth_authorize_switch"}</a>
+				<a href="{$url->setQueryString( 'allow', 0 )->csrf()}" class="ipsButton ipsButton--text">{lang="cancel"}</a>
+			</div>
+		</div>
+	</form>
+</div>

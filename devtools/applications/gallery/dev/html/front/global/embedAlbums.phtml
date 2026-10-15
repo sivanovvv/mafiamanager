@@ -1,0 +1,55 @@
+<ips:template parameters="$albumItem, $albumNode, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--gallery-album' {{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+	{template="embedHeader" group="embed" app="core" params="$albumItem, $albumItem->mapped('title'), $albumItem->mapped('date'), $url"}
+	<div class=''>
+		{{if $albumNode->coverPhoto('small')}}
+			<figure class='ipsFigure ipsFigure--embed-hero'>
+				<a href='{$albumNode->url()}' class='ipsFigure__main'>
+					<img src='{$albumNode->coverPhoto('masked')}' alt="{$albumItem->name}" loading="lazy">
+				</a>
+			</figure>
+		{{endif}}
+		{{$images = \IPS\Gallery\Image::getItemsWithPermission( array( array( 'image_album_id=?', $albumNode->id ) ), ( $albumNode->sort_options == 'title' ) ? 'image_caption ASC' : \IPS\gallery\Image::$databasePrefix . \IPS\gallery\Image::$databaseColumnMap[ $albumNode->sort_options ] . ' DESC', 4 );}}
+		{{if \count( $images )}}
+			<ul class='cGalleryEmbed_albumStrip i-background_2'>
+				{{foreach $images as $albumImage}}
+					<li>
+						<figure class='ipsFigure ipsFigure--ratio'>
+							<a href='{$albumImage->url()}' class='ipsFigure__main'>
+								{{if $albumImage->masked_file_name}}
+									<img src='{file="$albumImage->masked_file_name" extension="gallery_Images"}' alt='' loading="lazy">
+								{{elseif $albumImage->media}}
+									<video preload="metadata" loading="lazy">
+										<source src="{file="$albumImage->original_file_name" extension="gallery_Images"}" type='{$albumImage->file_type}' />
+									</video>
+									<i class="ipsFigure__play" aria-hidden="true"></i>
+								{{else}}
+									<i class="ipsFigure__icon" aria-hidden="true"></i>
+								{{endif}}
+							</a>
+							{template="nsfwOverlay" app="gallery" location="front" group="global" params="$albumImage, FALSE"}
+						</figure>
+					</li>
+				{{endforeach}}
+
+				{{if $albumNode->count_imgs > 4}}
+					<li>
+						<figure class='ipsFigure ipsFigure--ratio'>
+							<a href='{$albumNode->url()}' class='ipsFigure__main'><span>+{expression="$albumNode->count_imgs - 4"}</span></a>
+						</figure>
+					</li>
+				{{endif}}
+			</ul>
+		{{endif}}
+
+		{{if $desc = $albumItem->truncated(TRUE)}}
+			<div class='ipsRichEmbed__content'>
+				<div class='ipsRichText ipsTruncate_3'>
+					{$desc|raw}
+				</div>
+			</div>
+		{{endif}}
+		{template="embedItemStats" group="embed" app="core" params="$albumItem, $albumNode->use_comments"}
+	</div>
+</div>

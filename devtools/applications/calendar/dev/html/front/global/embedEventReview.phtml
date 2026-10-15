@@ -1,0 +1,61 @@
+<ips:template parameters="$comment, $item, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--event-review'>
+	{template="embedHeader" group="embed" app="core" params="$comment, $item->mapped('title'), $comment->mapped('date'), $url"}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_originalItem'>
+			<div>
+				{{if $item->map( 500, 100 )}}
+					<a href='{$url}' title='{$item->mapped('title')}' class='ipsRichEmbed_masthead ipsRichEmbed_masthead--map'>
+						{$item->map( 500, 100 )|raw}
+					</a>
+				{{elseif $item->coverPhoto() && $item->coverPhoto()->file}}
+					{{$photo = $item->coverPhoto()->file;}}
+					<a href='{$url}' title='{$item->mapped('title')}' class='ipsRichEmbed_masthead ipsRichEmbed_masthead_small'>
+						<img src='{$photo->url}' alt='{$item->mapped('title')}' loading="lazy">
+					</a>
+				{{elseif $club = $item->container()->club()}}
+                    {{if $club->coverPhoto() and $club->coverPhoto()->file}}
+                        {{$photo = $club->coverPhoto()->file;}}
+                        <a href='{$url}' title='{$item->mapped('title')}' class='ipsRichEmbed_masthead'>
+                   			<img src='{$photo->url}' alt='{$item->mapped('title')}' loading="lazy">
+                   		</a>
+                    {{endif}}
+				{{endif}}
+				<div class='i-padding_3'>
+					<div class='ipsPhotoPanel'>
+						<span class='cCalendarEmbed_calendar'>
+							<a href='{$url}'>
+								{{$nextOccurrence = $item->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: $item->lastOccurrence( 'startDate' );}}
+								<time datetime='{$nextOccurrence->mysqlDatetime()}' class='ipsCalendarDate'>
+									<span class='ipsCalendarDate__month'>{$nextOccurrence->monthNameShort}</span>
+									<span class='ipsCalendarDate__date'>{$nextOccurrence->mday}</span>
+								</time>
+							</a>
+						</span>
+						<div class='ipsPhotoPanel__text'>
+							{template="embedOriginalItem" group="embed" app="core" params="$item, FALSE, \IPS\Theme::i()->getTemplate( 'global', 'calendar' )->embedEventItemSnippet( $item )"}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $comment->mapped('rating')" group="global"} 
+		{{if $comment->mapped('votes_total')}}
+			<p>{$comment->helpfulLine()|raw}</p>
+		{{endif}}
+		<hr class='ipsHr'>
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled AND \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) AND \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

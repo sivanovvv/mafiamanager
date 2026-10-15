@@ -1,0 +1,20 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/submit\/createRecordForm",
+            "admin\/templates\/templates"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

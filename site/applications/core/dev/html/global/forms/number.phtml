@@ -1,0 +1,67 @@
+<ips:template parameters="$name, $value, $required, $unlimited=NULL, $range=FALSE, $min=NULL, $max=NULL, $step=NULL, $decimals=0, $unlimitedLang='unlimited', $disabled=FALSE, $suffix=NULL, $toggles=array(), $toggleOn=TRUE, $valueToggles=array(), $id=NULL, $prefix=NULL" />
+{{if $range}}
+	<div class="i-flex i-align-items_center i-gap_2">
+		{{if $min !== NULL}}
+			<strong class='i-flex_00 i-font-size_-2' data-role='rangeBoundary' hidden>{$min}</strong>
+		{{endif}}
+{{endif}}
+
+<input
+	type="{{if $range}}range{{else}}number{{endif}}"
+	name="{$name}"
+	{{if $id !== NULL}}
+		id="elNumber_{$id}"
+	{{endif}}
+	size="5"
+	{{if $required === TRUE}}aria-required='true'{{endif}}
+	{{if $unlimited !== NULL and $value === $unlimited}}
+		value=""
+		data-jsdisable="true"
+	{{elseif \is_numeric( $value )}}
+	    {{if \is_int( $decimals ) or ( $decimals === true and mb_strpos( $value, '.' ) )}}
+		    value="{expression="number_format( $value, $decimals === true ? mb_strlen( mb_substr( $value, mb_strpos( $value, '.' ) + 1 ) ) : $decimals, '.', '' )"}"
+		{{else}}
+		    value="{$value}"
+		{{endif}}
+	{{else}}
+		value="0"
+	{{endif}}
+	class="ipsInput {{if $range}}ipsInput--range{{else}}ipsInput--text{{endif}}"
+	{{if $min !== NULL}}
+		min="{$min}"
+	{{endif}}
+	{{if $max !== NULL}}
+		max="{$max}"
+	{{endif}}
+	{{if $step !== NULL and $step != 'any'}}
+		step="{expression="number_format( $step, $decimals, '.', '' )"}"
+	{{else}}
+		step="any"
+	{{endif}}
+	{{if $disabled}}disabled aria-disabled='true'{{endif}}
+	{{if \count($valueToggles)}}data-control="toggle" data-toggles="{expression="implode( ',', $valueToggles )"}"{{endif}}
+>
+
+{{if $range}}
+	{{if $max !== NULL}}
+		<strong class='i-flex_00 i-font-size_-2' data-role='rangeBoundary'><span id='{$name}_rangeValue' data-role='rangeValue'>{$value}</span> / {$max}</strong>
+	{{endif}}
+	</div>
+{{endif}}
+{{if \is_string( $suffix )}}
+	{$suffix|raw}
+{{elseif isset( $suffix['preUnlimited'] )}}
+	{$suffix['preUnlimited']|raw}
+{{endif}}
+{{if $unlimited !== NULL}}
+	&nbsp;
+	<div class="ipsFieldRow__inlineCheckbox">
+		{lang="or"}
+		&nbsp;
+		<input type="checkbox" data-control="unlimited{{if \count($toggles)}} toggle{{endif}}" name="{expression="preg_replace( '/\[(.+?)\]/', '[$1_unlimited]', $name, 1 )"}" id='{expression="preg_replace( '/\[(.+?)\]/', '[$1_unlimited]', $name, 1 )"}-unlimitedCheck' value="{$unlimited}" {{if $unlimited === $value}}checked{{endif}} {{if $disabled}}disabled aria-disabled='true'{{endif}} {{if \count($toggles)}}{{if $toggleOn === FALSE}}data-togglesOff{{else}}data-togglesOn{{endif}}="{expression="implode( ',', $toggles )"}"{{endif}} aria-labelledby='{expression="preg_replace( '/\[(.+?)\]/', '[$1_unlimited]', $name, 1 )"}_label' class="ipsInput ipsInput--toggle">
+		<label for='{expression="preg_replace( '/\[(.+?)\]/', '[$1_unlimited]', $name, 1 )"}-unlimitedCheck' id='{expression="preg_replace( '/\[(.+?)\]/', '[$1_unlimited]', $name, 1 )"}_label' class='ipsField_unlimited'>{lang="$unlimitedLang"}</label>
+	</div>
+{{endif}}
+{{if \is_array( $suffix ) and isset( $suffix['postUnlimited'] )}}
+	&nbsp;&nbsp;&nbsp;{$suffix['postUnlimited']|raw}
+{{endif}}

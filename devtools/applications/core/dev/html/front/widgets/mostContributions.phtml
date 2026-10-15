@@ -1,0 +1,26 @@
+<ips:template parameters="$contributions, $area, $title, $layout='table', $isCarousel=false" />
+<header class='ipsWidget__header'>
+	<h3>{$title}</h3>
+	{{if $isCarousel}}
+		{{$carouselID = 'widget-most-contributions_' . mt_rand();}}
+		{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+	{{endif}}
+</header>
+<div class='ipsWidget__content'>
+	<i-data>
+		<ol class='ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--widget-most-contributions' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+			{{foreach $contributions['members'] as $member}}
+				<li class='ipsData__item'>
+					<a href="{$member->url()}" class="ipsLinkPanel" tabindex="-1" aria-hidden="true"><span>{$member->name}</span></a>
+					<div class="ipsData__image" aria-hidden="true">{template="userPhoto" app="core" group="global" params="$member, 'fluid'"}</div>
+					<div class="ipsData__content">
+						<div class='ipsData__main'>
+							<h4 class='ipsData__title'>{$member->link()|raw}</h4>
+							<p class='ipsData__meta'>{lang="members_member_posts"}: {{if $area}}{$contributions['counts'][$member->member_id]}{{else}}{$member->member_posts}{{endif}}</p>
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ol>
+	</i-data>
+</div>

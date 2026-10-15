@@ -1,0 +1,6 @@
+<ips:template parameters="$results" />
+{{if \count($results)}}
+	{{foreach $results as $event}}
+		{template="event" group="events" app="calendar" params="$event"}
+	{{endforeach}}
+{{endif}}

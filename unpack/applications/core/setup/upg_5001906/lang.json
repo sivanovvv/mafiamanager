@@ -1,0 +1,14 @@
+{
+    "normal": {
+        "added": [
+            "webhook_member_badge_awarded"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

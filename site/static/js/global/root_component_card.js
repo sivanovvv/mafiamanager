@@ -1,0 +1,21 @@
+;(function(){"use strict";class iCard extends HTMLElement{connectedCallback(){this.supportsPopover=CSS.supports("selector(:popover-open)");this.supportsAnimationTimeline=CSS.supports("(animation-timeline: scroll())");this.isOffCanvas=this.matches('.ipsOffCanvas');this.findFocusableElements();this.addEventListener("beforetoggle",this);this.addEventListener("toggle",this);this.addEventListener("keydown",this);this.addEventListener("ipsFetch",this);this.swipeObserver=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){this.setAttribute("hidden-via-swipe",true);if(!this.supportsAnimationTimeline){this.style.removeProperty('--i-card--backdrop-scroll');}
+this.hidePopover();}},{root:this,threshold:.1});}
+static get observedAttributes(){return["data-loading"];}
+attributeChangedCallback(name,oldValue,newValue){if(name!=="data-loading")return;const card=this.querySelector(".iCard");if(!card)return;const existingLoader=card.querySelector(":scope > .ipsLoading");if(newValue!==null){if(!existingLoader){card.insertAdjacentHTML("beforeend",'<div class="ipsLoading"></div>');}}else{existingLoader?.remove();}}
+handleEvent(e){return this[`${e.type}Event`]&&this[`${e.type}Event`](e);}
+beforetoggleEvent(e){if(e.newState==="open"){this.source=e.source||this.sourcePolyfill;this.removeAttribute("hidden-via-swipe");if(this.hasAttribute("data-i-card-append")){const appendMenuTo=this.getAttribute("data-i-card-append")||"body";document.querySelector(appendMenuTo).append(this);}
+if(!this.swipeElement){this.createSwipeElement();}}}
+toggleEvent(e){if(e.newState==="open"){this.snapElement.scrollIntoView({block:"end",inline:"end",behavior:"instant"});this.swipeObserver.observe(this.swipeElement);if(!this.supportsAnimationTimeline){requestAnimationFrame(()=>{this.addEventListener("scroll",this,{passive:true});});}
+requestAnimationFrame(()=>{const focusTarget=this.firstFocusableEl||this;if(focusTarget===this&&!this.hasAttribute('tabindex')){this.setAttribute('tabindex','-1');}
+focusTarget.focus();});this.dispatchEvent(new CustomEvent('ipsCardOpened',{detail:{card:this},bubbles:true}));}else{this.swipeObserver.disconnect();if(!this.supportsAnimationTimeline){this.removeEventListener("scroll",this);}
+this.dispatchEvent(new CustomEvent('ipsCardClosed',{detail:{card:this},bubbles:true}));if(this.popover==="manual"&&this.source){requestAnimationFrame(()=>{this.source.focus();});}}}
+keydownEvent(e){if(this.popover==="manual"&&e.key==='Escape'){if(this.querySelector(":is(:popover-open, [class*=':popover-open'])"))return;e.preventDefault();this.hidePopover();return;}
+const isTabPressed=e.key==='Tab';if(!isTabPressed)return;if(e.shiftKey){if(document.activeElement===this.firstFocusableEl){this.lastFocusableEl.focus();e.preventDefault();}}else{if(document.activeElement===this.lastFocusableEl){this.firstFocusableEl.focus();e.preventDefault();}}}
+scrollEvent(e){requestAnimationFrame(()=>{if(e.target===this){let scrollPercentage=(this.isOffCanvas)?Math.floor(this.scrollLeft/Math.max(1,this.scrollWidth-this.clientWidth)*100)+"%":Math.floor(this.scrollTop/Math.max(1,this.scrollHeight-this.clientHeight)*100)+"%";this.style.setProperty('--i-card--backdrop-scroll',scrollPercentage);}});}
+ipsFetchEvent(e){this.findFocusableElements();}
+findFocusableElements(){this.focusableEls=this.querySelectorAll(':is(a, button, textarea, input:not([type="hidden"]), select):not([hidden], [disabled], [tabindex="-1"])');this.firstFocusableEl=this.focusableEls[0];this.lastFocusableEl=this.focusableEls[this.focusableEls.length-1];}
+createSwipeElement(){let addBackdropElements=``;if(!this.querySelector(".iCardSwipe")){addBackdropElements+=`<div class='iCardSwipe'></div>`;}
+if(!this.querySelector(".iCardDismiss")){addBackdropElements+=`<button class="iCardDismiss" type="button" popovertarget="${this.id}" popovertargetaction="hide" aria-label="Close" tabindex="-1"></button>`;}
+if(!this.querySelector(".iCardSnap")){addBackdropElements+=`<div class="iCardSnap"></div>`;}
+this.insertAdjacentHTML("afterbegin",addBackdropElements);this.swipeElement=this.querySelector(".iCardSwipe");this.snapElement=this.querySelector(".iCardSnap");}}
+ips.ui.registerWebComponent("card",iCard);Debug.log(`Submitted the web component constructor, iCard, for ${"card"}`);})();;

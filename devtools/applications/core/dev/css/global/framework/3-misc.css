@@ -1,0 +1,778 @@
+/*
+	----------------
+	- Event dates
+	----------------
+*/
+.ipsCalendarDate {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	aspect-ratio: 1;
+	background: var(--i-background_3);
+	line-height: 1.4;
+	border-radius: 4px;
+	text-align: center;
+	container-type: inline-size;
+	overflow: hidden;
+}
+
+	.ipsCalendarDate__month {
+		background-color: #a93848;
+		color: #fff;
+		text-transform: uppercase;
+		font-size: .9em;
+		font-size: 22cqw;
+		line-height: 1.7;
+		font-weight: bold;
+	}
+
+	.ipsCalendarDate__date {
+		font-size: 40cqw;
+		place-self: center;
+	}
+
+	.ipsCalendarDate--large {
+		width: 5.7em;
+	}
+	
+/*
+	----------------
+	- Indicator icons
+	----------------
+*/
+
+.ipsIndicator{
+	color: var(--i-color_featured, var(--i-featured, var(--i-color_primary)));
+	font-size: 9px;
+	text-align: center;
+	text-decoration: none !important;
+	display: inline-block;
+	font-family: var(--i-font-awesome);
+	font-weight: 900;
+	-webkit-font-smoothing: antialiased;
+	font-variant: normal;
+	line-height: 1;
+	text-rendering: auto;
+}
+
+	:where([data-ips-read]) .ipsIndicator{
+		color: inherit;
+	}
+
+	.ipsIndicator::before{
+		content: "\f111";
+		display: block; /* Helps with vertical alignment */
+	}
+
+	.ipsIndicator--participated::before{
+		content: "\f005";
+	}
+
+	[data-ips-read] .ipsIndicator--participated{
+		opacity: .3;
+	}
+
+	/* Add space after indicator inside titles */
+	.ipsData__title .ipsIndicator{
+		margin-inline-end: .6em;
+		vertical-align: .2em;
+	}
+
+	/* Remove the indicator, unless the member has previously participated */
+	[data-ips-read] .ipsIndicator:not(.ipsIndicator--participated){
+		display: none;
+	}
+
+/*
+	----------------
+	- Caterpillars
+	----------------
+*/
+
+.ipsCaterpillar{
+	--i-basis: 40px;
+	display: flex;
+	align-items: center;
+	position: relative;
+	isolation: isolate;
+}
+
+	.ipsCaterpillar > * {
+		flex: 0 1 auto;
+		width: var(--i-basis); /* Can't use flex-basis since it doesn't resize images correctly */
+		height: var(--i-basis);
+		border: 2px solid var(--i-background_1);
+		overflow: hidden;
+		border-radius: 50%;
+		position: relative;
+		/* Improve display of "+5" items, eg Donations widget */
+		background: var(--i-background_4);
+		text-align: center;
+		align-content: center;
+		line-height: 1;
+		font-size: .8em;
+		font-weight: 600;
+	}
+	.ipsCaterpillar > :not(:last-child) {
+		margin-inline-end: calc(var(--i-basis) * -.3);
+	}
+
+	.ipsCaterpillar .ipsUserPhoto{
+		box-shadow: var(--ba-co) 0px 0px 0px 2px;
+		width: 100%;
+	}
+
+	.ipsCaterpillar--reverse > *{
+		z-index: -1;
+	}
+
+	.ipsCaterpillar--reverse > :nth-child(1){ z-index: 12 }
+	.ipsCaterpillar--reverse > :nth-child(2){ z-index: 11 }
+	.ipsCaterpillar--reverse > :nth-child(3){ z-index: 10 }
+	.ipsCaterpillar--reverse > :nth-child(4){ z-index: 9 }
+	.ipsCaterpillar--reverse > :nth-child(5){ z-index: 8 }
+	.ipsCaterpillar--reverse > :nth-child(6){ z-index: 7 }
+	.ipsCaterpillar--reverse > :nth-child(7){ z-index: 6 }
+	.ipsCaterpillar--reverse > :nth-child(8){ z-index: 5 }
+	.ipsCaterpillar--reverse > :nth-child(9){ z-index: 4 }
+	.ipsCaterpillar--reverse > :nth-child(10){ z-index: 3 }
+	.ipsCaterpillar--reverse > :nth-child(11){ z-index: 2 }
+	.ipsCaterpillar--reverse > :nth-child(12){ z-index: 1 }
+
+/* Hide empty "whos viewing" components */
+[data-controller="cloud.front.realtime.whosViewing"]:empty{
+	display: none;
+}
+
+.ipsLiveActivity {
+	--ba-co: hsl(38, 84%, 88%);
+	--i-co: hsl(31, 60%, 17%);
+	display: inline-flex;
+	align-items: center;
+	gap: 0 .3em;
+	padding: .3em .3em;
+	background: var(--ba-co);
+	color: var(--i-co);
+	opacity: 1;
+	font-weight: 600;
+	border-radius: min(var(--i-design-radius), .45em);
+	animation: liveActivity 3s infinite;
+	font-size: .9em;
+}
+
+:where([data-ips-scheme="dark"]) .ipsLiveActivity {
+	--ba-co: var(--i-secondary);
+	--i-co: var(--i-secondary-contrast);
+}
+
+	.ipsLiveActivity p{
+		padding: 0 .5em;
+	}
+
+	.ipsLiveActivity .ipsCaterpillar{
+		flex: 0 0 auto;
+		--i-basis: 28px;
+	}
+
+	.ipsLiveActivity--small {
+		padding: 0 .6em;
+	}
+
+	.ipsLiveActivity em {
+		font-style: normal;
+	}
+
+@keyframes liveActivity {
+	0%, 100% {
+		opacity: 0.7;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+
+/*
+	----------------
+	- RSS
+	----------------
+*/
+.ipsRssIcon{
+	background: #ea7819;
+	color: #fff !important;
+	display: inline-flex !important;
+	padding: 0 !important;
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 4px;
+	margin-inline-start: 1em;
+}
+
+	.ipsRssIcon .fa-rss{
+		margin: auto !important;
+	}
+
+
+/*
+	----------------
+	- Horizontal rules
+	----------------
+*/
+.ipsHr {
+	margin: 1em 0;
+	height: 1px;
+	background: currentColor;
+	opacity: .3;
+	flex: 1 1 100%;
+	/* The flex value above is helpful in certain horizontal situations. For vertical situations, we don't want the hr stretching, so the max-height prevents that */
+	max-height: 1px;
+}
+
+	.ipsHr--small {
+		margin: .5em 0;
+	}
+
+	.ipsHr--none{
+		margin: 0;
+	}
+
+
+/*
+	----------------
+	- Dimension
+	----------------
+*/
+:where(.ipsDimension){
+	--i-basis: initial;
+	aspect-ratio: 1;
+	width: var(--i-basis, 100%);
+	height: auto;
+	object-fit: cover;
+}
+
+/*
+	----------------
+	- Hide elements which are toggled via JS later
+	----------------
+*/
+.ipsJS_hide { display: none }
+
+/*
+	----------------
+	- Images and emoji
+	----------------
+*/
+/* Future todo: These can likely be removed */
+.ipsImage[data-src]:not([data-loaded]) {
+	background: var(--i-background_2);
+	min-width: 50px; /* requires a minimum size for intersectionobserver to see it */
+	height: 1px;
+}
+
+.ipsImage[data-src][data-loading] {
+	animation: dummy_anim 1s infinite;
+}
+
+.ipsEmoji[data-src][data-loading] {
+	animation: dummy_anim 1s infinite;
+	border-radius: 4px;
+}
+
+/*
+	----------------
+	- Clearfix
+	----------------
+*/
+.ipsClearfix::after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
+/*
+	----------------
+	- Online/offline
+	----------------
+*/
+
+.ipsOnline {
+	display: inline-block;
+	border-radius: 50%;
+	background: hsl(140 64% 42%);
+	position: relative;
+	margin-left: .3em;
+	margin-right: .3em;
+	width: .65em;
+	aspect-ratio: 1;
+	animation: ipsOnline 4s infinite;
+	opacity: 1 !important; /* Necessary to overwrite .ipsList .fa styles */
+}
+
+.ipsOnline::before{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	background: inherit;
+	opacity: 0;
+	transform: scale(1);
+	animation: ipsOnlineRay 4s infinite;
+}
+
+.ipsEntry__username .ipsOnline{
+	margin: 0;
+}
+
+.ipsAvatarStack .ipsOnline{
+	margin: 0;
+	width: 27%;
+	max-width: 10px;
+	outline: 2px solid var(--i-background_1);
+	position: absolute;
+	bottom: -5%;
+	right: -5%;
+}
+
+@keyframes ipsOnline {
+	10% {
+		transform: scale(.7);
+	}
+	30% {
+		transform: scale(1);
+	}
+}
+
+@keyframes ipsOnlineRay {
+	10% {
+		transform: scale(1);
+		opacity: .4;
+	}
+	
+	50% {
+		transform: scale(3);
+		opacity: 0;
+	}
+
+	100%{
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+	
+/*
+	----------------
+	- Notifications
+	----------------
+*/
+.ipsNotification{
+	background: hsl(0 100% 46%);
+	color: hsl(0 0% 100%);
+	border-radius: 4px;
+	padding: .25em .4em;
+	min-width: 1.4em;
+	text-align: center;
+	font-size: max(calc(var(--i-rem) * .8), 11px);
+	line-height: 1;
+	position: absolute;
+	z-index: 1;
+	top: -3px;
+	inset-inline-end: -3px;
+}
+
+	.ipsNotification[data-role="autoCheckCount"] {
+		display: none;
+	}
+
+	@media (min-width: 768px){
+		.ipsNotification{
+			inset-inline-end: -10px;
+		}
+	}
+
+/*
+	----------------
+	- Charts
+	----------------
+*/
+
+.ipsChart__chart {
+	overflow: hidden;
+}
+
+.ipsChart_filters {
+    flex-grow: 1;
+    align-items: start;
+}
+
+/* Eg. Topic analytics */
+/* Background */
+[data-ips-scheme="dark"] .ipsChart [fill="#ffffff"]{
+	fill: var(--i-box--ba-co);
+}
+/* Active lines */
+[data-ips-scheme="dark"] .ipsChart [stroke="#3366cc"]{
+	stroke: var(--i-color_primary);
+}
+/* Range lines */
+[data-ips-scheme="dark"] .ipsChart [fill="#cccccc"]{
+	fill: var(--i-color_soft);
+}
+[data-ips-scheme="dark"] .ipsChart [fill="#ebebeb"]{
+	fill: var(--i-background_5);
+}
+
+[data-ips-scheme="dark"] .ipsChart [fill="#333333"]{
+	fill: var(--i-color_root);
+}
+
+[data-ips-scheme="dark"] .ipsChart [stroke="#3366cc"]{
+	stroke: var(--i-color_primary);
+}
+/* Text */
+[data-ips-scheme="dark"] .ipsChart text{
+	fill: var(--i-color_root);
+}
+
+.goog-tooltip > div[style*="infobackground"]{
+	background: var(--i-background_3) !important;
+	border-color: var(--i-background_6) !important;
+}
+
+/*
+	----------------
+	- Minimal scrollbars
+	----------------
+*/
+.ipsScrollbar{
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, currentColor 20%, transparent) transparent;
+	overflow: auto;
+}
+.ipsScrollbar::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+.ipsScrollbar::-webkit-scrollbar-track {
+	background: transparent;
+	border-radius: 6px;
+}
+.ipsScrollbar::-webkit-scrollbar-thumb {
+	border: 2px solid transparent;
+    border-radius: 20px;
+    background-color: color-mix(in srgb, currentColor 30%, transparent);
+    background-clip: content-box;
+}
+	.ipsScrollbar:hover::-webkit-scrollbar-thumb{
+    	background-color: color-mix(in srgb, currentColor 40%, transparent);
+	}
+	.ipsScrollbar::-webkit-scrollbar-thumb:hover{
+    	background-color: currentColor;
+	}
+
+/*
+	----------------
+	- Multi comment
+	----------------
+*/
+#ipsMultiQuoter {
+	inset: 20px;
+	top: auto;
+	margin-left: auto;
+	margin-right: auto;
+	display: flex;
+
+	background: var(--i-tooltip--ba-co);
+	border-color: var(--i-tooltip--ba-co);
+	font-size: .9em;
+	color: hsl(0 0% 100%);
+	font-weight: 500;
+	border-radius: min(var(--i-design-radius), 5px);
+	box-shadow: hsl(0 0% 0% / .1) 0px 5px 20px;
+
+	transition-property: display, overlay, opacity, translate;
+	transition-behavior: allow-discrete;
+	transition-duration: .15s;
+	opacity: 0;
+	translate: 0 10px;
+}
+
+	#ipsMultiQuoter:popover-open{
+		opacity: 1;
+		translate: 0 0;
+
+		@starting-style{
+			&{
+				opacity: 0;
+				translate: 0 10px;
+			}
+		}
+	}
+
+/* Bottom right location on touch devices */
+@media(hover:none){
+	#ipsMultiQuoter{
+		inset: auto;
+		inset-inline-end: 10px;
+		bottom: 10px;
+	}
+}
+
+@media (max-width: 767px){
+	#ipsMultiQuoter{
+		bottom: calc(var(--i-mobileFooter--he) + 10px);
+	}
+}
+
+	#ipsMultiQuoter button{
+		padding: .6em .9em;
+	}
+
+	#ipsMultiQuoter button:not(:first-child){
+		border-inline-start: 1px solid hsl(0 0% 100% / .2);
+	}
+
+	#ipsMultiQuoter button:hover{
+		background: hsl(0 0% 100% / .1);
+	}
+
+	#ipsMultiQuoter .fa-comments{
+		opacity: .6;
+		margin-inline-end: .3em;
+	}
+
+/*
+	----------------
+	- Empty states
+	----------------
+*/
+
+/* Large text with icon */
+.ipsEmpty {
+	text-align: center;
+	font-size: 1.3em;
+	font-weight: 500;
+	color: var(--i-color_soft);
+	padding: 2em .5em;
+}
+
+	.ipsEmpty i {
+		font-size: 3em;
+		margin-bottom: .3em;
+		display: block;
+	}
+
+/* This is used for longer empty messages in data lists */
+.ipsEmptyMessage{
+	text-align: center;
+	color: var(--i-color_soft);
+	font-weight: 600;
+	padding: 2em;
+	flex: 1 1 100%;
+	grid-column: 1/-1;
+}
+
+	.ipsEmptyMessage a{
+		text-decoration: underline;
+	}
+
+/* Large icons (Eg. used for email validation) */
+.ipsLargeIcon{
+	font-size: clamp(3em, 10vw, 6em);
+	opacity: .5;
+	margin-bottom: .3em;
+}
+
+/*
+	----------------
+	- Print styles
+	----------------
+*/
+.ipsPrint {
+	padding: 50px;
+	-webkit-print-color-adjust: exact;
+}
+
+.ipsPrint :where(h1, h2, h3, h4, h5, h6){
+	font-size: revert;
+	font-weight: revert;
+}
+
+/* Remove top margin from h1's, such as Invoices */
+.ipsPrint > :first-child{ margin-top: 0; }
+
+.ipsPrint table {
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.ipsPrint th {
+	background: var(--i-background_3);
+	color: var(--i-color_hard);
+	padding: .6em;
+	text-align: start;
+	border: 1px solid var(--i-background_6);
+}
+
+.ipsPrint tbody td {
+	padding: .6em;
+	border: 1px solid var(--i-background_6);
+}
+
+.ipsPrint tfoot td {
+	padding: 5px;
+	text-align: end;
+}
+
+.ipsPrint tfoot td:last-child {
+	padding: 5px;
+	text-align: start;
+}
+
+.ipsPrint_doubleHeight {
+	height: 50px;
+}
+
+.ipsPrint_tripleHeight {
+	height: 75px;
+}
+
+@media print{
+	:root{
+		color-scheme: light;
+		--i-background_1: hsl(0 0% 100%);
+		--i-background_2: hsl(0 0% 97%);
+		--i-background_3: hsl(0 0% 95%);
+		--i-background_4: hsl(0 0% 92%);
+		--i-background_5: hsl(0 0% 85%);
+		--i-background_6: hsl(0 0% 80%);
+		--i-color_root: hsl(0 0% 20%);
+		--i-color_hard: hsl(0 0% 0%);
+		--i-color_soft: hsl(0 0% 30%);
+	}
+	html, body{
+		background: initial;
+		color: initial;
+	}
+}
+
+
+/*
+	----------------
+	- Maps
+	----------------
+*/
+.ipsMap {
+	width: 100%;
+	height: 500px;
+	background: var(--i-background_4);
+}
+
+.ipsMap--small {
+	height: 200px;
+}
+
+
+/*
+	----------------
+	- Pixabay
+	----------------
+*/
+.ipsPixabayContent {
+	max-width: 100%;
+	height: 600px;
+	max-height: calc(100vh - 260px);
+	overflow: auto;
+	overscroll-behavior: contain;
+	padding: 10px;
+	transition: opacity 0.2s;
+}
+
+.ipsPixabay--loading-new-search .ipsPixabayContent {
+	opacity: 0.5;
+}
+
+.ipsPixabayContent .ipsLoading{
+	margin-top: 150px;
+}
+
+.ipsPixabayGrid{
+	--i-ratio: 16/9;
+	--i-column-gap: 8px;
+	--i-basis: clamp(120px, 25%, 240px);
+	display: flex;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: var(--i-column-gap);
+}
+
+.ipsPixabayThumb, .ipsPixabayGrid::after {
+	background-color: var(--i-background_3);
+	aspect-ratio: var(--i-ratio);
+	flex-grow: calc(10 * (var(--i-ratio)));
+	flex-shrink: 1;
+	flex-basis: calc(var(--i-ratio) * var(--i-basis));
+}
+
+.ipsPixabayGrid::after{
+	content: "";
+	background-color: transparent;
+	aspect-ratio: auto;
+}
+
+.ipsPixabayGrid > .ipsMessage {
+	flex-basis: 100%;
+}
+
+.ipsPixabayImage{
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	object-fit: contain;
+}
+
+	.ipsPixabayImage:hover{
+		opacity: .9;
+	}
+
+a.ipsPixabayAttribution {
+	color: rgba(255,255,255,0.8);
+	position: absolute;
+	left: 50%;
+	bottom: -50px;
+	transform: translateX(-50%);
+}
+	.ipsPixabayAttribution svg{
+		width: 110px;
+		height: 30px;
+		fill: currentColor;
+		display: block;
+	}
+	
+.ipsPixabayMore {
+	margin: 10px auto 6px auto;
+	text-align: center;
+}
+
+/*
+	----------------
+	- Other
+	----------------
+*/
+
+/* Censor Block */
+[data-role="editorCensorBlockMessage"] {
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+/* Align button in member card */
+.ipsMemberCard_controls {
+	position: absolute;
+	top: 5px;
+	inset-inline-end: 5px;
+}

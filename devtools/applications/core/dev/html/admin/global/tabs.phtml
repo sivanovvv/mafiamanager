@@ -1,0 +1,23 @@
+<ips:template parameters="$tabNames, $activeId, $defaultContent, $url, $tabParam='tab', $tabClasses='', $panelClasses=''" />
+<div class='ipsBox ipsPull'>
+	<i-tabs class='ipsTabs {$tabClasses} acpFormTabBar' id='ipsTabs_{expression="md5( $url->acpQueryString() )"}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{expression="md5( $url->acpQueryString() )"}_content' {{if \IPS\Request::i()->isAjax()}}data-ipsTabBar-updateURL='false'{{endif}}>
+		<div role='tablist'>
+			{{foreach $tabNames as $i => $name}}
+				<a href='{{if $i}}{$url->setQueryString( $tabParam, $i )}{{else}}{$url}{{endif}}' id='ipsTabs_{expression="md5( $url->acpQueryString() )"}_{$i}' class="ipsTabs__tab" title='{lang="{$name}"}' role="tab" aria-controls='ipsTabs_{expression="md5( $url->acpQueryString() )"}_{$i}_panel' aria-selected="{{if $i == $activeId}}true{{else}}false{{endif}}">
+					{lang="$name"}
+					{{if \IPS\IN_DEV}}{template="searchKeywords" app="core" group="global" params="$url->setQueryString( 'tab', $i )->acpQueryString(), $name"}{{endif}}
+				</a>
+			{{endforeach}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<section id='ipsTabs_{expression="md5( $url->acpQueryString() )"}_content' class='acpFormTabContent'>
+		{{foreach $tabNames as $i => $name}}
+			{{if $i == $activeId}}
+				<div role="tabpanel" id='ipsTabs_{expression="md5( $url->acpQueryString() )"}_{$i}_panel' class="ipsTabs__panel {$panelClasses}" aria-labelledby="ipsTabs_{expression="md5( $url->acpQueryString() )"}_{$i}" {{if $i != $activeId}}hidden{{endif}}>
+					{$defaultContent|raw}
+				</div>
+			{{endif}}
+		{{endforeach}}
+	</section>
+</div>

@@ -1,0 +1,40 @@
+<ips:template parameters="$item, $comment, $url, $image=NULL" />
+
+{{$useImage = NULL;}}
+<div class='ipsRichEmbed ipsRichEmbed--comment'>
+	{template="embedHeader" group="embed" app="core" params="$comment, $item->mapped('title'), $comment->mapped('date'), $url"}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_originalItem'>
+			<div>
+				{{if $image}}
+					{{$useImage = $image;}}
+				{{elseif $contentImage = $item->contentImages(1)}}
+					{{$attachType = key( $contentImage[0] );}}
+					{{$useImage = \IPS\File::get( $attachType, $contentImage[0][ $attachType ] );}}
+				{{endif}}
+
+				{{if $useImage}}
+					<a href='{$url}' class='ipsRichEmbed_masthead'>
+						<img src='{$useImage->url}' alt='' loading="lazy">
+					</a>
+				{{endif}}
+
+				<div class='i-padding_3'>
+					{template="embedOriginalItem" group="embed" app="core" params="$item"}
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

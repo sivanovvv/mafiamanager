@@ -1,0 +1,152 @@
+/*
+	----------------
+	- Grid
+	----------------
+*/
+
+.i-grid{
+	display: grid;
+}
+
+/*
+	----------------
+	- Flex
+	----------------
+*/
+
+.i-flex,
+.i-display_flex{
+	display: flex;
+}
+
+.i-inline-flex,
+.i-display_inline-flex{
+	display: inline-flex;
+}
+
+.i-place-content_center{ place-content: center }
+
+.i-align-items_baseline{ align-items: baseline; }
+.i-align-items_center{ align-items: center; }
+.i-align-items_end{ align-items: flex-end; align-items: end; }
+.i-align-items_start{ align-items: flex-start; align-items: start; }
+.i-align-items_stretch{ align-items: stretch; }
+
+.i-align-self_center{ align-self: center; }
+.i-align-self_end{ align-self: flex-end; align-self: end; }
+.i-align-self_start{ align-self: flex-start; align-self: start; }
+.i-align-self_stretch{ align-self: stretch; }
+
+.i-justify-content_center{ justify-content: center; }
+.i-justify-content_end{ justify-content: flex-end; justify-content: end; }
+.i-justify-content_start{ justify-content: flex-start; justify-content: start; }
+.i-justify-content_stretch{ justify-content: stretch; }
+.i-justify-content_space-around{ justify-content: space-around; }
+.i-justify-content_space-between{ justify-content: space-between; }
+.i-justify-content_space-evenly{ justify-content: space-evenly; }
+
+.i-justify-self_start{ justify-self: start; }
+.i-justify-self_center{ justify-self: center; }
+.i-justify-self_end{ justify-self: end; }
+
+.i-flex-direction_column{ flex-direction: column; }
+.i-flex-direction_row{ flex-direction: row; }
+.i-flex-direction_row-reverse{ flex-direction: row-reverse; }
+
+.i-flex-wrap_wrap{ flex-wrap: wrap; }
+.i-flex-wrap_wrap-reverse{ flex-wrap: wrap-reverse; }
+.i-flex-wrap_nowrap{ flex-wrap: nowrap; }
+
+
+/*
+	----------------
+	- Flex grow and shrink
+	----------------
+*/
+
+.i-flex_00{
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+.i-flex_10{
+	flex-grow: 1;
+	flex-shrink: 0;
+}
+.i-flex_11{
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+.i-flex_91{
+	flex-grow: 999;
+	flex-shrink: 1;
+}
+.i-flex_01{
+	flex-grow: 0;
+	flex-shrink: 1;
+}
+
+/*
+	----------------
+	- Gaps
+	- Variables are also assigned here as they can sometimes be used within components
+	----------------
+*/
+
+.i-gap_0{ --i-gap: 0em; }
+.i-gap_1{ --i-gap: var(--i-sp_1); }
+.i-gap_2{ --i-gap: var(--i-sp_2); }
+.i-gap_3{ --i-gap: var(--i-sp_3); }
+.i-gap_4{ --i-gap: var(--i-sp_4); }
+.i-gap_5{ --i-gap: var(--i-sp_5); }
+.i-gap_6{ --i-gap: var(--i-sp_6); }
+.i-gap_7{ --i-gap: var(--i-sp_7); }
+.i-gap_8{ --i-gap: var(--i-sp_8); }
+.i-gap_9{ --i-gap: var(--i-sp_9); }
+.i-gap_block{ --i-gap: var(--i-sp_block); }
+
+.i-gap_0, .i-gap_1, .i-gap_2, .i-gap_3, .i-gap_4, .i-gap_5, .i-gap_6, .i-gap_7, .i-gap_8, .i-gap_9, .i-gap_block{
+	gap: var(--i-gap);
+}
+
+.i-row-gap_0{ --i-row-gap: 0em; }
+.i-row-gap_1{ --i-row-gap: var(--i-sp_1); }
+.i-row-gap_2{ --i-row-gap: var(--i-sp_2); }
+.i-row-gap_3{ --i-row-gap: var(--i-sp_3); }
+.i-row-gap_4{ --i-row-gap: var(--i-sp_4); }
+.i-row-gap_5{ --i-row-gap: var(--i-sp_5); }
+.i-row-gap_6{ --i-row-gap: var(--i-sp_6); }
+.i-row-gap_7{ --i-row-gap: var(--i-sp_7); }
+.i-row-gap_8{ --i-row-gap: var(--i-sp_8); }
+.i-row-gap_9{ --i-row-gap: var(--i-sp_9); }
+.i-row-gap_block{ --i-row-gap: var(--i-sp_block); }
+
+.i-row-gap_0, .i-row-gap_1, .i-row-gap_2, .i-row-gap_3, .i-row-gap_4, .i-row-gap_5, .i-row-gap_6, .i-row-gap_7, .i-row-gap_8, .i-row-gap_9, .i-row-gap_block{
+	row-gap: var(--i-row-gap);
+}
+
+.i-column-gap_0{ --i-column-gap: 0em; }
+.i-column-gap_1{ --i-column-gap: var(--i-sp_1); }
+.i-column-gap_2{ --i-column-gap: var(--i-sp_2); }
+.i-column-gap_3{ --i-column-gap: var(--i-sp_3); }
+.i-column-gap_4{ --i-column-gap: var(--i-sp_4); }
+.i-column-gap_5{ --i-column-gap: var(--i-sp_5); }
+.i-column-gap_6{ --i-column-gap: var(--i-sp_6); }
+.i-column-gap_7{ --i-column-gap: var(--i-sp_7); }
+.i-column-gap_8{ --i-column-gap: var(--i-sp_8); }
+.i-column-gap_9{ --i-column-gap: var(--i-sp_9); }
+.i-column-gap_block{ --i-column-gap: var(--i-sp_block); }
+
+.i-column-gap_0, .i-column-gap_1, .i-column-gap_2, .i-column-gap_3, .i-column-gap_4, .i-column-gap_5, .i-column-gap_6, .i-column-gap_7, .i-column-gap_8, .i-column-gap_9, .i-column-gap_block{
+	column-gap: var(--i-column-gap);
+}
+
+.i-gap_lines{
+	--i-row-gap: 1px;
+	--i-column-gap: 1px;
+	gap: 1px;
+	overflow: hidden;
+}
+
+:where(.i-gap_lines > *){
+	outline: 1px solid var(--i-background_3);
+}

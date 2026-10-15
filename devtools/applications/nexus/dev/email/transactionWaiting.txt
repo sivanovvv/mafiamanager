@@ -1,0 +1,35 @@
+<ips:template parameters="$transaction, $invoice, $invoiceSummary, $email" />
+
+{$email->language->addToStack("email_transaction_waiting", FALSE, array( 'htmlsprintf' => array( \IPS\Settings::i()->board_name ) ) )}
+
+{$transaction->method->manualPaymentInstructions( $transaction, 'plaintext' )}
+
+&mdash; {setting="board_name"}
+
+-----
+**{expression="sprintf( $email->language->get('order_number'), $invoice->id )" raw="true"}**
+
+{$email->language->addToStack("email_view_order", FALSE)}: {{if $invoice->guest_data and isset( $invoice->guest_data['guestTransactionKey'] )}}{$invoice->url()->setQueryString( array( 'key' => $invoice->guest_data['guestTransactionKey'] ) )}{{else}}{$invoice->url()}{{endif}}
+
+{$email->language->addToStack("billing_address", FALSE)}
+===
+{$invoice->member->cm_name}
+{{if $invoice->billaddress}}{$invoice->billaddress->toString('\n')|raw}{{endif}}
+
+{$email->language->addToStack("order_details", FALSE)}
+===
+{{foreach $invoiceSummary['items'] as $k => $item}}
+{$item->quantity} x</span> {$item->name} [{$email->language->addToStack("each_short", FALSE, array( 'htmlsprintf' => array( $item->price->toString( $email->language ) ) ) )}] ({$item->linePrice()->toString( $email->language )})
+{{endforeach}}
+---
+{$email->language->get('subtotal')}: {$invoiceSummary['subtotal']->toString( $email->language )}
+{{if \count( $invoiceSummary['tax'] )}}
+---
+{{foreach $invoiceSummary['tax'] as $tax}}
+{$tax['name']} ({expression="$tax['rate']*100" raw="true"}%): {$tax['amount']->toString( $email->language )}
+{{endforeach}}
+{{endif}}
+---
+{$email->language->get('total')}: {$invoiceSummary['total']->toString( $email->language )}
+
+-- {setting="board_name"}

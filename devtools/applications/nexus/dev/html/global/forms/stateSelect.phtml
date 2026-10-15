@@ -1,0 +1,18 @@
+<ips:template parameters="$name, $value, $unlimited=NULL" />
+<!-- @todo [future] Is there a better UI for this? -->
+{{if $unlimited !== NULL}}
+	<input type="checkbox" name="{$name}_unlimited" value="1" {{if $value === '*'}}checked{{endif}}> {lang="$unlimited"} {lang="or"}<br>
+{{endif}}
+<select class="ipsInput ipsInput--select" name="{$name}[]" multiple size="20">
+	{{foreach \IPS\GeoLocation::$countries as $country}}
+		{{if isset( \IPS\GeoLocation::$states[ $country ] )}}
+			<optgroup label="{lang="country-{$country}"}">
+				{{foreach \IPS\GeoLocation::$states[ $country ] as $state}}
+					<option value="{$country}-{$state}" {{if isset( $value[ $country ] ) and ( ( $value[ $country ] == "*" ) or ( \in_array( $state, $value[ $country ] ) ) )}}selected{{endif}}>{$state}</option>
+				{{endforeach}}
+			</optgroup>
+		{{else}}
+			<option value="{$country}" {{if isset( $value[ $country ] )}}selected{{endif}}>{lang="country-{$country}"}</option>
+		{{endif}}
+	{{endforeach}}
+</select>

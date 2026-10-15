@@ -1,0 +1,64 @@
+/* GENERAL CLUB STYLES  */
+.cClubRequestCover {
+	text-align: center;
+	padding-top: 40px;
+}
+	
+.cClubRequestCover_icon {
+	display: inline-block;
+	color: #fff;
+	width: 80px;
+	height: 80px;
+	border-radius: 80px;
+	line-height: 110px;
+	margin-bottom: 5px;
+}
+
+	.cClubRequestCover_icon i[class*=" fa-"] {
+		font-size: 54px;
+		line-height: 1;
+	}
+
+/* MEMBER LIST */
+.cClubMemberStatus {
+	min-width: 80px;
+}
+
+/* MY CLUBS SIDEBAR */
+.cClubPrice {
+	color: var(--i-color_primary);
+	font-weight: 500;
+}
+
+
+
+
+
+
+
+
+
+/* v5 styles below */
+#elClubContainer{
+	display: contents;
+}
+
+#elClubContainer > *{
+	margin-bottom: var(--i-sp_block);
+}
+
+/* Cover photo tabs */
+.cClubControls__tabs .ipsTabs{
+	box-shadow: none;
+	border-top: 1px solid;
+	border-top-color: color-mix(in srgb, var(--i-co) 15%, transparent);
+}
+
+.cClubHeader--sidebar .ipsCoverPhotoMeta{
+	display: none;
+}
+
+/* Browse clubs grid */
+.ipsGrid--browse-clubs .ipsCoverPhoto{
+	border-radius: 8px;
+}

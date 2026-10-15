@@ -1,0 +1,6 @@
+<ips:template parameters="$notification, $extra, $email" />
+{{if $notification->extra === 'missing' or $notification->extra === 'url'}}{$email->language->addToStack("license_error_none_email")}{{else}}{{if $notification->extra === 'expireSoon'}}{$email->language->addToStack("license_renewal_soon_email")}{{else}}{$email->language->addToStack("license_expired_email")}{{endif}}
+
+{$email->language->addToStack("license_benefits_info")}
+
+{$email->language->addToStack("license_renew_now", FALSE)}: {url="renew_my_license" ips="true" plain="true"}{{endif}}

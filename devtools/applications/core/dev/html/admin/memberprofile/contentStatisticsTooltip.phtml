@@ -1,0 +1,21 @@
+<ips:template parameters="$app, $counts, $noHtml=FALSE" />
+{{if $noHtml}}
+{{foreach $counts as $class => $count}}{lang="{$class::$title}_pl"}: {number="$count"}
+{{endforeach}}
+{{else}}
+	<strong>
+		{{if $app == 'core'}}
+			{lang="module__core_status"}
+		{{else}}
+			{lang="__app_{$app}"}
+		{{endif}}
+	</strong>
+	<table>
+		{{foreach $counts as $class => $count}}
+			<tr>
+				<td>{lang="{$class::$title}_pl"}</td>
+				<td class="i-text-align_end" style="padding-inline-start:1em">{number="$count"}</td>
+			</tr>
+		{{endforeach}}
+	</table>
+{{endif}}

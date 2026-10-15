@@ -1,0 +1,60 @@
+<ips:template parameters="$name, $value, $multiple, $url, $title, $roots, $zeroVal, $permCheck, $subnodes, $togglePerm=NULL, $toggleIds=array(), $disabledCallback=NULL, $zeroValTogglesOn=array(), $zeroValTogglesOff=array(), $autoPopulate=FALSE, $children=NULL, $nodeClass=NULL, $where=NULL, $disabledArray=array(), $noParentNodesTitle=NULL, $noParentNodes=array(), $clubs=FALSE, $togglePermPBR=TRUE, $toggleIdsOff=array(), $loadMoreLink=FALSE, $nodeGroups=null" />
+<div class='ipsSelectTree ipsJS_show' data-name='{$name}' data-ipsSelectTree data-ipsSelectTree-url="{$url}" {{if $multiple}}data-ipsSelectTree-multiple{{endif}} data-ipsSelectTree-selected='{$value|raw}'>
+	<input type="hidden" name="{$name}" value="" data-role="nodeValue">
+	<div class='ipsSelectTree_value ipsSelectTree_placeholder'></div>
+	<span class='ipsSelectTree_expand'><i class='fa-solid fa-chevron-down' aria-hidden="true"></i></span>
+	<div class='ipsSelectTree_nodes ipsHide'>
+		{{if $clubs or !empty( $nodeGroups )}}
+			<i-tabs class='ipsTabs ipsTabs--small ipsTabs--stretch' id='ipsTabs_nodeSelect_{$name}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_nodeSelect_{$name}_content'>
+				<div role='tablist'>
+					<button type="button" id='ipsTabs_nodeSelect_{$name}_global' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_nodeSelect_{$name}_global_panel" aria-selected="true">
+						{lang="club_node_selector_global"}
+					</button>
+					{{if $clubs}}
+					<button type="button" id='ipsTabs_nodeSelect_{$name}_clubs' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_nodeSelect_{$name}_clubs_panel" aria-selected="false">
+						{lang="club_node_selector_clubs"}
+					</button>
+					{{endif}}
+					{{if !empty( $nodeGroups )}}
+					<button type="button" id='ipsTabs_nodeSelect_{$name}_groups' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_nodeSelect_{$name}_groups_panel" aria-selected="false">
+						{lang="club_node_selector_groups"}
+					</button>
+					{{endif}}
+				</div>
+			</i-tabs>
+		{{endif}}
+		<div data-role='nodeList' class='ipsScrollbar'>
+			{{if $clubs or !empty( $nodeGroups )}}
+				<div id='ipsTabs_nodeSelect_{$name}_content' class='ipsTabs__panels'>
+					<div id='ipsTabs_nodeSelect_{$name}_global_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_nodeSelect_{$name}_global" data-role="globalNodeList">
+						{template="nodeCascade" app="core" group="forms" location="global" params="$roots, FALSE, $permCheck, $subnodes, $togglePerm, $toggleIds, $disabledCallback, $autoPopulate, $children, $nodeClass, $where, $disabledArray, $noParentNodesTitle, $noParentNodes, FALSE, $togglePermPBR, $toggleIdsOff"}
+					</div>
+					{{if $clubs}}
+					<div id='ipsTabs_nodeSelect_{$name}_clubs_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_nodeSelect_{$name}_clubs" data-role="clubNodeList" hidden>
+						{template="nodeCascade" app="core" group="forms" location="global" params="$roots, FALSE, $permCheck, $subnodes, $togglePerm, $toggleIds, $disabledCallback, $autoPopulate, $children, $nodeClass, $where, $disabledArray, $noParentNodesTitle, $noParentNodes, TRUE, $togglePermPBR, $toggleIdsOff"}
+					</div>
+					{{endif}}
+					{{if !empty( $nodeGroups )}}
+					<div id='ipsTabs_nodeSelect_{$name}_groups_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_nodeSelect_{$name}_groups" data-role="groupNodeList" hidden>
+						{template="nodeCascade" app="core" group="forms" location="global" params="$nodeGroups, FALSE, true, false, null, array(), null, false, null, 'IPS\Node\NodeGroup', array()"}
+					</div>
+					{{endif}}
+				</div>		
+			{{else}}
+				{template="nodeCascade" app="core" group="forms" location="global" params="$roots, FALSE, $permCheck, $subnodes, $togglePerm, $toggleIds, $disabledCallback, $autoPopulate, $children, $nodeClass, $where, $disabledArray, $noParentNodesTitle, $noParentNodes, NULL, $togglePermPBR, $toggleIdsOff"}
+			{{endif}}
+		</div>
+		{{if $loadMoreLink}}
+			<div class='ipsSelectTree_loadMore' data-action='nodeLoadMore' data-offset='{$loadMoreLink}'>
+				<a class='ipsButton ipsButton--soft ipsButton--wide'><span class='ipsLoading ipsLoading--tiny ipsHide'>&nbsp;</span>&nbsp;&nbsp;{lang="node_load_more"}</a>
+			</div>
+		{{endif}}
+	</div>
+</div>
+{{if $zeroVal !== NULL}}
+	<div class="i-margin-top_1">
+		&nbsp;{lang="or"}&nbsp;
+		<input type="checkbox" name="{$name}-zeroVal" id="{$name}-zeroVal" data-role="zeroVal" {{if $value == 0}}checked{{endif}} {{if !empty($zeroValTogglesOn) OR !empty($zeroValTogglesOff)}}data-control="toggle"{{endif}} {{if !empty($zeroValTogglesOn)}} data-togglesOn="{expression="implode( ',', $zeroValTogglesOn )"}" aria-controls="{expression="implode( ',', $zeroValTogglesOn )"}"{{endif}} {{if !empty($zeroValTogglesOff)}} data-togglesOff="{expression="implode( ',', $zeroValTogglesOff )"}" aria-controls="{expression="implode( ',', $zeroValTogglesOff )"}"{{endif}} class="ipsInput ipsInput--toggle">
+		<label for="{$name}-zeroVal" class='ipsField_unlimited'>{lang="$zeroVal"}</label>
+	</div>
+{{endif}}

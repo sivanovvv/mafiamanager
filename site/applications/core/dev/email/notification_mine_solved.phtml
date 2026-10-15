@@ -1,0 +1,6 @@
+<ips:template parameters="$content, $comment, $solver, $email" />
+{$email->language->addToStack("mail_your_content_is_solved", FALSE, array( 'htmlsprintf' => array( $comment->url('find'), $content->url(), $content->mapped('title'), $content->definiteArticle( $email->language ) ) ) )}
+<br><br>
+{$content->emailContent( $email, 'html' )|raw}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

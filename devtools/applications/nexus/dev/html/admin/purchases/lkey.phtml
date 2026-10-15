@@ -1,0 +1,65 @@
+<ips:template parameters="$licensekey" />
+<div class='i-padding_3 i-background_2 i-text-align_center i-margin-bottom_1'>
+	<h2 class='ipsMinorTitle i-margin-bottom_1'>{lang="license_key"}</h2>
+	<div class='i-font-size_2 i-font-family_monospace cNexusLicenseKey i-margin-bottom_1'>
+		{$licensekey->key}
+	</div>
+	{{if $licensekey->max_uses != 0}}
+		<strong>
+			{{if $licensekey->max_uses == -1}}
+				{lang="lkey_using_x_of_unlimited_uses" sprintf="$licensekey->uses"}
+			{{else}}
+				{lang="lkey_using_x_of_x_uses" sprintf="$licensekey->uses, $licensekey->max_uses" pluralize="$licensekey->max_uses"}
+			{{endif}}
+		</strong>
+	{{endif}}
+
+	{{if member.hasAcpRestriction( 'nexus', 'customers', 'lkeys_reset' ) || $licensekey->uses}}
+		<ul class='ipsList ipsList--inline i-margin-top_1'>
+			{{if member.hasAcpRestriction( 'nexus', 'customers', 'lkeys_reset' )}}
+				<li>
+					<a href="{$licensekey->purchase->acpUrl()->setQueryString( array( 'do' => 'extra', 'act' => 'lkeyReset' ) )->csrf()}" data-confirm class="ipsButton ipsButton--inherit ipsButton--tiny">{lang="generate_new_key"}</a>
+				</li>
+			{{endif}}
+			{{if $licensekey->uses}}
+				<li>
+					<a href='#elLicenseUses' class='ipsButton ipsButton--tiny ipsButton--inherit' data-ipsDialog data-ipsDialog-content='#elLicenseUses' data-ipsDialog-title='{lang="license_key_uses"}'>{lang="see_license_usage"}</a>
+				</li>
+			{{endif}}
+		</ul>
+	{{endif}}
+</div>
+
+{{if $licensekey->uses}}
+	<div id='elLicenseUses' class='ipsHide i-padding_3'>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--lkey">
+				{{foreach $licensekey->activate_data as $k => $use}}
+					<li class='ipsData__item'>
+						<div class='ipsData__icon'>
+							<span class='ipsBadge ipsBadge--icon ipsBadge--neutral'>{$k}</span>
+						</div>
+						<div class='ipsData__main'>
+							{{if \is_countable( $use['extra'] ) AND \count( $use['extra'] )}}
+								<ul>
+									{{foreach $use['extra'] as $k => $v}}
+										<li>
+											<strong>{$k}:</strong> {$v}
+										</li>
+									{{endforeach}}
+								</ul>
+							{{endif}}
+							<div class='ipsData__meta'>
+								{{if $use['last_checked']}}
+									{lang="lkey_use_info" htmlsprintf="\IPS\DateTime::ts( $use['activated'] )->html( false ), htmlspecialchars( $use['ip'], ENT_DISALLOWED, 'UTF-8', FALSE ), \IPS\DateTime::ts( $use['last_checked'] )->html( false )"}
+								{{else}}
+									{lang="lkey_use_info_nocheck" htmlsprintf="\IPS\DateTime::ts( $use['activated'] )->html( false ), htmlspecialchars( $use['ip'], ENT_DISALLOWED, 'UTF-8', FALSE )"}
+								{{endif}}
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

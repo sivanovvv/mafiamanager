@@ -1,0 +1,36 @@
+<ips:template parameters="$message, $item, $id" />
+{{$member = \IPS\Member::load( $message['added_by'] );}}
+{{$class = \get_class( $item );}}
+<div class="ipsMessage ipsMessage--withButtons {{if isset( $message['color'] )}}ipsMessage--{$message['color']}{{endif}} ipsPull">
+	{{if isset( $message['is_public'] ) AND $message['is_public'] }}
+		{template="userPhoto" group="global" app="core" params="$member, 'fluid'"}
+	{{else}}
+		<i class="fa-solid fa-user-shield ipsMessage__icon" aria-hidden="true"></i>
+	{{endif}}
+	<div>
+		<div>
+			{{if $member->member_id}}
+				<strong class="i-font-weight_600">{lang="content_item_message" sprintf="$member->name"}</strong>{{if isset( $message['date'] ) }}<span class='i-color_soft'>, {datetime="$message['date']"}</span>{{endif}}
+			{{else}}
+				{{if isset( $message['date'] ) }}<span class='i-color_soft'>{datetime="$message['date']"}</span>{{endif}}
+			{{endif}}
+
+			{{if isset( $message['is_public'] ) AND !$message['is_public'] }}
+				<span class='ipsBadge'>{lang="message_staff_badge"}</span>
+			{{endif}}
+		</div>	
+		{template="richText" group="global" app="core" location="global" params="$message['message'], array('i-margin-top_1')"}
+	</div>
+	<ul class='ipsButtons'>
+		{{if $item->canOnMessage( 'edit' )}}
+			<li>
+				<a href='{$item->url()->setQueryString( array( 'do' => 'messageForm', 'meta_id' => $id ) )}' data-ipsDialog data-ipsDialog-title='{lang="edit"}' class="ipsButton"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {lang="edit"}</a>
+			</li>
+		{{endif}}
+		{{if $item->canOnMessage( 'delete' )}}
+			<li>
+				<a href='{$item->url()->csrf()->setQueryString( array( 'do' => 'messageDelete', 'meta_id' => $id ) )}' data-confirm class="ipsButton"><i class="fa-regular fa-trash-can" aria-hidden="true"></i> {lang="delete"}</a>
+			</li>
+		{{endif}}
+	</ul>	
+</div>

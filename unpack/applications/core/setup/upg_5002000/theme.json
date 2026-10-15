@@ -1,0 +1,52 @@
+{
+    "html": {
+        "added": [
+            "front\/forms\/titleSuggestions"
+        ],
+        "edited": [
+            "front\/global\/globalTemplate",
+            "global\/global\/includeCSS",
+            "front\/global\/navBar",
+            "global\/global\/pagination",
+            "front\/global\/reputation",
+            "front\/global\/userLink",
+            "front\/global\/userLinkFromData",
+            "global\/members\/bdayForm_day",
+            "global\/members\/bdayForm_month",
+            "global\/members\/bdayForm_year",
+            "admin\/members\/bulkMailPreview",
+            "admin\/members\/moderationLimits",
+            "front\/messaging\/template",
+            "front\/modcp\/deletedRows",
+            "front\/popular\/memberRow",
+            "front\/popular\/topMembersResults",
+            "front\/profile\/profileHeader",
+            "front\/search\/member",
+            "front\/search\/search",
+            "front\/staffdirectory\/layout_half",
+            "front\/system\/cookies",
+            "front\/tables\/manageFollowRow",
+            "admin\/tables\/table"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "global\/framework\/3-card.css",
+            "global\/framework\/3-data-tables.css",
+            "global\/framework\/3-dropdown.css",
+            "global\/framework\/3-forms.css",
+            "global\/framework\/3-pagination.css",
+            "global\/framework\/3-richtext.css",
+            "global\/framework\/4-mobile-footer.css",
+            "global\/framework\/4-offcanvas.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

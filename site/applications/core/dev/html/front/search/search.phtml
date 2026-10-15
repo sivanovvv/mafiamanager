@@ -1,0 +1,22 @@
+<ips:template parameters="$termArray, $title, $results, $pagination, $baseUrl, $types, $filters, $count=NULL, $advanced=FALSE" />
+
+<div data-controller='core.front.search.main' data-baseURL='{url="app=core&module=search&controller=search" seoTemplate="search"}'>
+	<header class='ipsPageHeader ipsPageHeader--search ipsResponsive_hidePhone'>
+		<h1 class='ipsPageHeader__title'>{lang="search_the_community"}</h1>
+		<p class='ipsPageHeader__desc {{if $advanced}}ipsHide{{endif}}' data-role='searchBlurb'>{$title}</p>
+	</header>
+	
+	{{if \IPS\Content\Search\Query::isRebuildRunning()}}
+	<div class="ipsMessage ipsMessage--info">{lang="search_rebuild_is_running"}</div>
+	{{endif}}
+
+	<div class='ipsBox ipsBox--searchFilters ipsPull i-margin-top_3' data-controller='core.front.search.filters' id='elSearchFilters'>
+		{$filters|raw}
+	</div>
+
+	<div id="elSearch_main" class='i-margin-top_3' data-role='filterContent' data-ips-hook='main'>
+		{{if !$advanced}}
+			{template="results" group="search" params="$termArray, $title, $results, $pagination, $baseUrl, $count"}
+		{{endif}}
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<ips:template parameters="$layout='table', $isCarousel=false" />
+<h3 class="ipsWidget__header">{lang="current_donation_goals"}</h3>
+<div class='ipsWidget__content'>
+	<i-data>
+		<ul class='ipsData ipsData--table ipsData--donations'>
+			{{foreach \IPS\nexus\Donation\Goal::roots() as $goal}}
+				<li class="ipsData__item">
+						{{if member.member_id }}
+						<a href="{$goal->url()}" data-ipsDialog data-ipsDialog-title="{$goal->_title}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$goal->_title}</span></a>
+						{{endif}}
+					<div class='ipsData__main'>
+						<div class="i-flex i-align-items_center">
+							<div class='ipsData__title i-flex_11'>{$goal->_title}</div>
+							{{if $goal->goal}}
+							<span class="i-color_soft">{expression="number_format( 100/$goal->goal*$goal->current, 0, '.', '')"}%</span>
+							{{endif}}
+						</div>
+						{{if $goal->goal}}
+							{{$progressId = 'ipsProgress-' . mt_rand();}}
+							<progress aria-labelledby="{$progressId}" class="ipsProgress i-margin-top_2" value='{expression="number_format( 100/$goal->goal*$goal->current, 0, '.', '')"}' max="100"></progress>
+							<div id="{$progressId}" class="i-color_soft i-font-size_-1 i-margin-top_1">
+								{lang="donate_progress" sprintf="new \IPS\nexus\Money( $goal->current, $goal->currency ), new \IPS\nexus\Money( $goal->goal, $goal->currency )"}
+							</div>
+						{{else}}
+							<div class="i-color_soft i-font-size_-1">
+								{lang="donate_sofar" sprintf="new \IPS\nexus\Money( $goal->current, $goal->currency )"}
+							</div>
+						{{endif}}
+						<div class="i-flex i-justify-content_space-between i-margin-top_2">
+							{{if $goal->current}}
+								<ul class='ipsCaterpillar'>
+									{{foreach $goal->donors( \IPS\nexus\Donation\Goal::DONATE_PUBLIC, 5, FALSE ) as $member}}
+									<li>
+										{template="userPhoto" app="core" group="global" params="$member, 'mini'"}
+									</li>
+									{{endforeach}}
+									{{$count = $goal->donors( \IPS\nexus\Donation\Goal::DONATE_PUBLIC + \IPS\nexus\Donation\Goal::DONATE_ANONYMOUS, NULL, TRUE );}}
+									{{if $count > 5}}
+										<li>+{$count - 5}</li>
+									{{endif}}
+								</ul>
+							{{endif}}
+							{{if member.member_id }}
+								<a href="{$goal->url()}" data-ipsDialog data-ipsDialog-title="{$goal->_title}" class='ipsButton ipsButton--primary ipsButton--small'><span>{lang="commerce_donate_now"}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+							{{endif}}
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+</div>

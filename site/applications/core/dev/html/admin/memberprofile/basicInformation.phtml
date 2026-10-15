@@ -1,0 +1,149 @@
+<ips:template parameters="$member, $activeIntegrations, $actions, $activeSubscription" />
+{{$coverPhoto = $member->coverPhoto();}}
+<div class='acpMemberView_info ipsBox'>
+	<div class='ipsCoverPhoto acpMemberView_coverPhoto' data-controller='core.global.core.coverPhoto' data-url="{$member->acpUrl()}" data-coverOffset='{$coverPhoto->offset}'>
+		<div class='ipsCoverPhoto__container'>
+			{{if $coverPhoto->file}}
+				<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' data-action="toggleCoverPhoto" alt=''>
+			{{else}}
+				<div class="ipsFallbackImage"></div>
+			{{endif}}
+		</div>
+		{{if $coverPhoto->editable and member.hasAcpRestriction( 'core', 'members', 'member_photo' ) and ( !$member->isAdmin() or member.hasAcpRestriction( 'core', 'members', 'member_photo_admin' ) )}}
+			<div class="ipsCoverPhoto__overlay-buttons" data-hideoncoveredit>
+				<button type="button" id="editCover" popovertarget="editCover_menu" class='acpMemberView_editButton' data-ipsTooltip title='{lang="edit_cover_photo"}' data-hideOnCoverEdit data-role='coverPhotoOptions'><i class='fa-solid fa-pencil' aria-hidden="true"></i><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<i-dropdown popover id="editCover_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							<li>
+								<a href='{$member->acpUrl()->setQueryString( 'do', 'coverPhotoUpload' )}' data-ipsDialog data-ipsDialog-title="{lang="cover_photo_add"}"><i class="fa-solid fa-upload" aria-hidden="true"></i> {lang="cover_photo_add"}</a>
+							</li>
+							{{if $coverPhoto->file}}
+								<li data-role="photoEditOption">
+									<button type="button" data-action='positionCoverPhoto'><i class="fa-solid fa-arrows-up-down-left-right" aria-hidden="true"></i> {lang="cover_photo_reposition"}</button>
+								</li>
+								<li data-role="photoEditOption">
+									<a href='{$member->acpUrl()->setQueryString( 'do', 'coverPhotoRemove' )->csrf()}' data-action='removeCoverPhoto'><i class="fa-solid fa-trash-can" aria-hidden="true"></i> {lang="cover_photo_remove"}</a>
+								</li>
+							{{endif}}
+						</ul>
+					</div>
+				</i-dropdown>
+			</div>
+		{{endif}}
+	</div>
+	<div class='acpMemberView_photo'>
+		{template="userPhoto" app="core" group="global" params="$member, 'large'"}
+		{{if member.hasAcpRestriction( 'core', 'members', 'member_photo' ) and ( !$member->isAdmin() or member.hasAcpRestriction( 'core', 'members', 'member_photo_admin' ) )}}
+			<button type="button" id="editPhoto" popovertarget="editPhoto_menu" class='acpMemberView_editButton' title="{lang="edit_profile_photo"}" data-ipsTooltip><i class='fa-solid fa-pencil' aria-hidden="true"></i><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+			<i-dropdown popover id="editPhoto_menu">
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						<li>
+							<a href='{$member->acpUrl()->setQueryString( 'do', 'photo' )}' data-ipsDialog data-ipsDialog-title="{lang="member_photo_new"}">{lang="member_photo_new"}</a>
+						</li>
+						{{if $member->pp_photo_type == 'custom'}}
+							<li>
+								<a href='{$member->acpUrl()->setQueryString( 'do', 'photoCrop' )}' data-ipsDialog data-ipsDialog-title="{lang="member_photo_crop"}">{lang="member_photo_crop"}</a>
+							</li>
+							<li>
+								<a href='{$member->acpUrl()->setQueryString( 'do', 'photoResize' )}' data-ipsDialog data-ipsDialog-title="{lang="member_photo_resize"}">{lang="member_photo_resize"}</a>
+							</li>
+						{{endif}}
+						{{if $member->pp_photo_type and !$member->pp_photo_type != 'none'}}
+							<li>
+								<a href='{$member->acpUrl()->setQueryString( array( 'do' => 'photo', 'remove' => 1 ) )->csrf()}' data-confirm>{lang="member_photo_delete"}</a>
+							</li>
+						{{endif}}
+					</ul>
+				</div>
+			</i-dropdown>
+		{{endif}}
+	</div>
+	<div class='i-padding_2'>
+		<p class='i-flex i-align-items_center acpMemberView_username' data-controller='core.admin.core.editable' {{if ! $member->name}}data-default='empty'{{endif}}data-url='{$member->acpUrl()->setQueryString('do', 'name')}'>
+			{{if member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+				<span data-name='name' class="i-flex_11">
+					<span data-role='text' class="i-font-size_6 i-font-weight_600 i-color_hard">{{if $member->name}}{$member->name}{{else}}{lang="members_name_missing_add"}{{endif}}</span>
+				</span>
+				<a href='#' data-role='edit' class='acpMemberView_editButton' title='{lang="edit_username"}' data-ipsTooltip><i class='fa-solid fa-pencil' aria-hidden="true"></i></a>
+			{{else}}
+ 				{$member->name}
+ 			{{endif}}
+		</p>
+		<p class='i-flex i-align-items_center i-font-weight_600 acpMemberView_email i-margin-top_2' data-controller='core.admin.core.editable' data-url='{$member->acpUrl()->setQueryString('do', 'email')}'>
+			{{if member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+				<span data-name='email' class="i-flex_11">
+					<span data-role="text">
+						{$member->email}
+					</span>
+				</span>
+				<a href='#' data-role='edit' class='acpMemberView_editButton' title='{lang="edit_email_address"}' data-ipsTooltip><i class='fa-solid fa-pencil' aria-hidden="true"></i></a>
+			{{else}}
+ 				{$member->email}
+ 			{{endif}}
+		</p>
+		<p class='i-color_soft'>{lang="member_joined" htmlsprintf="$member->joined->html()"}</p>
+		{{if $member->referredBy()}}
+			<p class="i-color_soft">
+				{lang="member_referred_by" htmlsprintf="$member->referredBy()->acpURL(), $member->referredBy()->name"}
+			</p>
+		{{endif}}
+		{{if $activeSubscription and $activeSubscription->package}}
+			<p class="i-text-align_center i-color_positive">
+				{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_view' ) and $activeSubscription->purchase and $activeSubscription->package}}
+					<a href="{$activeSubscription->purchase->acpUrl()}" class="i-link-color_inherit">
+				{{endif}}
+				<i class="fa-solid fa-certificate" aria-hidden="true"></i> &nbsp; {lang="nexus_subs_subscriber" sprintf="$activeSubscription->package->_title"}
+				{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_view' ) and $activeSubscription->purchase and $activeSubscription->package}}
+				</a>
+				{{endif}}
+			</p>
+		{{endif}}
+
+		<ul class="ipsButtons ipsButtons--fill i-margin-top_3">
+		    {$actions|raw}
+			<li><a href='{$member->url()}' target='_blank' class='ipsButton ipsButton--text'>{lang="go_to_public_profile"}</a></li>
+		</ul>
+		{{if \count( $activeIntegrations )}}
+			<div data-controller="core.admin.members.lazyLoadingProfileBlock" data-url="{$member->acpUrl()->setQueryString( array( 'do' => 'lazyBlock', 'block' => 'IPS\core\extensions\core\MemberACPProfileBlocks\LoginMethods' ) )}">
+				<div class="ipsLoading i-opacity_4">
+					<hr class='ipsHr'>
+					<h3 class='ipsMinorTitle'>{lang="active_account_integrations"}</h3>
+					<i-data>
+						<ul class='ipsData ipsData--table ipsData--compact ipsData--active-integrations acpMemberView_integrations'>
+							{{foreach $activeIntegrations as $title}}
+								<li class='ipsData__item'>
+									<div class='ipsData__icon'>
+										<span class="ipsUserPhoto">
+											<img src='{resource="default_photo.png" app="core" location="global"}' loading="lazy" alt="">
+										</span>
+									</div>
+									<div class='ipsData__main'>
+										{{if member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+											<ul class="ipsControlStrip">
+												<li class="ipsControlStrip_button">
+													<a href="#" data-ipsTooltip title="{lang="profilesync_configure"}"><i class="ipsControlStrip_icon fa-solid fa-pencil" aria-hidden="true"></i></a>
+												</li>
+												<li class="ipsControlStrip_button">
+													<a href="#" data-ipsTooltip title="{lang="sign_out"}"><i class="ipsControlStrip_icon fa-solid fa-xmark-circle" aria-hidden="true"></i></a>
+												</li>
+											</ul>
+										{{endif}}
+										<p class='acpMemberView_integrations_text'>
+											{$title}<br>
+											<span class='i-font-size_1 i-color_soft'>&nbsp;</span>
+										</p>
+									</div>
+								</li>
+							{{endforeach}}
+						</ul>
+					</i-data>
+				</div>
+			</div>
+        {{elseif \IPS\CIC AND \IPS\Cicloud\isManaged() and member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) or !$member->isAdmin() )}}
+        	<hr class='ipsHr'>
+        	<a href="{url="app=core&module=members&controller=members&do=loginAdd&id={$member->member_id}"}" data-ipsDialog data-ipsDialog-title="{lang="add_login_link"}" data-ipsTooltip title="{lang="add_login_link"}" class="ipsButton ipsButton--text ipsButton--small ipsButton--wide i-text-transform_uppercase">{lang="add_account_integration"}</a>
+		{{endif}}
+	</div>
+</div>

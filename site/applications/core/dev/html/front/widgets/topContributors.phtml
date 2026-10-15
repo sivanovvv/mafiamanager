@@ -1,0 +1,19 @@
+<ips:template parameters="$topContributorsThisWeek, $limit, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_topContributors"}</h3>
+<div class='ipsWidget__content'>
+	{{$tabID = mt_rand();}}
+	<i-tabs class='ipsTabs ipsTabs--stretch' id='ipsTabs_topContributors{$tabID}' data-ipsTabBar data-ipsTabBar-updateURL='false' data-ipsTabBar-contentArea='#ipsTabs_topContributors{$tabID}_content'>
+		<div role="tablist">
+			<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=topContributors&time=week&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' class='ipsTabs__tab' role="tab" id='ipsTabs_topContributors{$tabID}_week' aria-controls="ipsTabs_topContributors{$tabID}_week_panel" aria-selected='true'>{lang="week"}</button>
+			<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=topContributors&time=month&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' class='ipsTabs__tab' role="tab" id='ipsTabs_topContributors{$tabID}_month' aria-controls="ipsTabs_topContributors{$tabID}_month_panel" aria-selected='false'>{lang="month"}</button>
+			<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=topContributors&time=year&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' class='ipsTabs__tab' role="tab" id='ipsTabs_topContributors{$tabID}_year' aria-controls="ipsTabs_topContributors{$tabID}_year_panel" aria-selected='false'>{lang="year"}</button>
+			<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=topContributors&time=all&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' class='ipsTabs__tab' role="tab" id='ipsTabs_topContributors{$tabID}_all' aria-controls="ipsTabs_topContributors{$tabID}_all_panel" aria-selected='false'>{lang="alltime"}</button>
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<section id='ipsTabs_topContributors{$tabID}_content' class='ipsTabs__panels'>
+		<div id="ipsTabs_topContributors{$tabID}_week_panel" class='ipsTabs__panel' role="tabpanel">
+			{template="topContributorRows" group="widgets" app="core" params="$topContributorsThisWeek, 'week', $layout, $isCarousel"}
+		</div>
+	</section>
+</div>

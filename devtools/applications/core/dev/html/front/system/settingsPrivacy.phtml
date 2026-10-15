@@ -1,0 +1,64 @@
+<ips:template parameters="" />
+
+<div class='ipsGrid ipsGrid--lines ipsGrid--auto-fit ipsGrid--privacyDelete i-basis_400 i-border-top_3'>
+	{{if settings.pii_type=='on'}}
+		<div class="i-padding_4 i-flex i-flex-direction_column">
+			<div class='i-flex_11'>
+				<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_1' id="piiDataRequest">{lang='pii_data_request'}</h3>
+				<p>{lang='pii_data_request_desc'}</p>
+			</div>
+			<div class='ipsButtons ipsButtons--start i-margin-top_3'>
+				{{if \IPS\Member\PrivacyAction::canRequestPiiData() AND !\IPS\Member\PrivacyAction::hasPiiRequest(NULL, TRUE ) }}
+					<a href='{url="app=core&module=system&controller=settings&do=requestPiiData" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang='download_pii_data_request'}</a>
+				{{endif}}
+				{{if \IPS\Member\PrivacyAction::hasPiiRequest(NULL, TRUE )}}
+					<a href='{url="app=core&module=system&controller=settings&do=downloadPiiData" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang='download_pii_data'}</a>
+				{{endif}}
+			</div>
+			{{if \IPS\Member\PrivacyAction::hasPiiRequest(NULL, FALSE )}}
+				<div class="ipsMessage ipsMessage--success i-margin-top_2">{lang="pii_data_request_pending"}</div>
+			{{endif}}
+		</div>
+	{{elseif settings.pii_type=='redirect'}}
+		<div class="i-padding_4 i-flex i-flex-direction_column">
+			<div class='i-flex_11'>
+				<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_1' id="piiDataRequest">{lang='pii_data_request'}</h3>
+				<p>{lang='pii_data_request_desc'}</p>
+			</div>
+			<div class='ipsButtons ipsButtons--start i-margin-top_3'>
+				<a href='{setting="pii_link"}' target="_blank" rel="noopener"  class='ipsButton ipsButton--small ipsButton--primary'>{lang='download_pii_data_request'}</a>
+			</div>
+		</div>
+	{{endif}}
+	{{if \IPS\Member::loggedIn()->canUseAccountDeletion() }}
+		<div class="i-padding_4 i-flex i-flex-direction_column">
+			<div class='i-flex_11'>
+				<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_1' id="requestAccountDeletion">{lang='account_deletion'}</h3>
+				<p>{lang='account_deletion_desc'}</p>
+			</div>
+			{{if \IPS\Member\PrivacyAction::canDeleteAccount()}}
+				<div class='ipsButtons ipsButtons--start i-margin-top_3'>
+					<a href='{url="app=core&module=system&controller=settings&do=requestAccountDeletion" seoTemplate="settings" csrf="true"}' class='ipsButton ipsButton--small ipsButton--primary'>{lang='request_account_deletion'}</a>
+				</div>
+			{{endif}}
+			{{if \IPS\Member::loggedIn()->isDeletionPending}}
+			    <div class='ipsMessage ipsMessage--error i-marign-top_3'>{lang='account_deletion_pending'}</div>
+			{{elseif \IPS\Member::loggedIn()->canCancelDeletion}}
+			    <div class='ipsMessage ipsMessage--error i-marign-top_3'>
+			        {lang="email_account_delete_warning"}<br><a href='{url="app=core&module=system&controller=settings&do=cancelAccountDeletion" seoTemplate="settings" csrf="true"}' class=''>{lang='cancel'}</a>
+			    </div>
+			{{endif}}
+		</div>
+		
+	{{elseif settings.right_to_be_forgotten_type=='redirect'}}
+		<div class="i-padding_4 i-flex i-flex-direction_column">
+			<div class='i-flex_11'>
+				<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_1' id="requestAccountDeletion">{lang='account_deletion'}</h3>
+				<p>{lang='account_deletion_desc'}</p>
+			</div>
+			<div class='ipsButtons ipsButtons--start i-margin-top_3'>
+				<a href='{setting="right_to_be_forgotten_link"}' target="_blank" rel="noopener" class='ipsButton ipsButton--small ipsButton--primary'>{lang='request_account_deletion'}</a>
+			</div>
+		</div>
+	{{endif}}
+</div>

@@ -1,0 +1,57 @@
+<ips:template parameters="$topic, $overviews" />
+
+<div class='cTopicHovercard' data-controller='forums.front.forum.hovercard' data-topicID='{$topic->tid}'>
+	{{if \count( $overviews ) > 1}}
+		<i-tabs class="ipsTabs ipsTabs--small" id="ipsTabs_topic{$topic->tid}" data-ipsTabBar data-ipsTabBar-contentarea="#ipsTabs_topic{$topic->tid}_content">
+			<div role="tablist">
+				{{foreach $overviews as $tabID => $tabData}}
+					<button type="button" id="ipsTabs_topic{$topic->tid}_{$tabID}" class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_topic{$topic->tid}_{$tabID}_panel" aria-selected="{{if $tabID == 'firstPost'}}true{{else}}false{{endif}}">{lang="$tabData[0]"}</button>
+				{{endforeach}}
+			</div>
+			{template="tabScrollers" app="core" group="global" location="global"}
+		</i-tabs>
+		<div id='ipsTabs_topic{$topic->tid}_content' class='ipsTabs__panels ipsTabs__panels--padded cTopicHovercard_container ipsScrollbar'>
+	{{else}}
+		<div class='i-padding_3 cTopicHovercard_container ipsScrollbar'>
+	{{endif}}
+
+		{{foreach $overviews as $tabID => $tabData}}
+			{{if \count( $overviews ) > 1}}
+				<div id='ipsTabs_topic{$topic->tid}_{$tabID}_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_topic{$topic->tid}_{$tabID}" {{if $tabID != 'firstPost'}}hidden{{endif}}>
+			{{endif}}
+				<div class='ipsPhotoPanel'>
+					{template="userPhoto" group="global" app="core" params="$tabData[1]->author(), 'fluid'"}
+					<div class='ipsPhotoPanel__text'>
+						<div class='ipsPhotoPanel__primary'>
+							{$tabData[1]->author()->link( NULL, NULL, $tabData[1]->isAnonymous() )|raw}
+						</div>
+						<div class='ipsPhotoPanel__secondary'>
+							<a href='{{if $tabID == 'firstPost'}}{$tabData[1]->item()->url()}{{else}}{$tabData[1]->item()->url( 'getLastComment' )}{{endif}}'>{datetime="$tabData[1]->mapped('date')"}</a>
+							{{if $tabData[1]->item()->unread() }}
+								&middot; <a href='{$tabData[1]->item()->url('markRead')->csrf()}' title='{lang="mark_topic_read"}' data-action='markTopicRead'><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="mark_topic_read"}</a>
+							{{endif}}
+							{{if $tabData[1]->canReportOrRevoke() === TRUE}}
+								&middot; <a href='{$tabData[1]->url('report')}' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-remoteSubmit data-ipsDialog-size='medium' data-ipsDialog-flashMessage='{lang="report_submit_success"}' data-ipsDialog-title="{lang="report_post"}"{{endif}} data-action='reportComment' title='{lang="report_post"}'>{lang="report_post"}</a>
+							{{endif}}
+						</div>
+					</div>
+				</div>
+				<hr class='ipsHr'>
+
+				<div class='ipsRichText' data-controller='core.front.core.lightboxedImages'>{$tabData[1]->content()|raw}</div>
+			{{if \count( $overviews ) > 1}}
+				</div>
+			{{endif}}
+		{{endforeach}}
+	</div>
+    {{if \IPS\core\DataLayer::enabled()}}
+    <script>
+        if ( IpsDataLayerConfig && !window.IpsDataLayerConfig && IpsDataLayerConfig._events.content_view.enabled ) {
+            $('body').trigger( 'ipsDataLayer', {
+                _key: 'content_view',
+                _properties: {expression="json_encode(array_replace($topic->getDataLayerProperties(), ['view_location' => 'hovercard', 'page_number' => null]))" raw="true"}
+            } );
+        }
+    </script>
+    {{endif}}
+</div>

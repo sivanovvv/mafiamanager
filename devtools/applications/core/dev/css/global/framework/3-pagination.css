@@ -1,0 +1,191 @@
+/*
+	----------------
+	- Pagination
+	----------------
+*/
+
+.ipsPagination{
+	color: var(--i-color_soft);
+	display: flex;
+	text-transform: uppercase;
+}
+
+/* Ensure pagination is still small, even when it's outside .ipsButtonBar */
+.ipsPagination:not(.ipsButtonBar *){
+	font-weight: 600;
+	font-size: max(.8em, 11px);
+}
+
+/* Automatic contrast */
+.ipsPagination:where(:not(.ipsBox *, .ipsDialog *, .ipsWidget *)){
+	color: var(--i-color_contrast, currentColor);
+}
+
+	:is(.ipsPagination, .ipsMiniPagination) > li > :is(a, button){
+		color: inherit;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: .8em 1.2em;
+		border-radius: min(var(--i-design-radius), .3em);
+		text-decoration: none;
+	}
+
+	.ipsPagination > li > :is(a, button):hover{
+		background: color-mix(in srgb, currentColor 8%, transparent);
+	}
+
+	/* !important required due to lower specificity */
+	.ipsPagination .ipsPagination__active a{
+		background: var(--i-secondary) !important;
+		color: var(--i-secondary-contrast) !important;
+	}
+	/* Improved contrast for focus active page in light mode */
+	[data-ips-scheme="light"] .ipsPagination .ipsPagination__active a{
+		outline-color: var(--i-secondary);
+	}
+
+.ipsPagination__pageJump{
+	margin-inline-start: 1em;
+}
+
+@media (min-width: 980px){
+	/* Hide page jump on desktops if there aren't many pages */
+	.ipsPagination:not(.ipsPagination--numerous) .ipsPagination__pageJump{
+		display: none;
+	}
+}
+
+.ipsMiniPagination{
+	display: inline-flex;
+	gap: 3px;
+	font-size: max(.7em, 10px);
+	font-weight: 600;
+}
+
+	.ipsMiniPagination > li > a{
+		background: color-mix(in srgb, currentColor 10%, transparent);
+		padding: 0 .6em;
+		height: 1.8em;
+		text-decoration: none !important;
+	}
+
+	.ipsMiniPagination > li > a:hover{
+		background: color-mix(in srgb, currentColor 18%, transparent);
+	}
+
+@media (min-width: 768px){
+	.ipsPagination__inactive{
+		display: none;
+	}
+}
+
+@media (max-width: 767px){
+	.ipsPagination{
+		align-self: stretch;
+	}
+	.ipsPagination__page{
+		display: none;
+	}
+	.ipsPagination__pageJump{
+		margin: 0 auto;
+	}
+	.ipsPagination__inactive{
+		visibility: hidden;
+	}
+}
+
+
+/*
+	----------------
+	- Large previous/next page pagination
+	----------------
+*/
+.ipsPager{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1em 0;
+}
+
+/* Automatic contrast */
+.ipsPager:where(:not(.ipsBox *, .ipsDialog *, .ipsWidget *)){
+	color: var(--i-color_contrast, currentColor);
+}
+
+	.ipsPager_prev,
+	.ipsPager_next{
+		flex: 1 1 25%;
+	}
+
+	.ipsPager_center{
+		flex: 1 1 50%;
+		text-align: center;
+	}
+
+	.ipsPager_next{
+		text-align: end;
+	}
+
+	:is(.ipsPager_next, .ipsPager_prev) a{
+		color: inherit;
+		display: inline-block;
+		position: relative;
+		padding: 1em 1.8em;
+		width: 100%;
+		max-width: 350px;
+	}
+
+	:is(.ipsPager_next, .ipsPager_prev) a::after {
+		content: "\f061";
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		position: absolute;
+		line-height: 1;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.ipsPager_next a::after {
+		inset-inline-end: 0;
+	}
+
+	.ipsPager_prev a::after{
+		content: "\f060";
+		inset-inline-start: 0;
+	}
+
+	[dir="rtl"] .ipsPager_prev a::after {
+		content: "\f061";
+	}
+	[dir="rtl"] .ipsPager_next a::after {
+		content: "\f060";
+	}
+
+.ipsPager_title,
+.ipsPager_type {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+	white-space: nowrap;
+}
+
+.ipsPager_type {
+	font-weight: 600;
+}
+
+.ipsPager_title{
+	opacity: .7;
+	font-weight: 500;
+}
+
+@media (max-width: 979px){
+	.ipsPager_center{
+		order: -1;
+		flex: 1 1 100%;
+	}
+}

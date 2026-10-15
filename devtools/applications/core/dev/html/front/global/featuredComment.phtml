@@ -1,0 +1,35 @@
+<ips:template parameters="$comment, $id, $commentLang='__defart_comment'" />
+{{if isset( $comment['comment'] )}}
+	{{$idField = $comment['comment']::$databaseColumnId;}}
+	<div class='ipsEntry ipsEntry--simple ipsEntry--featuredComment' data-commentID='{$id}'>
+		<header class="ipsEntry__header">
+			<div class="ipsEntry__header-align">
+				<div class="ipsPhotoPanel">
+					{template="userPhoto" app="core" group="global" params="$comment['comment']->author(), 'fluid', $comment['comment']->warningRef()"}
+					<div class="ipsPhotoPanel__text">
+						<div class="ipsPhotoPanel__primary">{template="userLink" app="core" group="global" params="$comment['comment']->author(), $comment['comment']->warningRef()"}</div>
+						<div class="ipsPhotoPanel__secondary"><a href="{$comment['comment']->url()}" title='{lang="go_to_this_comment" sprintf="\IPS\Member::loggedIn()->language()->get( $commentLang )"}' rel="nofollow" data-action='goToComment'>{$comment['comment']->dateLine()|raw}</a></div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class='ipsEntry__post'>
+			<div class='ipsRichText ipsTruncate_2'>{$comment['comment']->truncated( TRUE )|raw}</div>
+			{{if \IPS\IPS::classUsesTrait( $comment['comment'], 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+				<div class='i-margin-top_2 i-flex'>
+					{template="reactionOverview" group="global" app="core" params="$comment['comment']"}
+				</div>
+			{{endif}}
+			{{if $comment['note']}}
+				<div class='ipsEntry__recommendedNote'>
+					<p>{$comment['note']}</p>
+					{{if isset( $comment['featured_by'] )}}
+						<p class='i-font-style_italic i-color_soft i-margin-top_1 i-link-color_inherit'>{lang="recommended_by" htmlsprintf="$comment['featured_by']->link()"}</p>
+					{{endif}}
+				</div>
+			{{elseif isset( $comment['featured_by'] )}}
+				{lang="recommended_by" htmlsprintf="$comment['featured_by']->link()"}
+			{{endif}}
+		</div>
+	</div>
+{{endif}}

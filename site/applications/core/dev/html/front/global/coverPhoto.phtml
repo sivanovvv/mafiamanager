@@ -1,0 +1,43 @@
+<ips:template parameters="$url, $coverPhoto" />
+{{$id = mt_rand();}}
+<div class='ipsCoverPhoto' data-controller='core.global.core.coverPhoto' data-url="{$url->csrf()}" data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}' id='elCoverPhoto_{$id}'>
+	{{$cfObject = $coverPhoto->object;}}
+	{{if $coverPhoto->file}}
+		<div class='ipsCoverPhoto__container'>
+			<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' data-action="toggleCoverPhoto" alt='' loading='lazy'>
+		</div>
+	{{elseif ! empty( $cfObject::$coverPhotoDefault )}}
+		<div class='ipsCoverPhoto__container ipsCoverPhoto__container--default'>
+			<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$coverPhoto->object->coverPhotoBackgroundColor()};"></div>
+		</div>
+	{{else}}
+		<div class='ipsCoverPhoto__container ipsCoverPhoto__container--default'>
+			<div class="ipsFallbackImage"></div>
+		</div>
+	{{endif}}
+	{{if $coverPhoto->editable}}
+		<ul class="ipsCoverPhoto__overlay-buttons" data-hideOnCoverEdit>
+			<li>
+				<button type="button" id="elEditPhoto{$id}" popovertarget="elEditPhoto{$id}_menu" class='ipsButton ipsButton--overlay' data-role='coverPhotoOptions'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>{lang="cover_photo_button"}</span><i class='ipsMenuCaret' aria-hidden="true"></i></button>
+				<i-dropdown popover id="elEditPhoto{$id}_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{if $coverPhoto->file}}
+								<li data-role='photoEditOption'>
+									<button type="button" data-action='positionCoverPhoto'><i class="fa-solid fa-arrows-up-down-left-right" aria-hidden="true"></i><span>{lang="cover_photo_reposition"}</span></button>
+								</li>
+								<li data-role='photoEditOption'>
+									<a href='{$url->setQueryString( array( 'do' => 'coverPhotoRemove' ) )->csrf()->addRef( $url )}' data-action='removeCoverPhoto'><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>{lang="cover_photo_remove"}</span></a>
+								</li>
+							{{endif}}
+							<li>
+								<a href='{$url->setQueryString( array( 'do' => 'coverPhotoUpload' ) )->addRef( $url )}' data-ipsDialog data-ipsDialog-title="{lang="cover_photo_add"}"><i class="fa-solid fa-upload" aria-hidden="true"></i><span>{lang="cover_photo_add"}</span></a>
+							</li>
+						</ul>
+					</div>
+				</i-dropdown>
+			</li>
+		</ul>
+	{{endif}}
+</div>
+{$coverPhoto->overlay|raw}

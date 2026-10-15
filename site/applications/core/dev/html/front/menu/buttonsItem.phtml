@@ -1,0 +1,9 @@
+<ips:template parameters="$css, $title, $icon='', $dataAttributes=array()"/>
+<li>
+	<span class="{$css}"
+			{{foreach $dataAttributes as $attributeKey => $attributeValue}}
+				{$attributeKey}="{$attributeValue}"
+			{{endforeach}}>
+		{{if $icon}}<i class="{$icon}" aria-hidden="true"></i>{{endif}} <span>{lang="$title"}</span>
+	</a>
+</li>

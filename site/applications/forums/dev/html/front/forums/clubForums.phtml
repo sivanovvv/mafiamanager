@@ -1,0 +1,30 @@
+<ips:template parameters="" />
+
+<header class='ipsPageHeader ipsPageHeader--forum-table' data-ips-hook="header">
+	<h1 data-ips-hook="title" class='ipsPageHeader__title'>{lang="club_node_forums"}</h1>
+</header>
+
+<ol class="ipsBlockSpacer" data-controller='forums.front.forum.forumList' data-baseURL=''>
+	<li class='ipsBox ipsBox--forumsClubCategory ipsPull'>
+		<h2 class="ipsBox__header">{lang="subforums_header_category"}</h2>
+		<div class='ipsBox__content'>
+			{{if \IPS\Member::loggedIn()->getLayoutValue('forums_forum') === 'grid'}}
+				<i-data>
+					<ol class='ipsData ipsData--grid ipsData--forum-grid'>
+						{{foreach \IPS\forums\Forum::clubNodes() as $childforum}}
+							{template="forumGridItem" group="index" app="forums" params="$childforum"}
+						{{endforeach}}
+					</ol>
+				</i-data>
+			{{else}}
+				<i-data>
+					<ol class="ipsData ipsData--table ipsData--category ipsData--forum-category">
+						{{foreach \IPS\forums\Forum::clubNodes() as $childforum}}
+							{template="forumRow" group="index" app="forums" params="$childforum, TRUE"}
+						{{endforeach}}
+					</ol>
+				</i-data>
+			{{endif}}	
+		</div>
+	</li>
+</ol>

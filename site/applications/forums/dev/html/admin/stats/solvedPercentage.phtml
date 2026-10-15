@@ -1,0 +1,26 @@
+<ips:template parameters="$value, $total, $solved, $previousValue=NULL, $previousTotal=NULL, $previousSolved=NULL, $nodes=array()" />
+	<div>
+		<span class='cStat__number cStat__number--medium' data-number='{$value}' data-ipsTooltip title="{lang="stats_solved_tooltip" sprintf="$solved, $total"}">{$value}%</span>
+		{{if isset( $previousValue )}}
+			<p class='cStat__change cStat__change--large {{if $previousValue > $value}}i-color_negative{{elseif $previousValue < $value}}i-color_positive{{else}}i-color_soft{{endif}}' data-ipsTooltip title="{lang="stats_solved_tooltip_prev" sprintf="$previousSolved, $previousTotal, $previousValue"}">
+				{{if $previousValue > $value}}
+					-{expression="$previousValue - $value"}%
+				{{elseif $previousValue < $value}}
+					{{if $previousValue}}+{expression="$value - $previousValue"}%{{else}}+ ∞{{endif}}
+				{{else}}
+					&mdash;
+				{{endif}}
+			</p>
+		{{endif}}
+
+		{{if \count( $nodes )}}
+			<hr class='ipsHr'>
+			<div class='i-flex'>
+				<div class='cStatTile__split'>
+					<p class='cStat__change cStat__change--small'>
+						{lang="overview_stats_curfilter" list="$nodes"}
+					</p>
+				</div>
+			</div>
+		{{endif}}
+	</div>

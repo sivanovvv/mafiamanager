@@ -1,0 +1,11 @@
+<ips:template parameters="$content" />
+
+{{if \IPS\Request::i()->isAjax()}}
+<div class='i-padding_3'>
+{{endif}}
+
+	{$content|raw}
+
+{{if \IPS\Request::i()->isAjax()}}
+</div>
+{{endif}}

@@ -1,0 +1,24 @@
+{
+    "html": {
+        "added": [
+            "admin\/blocks\/templateField",
+            "global\/records\/fieldStatus",
+            "global\/records\/status"
+        ],
+        "edited": [
+            "front\/global\/recordResultSnippet",
+            "admin\/templates\/templates"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

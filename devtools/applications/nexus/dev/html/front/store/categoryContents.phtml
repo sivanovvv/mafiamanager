@@ -1,0 +1,59 @@
+<ips:template parameters="$category, $subcategories, $packages, $pagination, $packagesWithCustomFields, $totalCount" />
+{{if \count( $packages )}}
+	<section class='ipsBox ipsBox--commerceCategoryContents'>
+		<h2 class='ipsBox__header'>{lang="products_count" pluralize="$totalCount"}</h2>
+		<div class="ipsButtonBar ipsButtonBar--top">
+			{{if $pagination}}
+				<div class='ipsButtonBar__pagination'>{$pagination|raw}</div>
+			{{endif}}
+			<div class="ipsButtonBar__end">
+				<ul class="ipsDataFilters">
+					<li>
+						<button type="button" id="elSortByMenu_products" popovertarget="elSortByMenu_products_menu" class="ipsDataFilters__button" data-role="sortButton"><span>{lang="sort_by"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						<i-dropdown popover id="elSortByMenu_products_menu" data-i-dropdown-selectable="radio">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									{{foreach array( 'default', 'name', 'price_low', 'price_high', 'rating' ) as $k}}
+										<li>
+											<a data-action="filter" {{if $k === 'default'}}href="{$category->url()}"{{else}}href="{$category->url()->setQueryString( 'sortby', $k )}"{{endif}} {{if ( request.sortby and request.sortby == $k ) or ( !request.sortby and $k === 'default' )}}aria-selected="true"{{endif}} data-ipsmenuvalue="{$k}">
+												<i class="iDropdown__input" aria-hidden="true"></i>{lang="products_sort_{$k}"}
+											</a>
+										</li>
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				</ul>
+			</div>			
+		</div>
+		{{if \count( $packages )}}
+			{{if \IPS\Member::loggedIn()->getLayoutValue( 'store_view' ) == 'list'}}
+				<i-data>
+					<ol class="ipsData ipsData--table ipsData--commerce-products" data-role="packageList">
+						{{foreach $packages as $package}}
+							{template="packageRow" group="store" params="$package, \in_array( $package->id, $packagesWithCustomFields )"}
+						{{endforeach}}
+					</ol>
+				</i-data>
+			{{else}}
+				<i-data>
+					<ol class="ipsData ipsData--grid ipsData--commerce-products" data-role="packageList">
+						{{foreach $packages as $package}}
+							{template="packageBlock" group="store" params="$package"}
+						{{endforeach}}
+					</ol>
+				</i-data>
+			{{endif}}
+		{{endif}}
+		{{if trim( $pagination ) != ''}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination">
+					{$pagination|raw}
+				</div>
+			</div>
+		{{endif}}
+	</section>
+{{elseif ( !\count( $subcategories ) )}}
+	<div class="ipsEmptyMessage" data-role="packageList">{lang="store_empty"}</div>
+{{endif}}

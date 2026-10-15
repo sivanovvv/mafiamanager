@@ -1,0 +1,8 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if !empty($rows) }}
+	{{foreach $rows as $row}}
+	    {template="onlineUsersRow" app="core" group="online" params="$row"}
+	{{endforeach}}
+{{else}}
+	<li class='ipsGrid__stretch i-padding_3 i-text-align_center i-font-size_2 i-font-weight_500 i-color_soft'>{lang="online_users_no_results"}</li>
+{{endif}}

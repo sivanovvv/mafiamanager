@@ -1,0 +1,35 @@
+<ips:template parameters="$item, $url" />
+
+{{$image = NULL;}}
+<div class='ipsRichEmbed ipsRichEmbed--cms-record'>
+	{template="embedHeader" group="embed" app="core" params="$item, $item->mapped('title'), $item->mapped('date'), $url"}
+	{{if $item->record_image}}
+		{{$image = \IPS\File::get( "cms_Records", $item->record_image );}}
+	{{elseif $contentImage = $item->contentImages(1)}}
+		{{$attachType = key( $contentImage[0] );}}
+		{{$image = \IPS\File::get( $attachType, $contentImage[0][ $attachType ] );}}
+	{{endif}}
+
+	{{if $image}}
+		<a href='{$url}' class='ipsRichEmbed_masthead'>
+			<img src='{$image->url}' alt='' loading="lazy">
+		</a>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed__snippet'>
+			{$item->truncated(TRUE)|raw}
+		</div>
+
+		{{if \count( $item->customFieldsForDisplay('listing') )}}
+			<div class='i-margin-top_2'>
+				{{foreach $item->customFieldsForDisplay('listing') as $fieldId => $fieldValue}}
+					{{if $fieldValue}}
+						{$fieldValue|raw}
+					{{endif}}
+				{{endforeach}}
+			</div>
+		{{endif}}
+
+		{template="embedItemStats" group="embed" app="core" params="$item, $item::database()->options['comments']"}
+	</div>
+</div>

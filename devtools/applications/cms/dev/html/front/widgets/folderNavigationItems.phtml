@@ -1,0 +1,4 @@
+<ips:template parameters="$items" />
+{{foreach $items as $item}}
+  <a href='{$item->url()}'>{$item->_title}</a>
+{{endforeach}}

@@ -1,0 +1,20 @@
+<ips:template parameters="$error, $url, $errorMessage" />
+{{if $errorMessage}}
+	<p class="ipsMessage ipsMessage--error i-margin-bottom_2">{lang="api_instructions_error" sprintf="(string)$url"}
+		<br>
+		{lang="api_returned_error" sprintf="$errorMessage"}
+	</p>
+{{endif}}
+<div class="ipsBox ipsBox--api">
+	<div class="i-padding_3 ipsRichText">
+		<p><strong>{lang="api_instructions_intro"}</strong></p>
+		<ol>
+			<li>{lang="api_instructions_1"}</li>
+			<li>{lang="api_instructions_2" sprintf="\IPS\ROOT_PATH"}</li>
+			<li>{lang="api_instructions_3"}</li>
+		</ol>
+	</div>
+	<div class="ipsSubmitRow">
+		<a href="{url="app=core&module=applications&controller=api&tab=apiLogs&recheck=1"}" class="ipsButton ipsButton--primary">{lang="continue"}</a>
+	</div>
+</div>

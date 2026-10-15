@@ -1,0 +1,43 @@
+<ips:template parameters="$comments, $title, $layout='table', $isCarousel=false" />
+{{if !empty( $comments ) }}
+	<header class='ipsWidget__header'>
+		<h3>{$title}</h3>
+		{{if $isCarousel}}
+			{{$carouselID = 'widget-gallery-recent-reviews_' . mt_rand();}}
+			{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+		{{endif}}
+	</header>
+	<div class='ipsWidget__content'>
+		<i-data>
+			<ul class='ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--widget-gallery-recent-reviews' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}} {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+				{{foreach $comments as $comment}}
+					<li class='ipsData__item {$comment->ui('css')}' {$comment->ui('dataAttributes')}>
+						<a href="{$comment->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$comment->item()->caption}</span></a>
+						<div class="ipsData__image" aria-hidden="true">
+							{{if $comment->item()->masked_file_name}}
+								<img src='{file="$comment->item()->masked_file_name" extension="gallery_Images"}' loading="lazy" alt=''>
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+							{template="nsfwOverlay" app="gallery" location="front" group="global" params="$comment->item(), FALSE"}
+						</div>
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<div class='ipsData__title'>
+									<h4><a href="{$comment->url()}" title='{lang="view_this_image" sprintf="$comment->item()->caption"}'>{$comment->item()->caption}</a></h4>
+									{template="rating" group="global" location="front" app="core" params="'small', $comment->rating, \IPS\Settings::i()->reviews_rating_out_of"}
+								</div>
+								<p class='ipsData__meta'>
+									{lang="byline_nodate" htmlsprintf="$comment->author()->link()"}
+								</p>
+								<div class='ipsData__desc ipsRichText ipsTruncate_4 i-margin-top_2'>
+									{$comment->truncated()|raw}
+								</div>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

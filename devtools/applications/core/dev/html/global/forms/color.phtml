@@ -1,0 +1,29 @@
+<ips:template parameters="$name, $value, $required, $disabled=FALSE, $swatches=NULL, $rgba=FALSE, $allowNone=FALSE, $allowNoneLang='colorpicker_use_none'" />
+<div class="ipsInput__color-wrap" >
+    <div class="ipsInput__color-wrap-inner">
+        <input
+                type="color"
+                name="{$name}"
+                {{if $allowNone and ! $value}}
+                value=""
+                {{else}}
+                value="{$value}"
+                {{endif}}
+                {{if $swatches}}data-swatches="true"{{endif}}
+                {{if $rgba}}data-rgba="true"{{endif}}
+                {{if $required === TRUE}}aria-required='true'{{endif}}
+                {{if $disabled}}disabled aria-disabled='true'{{endif}}
+                data-control="color" class="ipsInput ipsInput--text">
+        <span spellcheck="false" contenteditable="true" class="ipsInput__color-label">{$value}</span>
+        <div data-role="iro-container" class="ipsInput__color-iro-container ipsMenu"></div>
+    </div>
+    {{if $allowNone}}
+        &nbsp;
+        <div class="ipsFieldRow__inlineCheckbox">
+            {lang="or"}
+            &nbsp;
+            <input type="checkbox" data-control="unlimited" name="{$name}_none" id='{$name}_none' value="1" {{if ! $value}}checked{{endif}} {{if $disabled}}disabled{{endif}} aria-labelledby='label_{$name}_none' class="ipsInput ipsInput--toggle">
+            <label for='{$name}_none' id='label_{$name}_none' class='ipsField_unlimited'>{lang="$allowNoneLang"}</label>
+        </div>
+    {{endif}}
+</div>

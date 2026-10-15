@@ -1,0 +1,89 @@
+.ipsControlStrip {
+	display: flex;
+	justify-content: end;
+	gap: 4px;
+}
+
+.ipsControlStrip_button {
+	flex: 1 1 auto;
+}
+
+/* Don't stretch buttons on large screens */
+@media (min-width: 500px){
+	.ipsControlStrip_button {
+		flex: 0 0 auto;
+	}
+}
+
+/* Only show first 3 buttons OR first 2 buttons + dropdown */
+.ipsControlStrip_button--more,
+.ipsControlStrip_button:nth-child(2) ~ .ipsControlStrip_button{
+	display: none;
+}
+/* Show 3rd option if it's the last (excluding dropdown button) */
+.ipsControlStrip_button:nth-child(3):nth-last-child(2),
+/* Show more menu when 4+ options exist */
+.ipsControlStrip_button:nth-child(4) ~ .ipsControlStrip_button--more{
+	display: block;
+}
+
+.ipsControlStrip_button > a,
+.ipsControlStrip_button > button{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: inherit;
+	min-width: 2.4em;
+	min-height: 2.4em;
+	border-radius: 5px;
+	width: 100%;
+}
+
+	.ipsControlStrip_disabled {
+		background: transparent;
+		pointer-events: none;
+	}
+
+		.ipsControlStrip_disabled .ipsControlStrip_icon {
+			opacity: .5;
+		}
+
+	.ipsTree_row:hover :where(.ipsControlStrip_button > :is(a, button)) {
+		background: var(--i-background_3);
+	}
+
+	@media (hover:none){
+		.ipsControlStrip_button > :is(a, button):not(:hover){
+			background: var(--i-background_3);
+		}
+	}
+
+	.ipsControlStrip_button > :is(a, button):hover{
+		color: var(--i-primary-contrast);
+		background: var(--i-primary);
+	}
+
+/* Hide text but keep for screen readers */
+:where(.ipsControlStrip:not(.ipsControlStrip_showText) .ipsControlStrip_item) {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Show text option */
+.ipsControlStrip_showText a {
+	width: auto;
+	padding: 0 .7em;
+}
+
+.ipsControlStrip_item {
+	font-size: .9em;
+	margin-inline-start: .6em;
+	font-weight: 600;
+}

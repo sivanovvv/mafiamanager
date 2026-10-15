@@ -1,0 +1,61 @@
+<ips:template parameters="$tags, $prefix=null, $showCondensed=FALSE, $hideResponsive=FALSE, $tagEditUrl=NULL" />
+{{$id = mt_rand();}}
+{{if \count( $tags ) OR $prefix OR $tagEditUrl}}
+	{{if $showCondensed}}
+	    {{$maxTags = $prefix ? 3 : 4;}}
+		<ul class='ipsTags ipsTags--condensed {{if $hideResponsive}}ipsResponsive_hidePhone{{endif}}'>
+		    {{if $prefix}}
+		        {template="tag" group="global" app="core" params="$prefix, $tagEditUrl, 'ipsTags__item--prefix'"}
+		    {{endif}}
+			{{if \count( $tags )}}
+				{{foreach $tags as $idx => $tag}}
+					{{if $idx < $maxTags}}
+						{template="tag" group="global" app="core" params="$tag, $tagEditUrl"}
+					{{endif}}
+				{{endforeach}}
+			{{endif}}
+			{{if \count( $tags ) > $maxTags}}
+				<li class='ipsTags__more ipsJS_show'>
+					<button type="button" id="elTags_{$id}" popovertarget="elTags_{$id}_menu" class='ipsTags__tag'>{lang="and_x_more" pluralize="\count( $tags ) - $maxTags"} <i class="fa-solid fa-angle-down" aria-hidden="true"></i></button>
+					<i-dropdown popover id="elTags_{$id}_menu">
+						<div class="iDropdown">
+							<p class='i-color_soft i-margin-bottom_1'>{lang="tagged_with"}</p>
+							<ul class='ipsTags'>
+								{{foreach $tags as $tag}}
+									{template="tag" group="global" app="core" params="$tag, NULL"}
+								{{endforeach}}
+							</ul>
+						</div>
+					</i-dropdown>
+				</li>
+			{{endif}}
+		</ul>
+	{{else}}
+		<ul class='ipsTags {{if $hideResponsive}}ipsResponsive_hidePhone{{endif}}' {{if $tagEditUrl}}data-controller='core.front.core.tagEditor' data-tagEditID='{$id}' {{if \IPS\Settings::i()->tags_min}}data-minTags='{setting="tags_min"}'{{endif}} {{if \IPS\Settings::i()->tags_max}}data-maxTags='{setting="tags_max"}'{{endif}}{{endif}}>
+		    {{if $prefix}}
+                {template="tag" group="global" app="core" params="$prefix, $tagEditUrl, 'ipsTags__item--prefix'"}
+            {{endif}}
+			{{if \count( $tags )}}
+				{{foreach $tags as $tag}}
+					{template="tag" group="global" app="core" params="$tag, $tagEditUrl"}
+				{{endforeach}}
+			{{endif}}
+			{{if $tagEditUrl}}
+				<li class='ipsTags__item ipsTags__item--edit'>
+					<button type="button" id="elTagEditor_{$id}" popovertarget="elTagEditor_{$id}_menu" data-href="{$tagEditUrl->setQueryString( 'do', 'editTags' )}" data-ipstooltip='{{if !\count( $tags )}}{lang="add_tags"}{{else}}{lang="edit_tags"}{{endif}}' class='ipsTags__tag'>{{if !\count( $tags )}}<i class='fa-solid fa-plus' aria-hidden="true"></i><span class="ipsInvisible">{lang="add_tags"}</span>{{else}}<i class='fa-solid fa-pencil' aria-hidden="true"></i><span class="ipsInvisible">{lang="edit_tags"}</span>{{endif}}</button>
+				</li>
+			{{endif}}
+		</ul>
+		{{if $tagEditUrl}}
+			<i-dropdown popover id="elTagEditor_{$id}_menu">
+				<div class="iDropdown">
+					<div data-controller='core.front.core.tagEditorForm'>
+						<div class='i-padding_3'>
+							<span><i class='ipsLoadingIcon' aria-hidden="true"></i>  &nbsp;{lang="loading"}</span>
+						</div>
+					</div>
+				</div>
+			</i-dropdown>
+		{{endif}}
+	{{endif}}
+{{endif}}

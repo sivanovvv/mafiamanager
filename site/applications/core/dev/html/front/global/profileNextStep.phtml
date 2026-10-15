@@ -1,0 +1,28 @@
+<ips:template parameters="$nextStep, $canDismiss=false, $hideOnCompletion=true" />
+{{$completion = \intval( (string) \IPS\Member::loggedIn()->profileCompletionPercentage() );}}
+{{if ! ( $completion == 100 and $hideOnCompletion )}}
+<div data-role='profileWidget' data-controller="core.front.core.profileCompletion">
+	{{$progressId = 'ipsProgress-' . mt_rand();}}
+	{{if $completion < 100}}
+		<div class='i-flex i-align-items_center i-flex-wrap_wrap i-margin-bottom_2'>
+			<div class='i-flex_91'>
+				<h4 class="ipsTitle ipsTitle--h6">{lang="profile_step_next"} {lang="profile_step_title_{$nextStep->id}"}</h4>
+				<small class='i-color_soft' id="{$progressId}">{lang="profile_completion_percent" sprintf="$completion . '%'"}</small>
+			</div>
+			<ul class="ipsButtons">
+				{{if $canDismiss}}
+					<li>
+						<a class="ipsButton ipsButton--small ipsButton--inherit" href='{url="app=core&module=system&controller=settings&do=dismissProfile" ref="(string) \IPS\Request::i()->url()" csrf="true"}' data-role='dismissProfile'>{lang="dismiss"}</a>
+					</li>
+				{{endif}}
+				<li>
+					<a class="ipsButton ipsButton--small ipsButton--primary" href='{url="app=core&module=system&controller=settings&do=completion&_new=1" ref="(string) \IPS\Request::i()->url()" seoTemplate="settings"}'><span>{lang="complete_my_profile"}</span><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a>
+				</li>
+			</ul>
+		</div>
+	{{else}}
+		<span class='ipsInvisible' id="{$progressId}">{lang="profile_completion_percent" sprintf="'100%'"}</span>
+	{{endif}}	
+	<progress aria-labelledby="{$progressId}" class="ipsProgress" min="0" max="100" value='{expression="\IPS\Member::loggedIn()->profileCompletionPercentage()"}'></progress>
+</div>
+{{endif}}

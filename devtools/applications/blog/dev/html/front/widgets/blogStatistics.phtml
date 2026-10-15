@@ -1,0 +1,14 @@
+<ips:template parameters="$stats, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_blogStatistics"}</h3>
+<div class='ipsWidget__content'>
+	<ul class='ipsList ipsList--stats ipsList--stacked ipsList--border ipsList--fill'>
+		<li>
+			<strong class='ipsList__label'>{lang="total_blogs"}</strong>
+			<span class='ipsList__value'>{number="$stats['total_blogs']"}</span>
+		</li>
+		<li>
+			<strong class='ipsList__label'>{lang="total_entries"}</strong>
+			<span class='ipsList__value'>{number="$stats['total_entries']"}</span>
+		</li>
+	</ul>
+</div>

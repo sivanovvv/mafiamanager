@@ -1,0 +1,2 @@
+<ips:template parameters="$rank, $cssClass=NULL" />
+<img src='{{if $rank->icon AND $rank->rank_use_image}}{$rank->_icon->url}{{else}}{$rank->_icon}{{endif}}' loading="lazy" alt="{$rank->_title}" class="{$cssClass}" data-ipsTooltip title="{lang="profile_rank"}: {$rank->_title} ({$rank->rankPosition()['pos']}/{$rank->rankPosition()['max']})">

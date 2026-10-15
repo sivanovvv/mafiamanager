@@ -1,0 +1,257 @@
+/* Badges */
+.ipsBadges{
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 3px;
+}
+
+	/* Improve alignment of badges in certain situations (otherwise vertical-align is needed on the badge) */
+	.ipsBadges > li{ display: contents; }
+
+	/* Hide badge container if it doesn't contain a badge */
+	.ipsBadges:not(:has(.ipsBadge)){ display: none !important; }
+	@supports not selector(a:has(b)){
+		.ipsBadges:-moz-only-whitespace{ display: none !important; }
+	}
+
+.ipsBadge{
+	--i-badge: var(--i-background_6);
+	background: var(--i-badge);
+	color: oklch(from var(--i-badge)
+			clamp(0.4, (.75 - l) * 10000, 1)
+			clamp(0, c * 5 * (1 - clamp(0, (.75 - l) * 10000, 1)), .2)
+			h
+		);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: .4em;
+	text-align: center;
+	font-weight: 600;
+	text-transform: uppercase;
+	min-height: 1.8em;
+	min-width: 1.8em;
+	overflow-wrap: anywhere; /* Necessary for custom fields in Pages */
+	padding: 0 .8em;
+	font-size: max(.7em, 10px);
+	border-radius: min(var(--i-design-radius), .4em);
+	text-decoration: none !important;
+}
+
+:where(.ipsBadge){
+	position: relative; /* Required to contain the absolute elements such as the "Expert follow" button */
+}
+
+@supports (not (color: oklch(from red l c h))) or (not (color: oklch(from var(--i-badge) clamp(0.35, (.75 - l) * 10000, 1) clamp(0, c * 1000 * (1 - clamp(0, (.75 - l) * 10000, 1)), .3) h))){
+	.ipsBadge{
+		color: color-mix(in hsl, var(--i-badge), hsl(none none var(--if-light,20%) var(--if-dark,80%)) 100%);
+	}
+}
+@supports (not (color: color-mix(in srgb, red, blue))){
+	.ipsBadge{
+		color: var(--i-color_hard);
+	}
+}
+
+/* Remove the underline from links if they contain a badge. Eg, Featured forum names on expanded fluid view layout */
+a:has(.ipsBadge){
+	text-decoration: none !important;
+}
+
+.ipsBadge a{
+	color: inherit;
+}
+
+.ipsBadge--negative,
+.ipsBadge--hidden,
+.ipsBadge--pending,
+.ipsBadge--warning{
+	--i-badge: hsl(0 var(--if-light, 70% 85%) var(--if-dark, 30% 28%));
+}
+
+.ipsBadge--locked{
+	--i-badge: var(--i-background_5);
+}
+
+.ipsBadge--hot,
+.ipsBadge--intermediary,
+.ipsBadge--assigned{
+	--i-badge: hsl(24 var(--if-light, 47% 83%) var(--if-dark, 31% 25%));
+}
+.ipsBadge--assigned{
+	text-transform: none;
+}
+.ipsBadge--neutral,
+.ipsBadge--poll{
+	
+}
+.ipsBadge--positive,
+.ipsBadge--popular,
+.ipsBadge--solved{
+	--i-badge: hsl(var(--if-light, 117 56% 85%) var(--if-dark, 150 72% 35%));
+}
+.ipsBadge--pinned{
+	--i-badge: hsl(350 var(--if-light, 56% 80%) var(--if-dark, 33% 35%));
+}
+.ipsBadge--featured{
+	--i-badge: hsl(39 var(--if-light, 73% 82%) var(--if-dark, 57% 41%));
+}
+.ipsBadge--author{
+	background-color: color-mix(in srgb, var(--i-primary) 20%, var(--i-background_1));
+	color: var(--i-color_primary);	
+}
+.ipsBadge--prefix{
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+	text-transform: none;
+}
+.ipsBadge--new{
+	background-color: var(--i-featured, var(--i-primary));
+	color: hsl(0 0% 100%);
+	font-weight: 700;
+	font-size: 10px;
+}
+.ipsBadge--highlightedGroup {
+	--i-badge: var(--i-entry-color);
+}
+.ipsBadge--solution{
+	background-color: var(--i-background_positive);
+	color: hsl(0 0% 100%);
+}
+.ipsBadge--expert{
+	--i-badge: color-mix(in srgb, var(--i-primary) 20%, var(--i-background_1));
+}
+
+	.ipsBadge--expert [data-role="followButton"]{
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		opacity: 0;
+	}
+
+	.ipsBadge--expert:has(.ipsButton--positive){
+		background-color: var(--i-secondary);
+		color: var(--i-secondary-contrast);
+	}
+
+	.ipsBadge--expert:has(.ipsButton)::after{
+		content: '\f234';
+		border-inline-start: 1px solid hsl(0 0% 100% / .3);
+		padding-inline-start: .7em;
+		margin-inline-start: .3em;
+		font-family: "Font Awesome 6 Free";
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-style: normal;
+		font-weight: 900;
+	}
+	.ipsBadge--expert:has(.ipsButton--positive)::after{
+		content: '\f00c'
+	}
+
+.ipsBadge[style*="--i-featured"]{
+	--i-badge: var(--i-featured);
+}
+
+/* These styles are used on fields in Pages */
+.ipsBadge--style1 {
+	--i-badge: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+
+.ipsBadge--style2 {
+	--i-badge: var(--i-secondary);
+	color: var(--i-secondary-contrast);
+}
+
+.ipsBadge--style3 {
+	--i-badge: var(--i-background_4);
+}
+
+.ipsBadge--style4 {
+	--i-badge: var(--i-base-contrast_4);
+}
+
+.ipsBadge--style5 {
+	--i-badge: hsl(160 50% 50%);
+}
+
+.ipsBadge--style6 {
+	--i-badge: hsl(20 50% 50%);
+}
+
+.ipsBadge--style7 {
+	--i-badge: hsl(50 50% 50%);
+}
+
+.ipsBadge--string{
+	text-transform: none;
+}
+.ipsBadge > i{
+	font-size: .8em;
+}
+
+.ipsBadge--icon{
+	padding: 0;
+}
+
+	.ipsBadge--icon > span,
+	.ipsBadge--text > i{
+		display: none;
+	}
+
+.ipsBadge--rare {
+	position: absolute;
+	top: -6px;
+	inset-inline-start: -10px;
+	transform: rotate(calc(var(--i-lang-dir) * -20deg));
+	white-space: nowrap; /* Prevent "RARE" from breaking with translations or Windows fonts */
+	padding: 0 .3em;
+	pointer-events: none; /* Prevents the badge tooltip from working */
+}
+
+/* Reputation badges */
+.ipsRepBadge {
+	font-size: .8em;
+	display: inline-block;
+	font-weight: 600;
+	color: var(--i-color_soft)
+}
+
+	.ipsRepBadge--positive {
+		color: var(--i-color_positive);
+	}
+
+	.ipsRepBadge--negative {
+		color: var(--i-color_negative);
+	}
+
+/* ======================================================== */
+/* POINTS (for warnings) */
+.ipsWarningPoints {
+	display: inline-grid;
+	place-content: center;
+	color: #fff;
+	background-color: var(--i-color_negative);
+	font-weight: bold;
+	width: 2em;
+	height: 2em;
+	border-radius: 50%;
+	font-size: 1.12em;
+}
+
+.ipsWarningPoints--removed {
+	background: var(--i-color_soft);
+	background-color: color-mix(in hsl, var(--i-color_soft) 10%, transparent);
+}
+
+.ipsWarningPoints--small {
+	font-size: .85em;
+	vertical-align: middle;
+}
+
+/* Container titles, with featured colors */
+.ipsContainerTitle{
+	font-weight: 600;
+	color: var(--i-color_featured, var(--i-featured, var(--i-color_hard)));
+}

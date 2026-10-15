@@ -1,0 +1,35 @@
+<ips:template parameters="$warning, $email" />
+
+{$email->language->addToStack("email_mod_warned_other_plain", FALSE, array( 'htmlsprintf' => array( \IPS\Member::load( $warning->member )->name, \IPS\Member::load( $warning->moderator )->name ) ) )}
+
+=====
+{{if $warning->canViewDetails()}}{$email->language->addToStack("email_warn_reason", FALSE)}:{$email->language->addToStack("core_warn_reason_" . $warning->reason, FALSE)}{{endif}}
+{{if $warning->canViewDetails() or $warning->mq or $warning->rpa or $warning->suspend}}{$email->language->addToStack("email_warn_penalty", FALSE)}:
+	{{if $warning->canViewDetails()}}
+		{{if $warning->expire_date}}
+			{{if $warning->expire_date < time()}}
+				{{if $warning->expire_date == -1}}
+					{$email->language->addToStack("warn_action_points_never_expire", FALSE, array( 'pluralize' => array( $warning->points ) ) )}
+				{{else}}
+					{$email->language->addToStack("warn_action_points_expired", FALSE, array( 'pluralize' => array( $warning->points ), 'htmlsprintf' => array( \IPS\DateTime::ts( $warning->expire_date ) ) ) )}
+				{{endif}}
+			{{else}}
+				{$email->language->addToStack("warn_action_points_expire", FALSE, array( 'pluralize' => array( $warning->points ), 'htmlsprintf' => array( \IPS\DateTime::ts( $warning->expire_date ) ) ) )}
+			{{endif}}
+		{{else}}
+			{$email->language->addToStack("warn_action_points", FALSE, array( 'pluralize' => array( $warning->points ) ) )}
+		{{endif}}			
+	{{endif}}
+	{{if $warning->mq}}
+		{$email->language->addToStack("moderation_modq", FALSE)} - {{if $warning->mq == -1}}{$email->language->addToStack("indefinitely", FALSE)}{{elseif $mq = $warning->mq_interval}}{expression="\IPS\DateTime::formatInterval( $mq, 2, $email->language )" raw="true"}{{endif}}
+	{{endif}}
+	{{if $warning->rpa}}
+		{$email->language->addToStack("moderation_nopost", FALSE)} - {{if $warning->rpa == -1}}{$email->language->addToStack("indefinitely", FALSE)}{{elseif $rpa = $warning->rpa_interval}}{expression="\IPS\DateTime::formatInterval( $rpa, 2, $email->language )" raw="true"}{{endif}}
+	{{endif}}
+	{{if $warning->suspend}}
+		{$email->language->addToStack("moderation_banned", FALSE)} - {{if $warning->suspend == -1}}{$email->language->addToStack("indefinitely", FALSE)}{{elseif $suspend = $warning->suspend_interval}}{expression="\IPS\DateTime::formatInterval( $suspend, 2, $email->language )" raw="true"}{{endif}}
+	{{endif}}
+{{endif}}
+=====
+
+-- {setting="board_name"}

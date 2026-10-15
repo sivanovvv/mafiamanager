@@ -1,0 +1,1355 @@
+.ipsEditor{
+	--ipsEditor--mi-he: 300px;
+	border: var(--i-input--bo-wi) var(--i-input--bo-st, solid) var(--i-input--bo-co);
+  	box-shadow: var(--i-input--bo-sh, none);
+	background: var(--i-background_1);
+	border-radius: min(var(--i-design-radius), 6px);	
+	background-clip: padding-box;
+	position: relative;
+	transition: border-color .15s;
+}
+
+	.ipsEditor:hover {
+		border-color: var(--i-color_soft);
+	}
+
+	.ipsEditor:focus-within{
+		border-color: var(--i-input-active--bo-co);
+	}
+
+.ipsFormWrap--comment .ProseMirror,
+.ipsRichText--user .ProseMirror{
+	font-size: calc(var(--set__i-user-content-font-size, 100) * .01em);
+	line-height: 1.8;
+}
+
+/* Prevent iOS zoom */
+@media (hover:none) and (pointer:coarse){
+	.ProseMirror{
+		font-size: max(16px, 1em);
+	}
+	.ipsFormWrap--comment .ProseMirror,
+	.ipsRichText--user .ProseMirror{
+		font-size: max(16px, var(--set__i-user-content-font-size, 100) * .01em);
+	}
+}
+
+/* Add a min-height to loading editor */
+.ipsLoading[data-role="mainEditorArea"]{
+	min-height: var(--ipsEditor--mi-he, 300px);
+}
+
+/* Grid is used here to position the toolbar above the textarea */
+.ipsEditor__tiptap-wrap {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	min-height: var(--ipsEditor--mi-he, 300px);
+}
+
+.tiptap.ProseMirror, .ipsEditor__monaco-root {
+	/* Without the z-index, dropdown panels inside the editor are hidden behind the upload area text. */
+	z-index: 2;
+	padding: 20px;
+	min-height: 100px; /* The editor content won't even be visible if the editor isn't wrapped inside the ipsEditorV5 element */
+	outline: none;
+	width: 100%;
+	height: 100%;
+}
+	.ipsEditor__monaco-root {
+		padding: 0;
+	}
+
+	/* Code mode editor */
+	.ipsEditor__monaco-root .monaco-editor {
+		width: 100%;
+		height: 100%;
+	}
+
+		.ipsCodebox__inner-wrap, .ipsCodebox__inner-wrap > [data-role="reactRoot"], .ipsEditor__tiptap-wrap--codeMode {
+			--ipsEditor--mi-he: min(80vh, 500px);
+			height: 100%;
+		}
+
+	.ipsMenu:has(.ipsEditor, .ipsCodebox__outer-wrap) {
+		min-width: min(90vw, 600px);
+	}
+
+	:where(.ipsEditor__toolbar){
+		/* Prevent tiptap elements from inheriting external font styles */
+		color: var(--i-color_root);
+		font-size: var(--i-font-size);
+		font-weight: normal;
+		font-style: normal;
+		text-decoration: none;
+		letter-spacing: normal;
+		text-transform: none;
+		text-shadow: none;
+	}
+	/* Main toolbar */
+	.ipsEditor__toolbar--main {
+		order: -1; /* Ensure the toolbar is always above the textarea */
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2px;
+		position: -webkit-sticky;
+		position: sticky;
+		top: var(--i-sticky-offset, 0px);
+		z-index: 3;
+		background: var(--i-box--ba-co);
+		color: var(--i-color_root);
+		border-bottom: 2px solid var(--i-background_3);
+		margin: 0 .4em;
+		padding: .4em 0;
+		container-type: inline-size;
+		container-name: toolbar;
+
+		/* We do this to create a new stacking context. This makes sure that fixed positioning of anchored children (e.g. dropdowns) is effectively RELATIVE, so scrolling and stuff will make those children automatically reposition */
+		transform: translate(0);
+	}
+
+	/* Icon parents */
+	.ipsEditor__toolbar--main > li{
+		position: relative; /* Let dropdowns use absolute positioning */
+	}
+
+/* All icons/dropdown menu options */
+.ipsEditor__toolbar-item {
+	display: flex;
+	align-items: center;
+	border-radius: min(5px, var(--i-design-radius));
+	padding: 0 .7em;
+	cursor: pointer;
+	user-select: none;
+	white-space: nowrap; /* Prevent options like "Heading 1" from wrapping */
+}
+
+/* Main toolbar icons */
+:is(.ipsEditor__toolbar--main, .ipsEditor__toolbar--row) > li > .ipsEditor__toolbar-item{
+	min-width: 2.4em;
+	min-height: 2.4em;
+	justify-content: center;
+	gap: .5em;
+}
+
+/* Icons */
+.ipsEditor__toolbar-item svg{
+	width: 1.18em;
+	height: 1.18em;
+}
+
+/* Move dropdown arrow to end */
+.ipsEditor__toolbar-item .fa-caret-down{
+	order: 1;
+	margin-inline-start: auto;
+	opacity: .4;
+}
+
+/* Some buttons have an extra child element, used to display the current value, such as Font-Family and Image Alignment. We need to remove it so the flex alignment continues to work */
+.ipsEditor__toolbar-item div[data-role="currentValue"]{
+	display: contents;
+}
+/* With the above, we need to restore a gap in the Code language selection */
+[data-toolbar-item="codelanguage"] .fa-caret-down{
+	margin-inline-start: .4em;
+}
+
+ @media (any-hover:hover){
+	.ipsEditor__toolbar .ipsEditor__toolbar-item:hover:not(.ipsEditor__toolbar-item--unavailable, .ipsEditor__toolbar-item[disabled], .ipsEditor__toolbar-select-option[data-current="yes"]),
+	.ipsColorOptions__option:hover {
+		background-color: color-mix(in srgb, currentColor 10%, transparent);
+	}
+ }
+
+
+ 	/* Active main toolbar items */
+	:is(.ipsEditor__toolbar--main, .ipsEditor__toolbar--row) > li > .ipsEditor__toolbar-item--active{
+		background-color: color-mix(in srgb, currentColor 25%, transparent);
+	}
+
+	/* Active nested dropdown items (Left, Right, Center, etc) */
+	.ipsEditor__anchored-panel .ipsEditor__toolbar-item--active{
+		background-color: color-mix(in srgb, currentColor 25%, transparent);
+	}
+
+	@media (any-hover:hover){
+		.ipsEditor__toolbar-item--active:is(:hover, :focus-visible) {
+			background-color: color-mix(in srgb, currentColor 35%, transparent);
+		}
+	}
+
+/* Active items in Select menu (Eg. Paragraph) */
+.ipsEditor__toolbar-select-option[data-current="yes"] {
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+	/* Make sure inner elements such as <h1> are coloured correctly */
+	.ipsEditor__toolbar-select-option[data-current="yes"] *{
+		color: inherit;
+	}
+	/* Active items:hover */
+	.ipsEditor__toolbar-select-option[data-current="yes"]:hover {
+		background-color: var(--i-primary-light);
+	}
+
+/* Hide labels in the Font Family menu, and in the main toolbar */
+#editorToolbarPanel_nested_fontFamily .ipsEditor__toolbar-label,
+.ipsEditor__toolbar-label:not(.ipsColorOptions__panel *, .ipsEditor__toolbar--nested *) {
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+/* Dropdown options */
+:is(.ipsEditor__toolbar--nested, .ipsEditor__toolbar-select-options) .ipsEditor__toolbar-item {
+	flex-grow: 1;
+}
+
+/* Select menus */
+.ipsEditor__toolbar-select {
+	cursor: pointer;
+	position: relative;
+}
+
+	.ipsEditor__toolbar-select > .ipsEditor__toolbar-select-option {
+		display: contents; /* Let the parent element handle alignment */
+	}
+
+	/* Ensure dropdown menus sit on top of all other elements */
+	.ipsEditor__anchored-panel{
+		--i-editor-panel-zi: 10;
+	}
+
+	/* Popover dropdowns. Using :where() so that only UA styles are overridden */
+	:where(.ipsEditor__anchored-panel[popover]) {
+		background: transparent;
+		border: none;
+		overflow: visible;
+	}
+
+	/* Dropdown menu: Format, font-size, etc */
+	.ipsEditor__toolbar-select-options, .ipsEditor__toolbar-panel, .ipsEditor__iconpicker-wrap, .ipsEditor__anchored-panel {
+		z-index: var(--i-editor-panel-zi);
+		position: absolute;
+	}
+	.ipsEditor__toolbar-select-options, .ipsEditor__toolbar-panel, .ipsEditor__toolbar--nested {
+		background: var(--i-dropdown--ba-co);
+		color: var(--i-color_root);
+		box-shadow: var(--i-dropdown--bo-sh);
+		border-radius: var(--i-dropdown--bo-ra);
+		max-height: 500px;
+		overflow-y: auto;
+		padding: 5px;
+		min-width: 220px;
+	}
+
+	/* Dropdown Menu: Mention */
+	.ipsEditor__toolbar-select-options--mentionSuggestions:not(#x) {
+		z-index: var(--ips-js-zindex-top, var(--i-editor-panel-zi));
+	}
+
+	/* Dropdown menus (Insert), Select menus (Font-size) and colors */
+	.ipsEditor__toolbar--nested .ipsEditor__toolbar-item,
+	.ipsEditor__toolbar-select-option,
+	.ipsColorOptions__option {
+		width: 100%;
+		border-radius: min(5px, var(--i-design-radius));
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		gap: 1em;
+		padding: .5em 1em;
+	}
+
+		/* Align dropdown menu icons/labels */
+		.ipsEditor__anchored-panel .ipsEditor__toolbar-item i:first-child {
+			width: 1em;
+		}
+
+		/* Remove margins from "Heading previews" in dropdown menu */
+		.ipsEditor__toolbar-select-options :is(h1, h2, h3, h4, h5, h6){
+			margin: 0;
+		}
+
+	/* Submenus inside dropdown menus: Text align, Font, etc */
+	.ipsEditor__toolbar--nested .ipsEditor__anchored-panel{
+		position: static !important;
+		margin: 5px 0;
+		margin-inline-start: 1em;
+		border-inline-start: 2px solid color-mix(in hsl, currentColor 20%, transparent);
+
+		/* Remove styles from the Font Family menu */
+		box-shadow: none;
+		background: none;
+		border-radius: 0;
+		min-width: 0;
+		max-height: none;
+	}
+
+	/* Animate the submenus if discrete transitions are supported */
+	@supports (transition-behavior: allow-discrete){
+
+		.ipsEditor__toolbar .ipsEditor__toolbar--row[hidden],
+		.ipsEditor__toolbar--nested .ipsEditor__anchored-panel[hidden]{
+			max-height: 0px;
+			overflow: clip;
+			opacity: 0;
+		}
+
+		.ipsEditor__toolbar .ipsEditor__toolbar--row,
+		.ipsEditor__toolbar--nested .ipsEditor__anchored-panel{
+			interpolate-size: allow-keywords;
+			max-height: 200px;
+			transition: display,
+						overflow,
+						opacity,
+						max-height;
+			transition-duration: .4s;
+			transition-behavior: allow-discrete;
+			overflow: auto;
+			opacity: 1;
+		}
+
+		@starting-style {
+			.ipsEditor__toolbar .ipsEditor__toolbar--row,
+			.ipsEditor__toolbar--nested .ipsEditor__anchored-panel{
+				max-height: 0px;
+				overflow: clip;
+				opacity: 0;
+			}
+		}
+	
+	}
+
+	
+		.ipsEditor__toolbar--nested .ipsEditor__anchored-panel .ipsEditor__toolbar--nested{
+			min-width: 0;
+			padding: 0;
+			padding-inline-start: 5px;
+			box-shadow: none;
+			background: none;
+			border-radius: 0;
+			position: static;
+		}
+		
+			.ipsEditor__toolbar--nested .ipsEditor__anchored-panel .ipsEditor__toolbar--nested .ipsEditor__toolbar-item{
+				padding: .4em 1em;
+			}
+
+	.ipsEditor__toolbar-select-options[data-panel-anchor="block"] > .ipsEditor__toolbar-select-option {
+		width: 100%;
+	}
+
+	/* Extra row of buttons in toolbar (when tables are selected) */
+	.ipsEditor__toolbar-item-wrap:has(.ipsEditor__toolbar--row) {
+		flex: 1 1 100%;
+	}
+	.ipsEditor__toolbar--row{
+		display: flex;
+		gap: 2px;
+		background-color: var(--i-background_2);
+	}
+	/* Hide the above toolbar item if it contains an empty row */
+	.ipsEditor__toolbar-item-wrap:has(.ipsEditor__toolbar--row[hidden]){
+		display: none;
+	}
+	.ipsEditor__toolbar--main .ipsEditor__toolbar--row {
+		margin-bottom: -0.4em; /* This moves the bottom border of the containing toolbar up */
+		padding-block: 0.2em;
+	}
+	
+[data-tippy-root] {
+	z-index: calc(var(--ips-js-zindex-top) - 10) !important;
+}
+
+:where(.tiptap .react-renderer) {
+	display: contents;
+}
+
+/* Node view wrap stuff */
+:where(.tiptap .react-renderer > [data-node-view-wrapper]) {
+	width: fit-content;
+	position: relative;
+	display: inline-block;
+}
+
+:where(.tiptap .react-renderer.node-ipsBox > [data-node-view-wrapper]) {
+	width:100%;
+	display: flow-root;
+}
+
+/* Selected elements in editor (video, embed, etc) */
+.ProseMirror-selectednode,
+.tiptap.ProseMirror .react-renderer:not(.ProseMirror-selectednode, .node-codeBlock, .node-ipsBox, .node-blockquote),
+.node-ipsEmbed {
+	outline-color: var(--i-background_6);
+}
+
+.tiptap.ProseMirror .react-renderer:hover:not(.ProseMirror-selectednode, .node-codeBlock, .node-ipsBox, .node-blockquote) > [data-node-view-wrapper]:hover,
+:is(.ProseMirror-selectednode,
+.node-ipsEmbed) > [data-node-view-wrapper] {
+	outline-width: 2px;
+	outline-style: solid;
+	outline-color: inherit;
+}
+
+.tiptap [data-node-view-wrapper][data-is-resizing] {
+	outline: 2px solid var(--i-primary) !important;
+}
+
+.tiptap [data-node-view-wrapper][data-attachment-type="file"]:not(.ProseMirror-selectednode > *) {
+	outline: none;
+}
+
+/* Since the inline/block class is applied to the wrapper, we need to adjust the file display */
+.tiptap [data-attachment-type="file"]:is(.ipsAttachLink_inline, .ipsAttachLink_block) {
+	padding: 0;
+}
+.tiptap [data-attachment-type="file"]:is(.ipsAttachLink_inline, .ipsAttachLink_block) > .ipsAttachLink {
+	margin: 0;
+}
+.tiptap [data-attachment-type="file"].ipsAttachLink_block > .ipsAttachLink {
+	padding: 0.8em 1.2em;
+}
+
+:is(.ipsRichTextBox, .ipsQuote_contents > *) > .node-codeBlock > pre {
+	margin-block: 0;
+}
+
+.node-ipsEmbed:not(.ProseMirror-selectednode) {
+	outline-color: var(--i-background_4);
+}
+.ProseMirror-selectednode {
+	outline-color: var(--i-primary);
+}
+.ProseMirror-selectednode:not(.react-renderer) {
+	outline: 2px solid var(--i-primary);
+}
+
+/* Ensure overflowing content is visible, otherwise the "insert element before/after" icons are cropped */
+.tiptap .react-renderer:not(.react-renderer--no-indicators) :is(.ipsCode.ipsCode--nodeview-wrapper, .ipsQuote) {
+	overflow: visible;
+}
+.tiptap .react-renderer:not(.react-renderer--no-indicators) .ipsCode--nodeview-wrapper {
+	padding: 0;
+}
+/* But the above causes long code strings to break outside code boxes, so we need to fix that */
+.tiptap .ipsCode--nodeview-wrapper > [data-node-view-content] {
+	overflow: auto;
+	display: block;
+	padding-inline: 1.3em;
+	padding-block-end: 1.3em;
+}
+
+.react-renderer :is(iframe) {
+	border-width: 0 !important;
+}
+
+.tiptap :is(p,ol,ul).ProseMirror-selectednode {
+	outline-width:0px;
+}
+
+/* Add a space after quotes, boxes and embeds */
+.tiptap :is(.node-blockquote, .node-ipsBox, .node-ipsEmbed) {
+	margin-bottom: 1em;
+}
+
+.ipsEditor__create-sibling {
+	--i-indicator-size: 20px;
+	--i-hz-offset: 1em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	/* Ensure sibling icons aren't overlapped by external elements */
+	z-index: 4;
+	height: var(--i-indicator-size);
+	width: var(--i-indicator-size);
+	font-size: .6em;
+	color: var(--i-primary-contrast);
+	background: var(--i-primary);
+	border-radius: 50%;
+	margin: -1px; /* The -1px centers the button along the 2px node outline */
+}
+
+/* Show create sibling icons when active or hovered. We use opacity to make hovering easier */
+.ipsEditor__create-sibling-wrapper{
+	opacity: 0;
+}
+:is([data-node-view-wrapper]:hover, .ipsEditor__table-wrapper:hover, .ProseMirror-selectednode) .ipsEditor__create-sibling-wrapper{
+	opacity: 1;
+}
+
+	.tiptap [data-is-resizing] .ipsEditor__node-options,
+	.ipsEditor__nodewrap--narrow .ipsEditor__node-options--media:not(.ProseMirror-selectednode > [data-node-view-wrapper] > *) {
+		display: none !important;
+	}
+
+/* Tables */
+.ipsEditor__table-wrapper{
+	position: relative;
+}
+
+		/* Buttons at top right of embeds/images/videos */
+		.ipsEditor__node-options > .ipsEditor__toolbar-item{
+			color: var(--i-primary-contrast);
+			background: var(--i-primary);
+			padding: .7em;
+			width: auto;
+			height: auto;
+		}
+
+		.ipsEditor__node-options > .ipsEditor__toolbar-item:is(:hover, :focus-visible, .ipsEditor__toolbar-item--active), .ipsEditor__create-sibling:hover {
+			background: var(--i-primary-light);
+		}
+
+		/* Semi-transparent settings icon on images */
+		.ipsEditor__node-options--media > .ipsEditor__toolbar-item{
+			background: hsl(0 0% 0% / .4);
+			color: #fff;
+			backdrop-filter: blur(5px);
+		}
+		.ipsEditor__node-options--media > .ipsEditor__toolbar-item:is(:hover, :focus-visible, .ipsEditor__toolbar-item--active){
+			background: hsl(0 0% 0% / .6);
+		}
+
+	.ipsEditor__create-sibling--before {
+		left: var(--i-hz-offset);
+		top: calc(var(--i-indicator-size) * -0.5);
+		transform: rotate(-90deg);
+		transform-origin: center;
+	}
+	.ipsEditor__create-sibling--after {
+		inset-inline-end: var(--i-hz-offset);
+		bottom: calc(var(--i-indicator-size) * -0.5);
+		transform: rotate(90deg);
+		transform-origin: center;
+	}
+
+	[data-attachment-type="file"] {
+		display: inline-block;
+	}
+	[data-attachment-type="file"] a {
+		cursor: default;
+	}
+
+.ipsEditor__node-hover-overlay {
+	position: absolute;
+	inset: 0;
+}
+	
+/*
+	----------------
+	- Link panel
+	----------------
+*/
+.ipsEditor__toolbar-panel-row {
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+	/* Without this, the inputs width collapses */
+	.ipsEditor__toolbar-panel-row .ipsInput{
+		width: revert;
+		min-width: min(60vw, 200px);
+	}
+
+/*
+	----------------
+	- Global messages
+	----------------
+*/
+
+/* Sticky messages at bottom of editor */
+[data-role="editor-messages-container"] {
+	position: sticky;
+	bottom: 0.25em;
+	z-index: 2; /* Need this so the messages (e.g. autosave message) appear above the content inside the editor */
+	font-weight: normal;
+	font-size: var(--i-font-size);
+}
+
+/* Mobile selection toolbar */
+@media(max-width: 979px) {
+	[data-role="editor-messages-container"] {
+		bottom: calc(var(--i-mobileFooter--he) + 0.25em);
+	}
+}
+
+	.ipsEditor__global-messages {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5em;
+		padding: 0.5em;
+	}
+
+		.ipsEditor__global-message {
+			align-items: center;
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			background: color-mix(in srgb, var(--i-background_dark) 80%, transparent);
+			color: #fff;
+			border-radius: min(var(--i-design-radius), 5px);
+			display: flex;
+			font-weight: 500;
+			justify-content: space-between;
+			padding: 0.5em 0.7em;
+		}
+
+		.ipsEditor__global-message :is(.far, .fa-regular, .fa-solid, .fas) {
+			font-size: 1.2em;
+		}
+		.ipsEditor__autosave-clear {
+			text-decoration: underline;
+			color: inherit;
+		}
+
+/*
+	----------------
+	- Box Support
+	----------------
+*/
+.ipsRichTextBox__nodeview-wrap summary.ipsRichTextBox__title {
+	cursor: text;
+}
+
+/* Collapsed boxes - in-editor-preview. This works differently from simple details/summary elements */
+.ipsRichTextBox__node-view-wrapper--collapsed > [data-node-view-content-react] > :not(.ipsRichTextBox__title:first-child) {
+	/*display: none;*/
+	/* display: none messes with the positioning in the editor because it makes the element unselectable */
+	height: 0 !important;
+	width: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+	overflow: hidden !important;
+}
+
+.ipsRichTextBox__node-view-wrapper--collapsed > [data-node-view-content-react] > .ipsRichTextBox__title:first-child {
+	margin-block-end: 0;
+	border-bottom: none;
+	padding-block-end:0;
+}
+
+:root {
+	--i-ri-box-title-placeholder: "Add a box title...";
+}
+.ipsRichTextBox__nodeview-wrap .ipsRichTextBox__title--empty:not(.ipsRichTextBox__title--selection-within)::before {
+	position: absolute;
+	content: var(--i-ri-box-title-placeholder);
+	opacity: 0.35;
+	cursor: text;
+	transition: opacity 0.2s ease;
+	z-index: -1;
+}
+.ipsRichTextBox__nodeview-wrap .ipsRichTextBox__title--empty:not(.ipsRichTextBox__title--selection-within):hover::before {
+	opacity: 0.6;
+}
+
+/* Dropdown menu: Color options */
+	.ipsColorOptions__option {
+		text-wrap: nowrap;
+	}
+
+		.ipsColorOptions__option::before{
+			content: "";
+			background: var(--i-richtext-background-color);
+			width: 1.4em;
+			height: 1.4em;
+			flex: 0 0 auto;
+			border-radius: 4px;
+		}
+
+		.ipsColorOptions__option[data-i-background-color^="theme_"]::before {
+			border-color: color-mix(in srgb, var(--i-richtext-background-color) 30%, var(--i-color_root) 15%, transparent);
+			border-width: 1px;
+			border-style: solid;
+		}
+
+/* Show no background for the "No highlighting" option */
+#editorToolbarPanel_nested_highlight [data-i-background-color="root"]{
+	--i-richtext-background-color: var(--i-background_1);
+}
+
+.ipsEditor__toolbar-item--font-color:not([data-i-color="root"]){
+	color: var(--i-richtext-color);
+	background: color-mix(in srgb, var(--i-richtext-color) 20%, transparent);
+}
+
+.ipsEditor__toolbar-item--box-color:not(#x) {
+	border-bottom: 5px solid color-mix(in srgb, var(--i-richtext-color, var(--i-background_2)) 85%, var(--i-color_root));
+	padding-top: 5px;
+	color: inherit;
+	background-color: color-mix(in srgb, var(--i-richtext-color, var(--i-background_2)) 20%, var(--i-background_2));
+}
+	.ipsEditor__toolbar-item--box-color:not(#x)[data-i-color*="theme_"] {
+		border-color: color-mix(in srgb, var(--i-richtext-color) 85%, var(--i-color_root));
+		background-color: var(--i-richtext-color);
+	}
+
+
+/* Giphy Panel */
+.ipsEditor__giphy-panel {
+	display: flex;
+	flex-direction: column;
+	max-height: 400px;
+	width: 400px;
+	max-width: 90vw;
+	padding: 0;
+}
+
+	.ipsEditor__giphy-panel > form {
+		display: contents;
+	}
+
+	/* Search */
+	.ipsEditor__giphy-search {
+		margin: 8px;
+		flex: 0 0 auto;
+		width: calc(100% - 16px) !important;
+	}
+
+	.ipsEditor__giphy-attribution {
+		padding: 0.5em;
+		position: absolute;
+		inset-inline-end: 0;
+		inset-block-end: 0;
+		font-weight: 600;
+		background-color: var(--i-background_dark);
+		color: var(--i-color_background-dark-contrast);
+		font-size: .9em;
+		border-top-left-radius: 0.5em;
+		box-shadow: var(--i-dropdown--bo-sh);
+	}
+	.ipsEditor__giphy-attribution:dir(rtl) {
+		border-top-right-radius: 0.5em;
+		border-top-left-radius: 0;
+	}
+	.ipsEditor__giphy-attribution > img {
+		--i-logo-margin: 0.13lh;
+		height: calc(1lh - 2 * var(--i-logo-margin));
+		margin-top: var(--i-logo-margin);
+		margin-inline: 0.6ch;
+	}
+
+	.ipsEditor__giphy-results {
+		overflow-y: auto;
+		flex-grow: 1;
+		min-height: 200px;
+		padding-inline: 8px;
+
+		--i-giphy-ratio: 16/9;
+		display: flex;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		gap: 7px;
+	}
+
+		.ipsEditor__giphy-results-page{
+			display: contents;
+		}
+
+		.ipsEditor__giphy-results-page button{
+			aspect-ratio: var(--i-giphy-ratio);
+			flex-grow: calc(10 * (var(--i-giphy-ratio)));
+			flex-shrink: 1;
+			flex-basis: calc(var(--i-giphy-ratio) * 90px);
+			background: var(--i-background_3);
+			padding: 0;
+		}
+
+			.ipsEditor__giphy-results-page img{
+				aspect-ratio: var(--i-giphy-ratio);
+				width: 100%;
+			}
+
+.ipsEditor__giphy-results h3 {
+	display: block;
+	align-self: center;
+	flex-basis: 100%;
+	text-align: center;
+}
+
+/* Restrict width of embedded content (iframes, etc) */
+.tiptap .node-ipsEmbed, .tiptap [data-node-view-wrapper]{
+	max-width: 100%;
+}
+
+/* Set custom widths for embedded content */
+.tiptap .node-ipsEmbed:not([data-embed-type="og"]) > [data-node-view-wrapper]{
+	width: min(var(--i-media-width, 100%), var(--i-embed-max-width, 500px));
+}
+
+.node-ipsEmbed:is([data-embed-type="og"]) [data-node-view-wrapper] {
+	border-radius: min(var(--i-design-radius), 6px);
+}
+
+.node-ipsEmbed:is([data-embed-type="og"]) [data-node-view-wrapper] [data-role="embed-node-view-content-wrap"] > :not(a, .ipsEmbeddedLink) {
+	max-width:100%;
+	border-radius: min(var(--i-design-radius), 6px);
+	overflow: hidden;
+}
+
+	.node-ipsEmbed:not(.ProseMirror-selectednode):is([data-embed-type="og"]) [data-node-view-wrapper] {
+		outline-width:0;
+	}
+
+.node-ipsEmbed [data-node-view-wrapper] > div > * {
+	margin: 0 !important;
+}
+
+/* Disabled buttons */
+.ipsEditor__toolbar-item--unavailable, .ipsEditor__toolbar-item[disabled] {
+	pointer-events: none;
+	opacity: .2;
+}
+.ipsEditor__toolbar-item--no_pointer_events {
+	pointer-events: none;
+}
+
+/* The codeblock dropdown */
+.ipsCode--nodeview-wrapper > .ipsEditor__toolbar {
+	font-family: var(--i-font-family);
+	cursor: default;
+	margin-bottom: 1em;
+	padding-inline: 1.3em;
+	padding-block-start: 1.3em;
+}
+
+.ipsEditor__toolbar--nodeview:not(#x) {
+	flex-wrap: nowrap;
+	position:relative;
+}
+.ipsEditor__toolbar--nodeview:not(#x) > * {
+	min-width: revert !important;
+}
+
+.ipsEditor__toolbar--nodeview .ipsEditor__toolbar-item {
+	cursor: pointer;
+}
+.ipsEditor__toolbar--nodeview .ipsEditor__toolbar-panel {
+	cursor: default;
+}
+/* The "code format" dropdown menu at the top of code blocks in the editor */
+.ipsCode [data-role="toolbar"] > .ipsEditor__toolbar-item {
+	display: block;
+	width: fit-content;
+	margin-bottom: 1em;
+	position: sticky;
+	left: 0;
+	background: color-mix(in srgb, currentColor 15%, transparent);
+	padding: 0.5em 0.9em;
+	font-size: 0.7em;
+	border-radius: min(var(--i-design-radius), 5px);
+	font-family: var(--i-font-family);
+	font-weight: 600;
+	color: var(--i-color_soft);
+	outline-width: 0;
+}
+
+/* The box tools */
+[data-node-view-wrapper] .ipsEditor__node-options {
+	align-items: center;
+	display: flex;
+	gap: .25em;
+	position: absolute;
+	top: 1em;
+	inset-inline-end: 1em;
+	transition: inset-inline-end 0.25s, top 0.25s;
+}
+
+[data-node-view-wrapper].ipsEditor__nodewrap--narrow .ipsEditor__node-options--media {
+	inset-inline-end: calc( -1em - 30px);
+	top: 0;
+}
+
+.ipsEditor__tiptap-wrap .ipsRichText summary::after,
+.ipsEditor__tiptap-wrap .ipsRichTextBox__title:not(.ipsRichTextBox--alwaysopen > .ipsRichTextBox__title)::after {
+	display: none;
+}
+
+[data-node-view-content] > .ipsRichTextBox {
+	overflow: visible;
+}
+
+.ipsEditor__node-options > button {
+	display: inline-grid;
+	place-content: center;
+	width: 2em;
+	height: 2em;
+	border-radius: 5px;
+	padding: 0;
+}
+
+/* "Remove embed" icon is made up of 2 icons. Ensure the alignment is correct in Safari */
+.ipsEditor__toolbar-item--escapeembed > * {
+	grid-area: 1/1;
+	margin: auto;
+}
+
+/* Ensure these sit on top of .ipsRichTextBox */
+.ipsEditor__node-options > button,
+.ipsRichTextBox__marker{
+	position: relative;
+	z-index: 1;
+}
+
+/* Clicking mentions does nothing */
+.tiptap [data-mentionid] {
+	cursor: default;
+}
+
+/* Add a larger gap and prevent usernames from wrapping in @mentions menu */
+.ipsEditor__toolbar-select-options--mentionSuggestions .ipsEditor__toolbar-select-option{
+	gap: 1em;
+}
+	.ipsEditor__toolbar-select-options--mentionSuggestions .ipsEditor__toolbar-select-option .ipsUserPhoto{
+		width: 34px;
+	}
+
+/* Active item in Mention dropdown */
+.ipsEditor__toolbar-select-options--mentionSuggestions:not(:hover) .ipsEditor__toolbar-select-option--active,
+.ipsEditor__toolbar-select-options--mentionSuggestions button:hover{
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+
+
+/* Quotes are expanded */
+.tiptap .ipsQuote,
+.tiptap .ipsQuote_contents {
+	min-height: revert;
+	display: flow-root;
+}
+
+
+.tiptap img.ProseMirror-separator {
+	width: revert !important;
+}
+
+.ipsEditor__link-options {
+	max-height: none;
+	overflow-y: hidden;
+}
+
+.ipsEditor__toolbar-panel--link {
+	gap: 5px;
+	display: grid;
+	width: min(80vw, 350px);
+	grid-template-columns: auto 3em;
+}
+
+.ipsEditor__toolbar-panel--link .ipsEditor__toolbar-panel-row {
+	display: grid;
+	grid-template-columns: 5ch 1fr;
+	grid-column: 1;
+}
+
+.ipsEditor__toolbar-panel--link label{
+	text-align: end;
+	font-weight: 600;
+}
+
+.ipsEditor__toolbar-panel--link [data-role="unlink"] {
+	grid-row-start: 1;
+	grid-column: 2;
+}
+
+:root {
+	--i-editor-panel-zi: 1; /* z-index that panels in the editor use */
+}
+
+
+.ipsEditor__toolbar-panel--link [data-role='unlink'].ipsEditor__remove-link--fullheight {
+	grid-row-end: 3;
+}
+
+
+.ipsEditor__toolbar-panel--link [data-role="convert_to_embed"] {
+	grid-row-start: 2;
+	grid-column: 2;
+}
+
+.ipsEditor__link-panel-status {
+	max-height: 1lh;
+	grid-row: span 1;
+	grid-column: span 2;
+	text-align: end;
+	font-size: 0.75em;
+	padding: 0 calc(0.7em / 0.75);
+	color: var(--i-color_positive);
+}
+.ipsEditor__link-panel-status [data-role=content] {
+	transition: opacity 0.1s ease-in;
+}
+.ipsEditor__link-panel-status--processing [data-role=content] {
+	opacity: 0;
+}
+
+.ipsEditor__close-link-panel {
+	display: none;
+}
+
+/* On mobile, we show a check button */
+@media(max-width: 767px) {
+	.ipsEditor__close-link-panel {
+		margin-top: 1em;
+		display: flex;
+		grid-row: span 1;
+		grid-column: span 2;
+	}
+
+	.ipsEditor__link-panel-status {
+		display: none;
+	}
+}
+
+
+.ipsEditor__toolbar-panel--embed {
+	max-width: 210px;
+	grid-template-columns: 1fr;
+	grid-auto-flow: row;
+	position: revert;
+	width: max-content;
+	gap: 5px;
+}
+
+.ipsEditor__toolbar-panel--embed > * {
+	gap: 5px;
+	display: grid;
+	grid-auto-flow: column;
+	align-items: center;
+}
+
+.ipsEditor__toolbar-panel--embed > * > label {
+	width: max-content;
+	white-space: nowrap;
+}
+
+.ipsEditor__toolbar-panel--embed > * > .ipsInput {
+	width: revert;
+	flex-grow: 1;
+}
+
+
+/* Inline styles for the page builder */
+.ipsEditor__toolbar--hovering:not(#x) {
+	width: 100%;
+	margin-inline: 0;
+	bottom: 20px;
+	top: revert;
+}
+
+[data-role="toollist-wrap"] {
+	inset-inline-end: calc(100% + var(--i-hz-offset, 20px));
+}
+
+.cWidgetContainer__portal-menu {
+	padding: 1em;
+}
+[data-role="toollist-wrap"], .cWidgetContainer__portal-menu {
+	--i-hz-offset: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+
+[data-role="toollist-wrap"], .ipsEditor__toolbar--hovering:not(#x), .cWidgetContainer__portal-menu {
+	position: absolute;
+	z-index: calc(var(--ips-js-zindex-top) - 10); /* -10 so that the tooltips appear above the menu */
+}
+
+[data-role="toollist-wrap"] > [data-ipseditor-toollist], [data-role="toollist-wrap"] > .ipsEditor__global-messages > .ipsEditor__global-message, .ipsEditor__toolbar--hovering:not(#x), .cWidgetContainer__portal-menu {
+	outline: 2px solid var(--i-primary);
+	border-radius: var(--i-box--bo-ra);
+	background: var(--i-background_3);
+}
+
+[data-resize-active] .cWidgetContainer__portal-menu {
+	opacity: 0;
+}
+
+[data-mouse-down-drag-active] {
+	touch-action: none;
+}
+
+[data-mouse-down-drag-active] * {
+	cursor: var(--i-drag-cursor, move) !important;
+}
+
+/* Firefox: Prevent videos from playing when dragging to resize */
+.tiptap [data-attachment-type="video"][data-is-resizing] video{
+	pointer-events: none;
+}
+
+.cWidgetContainer__portal-menu [data-action='cancel'] {
+	background-color: var(--i-color_negative);
+	color: var(--i-primary-contrast);
+}
+
+[data-role="toollist-wrap"] > .ipsEditor__global-messages {
+	padding: 0;
+	order: -1;
+}
+[data-role="toollist-wrap"] .ipsComposeArea_dropZone {
+	margin: 0 !important;
+}
+
+.tiptap [data-drag-handle] {
+	cursor: move;
+}
+
+.tiptap [data-drag-handle]:is([data-is-resizing]) {
+	cursor: inherit;
+}
+
+/* Ensure videos can be resized without playing in Firefox */
+[data-is-resizing] *{
+	pointer-events: none;
+}
+
+/* The width options for images and attachments */
+.ipsEditor__toolbar-item--imagewidth {
+	width: max-content;
+}
+
+.ipsEditor__width-form {
+	display: grid;
+	min-width: 220px;
+	gap: 1em;
+	padding: 0.5em;
+	grid-auto-flow: row;
+}
+@container(max-width: 767px) {
+	.ipsEditor__width-form {
+		width: 80cqw;
+	}
+}
+
+.ipsEditor__width-form > div {
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	align-items: baseline;
+}
+
+.ipsEditor__width-form > div > * {
+	flex: 1 1 fit-content;
+}
+.ipsEditor__width-form [data-role="status-indicator"] {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	flex-direction: column;
+}
+.ipsEditor__width-form [data-role="status-indicator"] > .ipsLoading:not(#x)::before {
+	inset-inline-end: 0;
+	height: 1em;
+	width: 1em;
+	font-size: revert;
+}
+.ipsEditor__width-form [data-role="status-indicator"] .fa-solid.fa-check {
+	position: absolute;
+	color: var(--i-color_positive);
+	font-size: 0.75em;
+	bottom: -0.5lh;
+}
+
+.ipsEditor__width-form > [data-role="custom-width-wrap"] {
+	position: relative;
+}
+.ipsEditor__width-form > [data-role="custom-width-wrap"]::after {
+	position: absolute;
+	inset-inline-end: 35px;
+	display: block;
+	inset-block-end: 0.7em;
+	content: 'px';
+	color: var(--i-color_soft);
+}
+
+/* Right border to indicate the snap */
+.tiptap :where([data-is-resizing]).ipsRichText__align--width-fullwidth::after {
+	position: absolute;
+	content: "";
+	opacity: 0;
+	right: 0;
+	top: 0;
+	height: 100%;
+	background-color: var(--i-color_primary);
+	transition: opacity 0.1s ease 10ms;
+	width: 5px;
+}
+.tiptap .ipsRichText__align--width-fullwidth-snap::after {
+	display: block;
+	opacity: 0.7;
+}
+
+.tiptap .ipsRichText__align--width-fullwidth-snap.ipsRichText__align--width-fullwidth-snap-right::after {
+	left: 0;
+	right: revert;
+}
+
+.ipsRichText :is(.ipsRichText__align--width-custom, .ipsRichText__align--width-fullwidth)[data-node-view-wrapper] img {
+	width: 100%;
+	display: inline-block;
+}
+.tiptap .ipsRichText__align--inline[data-node-view-wrapper] > .ipsEditor__create-sibling-wrapper {
+	display: none;
+}
+.tiptap .ipsEditor__media-resize-handle {
+	display: block;
+	position: absolute;
+	bottom: -3px;
+	right: -3px;
+	height: 8px;
+	width: 8px;
+	outline: 1px solid var(--i-primary-contrast);
+	background: var(--i-primary);
+	cursor: nwse-resize;
+}
+	.tiptap .ipsEditor__media-resize-handle--nesw {
+		cursor: nesw-resize;
+		right: revert;
+		left: -3px;
+	}
+
+/* Text align can break the inline toolbars and menus */
+.tiptap :is(.ipsEditor__node-options--media, .ipsEditor__toolbar, .ipsEditor__toolbar-panel, .ipsEditor__toolbar-item) {
+	text-align: start;
+}
+
+/* MEDIA Embeds use their own variable for default width and max width */
+/*.tiptap .node-ipsEmbed:is([data-embed-type="video"], [data-embed-type="photo"], [data-embed-type="brightcove"]), */
+.tiptap .node-ipsEmbed:is([data-embed-type="video"], [data-embed-type="photo"], [data-embed-type="brightcove"]) > [data-node-view-wrapper] {
+	width: var(--i-media-width, 100%);
+	max-width: var(--i-embed-media-max-width, 100%);
+}
+
+/* Embed alignment */
+[data-role="embed-node-view-content-wrap"] {
+	display: contents;
+}
+
+.tiptap .node-ipsEmbed[data-alignment] {
+	display: flex;
+}
+
+.tiptap .node-ipsEmbed[data-alignment="center"] {
+	justify-content: center;
+}
+.tiptap .node-ipsEmbed[data-alignment="end"] {
+	justify-content: end;
+}
+
+.tiptap .node-ipsEmbed[data-alignment] .ipsEmbedded__wrap > *:not(#x) {
+	margin-block: 0;
+}
+
+/* When page editor is active, editors should be hidden */
+.cWidgetsManaging .ipsWidget__content--wrap :is(.ipsEditor, [data-ipseditorv5], .tiptap, .ipsEditor__tiptap-wrap, .ipsEditor__toolbar):not(#x, .ipsWidget__content--wrap--editing *) {
+	z-index: 0;
+	pointer-events: none;
+}
+.cWidgetsManaging .ipsWidget__content--wrap :is([data-role="mainEditorArea"].ipsLoading):not(#x, .ipsWidget__content--wrap--editing *)::before {
+	display: none;
+}
+
+/* Table Resize UI */
+.resize-cursor {
+	/* not 100% sure why but the official Tiptap demo includes cursor defined twice like this so we're rolling with it*/
+	cursor: ew-resize;
+	cursor: col-resize;
+}
+
+.column-resize-handle {
+	background-color: var(--i-primary);
+	bottom: calc(-2 * var(--i-ta--bo-wi));
+	position: absolute;
+	right: calc(-2 * var(--i-ta--bo-wi));
+	pointer-events: none;
+	top: 0;
+	width: clamp(3px, calc(4 * var(--i-ta--bo-wi)), 8px );
+	z-index:1; /* THe th/td following this element may overlap it */
+}
+
+.ipsEditor__table-wrapper {
+	position: relative;
+	width: min-content;
+	max-width:100%;
+}
+
+.ipsEditor__table-wrapper.ProseMirror-selectednode {
+	outline-offset: 3px;
+	max-width: 100%;
+}
+
+.ipsEditor__table-wrapper > .tableWrapper {
+	outline: none !important;
+}
+
+/* This is done with a psuedo element to not interrupt the existing styles and colors */
+.tiptap .ipsEditor__table-wrapper .selectedCell {
+	position: relative;
+}
+.tiptap .ipsEditor__table-wrapper .selectedCell::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	display: block;
+	z-index: 1;
+	background-color: oklch(from var(--i-color_primary) l c h / 0.1);
+}
+
+/* Space apart consecutive node content. There is a corresponding rule in 3-richtext.css to apply this style to the content outside the editor */
+:is(.node-ipsEmbed, .node-blockquote, .node-codeBlock) + :is(.node-blockquote, .node-codeBlock) > :is(.ipsCode, .ipsQuote),
+:is(.node-ipsEmbed, .node-blockquote, .node-codeBlock) + :is(.node-ipsEmbed) {
+	margin-top: 1em;
+}
+
+
+/* ! Drag Handles */
+.ipsEditor__node-drag-handle {
+	position: absolute;
+	cursor: move;
+}
+
+.ipsEditor__node-drag-handle:not(.ipsEditor__node-options *) {
+	inset-inline-end: 1em;
+	inset-block-start: 1em;
+}
+
+/* Firefox doesn't fire the drag event if the ::before pseudoelement (fa icon) is dragged, so this element sits inside the drag handle over top the icon. */
+.ipsEditor__node-drag-handle-overlay {
+	inset: 0;
+	position: absolute;
+	display: inline-block;
+}
+
+/* Latex equations inside the editor */
+i-latex-nodeview {
+	display: inline-block;
+}
+
+i-latex-nodeview [data-latex-source] {
+	background: var(--i-background_3);
+	padding: .2em .5em;
+	border-radius: 4px;
+	font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+	font-weight: normal;
+}
+
+i-latex-nodeview > i-latex:not(.iLatex--no-decoration) {
+	outline: 1px solid var(--i-primary);
+	padding: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.ipsEditor__drop-cursor {
+	z-index: calc(var(--ips-js-zindex-top) + 50) !important;
+	color: red !important;
+	opacity: 0.5;
+}

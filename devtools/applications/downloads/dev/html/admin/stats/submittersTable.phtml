@@ -1,0 +1,41 @@
+<ips:template parameters="$select, $pagination, $members, $total" />
+<div class="ipsBox">
+	<h1 class="ipsBox__header">{lang="downloads_stats_uploader_count" pluralize="$total"}</h1>
+	{{if trim( $pagination )}}
+		{$pagination|raw}
+	{{endif}}
+	{{if \count( $select )}}
+		<table class="ipsTable ipsTable_zebra">
+			<thead>
+				<tr>
+					<th width="60"></th>
+					<th>{lang="member"}</th>
+					<th>{lang="files"}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{foreach $select as $row}}
+					{{if isset( $members[ $row['file_submitter'] ] )}}
+						{{$member = \IPS\Member::constructFromData( $members[ $row['file_submitter'] ] );}}
+					{{else}}
+						{{$member = new \IPS\Member;}}
+					{{endif}}
+					<tr>
+						<td>{template="userPhoto" app="core" group="global" params="$member"}</td>
+						<td>{$member->link()|raw}</td>
+						<td>
+							{{if $member->member_id}}
+								<a href='{$member->url()->setQueryString( array( 'do' => 'content', 'type' => 'downloads_file' ) )}' target='_blank' rel='noopener'>{$row['files']}</a>
+							{{else}}
+								{$row['files']}
+							{{endif}}
+						</td>
+					</tr>
+				{{endforeach}}
+			</tbody>
+		</table>
+		{$pagination|raw}
+	{{else}}
+		<p class="ipsEmptyMessage">{lang="no_results"}</p>
+	{{endif}}
+</div>

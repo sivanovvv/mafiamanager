@@ -1,0 +1,6 @@
+<ips:template parameters="$package, $price, $active, $inactive" />
+<div class="ipsTree_row_cells i-margin-top_1">
+	<span class="ipsTree_row_cell i-color_soft"><a href="{url="app=nexus&module=subscriptions&controller=subscribers&nexus_sub_package_id={$package->id}&filter=nexus_subs_filter_active"}">{lang="nexus_sub_package_count_active" sprintf="$active"}</a></span>
+	<span class="ipsTree_row_cell i-color_soft"><a href="{url="app=nexus&module=subscriptions&controller=subscribers&nexus_sub_package_id={$package->id}&filter=nexus_subs_filter_inactive"}">{lang="nexus_sub_package_count_inactive" sprintf="$inactive"}</a></span>
+	<span class="ipsTree_row_cell i-color_soft">{$price}</span>
+</div>

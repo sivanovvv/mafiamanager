@@ -1,0 +1,63 @@
+/*
+	----------------
+	- Text
+	----------------
+*/
+
+.i-color_root{
+	--i-co: var(--i-color_root);
+	color: var(--i-co);
+}
+
+.i-color_soft{
+	--i-co: var(--i-color_soft);
+	color: var(--i-co);
+}
+
+.i-color_hard{
+	--i-co: var(--i-color_hard);
+	color: var(--i-co);
+}
+
+.i-color_positive{
+	--i-co: var(--i-color_positive);
+	color: var(--i-co);
+}
+
+.i-color_negative{
+	--i-co: var(--i-color_negative);
+	color: var(--i-co);
+}
+
+.i-color_issue,
+.i-color_warning{
+	--i-co: var(--i-color_warning);
+	color: var(--i-co);
+}
+
+.i-color_primary{
+	--i-co: var(--i-color_primary);
+	color: var(--i-co);
+}
+
+.i-color_secondary{
+	--i-co: var(--i-color_secondary);
+	color: var(--i-co);
+}
+
+.i-color_white{
+	--i-co: hsl(0 0% 100%);
+	color: var(--i-co);
+}
+
+.i-color_inherit,
+a.i-link-color_inherit,
+.i-link-color_inherit a{
+	color: inherit;
+}
+
+@supports (color: oklch(from var(--i) clamp(0, (.7 - l) * 1000, 1) c h)) and (color: oklch(from red l c h)){
+	.i-color_contrast{
+		color: oklch(from var(--_i-vs, var(--i-body--ba-co)) clamp(0, (.7 - l) * 1000, 1) c h);
+	}
+}

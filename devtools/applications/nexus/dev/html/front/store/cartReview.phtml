@@ -1,0 +1,31 @@
+<ips:template parameters="$package, $quantity, $upsell" />
+{template="pixel" app="core" group="global" params="array( 'AddToCart' => array( 'content_type' => 'product', 'content_ids' => array( $package->id ) ) )"}
+{{if \IPS\Request::i()->registerCheckout}}
+	<div class='i-text-align_center i-padding_3 i-color_soft i-font-size_2 ipsBox'>
+		{lang="package_added_to_cart" sprintf="$package->_title"}
+		<br><br>
+		<a href='{url="app=nexus&module=store&controller=cart" seoTemplate="store_cart"}' class='ipsButton ipsButton--primary'>{lang="continue_to_registration"}</a>
+	</div>
+{{else}}
+	<div data-controller="nexus.front.store.cartReview">
+	 	<div class='i-padding_3 i-text-align_center'>
+			<h3 class='i-font-weight_700 i-font-size_3 i-margin-bottom_2 i-color_positive'><i class='fa-regular fa-check-circle' aria-hidden="true"></i> {lang="product_added_to_cart"}</h3>
+			<h4 class='i-font-size_3 i-font-weight_700 i-color_hard'>{$package->_title}</h4>
+			<p class="i-color_soft i-font-weight_600">{lang="quantity"}: {$quantity}</p>
+		</div>
+		<div class='ipsSubmitRow ipsButtons'>
+			<button type="button" data-action='dialogClose' class='ipsButton ipsButton--soft'><i class="fa-solid fa-store" aria-hidden="true"></i> {lang="continue_shopping"}</button>
+			<a href='{url="app=nexus&module=store&controller=cart" seoTemplate="store_cart"}' title="{lang="review_cart_title"}" class='ipsButton ipsButton--primary'><i class="fa-solid fa-basket-shopping" aria-hidden="true"></i> {lang="review_and_checkout"}</a>
+		</div>
+		{{if \count( $upsell )}}
+			<h2 class='ipsTitle ipsTitle--h3 ipsTitle--padding'>{lang="related_products_you_might_like"}</h2>
+			<i-data>
+				<ul class='ipsData ipsData--featured ipsData--commerce-related-products'>
+					{{foreach $upsell as $upsellPackage}}
+						{template="packageBlock" group="store" params="$upsellPackage"}
+					{{endforeach}}
+				</ul>
+			</i-data>
+		{{endif}}
+	</div>
+{{endif}}

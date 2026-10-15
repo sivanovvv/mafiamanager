@@ -1,0 +1,66 @@
+<ips:template parameters="$currentCategory=NULL" />
+{{if !$currentCategory or !$currentCategory->club()}}
+	{{$categories = $currentCategory ? $currentCategory->children() : \IPS\downloads\Category::roots();}}
+	
+	{{$clubNodes = $currentCategory ? array() : ( \IPS\Settings::i()->club_nodes_in_apps ? \IPS\downloads\Category::clubNodes() : array() );}}
+	{{if !\IPS\downloads\Category::theOnlyNode() or $clubNodes}}
+	<div id='elDownloadsCategoriesBlock' class='ipsWidget ipsWidget--vertical'>
+		<h3 class='ipsWidget__header'>{{if $currentCategory}}{lang="subcategories"}{{else}}{lang="categories"}{{endif}}</h3>
+		<div class='ipsWidget__content i-padding_2'>
+			<div class='ipsSideMenu ipsSideMenu--truncate'>
+				<ul class='ipsSideMenu__list'>
+					{{foreach $categories as $category}}
+						{{if $category->open OR \IPS\Member::loggedIn()->isAdmin()}}
+							<li>
+								<a href="{$category->url()}" class='ipsSideMenu_item'>
+									<span class='ipsSideMenu__text'>{$category->_title}</span>
+									<span class='ipsBadge ipsBadge--soft'>{number="\IPS\downloads\File::contentCount( $category )"}</span>
+								</a>
+								{{if $category->hasChildren()}}
+									<ul class="ipsSideMenu__list">
+										{{foreach $category->children() as $idx => $subcategory}}
+											{{if $subcategory->open OR \IPS\Member::loggedIn()->isAdmin()}}
+												<li>
+													<a href="{$subcategory->url()}" class='ipsSideMenu_item'>
+														<span class='ipsSideMenu__text'>{$subcategory->_title}</span>
+														<span class='ipsBadge ipsBadge--soft'>{number="\IPS\downloads\File::contentCount( $subcategory )"}</span>
+													</a>
+												</li>
+											{{endif}}
+										{{endforeach}}
+									</ul>
+								{{endif}}
+							</li>
+						{{endif}}
+					{{endforeach}}
+					{{if $clubNodes}}
+						<li>
+							<a href="{url="app=downloads&module=downloads&controller=browse&id=clubs" seoTemplate="downloads_clubs"}" class='ipsSideMenu_item'>
+								<span class='ipsSideMenu__text'>{lang="club_node_downloads"}</span>
+								<span class='ipsBadge ipsBadge--soft'>{number="\IPS\downloads\Category::filesInClubNodes()"}</span>
+							</a>
+							<ul class="ipsSideMenu__list">
+								{{$i = 0;}}
+								{{foreach $clubNodes as $idx => $subcategory}}
+									{{if $subcategory->open OR \IPS\Member::loggedIn()->isAdmin()}}
+										<li>
+											<a href="{$subcategory->url()}" class='ipsSideMenu_item'>
+												<span class='ipsSideMenu__text'>{lang="club_node" sprintf="$subcategory->club()->name, $subcategory->_title"}</span>
+												<span class='ipsBadge ipsBadge--soft'>{number="\IPS\downloads\File::contentCount( $subcategory )"}</span>
+											</a>
+										</li>
+										{{$i++;}}
+									{{endif}}
+								{{endforeach}}
+							</ul>
+						</li>
+					{{endif}}
+				</ul>
+			</div>
+			<p>
+				<a href='{url="app=downloads&module=downloads&controller=browse&do=categories" seoTemplate="downloads_categories"}' class='ipsButton ipsButton--text i-width_100p'><span>{lang="browse_categories_d"}</span><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a>
+			</p>
+		</div>
+	</div>
+	{{endif}}
+{{endif}}

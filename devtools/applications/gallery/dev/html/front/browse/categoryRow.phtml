@@ -1,0 +1,60 @@
+<ips:template parameters="$table, $headers, $categories" />
+{{foreach $categories as $category}}
+	{{if $category->can('view')}}
+		<li class="ipsData__item {$category->ui( 'css' )}" {$category->ui( 'dataAttributes' )}>
+			<a href='{$category->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{{if settings.clubs and settings.club_nodes_in_apps and $club = $category->club()}}{lang="club_node" sprintf="$club->name, $category->_title"}{{else}}{$category->_title}{{endif}}</span></a>
+			<div class="ipsData__image" aria-hidden="true">
+				{{if $category->lastImage() && $category->lastImage()->media && !$category->cover_img_id}}
+					<video preload="metadata" loading="lazy"{{if $category->lastImage()->masked_file_name }} poster="{file="$category->lastImage()->masked_file_name" extension="gallery_Images"}"{{endif}}>
+						<source src="{file="$category->lastImage()->original_file_name" extension="gallery_Images"}{{if !$category->lastImage()->masked_file_name }}#t=1{{endif}}" type='{$category->lastImage()->file_type}' />
+					</video>
+				{{elseif $category->coverPhoto('small') !== NULL}}
+					<img src="{$category->coverPhoto('small')}" alt="" loading="lazy">
+				{{else}}
+					<span class='ipsIcon ipsIcon--fa' aria-hidden="true"><i class="fa-ips"></i></span>
+				{{endif}}
+				{{if $category->lastImage() && $category->lastImage()->media && !$category->cover_img_id}}
+					{template="nsfwOverlay" app="gallery" location="front" group="global" params="$category->lastImage()"}
+				{{elseif $category->coverPhoto('small') !== NULL}}
+					{template="nsfwOverlay" app="gallery" location="front" group="global" params="$category->coverPhotoObject()"}
+				{{endif}}
+			</div>
+			<div class="ipsData__content">
+				<div class="ipsData__main">
+					{{if settings.clubs and settings.club_nodes_in_apps and $club = $category->club()}}
+						<div class="ipsData__club"><a href="{$club->url()}">{$club->name}</a></div>
+					{{endif}}
+					<h2 class='ipsData__title'><a href='{$category->url()}'>{$category->_title}</a></h2>
+				</div>
+				<div class="ipsData__extra">
+					{{if $category->lastImage() !== NULL}}
+						<div class="ipsData__last">
+							{datetime="$category->lastImage()->date"}
+						</div>
+					{{endif}}
+					<ul class='ipsData__stats'>
+						{{if $category->allow_comments and $category->_commentsForDisplay}}
+							<li data-statType='comments'>
+								<span class='ipsData__stats-icon' data-stat-value="{$category->_commentsForDisplay}" aria-hidden="true" data-ipstooltip title='{lang="cat_comment_count" pluralize="$category->_commentsForDisplay"}'></span>
+								<span class='ipsData__stats-label'>{lang="cat_comment_count" pluralize="$category->_commentsForDisplay"}</span>
+							</li>
+						{{endif}}
+						{{if $category->allow_albums and $category->public_albums}}
+							<li data-statType='albums'>
+								<span class='ipsData__stats-icon' data-stat-value="{$category->public_albums}" aria-hidden="true" data-ipstooltip title='{lang="cat_album_count" pluralize="$category->public_albums"}'></span>
+								<span class='ipsData__stats-label'>{lang="cat_album_count" pluralize="$category->public_albums"}</span>
+							</li>
+						{{endif}}
+						{{$count = \IPS\gallery\Image::contentCount( $category );}}
+						{{if $count}}
+							<li data-statType='images'>
+								<span class='ipsData__stats-icon' data-stat-value="{number="$count"}" aria-hidden="true" data-ipstooltip title='{lang="cat_img_count" pluralize="$count"}'></span>
+								<span class='ipsData__stats-label'>{lang="cat_img_count" pluralize="$count"}</span>
+							</li>
+						{{endif}}
+					</ul>
+				</div>
+			</div>
+		</li>
+	{{endif}}
+{{endforeach}}

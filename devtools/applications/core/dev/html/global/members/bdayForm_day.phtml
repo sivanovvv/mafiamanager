@@ -1,0 +1,8 @@
+<ips:template parameters="$name, $value, $error=''" />
+
+<select class="ipsInput ipsInput--select" name="bday[day]">
+	<option value='0' {{if isset( $value['day'] ) and $value['day'] == 0 }}selected{{endif}}></option>
+	{{foreach range( 1, 31 ) as $day}}
+		<option value='{$day}' {{if isset( $value['day'] ) and $value['day'] == $day }}selected{{endif}}>{$day}</option>
+	{{endforeach}}
+</select>

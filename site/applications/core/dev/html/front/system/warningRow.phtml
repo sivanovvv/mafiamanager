@@ -1,0 +1,64 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li class="ipsData__item {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} ">
+		<div class='ipsData__icon'>
+			<a href="{url="app=core&module=system&controller=warnings&do=view&id={$row->member}&w={$row->id}" seoTemplate="warn_view" seoTitle="\IPS\Member::load( $row->member )->members_seo_name"}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsTooltip title='{lang="wan_action_points" pluralize="$row->points"}'>
+                <span class="ipsWarningPoints {{if $row->expire_date == 0}}ipsWarningPoints--removed{{endif}}">{$row->points}</span>
+			</a>
+		</div>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<h4 class='ipsData__title'>				
+					<a href='{$row->url()}' title='{lang="view_announcement"}' {{if $row->tableHoverUrl}}data-ipsHover{{endif}}>
+						{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}
+					</a>
+				</h4>
+				<ul class='ipsList ipsList--sep'>
+					{{if \IPS\Settings::i()->warnings_acknowledge}}
+						<li>
+							{{if $row->acknowledged}}
+								<strong class='i-color_positive'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="warning_acknowledged"}</strong>
+							{{else}}
+								<strong class='i-color_soft'><i class='fa-regular fa-circle' aria-hidden="true"></i> {lang="warning_not_acknowledged"}</strong>
+							{{endif}}
+						</li>
+					{{endif}}
+					<li class='i-color_soft'>{lang="warned_by" sprintf="\IPS\Member::load( $row->moderator )->name"}{datetime="$row->__get( $row::$databaseColumnMap['date'] )"}
+						{{if $row->expire_date > 0}}<em><strong>({lang="warning_expires" sprintf="\IPS\DateTime::ts( $row->expire_date )"})</em></strong>{{endif}}
+						{{if $row->expire_date == 0}}
+						<em><strong>{lang="warning_no_longer_active"}{{if $row->removed_on}} {lang="warning_expired_on" sprintf="\IPS\DateTime::ts( $row->removed_on )->relative()"}{{endif}}</em></strong>
+						{{endif}}
+					</li>
+				</ul>
+				{{if $row->note_member or ($row->note_mods and member.modPermission('mod_see_warn'))}}
+					<div class='ipsFluid i-margin-top_3'>
+						{{if $row->note_member}}
+							<div>
+								<strong class="i-color_hard i-font-weight_500">{lang="warn_member_note"}:</strong>
+								<div class="ipsRichText">{$row->note_member|raw}</div>
+							</div>
+						{{endif}}
+						{{if $row->note_mods and member.modPermission('mod_see_warn')}}
+							<div>
+								<strong class="i-color_hard i-font-weight_500">{lang="warn_mod_note"}:</strong>
+								<div class="ipsRichText">{$row->note_mods|raw}</div>
+							</div>
+						{{endif}}
+					</div>
+				{{endif}}
+			</div>
+			{{if $row->canDelete()}}
+				<div>
+					<a href="{$row->url('delete')->csrf()}" title='{lang="revoke_this_warning"}' data-action="revoke" class='ipsButton ipsButton--small ipsButton--inherit' data-ipsDialog data-ipsDialog-title='{lang="revoke_this_warning"}' data-ipsDialog-size='medium'><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> {lang="revoke_this_warning"}</a>
+				</div>
+			{{endif}}
+		</div>
+		{{if $table->canModerate()}}
+			<label class="ipsData__mod">
+				<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+				<input type='checkbox' data-role='moderation' name="moderate[{$row->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{{if !$row->active}}hidden{{endif}}' class="ipsInput ipsInput--toggle">
+			</label>
+		{{endif}}
+	</li>
+{{endforeach}}

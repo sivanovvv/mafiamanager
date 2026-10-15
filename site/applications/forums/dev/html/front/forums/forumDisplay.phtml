@@ -1,0 +1,115 @@
+<ips:template parameters="$forum, $table" />
+
+{{if $club = $forum->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $forum"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+{{if $forum->feature_color}}
+<style>
+	:root{
+		--i-featured: {$forum->feature_color};
+	}
+	@supports (color: hsl(from var(--i) h s 30%)) and (color: oklch(from red l c h)){
+		:root{
+			--i-color_featured: oklch(from {$forum->feature_color} var(--if-light, min(l, .45)) var(--if-dark, max(l, .8)) c h);
+		}
+	}
+</style>
+{{endif}}
+
+{{if !\IPS\Request::i()->advancedSearchForm}}
+	{{$followerCount = \IPS\forums\Topic::containerFollowerCount( $forum );}}
+	<header class="ipsPageHeader ipsBox ipsPull ipsPageHeader--topic-list {{if $forum->feature_color}}ipsPageHeader--hasFeatureColor{{endif}}" {{if $forum->feature_color}}style="--i-featured: {$forum->feature_color}"{{endif}}>
+		<div class="ipsPageHeader__row">
+			<div data-ips-hook="header" class='ipsPageHeader__primary'>
+				<h1 data-ips-hook="title" class='ipsPageHeader__title'>{$forum->_title}</h1>
+				{{if $forum->description}}
+					{template="richText" group="global" app="core" location="global" params="$forum->description, array('ipsPageHeader__desc')"}
+				{{endif}}
+				{{if \IPS\Platform\Bridge::i()->featureIsEnabled( 'live_full' )}}
+					<div data-controller='cloud.front.realtime.whosViewing' data-location='{expression="\IPS\cloud\Realtime::i()->getLocationHash()"}'></div>
+				{{endif}}
+			</div>
+			{{if $forum->sub_can_post and !$forum->password}}
+				<ul class='ipsButtons'>
+					{{if \IPS\Application::appIsEnabled('cloud')}}
+						<li>{template="analyticsButton" app="cloud" group="analytics" params="$forum, $forum->_id"}</li>
+					{{endif}}
+					<li>{template="follow" app="core" group="global" params="'forums','forum', $forum->_id, $followerCount"}</li>
+				</ul>
+			{{endif}}
+		</div>
+		{{if $forum->isCombinedView()}}
+			<div class='i-margin-block_2 ipsResponsive_hideDesktop'>
+				<ul data-ips-hook="buttons" class='ipsButtons ipsButtons--fill'>
+					<li>
+						<button type="button" class="ipsButton ipsButton--secondary ipsButton--small" data-ipsDialog data-ipsDialog-title='{lang="forums_simple_dialog_title"}' data-ipsDialog-content='#elFluidFormFilters'>
+							<i class="fa-solid fa-list-check" aria-hidden="true"></i><span data-role='fluidForumMobileDesc'>{lang="forums_simple_filter_by"}</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		{{endif}}
+		{{if $forum->show_rules == 1}}
+			<div class='ipsPageHeader__row'>
+				<a href="#elForumRules" class='ipsJS_show' data-ipsDialog data-ipsDialog-title="{lang="forums_forum_{$forum->id}_rulestitle"}" data-ipsDialog-content="#elForumRules">{lang="forums_forum_{$forum->id}_rulestitle"}</a>
+				<div id='elForumRules' class='ipsJS_hide i-background_2 i-padding_3'>
+					{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('forums_forum_' . $forum->id . '_rules'), array('')"}
+				</div>
+			</div>
+		{{elseif $forum->show_rules == 2}}
+			<div class='ipsPageHeader__row'>
+				<strong class='i-font-size_2 i-font-weight_600 i-margin-bottom_1 i-display_block'>{lang="forums_forum_{$forum->id}_rulestitle"}</strong>
+				{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('forums_forum_' . $forum->id . '_rules'), array('')"}
+			</div>
+		{{endif}}
+	</header>
+	{{if ! $forum->isCombinedView() and $forum->children()}}
+		<div data-ips-hook="subForums" class='ipsBox ipsBox--forum-categories ipsPull' data-controller='core.global.core.table, forums.front.forum.forumList' data-baseURL=''>
+			<h2 class='ipsBox__header'>{{if $forum->sub_can_post}}{lang="subforums_header"}{{else}}{lang="subforums_header_category"}{{endif}}</h2>
+			<div class='ipsBox__content'>
+				{{if \IPS\Member::loggedIn()->getLayoutValue('forums_forum') === 'grid'}}
+					<i-data>
+						<ol class="ipsData ipsData--grid ipsData--forum-grid">
+							{{foreach $forum->children( 'view' ) as $childforum}}
+								{template="forumGridItem" group="index" app="forums" params="$childforum"}
+							{{endforeach}}
+						</ol>
+					</i-data>
+				{{else}}
+					<i-data>
+						<ol class="ipsData ipsData--table ipsData--category ipsData--forum-category">
+							{{foreach $forum->children( 'view' ) as $childforum}}
+								{template="forumRow" group="index" app="forums" params="$childforum, TRUE"}
+							{{endforeach}}
+						</ol>
+					</i-data>
+				{{endif}}
+			</div>			
+		</div>
+	{{endif}}
+{{endif}}
+<div data-controller="forums.front.forum.forumPage{{if \IPS\Platform\Bridge::i()->featureIsEnabled( 'live_full' )}},cloud.front.realtime.viewingProvider{{endif}}">
+	{template="forumButtons" group="forums" params="$forum"}
+	{$table|raw}
+</div>
+{{if \IPS\Member::loggedIn()->member_id || !\IPS\Request::i()->advancedSearchForm && $forum->sub_can_post}}
+	<div class='ipsPageActions ipsBox ipsBox--forumsDisplayActions i-padding_2 ipsPull ipsResponsive_showPhone'>
+		{{if \IPS\Application::appIsEnabled('cloud')}}
+			{template="analyticsButton" app="cloud" group="analytics" params="$forum, $forum->_id"}
+		{{endif}}
+		{{if \IPS\Member::loggedIn()->member_id}}
+			<a href="{$forum->url()->setQueryString( array( 'do' => 'markRead', 'fromForum' => 1 ) )->csrf()}" title='{lang="mark_forum_read_title"}' class='ipsButton ipsButton--inherit'><i class="fa-solid fa-check" aria-hidden="true"></i><span>{lang="mark_forum_read"}</span></a>
+		{{endif}}
+		{{if !\IPS\Request::i()->advancedSearchForm && $forum->sub_can_post and !$forum->password}}
+			{template="follow" app="core" group="global" params="'forums','forum', $forum->_id, $followerCount"}
+		{{endif}}
+	</div>
+{{endif}}
+
+{{if $forum->club()}}
+	</div>
+{{endif}}

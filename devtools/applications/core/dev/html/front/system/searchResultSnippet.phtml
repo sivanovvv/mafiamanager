@@ -1,0 +1,22 @@
+<ips:template parameters="$indexData, $itemData=null" />
+<div class='ipsStreamItem__content-content ipsStreamItem__content-content--core'>
+	{{if trim( $indexData['index_content'] ) !== ''}}
+		<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+			{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+		</div>
+	</div>
+{{endif}}
+{{if isset( $itemData['attachedImages'] )}}
+    <div>
+        <div class='ipsGrid i-gap_1 i-basis_60 i-margin-top_2' data-controller="core.front.core.lightboxedImages">
+            {{foreach $itemData['attachedImages'] as $image }}
+                {{$imagePath = $image['thumb_location'] ?: $image['location'];}}
+                <div>
+                    <a class='ipsThumb' href='{file="$image['location']" extension="$image['extension']"}' {{if $image['labels']}}title="{lang="alt_label_could_be"} {$image['labels']}"{{endif}} data-ipsLightbox {{if $image['labels']}}title="{lang="alt_label_could_be"} {$image['labels']}"{{endif}} data-ipsLightbox-group='g{$indexData['index_class_type_id_hash']}'>
+                        <img src='{file="$imagePath" extension="$image['extension']"}' {{if $image['labels']}}alt="{lang="alt_label_could_be"} {$image['labels']}"{{else}}alt=""{{endif}} loading="lazy">
+                    </a>
+                </div>
+            {{endforeach}}
+        </div>
+    </div>
+{{endif}}

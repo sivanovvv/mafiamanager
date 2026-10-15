@@ -1,0 +1,23 @@
+<ips:template parameters="$comment, $event" />
+
+<div class='i-flex i-align-items_center i-gap_2'>
+	{{$date = ( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) == NULL ) ? $event->lastOccurrence() : $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' );}}
+	<div class='i-flex_00 i-basis_50'>
+		<time datetime='{$date->mysqlDatetime()}' class='ipsCalendarDate'>
+			<span class='ipsCalendarDate__month'>{$date->monthNameShort}</span>
+			<span class='ipsCalendarDate__date'>{$date->mday}</span>
+		</time>
+	</div>
+	<div class='i-flex_11'>
+		<h3 class='ipsTitle ipsTitle--h3'><a href='{$event->url( "getPrefComment" )}'title='{lang="view_this_event" sprintf="$event->title"}'>{$event->title}</a></h3>
+		<div class='i-color_soft i-link-color_inherit i-flex i-align-items_center i-flex-wrap_wrap i-gap_2'>
+			<a href='{$event->container()->url()}'>{$event->container()->_title}</a>
+			{{if $event->container()->allow_comments}}
+				<span><i class='fa-regular fa-comment i-color_soft i-margin-start_2' aria-hidden="true"></i> {$event->comments}</span>
+			{{endif}}
+			{{if $event->container()->allow_reviews}}
+				{template="rating" group="global" location="front" app="core" params="'large', $event->rating, \IPS\Settings::i()->reviews_rating_out_of"} &nbsp;&nbsp;
+			{{endif}}
+		</div>
+	</div>
+</div>

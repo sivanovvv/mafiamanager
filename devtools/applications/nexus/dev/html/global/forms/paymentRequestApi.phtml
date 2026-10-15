@@ -1,0 +1,7 @@
+<ips:template parameters="$field, $gateway, $key, $country, $invoice, $currency, $amountAsCents, $amount" />
+<div data-controller="nexus.global.gateways.stripepaymentrequest" data-id="{$gateway->id}" data-key="{$key}" data-country="{$country}" data-currency="{$currency}" data-amount="{$amount}" data-amountAsCents="{$amountAsCents}" data-invoice="{$invoice->id}" id="{$field->htmlId}">
+	<noscript>
+		<div class="ipsMessage ipsMessage--error">{lang="card_requires_js"}</div>
+	</noscript>
+	<div id="paymentrequest-{$field->htmlId}">
+</div>

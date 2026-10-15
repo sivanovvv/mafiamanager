@@ -1,0 +1,23 @@
+<ips:template parameters="$name, $value, $options" />
+{{foreach \IPS\nexus\Money::currencies() as $currency}}
+	{{$decimals = \IPS\nexus\Money::numberOfDecimalsForCurrency( $currency );}}
+	<input type="number" name="{$name}[{$currency}]" size="4" value="{{if isset($value[$currency]) AND $value !== '*'}}{expression="number_format( \is_object( $value[$currency] ) ? (string) $value[$currency]->amount : $value[$currency], $decimals, '.', '' )"}{{endif}}" class="ipsInput ipsInput--text ipsField_short" step="{expression="number_format(1/pow(10,$decimals),$decimals,'.','')"}"> {$currency}
+		<br>
+{{endforeach}}
+{{if $options['unlimitedLang'] !== NULL}}
+	&nbsp;
+	{lang="or"}
+	&nbsp;
+	<input
+		type="checkbox"
+		role='checkbox'
+		data-control="unlimited {{if !empty($options['unlimitedTogglesOn']) OR !empty($options['unlimitedTogglesOff'])}}toggle{{endif}}"
+		name="{$name}[__unlimited]"
+		value="1"
+		{{if $value === '*'}}checked{{endif}}
+		id="{$name}-unlimitedCheck"
+		{{if !empty($options['unlimitedTogglesOn'])}} data-togglesOn="{expression="implode( ',', $options['unlimitedTogglesOn'] )"}" aria-controls="{expression="implode( ',', $options['unlimitedTogglesOn'] )"}"{{endif}}
+		{{if !empty($options['unlimitedTogglesOff'])}} data-togglesOff="{expression="implode( ',', $options['unlimitedTogglesOff'] )"}" aria-controls="{expression="implode( ',', $options['unlimitedTogglesOff'] )"}"{{endif}}
+	> <label for='{$name}-unlimitedCheck'>{lang="$options['unlimitedLang']"}</label>
+	<br>
+{{endif}}

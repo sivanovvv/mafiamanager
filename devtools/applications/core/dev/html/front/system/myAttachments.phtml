@@ -1,0 +1,42 @@
+<ips:template parameters="$files, $used" />
+<header class="ipsPageHeader ipsPageHeader--my-attachments">
+	<h1 class="ipsPageHeader__title">{lang="my_attachments"}</h1>
+</header>
+{{if member.group['g_attach_max'] > 0}}
+	<div class='i-background_2 i-padding_3'>
+		<p>{lang="my_attachments_blurb" sprintf="\IPS\Output\Plugin\Filesize::humanReadableFilesize( $used ), \IPS\Output\Plugin\Filesize::humanReadableFilesize( \IPS\Member::loggedIn()->group['g_attach_max'] * 1024 )"}</p>
+	</div>
+{{endif}}
+{{if empty($files)}}
+	<div class='i-padding_3 i-background_2'>
+		{lang="my_attachments_empty"}
+	</div>
+{{else}}
+	<i-data>
+		<div class="ipsData ipsData--table ipsData--attachments">
+			{{foreach $files as $url => $file}}
+				{{$id = mb_substr( $url, mb_strrpos( $url, '=' ) + 1 );}}
+				<div class='ipsData__item'>
+					{{if \in_array( mb_strtolower( mb_substr( $file->filename, mb_strrpos( $file->filename, '.' ) + 1 ) ), \IPS\Image::supportedExtensions() )}}
+						<a href="{$file}" class='ipsData__image' aria-hidden="true" tabindex="-1"><img src="{$file}" alt='' data-ipsLightbox data-ipsLightbox-group="myAttachments" loading="lazy"></a>
+					{{else}}
+						<div class="ipsData__image" aria-hidden="true"><i class='fa-solid fa-{expression="\IPS\File::getIconFromName( $file->originalFilename )"}' aria-hidden="true"></i></div>
+					{{endif}}
+					<div class='ipsData__content'>
+						<div class='ipsData__main' data-action='selectFile'>
+							<h2 class='ipsData__title'>{$file->originalFilename}</h2>
+							<p class='ipsData__meta'>
+								{filesize="$file->filesize()"}
+							</p>
+						</div>
+						<ul class='ipsButtons'>
+							<li>
+								<a href='{url="app=core&module=system&controller=attachments&do=view&id={$id}" seoTemplate="attachments"}' class='ipsButton ipsButton--small ipsButton--inherit ipsButton--icon' data-ipsTooltip title='{lang="my_attachments_view"}'><i class='fa-solid fa-magnifying-glass' aria-hidden="true"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			{{endforeach}}
+		</div>
+	</i-data>
+{{endif}}

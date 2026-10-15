@@ -1,0 +1,21 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{$currentTimestamp = null;}}
+{{foreach $rows as $row}}
+	{{if $currentTimestamp != $row['log_date']->format('n') . '|' . $row['log_date']->format('Y')}}
+		<li class='cMemberHistory_date'>
+			{$row['log_date']->strFormat('%B')} {$row['log_date']->strFormat('%Y')}
+		</li>
+		{{$currentTimestamp = $row['log_date']->format('n') . '|' . $row['log_date']->format('Y');}}
+	{{endif}}
+	<li class=''>
+		<div class='cMemberHistory_info'>
+			<div class="i-color_hard i-font-weight_500 i-link-text-decoration_underline">{$row['log_data']|raw}</div>
+			<span class='i-color_soft i-link-color_inherit i-flex i-justify-content_space-between'>
+				<span>{$row['log_date']->html()|raw}</span>
+				{{if $row['log_ip_address'] and member.hasAcpRestriction( 'core', 'members', 'membertools_ip' )}}
+					<span>{$row['log_ip_address']|raw}</span>
+				{{endif}}
+			</span>
+		</div>
+	</li>
+{{endforeach}}

@@ -1,0 +1,2 @@
+<ips:template parameters="$purchase, $number=FALSE, $icon=FALSE, $shortName=FALSE" />
+{{if $icon}}<i class="fa-solid fa-box-archive" aria-hidden="true"></i> {{endif}}<a href='{$purchase->acpUrl()}' data-ipsHover data-ipsHover-target="{$purchase->acpUrl()->setQueryString( 'hovercard', 1 )}">{{if $number}}{lang="purchase_number" sprintf="$purchase->id"}{{elseif $shortName}}{$purchase->_name}{{else}}{$purchase->name}{{endif}}</a>

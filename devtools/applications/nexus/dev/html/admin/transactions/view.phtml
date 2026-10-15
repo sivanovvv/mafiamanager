@@ -1,0 +1,853 @@
+<ips:template parameters="$transaction" />
+
+<div class='ipsColumns'>
+	<div class='ipsColumns__secondary i-basis_280'>
+		<div class="ipsBox i-text-align_center i-padding_3 i-position_sticky-top" style="--_i-sticky-margin: 15px">
+			<h2 class='ipsMinorTitle'>{lang="transaction_total"}</h2>
+			<span class="i-font-size_6">{$transaction->amount}</span>
+			{{if $transaction->status === $transaction::STATUS_PART_REFUNDED}}
+				{{if $transaction->partial_refund->amount->isGreaterThanZero()}}
+					<div class="i-margin-top_1">
+						<h2 class='ipsMinorTitle'>{lang="amount_refunded"}</h2>
+						<span class="i-font-size_2">{$transaction->partial_refund}</span>
+					</div>
+				{{endif}}
+				{{if $transaction->credit->amount->isGreaterThanZero()}}
+					<div class="i-margin-top_1">
+						<h2 class='ipsMinorTitle'>{lang="amount_credited"}</h2>
+						<span class="i-font-size_2">{$transaction->credit}</span>
+					</div>
+				{{endif}}
+			{{endif}}
+			<hr class='ipsHr'>
+
+			<ul class='ipsButtons ipsButtons--view-transaction'>
+				{{foreach $transaction->buttons('v') as $k => $button}}
+					<li>
+						<a href='{$button['link']}' class='ipsButton ipsButton--wide {{if $k === 'approve'}}ipsButton--positive{{elseif $k === 'void'}} ipsButton--negative{{elseif $k === 'delete'}}ipsButton--text{{else}} ipsButton--inherit{{endif}}' {{if isset( $button['data'] )}}{{foreach $button['data'] as $k => $v}}data-{$k}="{$v}"{{endforeach}}{{endif}}><i class='fa-solid fa-{$button['icon']}' aria-hidden="true"></i> {lang="$button['title']"}</a>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+
+	</div>
+
+	<div class='ipsColumns__primary'>
+
+		<div class="ipsMessage i-margin-bottom_1 {{if $transaction->status == \IPS\nexus\Transaction::STATUS_PAID}}ipsMessage--success{{elseif $transaction->status == \IPS\nexus\Transaction::STATUS_HELD}}ipsMessage--warning{{elseif $transaction->status == \IPS\nexus\Transaction::STATUS_REVIEW}}ipsMessage--warning{{elseif $transaction->status == \IPS\nexus\Transaction::STATUS_REFUSED or $transaction->status == \IPS\nexus\Transaction::STATUS_DISPUTED}}ipsMessage--error{{else}}ipsMessage--info{{endif}}">
+			{{if $transaction->auth and \in_array( $transaction->status, array( \IPS\nexus\Transaction::STATUS_HELD, \IPS\nexus\Transaction::STATUS_REVIEW ) )}}
+				{lang="tstatus_{$transaction->status}_nc_desc"}
+			{{else}}
+				{lang="tstatus_{$transaction->status}_desc"}
+			{{endif}}
+		</div>		
+
+		{{if isset( $transaction->extra['admin'] )}}
+			<div class='ipsMessage ipsMessage--info i-margin-bottom_1'>
+				{lang="transaction_admin_manual" sprintf="\IPS\Member::load( $transaction->extra['admin'] )->name"}
+			</div>
+		{{endif}}
+
+		{{if $transaction->fraud}}
+            {{if $transaction->fraud->id}}
+                <div class='ipsBox i-margin-bottom_1'>
+                    <h2 class='ipsBox__header'>{lang="maxmind_title"}</h2>
+                    <div class='i-padding_3'>
+                        {{if $errorMessage = $transaction->fraud->error()}}
+                        <div class='ipsMessage ipsMessage--error'>
+                            <h3 class='ipsMessage__title'>{lang="error_from_maxmind"}</h3>
+                            <p>
+                                {$transaction->fraud->error}
+                            </p>
+                        </div>
+                        {{else}}
+                        {{if $warning = $transaction->fraud->warning()}}
+                        <div class='ipsMessage ipsMessage--error'>
+                            <h3 class='ipsMessage__title'>{lang="warning_from_maxmind"}</h3>
+                            <p>
+                                {$transaction->fraud->error}
+                            </p>
+                        </div>
+                        {{endif}}
+                        {{endif}}
+                        {{if !$errorMessage}}
+                        <div class="i-margin-bottom_3 i-flex">
+                            <h3 class='cTransactionFraud_riskScore {{if $transaction->fraud->risk_score > 80}}i-color_warning{{endif}}'>{$transaction->fraud->risk_score}%</h3>
+                            <p class='cTransactionFraud_riskInfo i-flex_11'>
+                                <span class='i-font-size_2'>{lang="possibility_of_fraud"}</span><br>
+                                <span class='i-color_soft'>{lang="checked_by_maxmind"}</span>
+                            </p>
+                        </div>
+
+                        <div class='ipsSpanGrid'>
+                            <div class='ipsSpanGrid__4 i-background_1'>
+                                <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_geo_ip"}</h3>
+                                <div class='i-padding_3'>
+                                    {{if $transaction->fraud->ip_address['location']['latitude'] AND $transaction->fraud->ip_address['location']['longitude']}}
+                                        {{if \IPS\GeoLocation::enabled()}}
+                                            {{$map = \IPS\GeoLocation::getByLatLong( $transaction->fraud->ip_address['location']['latitude'], $transaction->fraud->ip_address['location']['longitude'] )->map()->render( 600, 200 );}}
+                                            <div class="i-padding_2">{$map|raw}</div>
+                                        {{else}}
+                                            <p>{$transaction->fraud->ip_address['location']['latitude']},{$transaction->fraud->ip_address['location']['longitude']}</p>
+                                        {{endif}}
+                                    {{endif}}
+                                    <p class="i-margin-top_1">{lang="maxmind_distance" sprintf="$transaction->fraud->billing_address['distance_to_ip_location']"}</p>
+                                    <p class="i-font-size_-1 i-color_soft">{{if $transaction->fraud->ip_address['location']['accuracy_radius']}}{lang="maxmind_ip_accuracyRadius" sprintf="$transaction->fraud->ip_address['location']['accuracy_radius']"}{{else}}{lang="maxmind_distance_estimated"}{{endif}}</p>
+
+                                    <ul class='i-margin-bottom_1 cTransactionFraud_geoip i-margin-top_1'>
+                                        {{if isset( $transaction->fraud->ip_address['city'] )}}
+                                        <li>
+                                                    <span {{if $transaction->fraud->ip_address['city']['confidence']}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_address['city']['confidence']"}' data-ipsTooltip{{endif}}>
+                                                        {$transaction->fraud->ip_address['city']['names']['en']}
+                                                    </span>
+                                            {{if isset( $transaction->fraud->ip_address['location']['metro_code'] )}}<span class='i-color_soft'>({$transaction->fraud->ip_address['location']['metro_code']})</span>{{endif}}
+                                        </li>
+                                        {{endif}}
+                                        {{if $transaction->fraud->ip_postalCode}}
+                                            <li>
+                                                <span {{if $transaction->fraud->ip_address['postal']['confidence']}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_address['postal']['confidence']"}' data-ipsTooltip{{endif}}>
+                                                    {{if $transaction->fraud->ip_address['postal']['code']}}{$transaction->fraud->ip_address['postal']['code']}{{endif}}
+                                                </span>
+                                            </li>
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->ip_address['country'] )}}
+                                            <li>
+                                                <span {{if $transaction->fraud->ip_address['country']['confidence']}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_countryConf"}' data-ipsTooltip{{endif}}>
+                                                    {lang="country-{$transaction->fraud->ip_address['country']['iso_code']}"}
+                                                </span>
+                                            </li>
+                                        {{endif}}
+                                    </ul>
+
+                                    <ul class='cTransactionFraud'>
+                                        {{if isset( $transaction->fraud->billing_address['is_in_ip_country'] )}}
+                                            {{if $transaction->fraud->billing_address['is_in_ip_country']}}
+                                            <li class='cTransactionFraud_positive'>
+                                                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                                <p>{lang="maxmind_countryMatch_y"}</p>
+                                            </li>
+                                            {{else}}
+                                            <li class='cTransactionFraud_negative'>
+                                                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                                                <p>{lang="maxmind_countryMatch_n"}</p>
+                                            </li>
+                                            {{endif}}
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->ip_address['country']['is_high_risk'] ) and $transaction->fraud->ip_address['country']['is_high_risk']}}
+                                            <li class='cTransactionFraud_negative'>
+                                                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                                                <p>{lang="maxmind_highRiskCountry_y"}</p>
+                                            </li>
+                                        {{else}}
+                                            <li class='cTransactionFraud_positive'>
+                                                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                                <p>{lang="maxmind_highRiskCountry_n"}</p>
+                                            </li>
+                                        {{endif}}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='ipsSpanGrid__4 i-background_1'>
+                                <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_ip"}</h3>
+                                <div class='i-padding_3'>
+                                    <div class="ipsProgress">
+                                        <div class="ipsProgress__progress {{if $transaction->fraud->ip_address['risk'] > 75}}ipsProgress__progress--warning{{endif}}" style="width: {$transaction->fraud->ip_address['risk']}%">{$transaction->fraud->ip_address['risk']}%</div>
+                                    </div>
+                                    <p class='i-font-size_1 i-margin-top_1'>{lang="maxmind_proxyScore"}</p>
+                                    <p class='i-font-size_-1 i-color_soft'>{lang="maxmind_proxyScore_desc"}</p>
+
+                                    <ul class='cTransactionFraud i-margin-top_1'>
+                                        {{if isset( $transaction->fraud->ip_address['traits']['is_anonymous_proxy'] ) and $transaction->fraud->ip_address['traits']['is_anonymous_proxy']}}
+                                            <li class='cTransactionFraud_negative'>
+                                                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                <p>
+                                                    <span class='cTransactionFraud_geoInfo' title="{lang="maxmind_anonymousProxy_desc"}" data-ipsTooltip>
+                                                    {lang="maxmind_anonymousProxy_y"}
+                                                    </span>
+                                                </p>
+                                            </li>
+                                        {{else}}
+                                            <li class='cTransactionFraud_success'>
+                                                <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                                <p>
+                                                    <span class='cTransactionFraud_geoInfo' title="{lang="maxmind_anonymousProxy_desc"}" data-ipsTooltip>
+                                                    {lang="maxmind_anonymousProxy_n"}
+                                                    </span>
+                                                </p>
+                                            </li>
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->ip_address['traits']['is_tor_exit_node'] ) and $transaction->fraud->ip_address['traits']['is_tor_exit_node']}}
+                                        <li class='cTransactionFraud_negative'>
+                                            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                            <p>
+                                                <span class='cTransactionFraud_geoInfo' title="{lang="maxmind_torExit_desc"}" data-ipsTooltip>
+                                                {lang="maxmind_torExit_y"}
+                                                </span>
+                                            </p>
+                                        </li>
+                                        {{else}}
+                                        <li class='cTransactionFraud_success'>
+                                            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                            <p>
+                                                <span class='cTransactionFraud_geoInfo' title="{lang="maxmind_torExit_desc"}" data-ipsTooltip>
+                                                {lang="maxmind_torExit_n"}
+                                                </span>
+                                            </p>
+                                        </li>
+                                        {{endif}}
+
+                                        {{if isset( $transaction->fraud->ip_address['traits']['isp'] )}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                            <p>
+                                                {lang="maxmind_ip_isp"}: {$transaction->fraud->ip_address['traits']['isp']}
+                                                {{if $transaction->fraud->ip_address['traits']['organization'] and $transaction->fraud->ip_address['traits']['organization'] != $transaction->fraud->ip_address['traits']['isp']}}
+                                                <br><span class="i-color_soft i-font-size_-1">({$transaction->fraud->ip_address['traits']['organization']})</span>
+                                                {{endif}}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->ip_address['traits']['user_type'] )}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                            <p>
+                                                {lang="maxmind_ip_userType_{$transaction->fraud->ip_address['traits']['user_type']}"}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->ip_address['traits']['organization'] )}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                            <p>
+                                                {lang="maxmind_ip_timeZone"}: {$transaction->fraud->ip_address['location']['time_zone']}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                        {{if $transaction->fraud->ip_domain}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                            <p>
+                                                {lang="maxmind_ip_domain"}: {$transaction->fraud->ip_domain}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->ip_address['traits']['autonomous_system_number'] )}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                            <p>
+                                                {lang="maxmind_ip_asnum"}: {$transaction->fraud->ip_address['traits']['autonomous_system_number']}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class='ipsSpanGrid__4 i-background_1'>
+                                {{if $transaction->fraud->credit_card}}
+                                <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_card_issuer"}</h3>
+                                <div class='i-padding_3'>
+                                    {{if isset( $transaction->fraud->credit_card['issuer']['name'] )}}
+                                    <p class='i-font-size_2'>
+                                        <strong>{$transaction->fraud->credit_card['issuer']['name']}</strong>
+                                    </p>
+                                    {{if isset( $transaction->fraud->credit_card['country'] ) || isset( $transaction->fraud->credit_card['issuer']['phone_number'] )}}
+                                    <ul class='cTransactionFraud i-margin-top_1'>
+                                        {{if isset( $transaction->fraud->credit_card['country'] )}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+                                            <p>
+                                                {lang="country-{$transaction->fraud->credit_card['country']}"}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                        {{if isset( $transaction->fraud->credit_card['issuer']['phone_number'] )}}
+                                        <li class='cTransactionFraud_neutral'>
+                                            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                                            <p>
+                                                {$transaction->fraud->credit_card['issuer']['phone_number']}
+                                            </p>
+                                        </li>
+                                        {{endif}}
+                                    </ul>
+                                    {{endif}}
+                                    {{endif}}
+                                </div>
+                                {{endif}}
+
+                                <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_customer_information"}</h3>
+                                <div class='i-padding_3'>
+                                    <ul class='cTransactionFraud'>
+                                        {{foreach array( 'disposable', 'free', 'high_risk' ) as $k}}
+                                        {{if !$transaction->fraud->email['is_' . $k]}}
+                                        <li class='cTransactionFraud_positive'>
+                                            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                            <p>{lang="maxmind_{$k}_n"}</p>
+                                        </li>
+                                        {{else}}
+                                        <li class='cTransactionFraud_negative'>
+                                            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                            <p>{lang="maxmind_{$k}_y"}</p>
+                                        </li>
+                                        {{endif}}
+                                        {{endforeach}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class='ipsHr'>
+                        <p class='i-font-size_1 i-color_soft'>
+                            {lang="maxmind_footer_insights" sprintf="$transaction->fraud->id"} ({lang="maxmind_queries" sprintf="$transaction->fraud->queries_remaining"})
+                        </p>
+                        {{endif}}
+                    </div>
+                </div>
+            {{else}}
+                <div class='ipsBox i-margin-bottom_1'>
+                    <h2 class='ipsBox__header'>{lang="maxmind_title"}</h2>
+                    <div class='i-padding_3'>
+                        {{if $errorMessage = $transaction->fraud->error()}}
+                        <div class='ipsMessage ipsMessage--error'>
+                            <h3 class='ipsMessage__title'>{lang="error_from_maxmind"}</h3>
+                            <p>
+                                {$transaction->fraud->error}
+                            </p>
+                        </div>
+                        {{else}}
+                            {{if $warning = $transaction->fraud->warning()}}
+                            <div class='ipsMessage ipsMessage--error'>
+                                <h3 class='ipsMessage__title'>{lang="warning_from_maxmind"}</h3>
+                                <p>
+                                    {$transaction->fraud->error}
+                                </p>
+                            </div>
+                            {{endif}}
+                        {{endif}}
+                        {{if !$errorMessage}}
+                            <div class="i-margin-bottom_3 i-flex">
+                                {{if $transaction->fraud->riskScore !== NULL}}
+                                    <h3 class='cTransactionFraud_riskScore {{if $transaction->fraud->riskScore > 80}}i-color_warning{{endif}}'>{$transaction->fraud->riskScore}%</h3>
+                                {{else}}
+                                    <h3 class='cTransactionFraud_riskScore {{if $transaction->fraud->score > 8}}i-color_warning{{endif}}'>{expression="round( $transaction->fraud->score * 10 )"}%</h3>
+                                {{endif}}
+                                <p class='cTransactionFraud_riskInfo i-flex_11'>
+                                    <span class='i-font-size_2'>{lang="possibility_of_fraud"}</span><br>
+                                    <span class='i-color_soft'>{lang="checked_by_maxmind"}</span>
+                                </p>
+                            </div>
+
+                            <div class='ipsSpanGrid'>
+                                <div class='ipsSpanGrid__4 i-background_1'>
+                                    <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_geo_ip"}</h3>
+                                    <div class='i-padding_3'>
+                                        {{if $transaction->fraud->ip_latitude AND $transaction->fraud->ip_longitude}}
+                                            {{if \IPS\GeoLocation::enabled()}}
+                                                {{$map = \IPS\GeoLocation::getByLatLong( $transaction->fraud->ip_latitude, $transaction->fraud->ip_longitude )->map()->render( 600, 200 );}}
+                                                <div class="i-padding_2">{$map|raw}</div>
+                                            {{else}}
+                                                <p>{$transaction->fraud->ip_latitude},{$transaction->fraud->ip_longitude}</p>
+                                            {{endif}}
+                                        {{endif}}
+                                        <p class="i-margin-top_1">{lang="maxmind_distance" sprintf="$transaction->fraud->distance"}</p>
+                                        <p class="i-font-size_-1 i-color_soft">{{if $transaction->fraud->ip_accuracyRadius}}{lang="maxmind_ip_accuracyRadius" sprintf="$transaction->fraud->ip_accuracyRadius"}{{else}}{lang="maxmind_distance_estimated"}{{endif}}</p>
+
+                                        <ul class='i-margin-bottom_1 cTransactionFraud_geoip i-margin-top_1'>
+                                            <li>
+                                                <span {{if $transaction->fraud->ip_cityConf}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_cityConf"}' data-ipsTooltip{{endif}}>
+                                                    {$transaction->fraud->ip_city}
+                                                </span>
+                                                {{if isset( $transaction->fraud->ip_metroCode )}}<span class='i-color_soft'>({$transaction->fraud->ip_metroCode})</span>{{endif}}
+                                            </li>
+                                            {{if $transaction->fraud->ip_regionName || $transaction->fraud->ip_region || $transaction->fraud->ip_postalCode}}
+                                                <li>
+                                                    {{if $transaction->fraud->ip_regionName || $transaction->fraud->ip_region}}
+                                                        <span {{if $transaction->fraud->ip_regionConf}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_regionConf"}' data-ipsTooltip{{endif}}>
+                                                            {{if $transaction->fraud->ip_regionName}}{$transaction->fraud->ip_regionName}{{elseif $transaction->fraud->ip_region}}{$transaction->fraud->ip_region}{{endif}}
+                                                        </span>
+                                                    {{endif}}
+                                                    {{if $transaction->fraud->ip_postalCode}}
+                                                        <span {{if $transaction->fraud->ip_postalConf}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_postalConf"}' data-ipsTooltip{{endif}}>
+                                                            {{if $transaction->fraud->ip_postalCode}}{$transaction->fraud->ip_postalCode}{{endif}}
+                                                        </span>
+                                                    {{endif}}
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->ip_countryName || $transaction->fraud->countryCode}}
+                                                <li>
+                                                    <span {{if $transaction->fraud->ip_countryConf}}class='cTransactionFraud_geoInfo' title='{lang="maxmind_ip_accuracy" sprintf="$transaction->fraud->ip_countryConf"}' data-ipsTooltip{{endif}}>
+                                                        {{if $transaction->fraud->ip_countryName}}{$transaction->fraud->ip_countryName}{{elseif $transaction->fraud->countryCode}}{lang="country-{$transaction->fraud->countryCode}"}{{endif}}
+                                                    </span>
+                                                </li>
+                                            {{endif}}
+                                        </ul>
+
+                                        <ul class='cTransactionFraud'>
+                                            {{if $transaction->fraud->countryMatch == 'Yes'}}
+                                                <li class='cTransactionFraud_positive'>
+                                                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                                    <p>{lang="maxmind_countryMatch_y"}</p>
+                                                </li>
+                                            {{else}}
+                                                <li class='cTransactionFraud_negative'>
+                                                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                                                    <p>{lang="maxmind_countryMatch_n"}</p>
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->highRiskCountry == 'No'}}
+                                                <li class='cTransactionFraud_positive'>
+                                                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                                                    <p>{lang="maxmind_highRiskCountry_n"}</p>
+                                                </li>
+                                            {{else}}
+                                                <li class='cTransactionFraud_negative'>
+                                                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                                                    <p>{lang="maxmind_highRiskCountry_y"}</p>
+                                                </li>
+                                            {{endif}}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class='ipsSpanGrid__4 i-background_1'>
+                                    <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_ip"}</h3>
+                                    <div class='i-padding_3'>
+                                        <div class="ipsProgress">
+                                            <div class="ipsProgress__progress {{if $transaction->fraud->proxyScorePercentage() > 75}}ipsProgress__progress--warning{{endif}}" style="width: {$transaction->fraud->proxyScorePercentage()}%">{$transaction->fraud->proxyScorePercentage()}%</div>
+                                        </div>
+                                        <p class='i-font-size_1 i-margin-top_1'>{lang="maxmind_proxyScore"}</p>
+                                        <p class='i-font-size_-1 i-color_soft'>{lang="maxmind_proxyScore_desc"}</p>
+
+                                        <ul class='cTransactionFraud i-margin-top_1'>
+                                            {{if $transaction->fraud->anonymousProxy == 'No'}}
+                                                <li class='cTransactionFraud_success'>
+                                                    <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                                    <p>
+                                                        <span class='cTransactionFraud_geoInfo' title="{lang="maxmind_anonymousProxy_desc"}" data-ipsTooltip>
+                                                            {lang="maxmind_anonymousProxy_n"}
+                                                        </span>
+                                                    </p>
+                                                </li>
+                                            {{else}}
+                                                <li class='cTransactionFraud_negative'>
+                                                    <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                    <p>
+                                                        <span class='cTransactionFraud_geoInfo' title="{lang="maxmind_anonymousProxy_desc"}" data-ipsTooltip>
+                                                            {lang="maxmind_anonymousProxy_y"}
+                                                        </span>
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+
+                                            {{foreach array( 'isTransProxy', 'ip_corporateProxy' ) as $k}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {{if $transaction->fraud->$k == 'No'}}
+                                                            {lang="maxmind_{$k}_n"}
+                                                        {{else}}
+                                                            {lang="maxmind_{$k}_y"}
+                                                        {{endif}}
+                                                    </p>
+                                                </li>
+                                            {{endforeach}}
+
+                                            {{if $transaction->fraud->ip_isp}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {lang="maxmind_ip_isp"}: {$transaction->fraud->ip_isp}
+                                                        {{if $transaction->fraud->ip_org and $transaction->fraud->ip_org != $transaction->fraud->ip_isp}}
+                                                            <br><span class="i-color_soft i-font-size_-1">({$transaction->fraud->ip_org})</span>
+                                                        {{endif}}
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->ip_userType}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {lang="maxmind_ip_userType_{$transaction->fraud->ip_userType}"}
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->ip_timeZone}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {lang="maxmind_ip_timeZone"}: {$transaction->fraud->ip_timeZone}
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->ip_netSpeedCell}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {lang="maxmind_ip_netSpeedCell"}: {$transaction->fraud->ip_netSpeedCell}
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->ip_domain}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {lang="maxmind_ip_domain"}: {$transaction->fraud->ip_domain}
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+                                            {{if $transaction->fraud->ip_asnum}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                                    <p>
+                                                        {lang="maxmind_ip_asnum"}: {$transaction->fraud->ip_asnum}
+                                                    </p>
+                                                </li>
+                                            {{endif}}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class='ipsSpanGrid__4 i-background_1'>
+                                    {{if $transaction->fraud->binMatch !== 'NA' and $transaction->fraud->binMatch !== 'NotFound'}}
+                                        <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_card_issuer"}</h3>
+                                        <div class='i-padding_3'>
+                                            {{if $transaction->fraud->binName}}
+                                                <p class='i-font-size_2'>
+                                                    <strong>{$transaction->fraud->binName}</strong>
+                                                </p>
+                                                {{if $transaction->fraud->binCountry || $transaction->fraud->binPhone}}
+                                                    <ul class='cTransactionFraud i-margin-top_1'>
+                                                        {{if $transaction->fraud->binCountry}}
+                                                            <li class='cTransactionFraud_neutral'>
+                                                                <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+                                                                <p>
+                                                                    {lang="country-{$transaction->fraud->binCountry}"}
+                                                                </p>
+                                                            </li>
+                                                        {{endif}}
+                                                        {{if $transaction->fraud->binPhone}}
+                                                            <li class='cTransactionFraud_neutral'>
+                                                                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                                                                <p>
+                                                                    {$transaction->fraud->binPhone}
+                                                                </p>
+                                                            </li>
+                                                        {{endif}}
+                                                    </ul>
+                                                {{endif}}
+                                            {{endif}}
+
+                                            <ul class='cTransactionFraud {{if $transaction->fraud->binName}}i-margin-top_1{{endif}}'>
+                                                {{if $transaction->fraud->binMatch == 'Yes'}}
+                                                    <li class='cTransactionFraud_success'>
+                                                        <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_binMatch_y"}</p>
+                                                    </li>
+                                                {{else}}
+                                                    <li class='cTransactionFraud_negative'>
+                                                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_binMatch_n"}</p>
+                                                    </li>
+                                                {{endif}}
+                                                <li class='cTransactionFraud_neutral'>
+                                                    <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                    <p>
+                                                        {{if $transaction->fraud->prepaid == 'Yes'}}
+                                                            {lang="maxmind_binMatch_y"}
+                                                        {{else}}
+                                                            {lang="maxmind_binMatch_n"}
+                                                        {{endif}}
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    {{endif}}
+
+                                    <h3 class='acpBlock_title acpBlock_titleSmall'>{lang="maxmind_customer_information"}</h3>
+                                    <div class='i-padding_3'>
+                                        <ul class='cTransactionFraud'>
+                                            {{if $transaction->fraud->custPhoneInBillingLoc and $transaction->fraud->custPhoneInBillingLoc != 'NotFound'}}
+                                                {{if $transaction->fraud->custPhoneInBillingLoc == 'No'}}
+                                                    <li class='cTransactionFraud_negative'>
+                                                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_custPhoneInBillingLoc_n"}</p>
+                                                    </li>
+                                                {{else}}
+                                                    <li class='cTransactionFraud_positive'>
+                                                        <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_custPhoneInBillingLoc_y"}</p>
+                                                    </li>
+                                                {{endif}}
+                                            {{endif}}
+                                            {{if $transaction->fraud->cityPostalMatch}}
+                                                {{if $transaction->fraud->cityPostalMatch == 'No'}}
+                                                    <li class='cTransactionFraud_negative'>
+                                                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_cityPostalMatch_n"}</p>
+                                                    </li>
+                                                {{else}}
+                                                    <li class='cTransactionFraud_positive'>
+                                                        <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_cityPostalMatch_y"}</p>
+                                                    </li>
+                                                {{endif}}
+                                            {{endif}}
+                                            {{foreach array( 'freeMail', 'carderEmail' ) as $k}}
+                                                {{if $transaction->fraud->$k == 'No'}}
+                                                    <li class='cTransactionFraud_positive'>
+                                                        <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_{$k}_n"}</p>
+                                                    </li>
+                                                {{else}}
+                                                    <li class='cTransactionFraud_negative'>
+                                                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                                                        <p>{lang="maxmind_{$k}_y"}</p>
+                                                    </li>
+                                                {{endif}}
+                                            {{endforeach}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class='ipsHr'>
+                            <p class='i-font-size_1 i-color_soft'>
+                                {{if $transaction->fraud->minfraud_version}}
+                                    {lang="maxmind_footer" sprintf="$transaction->fraud->service_level, $transaction->fraud->minfraud_version, $transaction->fraud->maxmindID"} ({lang="maxmind_queries" sprintf="$transaction->fraud->queriesRemaining"})
+                                {{endif}}
+                            </p>
+                        {{endif}}
+                    </div>
+                </div>
+            {{endif}}
+		{{endif}}
+		
+		<div class='ipsSpanGrid'>
+			<div class='ipsSpanGrid__6'>
+				<div class="ipsBox">
+					<h2 class="ipsBox__header">{lang="transaction_history"}</h2>
+					<div class='i-padding_3'>
+						<ul class='cTransaction'>
+							<li>	
+								<div class='cTransaction_icon'>
+									<i class='fa-solid fa-cart-shopping' aria-hidden="true"></i>
+								</div>
+								<div class='cTransaction_info'>
+									<h2 class='ipsTitle ipsTitle--h3'>
+                                        {{if $transaction->method}}
+                                            {{if \in_array( $transaction->status, array( \IPS\nexus\Transaction::STATUS_PENDING, \IPS\nexus\Transaction::STATUS_WAITING ) )}}
+                                                {lang="transaction_method_pending" sprintf="$transaction->method->_title"}
+                                            {{else}}
+                                                {lang="transaction_method" sprintf="$transaction->method->_title"}							
+                                            {{endif}}
+                                        {{else}}
+                                            {{if $transaction->method !== 0 }}
+                                                {lang="tstatus_okay_deleted"}
+                                            {{else}}
+                                                {lang="tstatus_okay_credit"}
+                                            {{endif}}
+                                        {{endif}}
+									</h2>
+									<p class="i-color_soft">
+										{$transaction->date}
+									</p>
+									{{if $transaction->gw_id}}
+										<p class="i-color_soft">
+										{lang="payment_reference"}: {{if $transaction->method AND $url = $transaction->method->gatewayUrl( $transaction )}}<a href="{$url}" target="_blank" rel='noreferrer'>{$transaction->gw_id}</a>{{else}}{$transaction->gw_id}{{endif}}<br>
+										</p>
+									{{endif}}
+									{{if $transaction->method and $extraData = $transaction->method->extraData( $transaction )}}
+										{$extraData|raw}
+									{{endif}}
+									{{if $transaction->billing_agreement}}
+										<p>
+										    <a href="{$transaction->billing_agreement->acpUrl()}">{lang="billing_agreement" sprintf="$transaction->billing_agreement->gw_id"}</a><br>
+										</p>
+									{{endif}}
+									{{if $transaction->ip}}
+										<span class='i-font-size_1 i-color_soft'>
+											<a class="i-link-color_inherit" href="{url="app=core&module=members&controller=ip&ip={$transaction->ip}"}">{lang="transaction_ip" sprintf="$transaction->ip"}</a>
+										</span>
+									{{endif}}
+								</div>
+							</li>
+
+							{{if $transaction->fraud_blocked}}
+								<li>
+									<div class='cTransaction_icon'>
+										<i class='fa-solid fa-circle-exclamation' aria-hidden="true"></i>
+									</div>
+									<div class='cTransaction_info'>
+										<h2 class='ipsTitle ipsTitle--h3'><strong>{lang="triggered_fraud_rule"}</strong></h2>
+										<p>
+											{$transaction->fraud_blocked->name}
+										</p>
+									</div>
+								</li>
+							{{endif}}
+
+							{{foreach $transaction->history() as $log}}
+								{template="$log['s']" group="transactions" params="$transaction, $log"}
+							{{endforeach}}
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class='ipsSpanGrid__6'>
+				{{if $transaction->member AND $transaction->member->member_id}}
+					<div class='ipsBox i-margin-bottom_1'>
+						<h2 class="ipsBox__header">{lang="transaction_customer"}</h2>
+						<div class='i-padding_3'>
+							<div class='ipsPhotoPanel ipsPhotoPanel_small'>
+								<a href="{$transaction->member->acpUrl()}" class='ipsUserPhoto ipsUserPhoto--small'><img src='{$transaction->member->photo}' loading="lazy" alt=""></a>
+								<div class="ipsPhotoPanel__text">
+									<h3 class="ipsPhotoPanel__primary">
+										<strong><a class="i-link-color_inherit" href="{$transaction->member->acpUrl()}">{$transaction->member->cm_name}</a></strong>
+									</h3>
+									<p class="ipsPhotoPanel__secondary">
+                                        <span class='i-color_soft'>{$transaction->member->email}</span><br>
+									</p>
+								</div>
+                                {{if member.hasAcpRestriction( 'nexus', 'customers', 'customers_void' )}}
+                                    <a href="{url="app=nexus&module=customers&controller=view&do=void&id={$transaction->member->member_id}&rt={$transaction->id}"}" class="ipsButton ipsButton--inherit ipsButton--small" data-ipsDialog data-ipsDialog-title="{lang="void_account"}">{lang="void_account"}</a>
+                                {{endif}}
+							</div>
+                            <ul class="ipsList ipsList--inline ipsList--sep i-margin-top_2">
+                                <li><strong>{lang="transaction_spent" sprintf="$transaction->member->totalSpent()"}</strong></li>
+                                <li>{lang="transaction_customer_since" sprintf="$transaction->member->joined->localeDate()"}</li>
+                            </ul>
+						</div>
+					</div>
+				{{else}}
+					<div class='ipsBox i-margin-bottom_1'>
+						<h2 class="ipsBox__header">{lang="transaction_customer"}</h2>
+						<div class='i-padding_3'>
+							<div class='i-background_2 i-padding_3 ipsPhotoPanel ipsPhotoPanel_large'>
+								<img src='{resource="default_photo.png" app="core" location="global"}' class='ipsUserPhoto'>
+								<div>
+									{{if $transaction->invoice AND !empty( $transaction->invoice->guest_data )}}
+										<h3 class="ipsTitle ipsTitle--h3">
+											<strong>
+												{{if isset( $transaction->invoice->guest_data['member']['name'] )}}
+													{$transaction->invoice->guest_data['member']['name']}
+												{{elseif isset( $transaction->invoice->guest_data['member']['cm_first_name'] )}}
+													{$transaction->invoice->guest_data['member']['cm_first_name']} {$transaction->invoice->guest_data['member']['cm_last_name']}
+												{{endif}}
+											</strong>
+											&nbsp;&nbsp;<span class='i-color_soft'>{$transaction->invoice->guest_data['member']['email']}</span>
+										</h3>
+                                    {{elseif !$transaction->member}}
+                                        <span class="i-font-size_2">{lang="deleted_member"}</span>
+									{{else}}
+										<span class="i-font-size_2">{lang="guest"}</span>
+									{{endif}}
+								</div>
+							</div>
+						</div>
+					</div>
+				{{endif}}
+				
+				{{if $transaction->invoice}}
+					<div class="ipsBox i-margin-bottom_1">
+						<h2 class="ipsBox__header">{lang="invoice_number" sprintf="$transaction->invoice->id"}</h2>
+						<div class='i-padding_3'>
+							{{$summary = $transaction->invoice->summary();}}
+							<i-data>
+                                <ul class="ipsData ipsData--table ipsData--compact ipsData--invoice">
+                                    {{foreach $summary['items'] as $item}}
+                                        <li class="ipsData__item">
+                                            <div class="ipsData__main">
+                                                {$item->name}{{if $item->quantity > 1}} x{$item->quantity}{{endif}}
+                                                {{if \count( $item->details )}}
+                                                    <br>
+                                                    <span class="i-color_soft">
+                                                        {{foreach $item->details as $k => $v}}
+                                                            {lang="nexus_pfield_{$k}"}: {$v}<br>
+                                                        {{endforeach}}
+                                                    </span>
+                                                {{endif}}
+                                            </div>
+                                            <div class="i-basis_100 i-text-align_end">
+                                                {$item->linePrice()}
+                                            </div>
+                                        </li>
+                                    {{endforeach}}
+                                    <li class="ipsData__item cTransactionInvoice_subtotal">
+                                        <div class="ipsData__main">
+                                            <strong>{lang="subtotal"}</strong>
+                                        </div>
+                                        <div class="i-basis_100 i-text-align_end">
+                                            <strong>{$summary['subtotal']}</strong>
+                                        </div>
+                                    </li>
+                                    {{foreach $summary['tax'] as $taxId => $tax}}
+                                        <li class="ipsData__item">
+                                            <div class="ipsData__main">
+                                                {lang="nexus_tax_{$taxId}"}
+                                                {{if $tax['type'] !== 'single'}}
+                                                    {{if $tax['type'] === 'eu' and $transaction->invoice->billaddress->business and $transaction->invoice->billaddress->vat}}
+                                                        ({lang="tax_rate_eu"}: {expression="$tax['rate']*100"}%)
+                                                    {{elseif $transaction->invoice->billaddress->business}}
+                                                        ({lang="tax_rate_business"}: {expression="$tax['rate']*100"}%)
+                                                    {{else}}
+                                                        ({lang="tax_rate_consumer"}: {expression="$tax['rate']*100"}%)
+                                                    {{endif}}
+                                                {{else}}
+                                                    ({expression="$tax['rate']*100"}%)
+                                                {{endif}}
+                                            </div>
+                                            <div class="i-basis_100 i-text-align_end">
+                                                {$tax['amount']}
+                                            </div>
+                                        </li>
+                                    {{endforeach}}
+                                    <li class="ipsData__item i-font-size_2 cTransactionInvoice_subtotal">
+                                        <div class="ipsData__main">
+                                            <strong>{lang="total"}</strong>
+                                        </div>
+                                        <div class="i-basis_100 i-text-align_end">
+                                            <strong>{$summary['total']}</strong>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </i-data>
+							<a href="{$transaction->invoice->acpUrl()}" class="i-margin-top_1 ipsButton ipsButton--inherit ipsButton--wide">
+								{lang="invoice_view"} <i class='fa-solid fa-angle-right' aria-hidden="true"></i>
+							</a>
+						</div>
+					</div>
+	
+					{{if $transaction->invoice->billaddress}}
+						<div class="ipsBox">
+							<h3 class='ipsBox__header'>{lang="invoice_addresses"}</h3>
+							<div class='i-padding_3'>
+								{{if $transaction->invoice->billaddress}}
+									<div class='ipsSpanGrid i-margin-bottom_1'>
+										{{if \IPS\GeoLocation::enabled()}}
+										<div class='ipsSpanGrid__6'>
+											{$transaction->invoice->billaddress->map()->render( 350, 150 )|raw}
+										</div>
+										<div class='ipsSpanGrid__6'>
+										{{else}}
+										<div class='ipsSpanGrid__12'>
+										{{endif}}
+											<h4 class='ipsMinorTitle'>{lang="billing_address"}</h4>
+											<p>
+												{$transaction->invoice->billaddress->toString('<br>')|raw}
+											</p>
+											{{if isset( $transaction->invoice->billaddress->vat ) and $transaction->invoice->billaddress->vat}}
+												<p class='i-margin-top_1'>
+													{lang="cm_checkout_vat_number"}: {template="vatNumber" group="global" params="$transaction->invoice->billaddress->vat"}
+												</p>
+											{{endif}}
+										</div>
+									</div>
+								{{endif}}
+							</div>
+						</div>
+					{{endif}}
+				{{else}}
+					<br>
+					<div class="ipsMessage ipsMessage--info">
+						{lang="trans_invoice_deleted"}
+					</div>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>	

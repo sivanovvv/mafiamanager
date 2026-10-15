@@ -1,0 +1,92 @@
+<ips:template parameters="$payout" />
+<div class="ipsSpanGrid" data-ips-template="view">
+	<div class="ipsSpanGrid__7 i-background_3">
+		<h2 class="ipsBox__header">{lang="payout_status"}</h2>
+		<div class="i-padding_3">
+			<div class="i-background_2 i-padding_3 i-text-align_center">
+				<p>{$payout->date}</p>
+				<p>
+					<span class="i-font-size_6">{$payout->amount}</span><br>
+					{lang="payout_method" sprintf="$payout->gateway"}
+				</p>
+				<p class="i-color_soft"><a class="i-link-color_inherit" href="{url="app=core&module=members&controller=ip&ip={$payout->ip}"}">{lang="transaction_ip" sprintf="$payout->ip"}</a></p>
+			</div>
+			<div class="i-text-align_center i-font-size_6">
+				<i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+			</div>
+			{{if $payout->status === $payout::STATUS_CANCELED}}
+				<div class="i-background_2 i-padding_3 i-text-align_center">
+					<p>
+						{$payout->completed}
+						{{if $payout->processed_by}}
+							{lang="by"} {$payout->processed_by->name}
+						{{endif}}
+					</p>
+					<p>
+						<span class="i-font-size_6"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span><br>
+						<span class="i-font-size_2">{lang="payout_canceled"}</span>
+					</p>
+				</div>
+			{{elseif $payout->status === $payout::STATUS_COMPLETE}}
+				<div class="i-background_2 i-padding_3 i-text-align_center">
+					<p>
+						{$payout->completed}
+						{{if $payout->processed_by}}
+							{lang="by"} {$payout->processed_by->name}
+						{{endif}}
+					</p>
+					<p>
+						<span class="i-font-size_6"><i class="fa-solid fa-check-circle" aria-hidden="true"></i></span><br>
+						<span class="i-font-size_2">{lang="payout_processed"}</span>
+					</p>
+					{{if $payout->gw_id}}
+						<p>{$payout->gw_id}</p>
+					{{endif}}
+				</div>
+            {{elseif $payout->status === $payout::STATUS_PROCESSING}}
+                <div class="i-background_2 i-padding_3 i-text-align_center">
+                    <p>
+                        {{if $payout->processed_by}}
+                        {lang="by"} {$payout->processed_by->name}
+                        {{endif}}
+                    </p>
+                    <p>
+                        <span class="i-font-size_6"><i class="fa-solid fa-circle-o-notch fa-spin" aria-hidden="true"></i></span><br>
+                        <span class="i-font-size_2">{lang="payout_processing"}</span>
+                    </p>
+                    {{if $payout->gw_id}}
+                        <p>{$payout->gw_id}</p>
+                    {{endif}}
+                </div>
+			{{else}}
+				<div class="i-background_2 i-padding_3 i-text-align_center">
+					<p>
+						<span class="i-font-size_6"><i class="fa-solid fa-pause" aria-hidden="true"></i></span><br>
+						<span class="i-font-size_2">{lang="payout_pending"}</span>
+					</p>
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	<div class="ipsSpanGrid__5">
+		<div class="i-background_2">
+			<h2 class="ipsBox__header"><a href="{$payout->member->acpUrl()}">{lang="po_member"}</a></h2>
+			<div class='i-padding_2 ipsPhotoPanel ipsPhotoPanel_large'>
+				<a href="{$payout->member->acpUrl()}"><img src='{$payout->member->photo}' class='ipsUserPhoto ipsUserPhoto--medium' loading="lazy" alt=""></a>
+				<div>
+					<span class="i-font-size_2"><a class="i-link-color_inherit" href="{$payout->member->acpUrl()}">{$payout->member->cm_name}</a></span><br>
+					{$payout->member->email}<br>
+				</div>
+			</div>
+		</div>
+		<br><br>
+		{{if $extra = $payout->acpHtml()}}
+		<div class="i-background_2">
+			<h2 class="ipsBox__header">{lang="payout__data_{$payout->gateway}"}</h2>
+			<div class='i-padding_3'>
+				{$extra|raw}
+			</div>
+		</div>
+		{{endif}}
+	</div>
+</div>

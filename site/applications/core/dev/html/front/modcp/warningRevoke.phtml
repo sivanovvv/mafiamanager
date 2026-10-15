@@ -1,0 +1,11 @@
+<ips:template parameters="$warning" />
+
+<div class='i-padding_3'>
+	<p class='i-font-size_2'>
+		{lang="warning_revoke_blurb"}
+	</p>
+</div>
+<ul class='ipsButtons ipsSubmitRow'>
+	<li><a href='{$warning->url('delete')->setQueryString('undo', 0)->csrf()}' class='ipsButton ipsButton--secondary ipsButton--small'>{lang="delete"}</a></li>
+	<li><a href='{$warning->url('delete')->setQueryString('undo', 1)->csrf()}' class='ipsButton ipsButton--primary ipsButton--small'>{lang="warning_revoke_undo"}</a></li>
+</ul>

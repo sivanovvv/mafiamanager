@@ -1,0 +1,21 @@
+<ips:template parameters="$member, $tabs, $activeTab, $activeTabContents" />
+{{if \count( $tabs ) > 1}}
+	<div class="ipsPwaStickyFix ipsPwaStickyFix--ipsTabs"></div>
+	<i-tabs class='ipsTabs ipsTabs--sticky ipsTabs--profile ipsTabs--stretch' id='elProfileTabs' data-ipsTabBar data-ipsTabBar-contentArea='#elProfileTabs_content'>
+		<div role="tablist">
+			{{foreach $tabs as $tab => $tabData}}
+				<a href="{$tabData['url']}" id='elProfileTab_{$tab}' class='ipsTabs__tab' role="tab" aria-controls="elProfileTab_{$tab}_panel" aria-selected="{{if $activeTab == $tab}}true{{else}}false{{endif}}">{lang="$tabData['title']"}</a>
+			{{endforeach}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+{{endif}}
+<div id='elProfileTabs_content' class='ipsTabs__panels ipsTabs__panels--profile'>
+	{{foreach $tabs as $tab => $title}}
+		{{if $activeTab == $tab}}
+			<div id="elProfileTab_{$tab}_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="elProfileTab_{$tab}">
+				{$activeTabContents|raw}
+			</div>
+		{{endif}}
+	{{endforeach}}
+</div>

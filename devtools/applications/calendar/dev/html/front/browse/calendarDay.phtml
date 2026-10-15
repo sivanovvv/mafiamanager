@@ -1,0 +1,52 @@
+<ips:template parameters="$calendars, $date, $events, $tomorrow, $yesterday, $today, $thisCalendar, $jump" />
+
+<div class='ipsPager cCalendarNav i-color_hard i-padding-block_2 i-padding-inline_3 i-background_2 i-border-start-start-radius_box i-border-start-end-radius_box'>
+	<div class='ipsPager_prev'>
+		<a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&id={$thisCalendar->_id}&y={$yesterday->year}&m={$yesterday->mon}&d={$yesterday->mday}" seoTemplate="calendar_calday" seoTitle="$thisCalendar->title_seo"}{{else}}{url="app=calendar&module=calendar&controller=view&y={$yesterday->year}&m={$yesterday->mon}&d={$yesterday->mday}" seoTemplate="calendar_day"}{{endif}}" title='{lang="cal_month_day" sprintf="$yesterday->monthName, $yesterday->mday, $yesterday->year"}' rel='prev nofollow' data-action='changeView'>
+			<span class='ipsPager_type'>{lang="cal_month_day_noyear" sprintf="$yesterday->monthName, $yesterday->mday"}</span>
+			<span class='ipsPager_title'>{$yesterday->year}</span>
+		</a>
+	</div>
+	<div class='ipsPager_center cCalendarNav' data-role='calendarNav'>
+		<h1 class='ipsTitle ipsTitle--h3'>{lang="cal_month_day" sprintf="$date->monthName, $date->mday, $date->year"}</h1>
+	</div>
+	<div class='ipsPager_next'>
+		<a href="{{if $thisCalendar}}{url="app=calendar&module=calendar&controller=view&id={$thisCalendar->_id}&y={$tomorrow->year}&m={$tomorrow->mon}&d={$tomorrow->mday}" seoTemplate="calendar_calday" seoTitle="$thisCalendar->title_seo"}{{else}}{url="app=calendar&module=calendar&controller=view&y={$tomorrow->year}&m={$tomorrow->mon}&d={$tomorrow->mday}" seoTemplate="calendar_day"}{{endif}}" title='{lang="cal_month_day" sprintf="$tomorrow->monthName, $tomorrow->mday, $tomorrow->year"}' rel='next nofollow' data-action='changeView'>
+			<span class='ipsPager_type'>{lang="cal_month_day_noyear" sprintf="$tomorrow->monthName, $tomorrow->mday"}</span>
+			<span class='ipsPager_title'>{$tomorrow->year}</span>
+		</a>
+	</div>
+</div>
+
+{{if $events['count'] > 0}}
+	{{if isset( $events['allDay'] ) && \count( $events['allDay'] )}}
+		<h2 class='ipsTitle ipsTitle--h4 ipsTitle--padding i-background_2'>{lang="day_view_all_day"}</h2>
+		<i-data>
+			<ol class='ipsData ipsData--featured ipsData--calendarAllDay'>
+				{{foreach $events['allDay'] as $event}}
+					{template="eventBlock" app="calendar" group="view" params="$event, $date, true"}
+				{{endforeach}}
+			</ol>
+		</i-data>
+	{{endif}}
+	{{foreach $events as $hour => $hourEvents}}
+		{{if !empty( $hourEvents ) && $hour !== 'allDay' && $hour !== 'count'}}
+			<h2 class='ipsTitle ipsTitle--h4 ipsTitle--padding i-background_2'>
+				{{if \IPS\calendar\Date::usesAmPm()}}
+					{expression="\IPS\calendar\Date::getTwelveHour( $hour )"}<span>{expression="\IPS\calendar\Date::getAmPm( $hour )"}</span>
+				{{else}}
+					{$hour}<span>:00</span>
+				{{endif}}
+			</h2>
+			<i-data>
+				<ol class='ipsData ipsData--featured ipsData--calendarHourly'>
+					{{foreach $hourEvents as $idx => $event}}
+						{template="eventBlock" app="calendar" group="view" params="$event, $date, true"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		{{endif}}
+	{{endforeach}}
+{{else}}
+	<div class='ipsEmptyMessage'>{lang="no_events_today"}</div>
+{{endif}}

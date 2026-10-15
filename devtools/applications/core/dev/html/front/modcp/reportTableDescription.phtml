@@ -1,0 +1,21 @@
+<ips:template parameters="$class, $report, $container=NULL" />
+<div class="i-margin-top_2">
+<i class='fa-solid fa-{$class::$icon}' aria-hidden="true"></i>
+<a href="{$report->url()->setQueryString( array( 'action' => 'find' ) )}">
+    {{if $container === NULL}}
+	    {lang="$class::$title"}
+    {{else}}
+        {lang="icon_blurb_in_containers" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $class::$title ), $container->_title"}
+    {{endif}}
+</a>
+{{if $report->status == \IPS\core\Reports\Report::STATUS_REJECTED}}
+    <span class="ipsBadge ipsBadge--negative">{lang="report_status_{$report->status}"}</span>
+{{elseif $report->status == \IPS\core\Reports\Report::STATUS_OPEN}}
+    <span class="ipsBadge ipsBadge--recommended">{lang="report_status_{$report->status}"}</span>
+{{else}}
+    <span class="ipsBadge ipsBadge--positive">{lang="report_status_{$report->status}"}</span>
+{{endif}}
+{{foreach $report->getReportedTypes() as $name}}
+<span class="ipsBadge ipsBadge--style1">{$name}</span>
+{{endforeach}}
+</div>

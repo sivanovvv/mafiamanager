@@ -1,0 +1,2 @@
+<ips:template parameters="$field" />
+{lang="after"} <input type="number" name="{$field->name}[0]}" value="{$field->value[0]}"> <select class="ipsInput ipsInput--select" name="{$field->name}[1]"><option value="i" {{if $field->value[1] == 'i'}}selected{{endif}}>{lang="impressions"}</option><option value="c" {{if $field->value[1] == 'c'}}selected{{endif}}>{lang="clicks"}</option></select> {lang="or"} <input type="checkbox" name="{$field->name}[2]" {{if !$field->Value[0]}}checked{{endif}} data-role="unlimited"> {lang="never"}

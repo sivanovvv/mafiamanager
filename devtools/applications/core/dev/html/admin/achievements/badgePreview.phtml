@@ -1,0 +1,15 @@
+<ips:template parameters="$content, $prefix='custombadge'" />
+
+<li
+	id='{$prefix}_preview'
+	data-controller='ips.core.badgepreview'
+	class='ipsFieldRow ipsFieldRow--badge-creator-preview ipsBadgePreview'
+	data-badgetype="{$prefix}"
+>
+	<div class='ipsFieldRow__label'></div>
+	<div class='ipsFieldRow__content ipsCheckerboard'>
+		<div data-role="preview">
+			{$content|raw}
+		</div>
+	</div>
+</li>

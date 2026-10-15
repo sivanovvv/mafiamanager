@@ -1,0 +1,80 @@
+<ips:template parameters="$member, $types, $currentAppModule, $currentType, $table, $reactions" />
+{{if !\IPS\Request::i()->isAjax()}}
+<div class="ipsProfileContainer" data-controller='core.front.profile.main'>
+	{template="profileHeader" app="core" location="front" group="profile" params="$member, true"}
+	<div data-role="profileContent">
+{{endif}}
+		<div class="ipsProfile ipsProfile--reputation">
+			<aside class="ipsProfile__aside">
+				<div class="ipsProfile__sticky-outer">
+					<div class="ipsProfile__sticky-inner">
+						<div class="cProfileRepScore i-padding_2 {{if $member->pp_reputation_points > 1}}cProfileRepScore--positive{{elseif $member->pp_reputation_points < 0}}cProfileRepScore--negative{{else}}cProfileRepScore--neutral{{endif}}">
+							<h2 class='ipsMinorTitle i-color_inherit i-opacity_5'>{lang="profile_reputation"}</h2>
+							<span class='cProfileRepScore__points'>{number="$member->pp_reputation_points"}</span>
+							{{if $member->reputation()}}
+								<span class='cProfileRepScore__title'>{$member->reputation()}</span>
+							{{endif}}
+							{{if $member->reputationImage()}}
+								<div class='i-background_1 i-border-radius_box i-padding_2 i-text-align_center'>
+									<img src='{file="$member->reputationImage()" extension="core_Theme"}' alt=''>
+							</div>
+							{{endif}}
+						</div>
+						{{if \count( $reactions['given'] ) OR \count( $reactions['received'] )}}
+							<div class="ipsWidget i-padding_3">
+								{{if \count( $reactions['given'] )}}
+									<h2 class='ipsMinorTitle'>{lang="replog_reactions_given"}</h2>
+									<div class='ipsGrid ipsGrid--profile-reactions-given i-basis_80 i-margin-top_2 i-margin-bottom_4'>
+										{{foreach $reactions['given'] as $reaction}}
+											<div class="i-flex i-align-items_center i-gap_1">
+												<img src='{$reaction['reaction']->_icon->url}' width="20" height="20" alt='{$reaction['reaction']->_title}' loading='lazy' data-ipsTooltip>
+												<span class='i-color_soft i-font-weight_600'><span class="i-opacity_4">x</span> {$reaction['count']}</span>
+											</div>
+										{{endforeach}}
+									</div>
+								{{endif}}
+
+								{{if \count( $reactions['received'] )}}
+									<h2 class='ipsMinorTitle'>{lang="replog_reactions_received"}</h2>
+									<div class='ipsGrid ipsGrid--profile-reactions-received i-basis_80 i-margin-top_2'>
+										{{foreach $reactions['received'] as $reaction}}
+											<div class="i-flex i-align-items_center i-gap_1">
+												<img src='{$reaction['reaction']->_icon->url}' width="20" height="20" alt='{$reaction['reaction']->_title}' loading='lazy' data-ipsTooltip>
+												<span class='i-color_soft i-font-weight_600'><span class="i-opacity_4">x</span> {$reaction['count']}</span>
+											</div>
+										{{endforeach}}
+									</div>
+								{{endif}}		
+							</div>
+						{{endif}}						
+						<div class='ipsWidget i-padding_2'>
+							<div class="ipsSideMenu" data-ipsTabBar data-ipsTabBar-contentArea='#elUserReputation' data-ipsTabBar-itemselector=".ipsSideMenu_item" data-ipsTabBar-activeClass="ipsSideMenu_itemActive" data-ipsSideMenu>
+								<h3 class="ipsSideMenu__view">
+									<a href="#user_reputation" data-action="openSideMenu"><i class="fa-solid fa-bars" aria-hidden="true"></i><span>{lang="user_content_type"}</span></a>
+								</h3>
+								<div class="ipsSideMenu__menu">
+									{{foreach $types as $app => $_types}}
+										<h4 class='ipsSideMenu__subTitle'>{lang="module__{$app}"}</h4>
+										<ul class="ipsSideMenu__list">
+											{{foreach $_types as $key => $class}}
+												<li><a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=reputation&type={$key}&change_section=1" seoTemplate="profile_reputation" seoTitle="$member->members_seo_name"}" class="ipsSideMenu_item {{if $currentType == $key}}ipsSideMenu_itemActive{{endif}}">{lang="{$class::$title}_pl"}</a></li>
+											{{endforeach}}
+										</ul>
+									{{endforeach}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<section class='ipsProfile__main ipsBox ipsPull'>
+				<h2 class='ipsBox__header'>{lang="replog_title"}</h2>
+				<div id='elUserReputation'>
+					{template="userReputationSection" group="profile" app="core" params="$table"}
+				</div>
+			</section>
+		</div>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+</div>
+{{endif}}	

@@ -1,0 +1,94 @@
+<ips:template parameters="$billingAgreement, $purchases, $transactions" />
+{{if $billingAgreement->status() == $billingAgreement::STATUS_ACTIVE and !$billingAgreement->next_cycle}}
+	<p class="ipsMessage ipsMessage--warning">{lang="billing_agreement_run_failed" sprintf="$billingAgreement->acpUrl()->setQueryString( 'do', 'reconcile' )->csrf()"}</p>
+{{endif}}
+<div class='ipsSpanGrid' data-ips-template="view">
+	<div class='ipsSpanGrid__4'>
+		{{if $billingAgreement->status() == $billingAgreement::STATUS_ACTIVE}}
+				<p class='i-background_positive i-padding_3 i-text-align_center i-margin-bottom_3'>
+					<span class='ipsTitle ipsTitle--h3'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="billing_agreement_active"}</span>
+				</p>
+		{{elseif $billingAgreement->status() == $billingAgreement::STATUS_SUSPENDED}}
+			<p class='i-background_3 i-padding_3 i-text-align_center i-margin-bottom_3'>
+				<span class='ipsTitle ipsTitle--h3'><i class='fa-solid fa-circle-exclamation' aria-hidden="true"></i> {lang="billing_agreement_suspended"}</span>
+			</p>
+		{{elseif $billingAgreement->status() == $billingAgreement::STATUS_CANCELED}}
+			<p class='i-background_negative i-padding_3 i-text-align_center i-margin-bottom_3'>
+				<span class='ipsTitle ipsTitle--h3'><i class='fa-solid fa-xmark-circle' aria-hidden="true"></i> {lang="billing_agreement_canceled"}</span>
+			</p>
+		{{endif}}
+		<div class="ipsBox i-margin-bottom_1">
+			<h2 class='ipsBox__header'>{lang="billing_agreement_details"}</h2>
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--billing-agreements">
+					<li class="ipsData__item">
+						<span class="i-basis_120">
+							<strong>{lang="ba_gw_id"}</strong>
+						</span>
+						<span class="">
+							{$billingAgreement->gw_id}
+						</span>
+					</li>
+					<li class="ipsData__item">
+						<span class="i-basis_120">
+							<strong>{lang="billing_agreement_term"}</strong>
+						</span>
+						<span class="">
+							{$billingAgreement->term()}
+						</span>
+					</li>
+					<li class="ipsData__item">
+						<span class="i-basis_120">
+							<strong>{lang="ba_started"}</strong>
+						</span>
+						<span class="">
+							{$billingAgreement->started->localeDate()}
+						</span>
+					</li>
+					{{if $billingAgreement->next_cycle}}
+						<li class="ipsData__item">
+							<span class="i-basis_120">
+								<strong>{lang="billing_agreement_next_payment"}</strong>
+							</span>
+							<span class="">
+								{$billingAgreement->nextPaymentDate()->localeDate()}
+							</span>
+						</li>
+					{{endif}}
+				</ul>
+			</i-data>
+		</div>
+		<div class="ipsBox i-margin-bottom_1">
+			<h2 class="ipsBox__header">{lang="purchase_customer_info"}</h2>
+			{{if $billingAgreement->member}}
+				<div class='i-padding_3 ipsPhotoPanel ipsPhotoPanel_small'>
+					<a href="{$billingAgreement->member->acpUrl()}"><img src='{$billingAgreement->member->photo}' class='ipsUserPhoto ipsUserPhoto--small' alt="" loading="lazy"></a>
+					<div>
+						<h3 class='i-font-size_2 i-link-color_inherit'><strong><a href="{$billingAgreement->member->acpUrl()}">{$billingAgreement->member->cm_name}</a></strong></h3>
+						{$billingAgreement->member->email}<br>
+						{lang="transaction_customer_since" sprintf="$billingAgreement->member->joined->localeDate()"}<br>
+						{lang="transaction_spent" sprintf="$billingAgreement->member->totalSpent()"}
+					</div>
+				</div>
+			{{else}}
+				<div class='i-padding_3'>
+					<p class="ipsMessage ipsMessage--error">{lang="billing_agreement_no_member"}</p>
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	<div class='ipsSpanGrid__8'>
+		{{if $purchases}}
+			<div class="i-margin-bottom_1">
+				<h2 class="acpBlock_title acpBlock_titleDark acpBlock_titleSmall">{lang="billing_agreement_purchases"}</h2>
+				{$purchases|raw}
+			</div>
+		{{endif}}
+		{{if $transactions}}
+			<div class="i-margin-bottom_1">
+				<h2 class="acpBlock_title acpBlock_titleDark acpBlock_titleSmall">{lang="billing_agreement_transactions"}</h2>
+				{$transactions|raw}
+			</div>
+		{{endif}}
+	</div>
+</div>

@@ -1,0 +1,41 @@
+{
+    "files": {
+        "added": [
+            "global\/framework\/common\/components\/navigationPanel.js"
+        ],
+        "edited": [
+            "global\/library\/app.js",
+            "global\/framework\/common\/components\/themeEditor.js",
+            "global\/framework\/common\/ui\/ips.ui.dialog.js",
+            "global\/framework\/common\/ui\/ips.ui.hovercard.js",
+            "global\/framework\/common\/ui\/ips.ui.webcomponents.js",
+            "core\/admin\/controllers\/core\/ips.core.mobileNav.js",
+            "global\/front\/controllers\/core\/ips.core.ignoredComments.js",
+            "global\/framework\/controllers\/editor\/ips.editor.uploader.js",
+            "core\/front\/controllers\/ignore\/ips.ignore.existing.js",
+            "core\/admin\/controllers\/members\/ips.members.history.js",
+            "core\/front\/controllers\/messages\/ips.messages.main.js",
+            "core\/front\/controllers\/messages\/ips.messages.view.js",
+            "core\/front\/controllers\/streams\/ips.streams.form.js",
+            "global\/framework\/templates\/ips.core.templates.js"
+        ],
+        "removed": [
+            "global\/framework\/common\/ui\/ips.ui.accordion.js",
+            "global\/framework\/common\/utils\/ips.utils.css.js",
+            "global\/admin\/controllers\/core\/ips.core.genericDialog.js",
+            "global\/front\/controllers\/core\/ips.core.navigationPanel.js",
+            "global\/front\/controllers\/core\/ips.core.pagination.js",
+            "global\/front\/controllers\/core\/ips.core.quickSearch.js",
+            "global\/front\/controllers\/core\/ips.core.reputation.js",
+            "core\/admin\/controllers\/stats\/ips.stats.dynamicChart.mixin.js",
+            "core\/admin\/controllers\/support\/ips.support.md5.js",
+            "core\/front\/templates\/ips.templates.vse.js",
+            "global\/admin\/ui\/ips.ui.customtags.js"
+        ]
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

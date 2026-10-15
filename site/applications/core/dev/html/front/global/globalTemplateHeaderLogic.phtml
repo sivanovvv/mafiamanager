@@ -1,0 +1,26 @@
+<ips:template parameters="$position" />
+{{$theme = \IPS\Theme::i();}}
+{{foreach $theme->theme_editor_data['header'] as $type => $pos}}
+	{{if $pos == $position}}
+		<div data-ips-header-content='{$type}'>
+			<!-- {$type} -->
+			{{if $type == 'logo'}}
+				{template="logo" app="core" group="global" params="'desktop'"}
+			{{endif}}
+			{{if !\in_array( 'ipsLayout_minimalNoHome', \IPS\Output::i()->bodyClasses )}}
+			    {{if $type == 'navigation' and !\in_array( 'ipsLayout_minimal', \IPS\Output::i()->bodyClasses )}}
+				    {template="navBar" app="core" group="global" params=""}
+			    {{endif}}
+			    {{if $type == 'user' AND !\in_array( 'ipsLayout_minimal', \IPS\Output::i()->bodyClasses )}}
+				    {template="userBar" app="core" group="global" params=""}
+			    {{endif}}
+			    {{if $type == 'breadcrumb'}}
+				    {template="breadcrumb" app="core" group="global" params="'top'"}
+			    {{endif}}
+			    {{if $type == 'search' and !\in_array( 'ipsLayout_minimal', \IPS\Output::i()->bodyClasses )}}
+				    {template="searchDialogTrigger" app="core" group="global" params=""}
+			    {{endif}}
+			{{endif}}
+		</div>
+	{{endif}}
+{{endforeach}}

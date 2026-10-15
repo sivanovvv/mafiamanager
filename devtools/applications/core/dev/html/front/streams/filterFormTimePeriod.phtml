@@ -1,0 +1,27 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL, $showTitle=TRUE" />
+{{if isset( $elements['']['stream_date_relative_days'] )}}
+	<li class='i-padding_2 cStreamForm_dates {{if $elements['']['stream_date_type']->value !== 'relative'}}ipsHide{{endif}}' data-role="dateRelativeForm">
+		<h4 class='ipsMinorTitle i-margin-bottom_1'>{lang="stream_date_relative_days_prefix"}</h4>
+		{$elements['']['stream_date_relative_days']->html()|raw}
+		{{if $elements['']['stream_date_relative_days']->error}}
+			<div class="i-color_warning i-font-size_-2 i-margin-top_1">{lang="$elements['']['stream_date_relative_days']->error"}</div>
+		{{endif}}
+	</li>
+{{endif}}
+{{if isset( $elements['']['stream_date_range'] )}}
+	<li class='i-padding_2 cStreamForm_dates {{if $elements['']['stream_date_type']->value !== 'custom'}}ipsHide{{endif}}' data-role="dateForm">
+		<div class="ipsSpanGrid">
+			<div class='ipsSpanGrid__6'>
+				<h4 class='ipsMinorTitle i-margin-bottom_1'>{lang="start"}</h4>
+				{$elements['']['stream_date_range']->start->html()|raw}	
+			</div>
+			<div class='ipsSpanGrid__6'>
+				<h4 class='ipsMinorTitle i-margin-bottom_1'>{lang="end"}</h4>
+				{$elements['']['stream_date_range']->end->html()|raw}	
+			</div>
+		</div>
+		{{if $elements['']['stream_date_range']->error}}
+			<span class="i-color_warning i-font-size_-2">{lang="$elements['']['stream_date_range']->error"}</span>
+		{{endif}}
+	</li>
+{{endif}}

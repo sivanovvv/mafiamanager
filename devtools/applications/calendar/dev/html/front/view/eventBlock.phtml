@@ -1,0 +1,116 @@
+<ips:template parameters="$event, $date, $truncate=FALSE, $map=array( 300, 200 ), $revertToFirst=FALSE" />
+{{$coverPhoto = $event->coverPhoto();}}
+{{if ( $coverPhoto === null or $coverPhoto->file === null ) and $club = $event->container()->club()}}
+    {{$coverPhoto = $club->coverPhoto();}}
+{{endif}}
+<li class="ipsData__item  {$event->ui('css')}" data-eventID='{$event->id}' {$event->ui( 'dataAttributes' )}>
+	<a href="{$event->url( 'getPrefComment' )}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$event->title}</span></a>
+	<div class="ipsData__image" aria-hidden="true">
+		<a href="{$event->url( 'getPrefComment' )}" class='ipsCoverPhoto' data-controller='core.global.core.coverPhoto' data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}' aria-hidden="true" tabindex="-1">
+			{{if $coverPhoto->file}}
+				<div class='ipsCoverPhoto__container'>
+					<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' alt='{$event->title}' loading='lazy'>
+				</div>
+			{{elseif $image = $event->primaryImage()}}
+			    <div class='ipsCoverPhoto__container'>
+			        <img src='{$image->url}' class='ipsCoverPhoto__image' alt='{$event->title}' loading='lazy'>
+			    </div>
+			{{endif}}
+		</a>
+	</div>
+	<div class="ipsData__content">
+		<div class="ipsData__main">
+			<div class="ipsPhotoPanel i-margin-bottom_2">
+				<div class='ipsUserPhoto ipsUserPhoto--mini'>
+					<img src='{$event->author()->photo}' alt='' loading='lazy'>
+				</div>
+				<div class="ipsPhotoPanel__text">
+					<p class="i-color_primary i-font-weight_500 i-font-size_-2 i-text-transform_uppercase i-margin-bottom_1">
+						{{$startDate = $event->nextOccurrence( $date, 'startDate' );}}
+						{{if $revertToFirst AND $startDate AND $startDate->mon > $date->mon}}
+							{{$startDate = $event->nextOccurrence( \IPS\calendar\Date::getDate( $date->year, $date->mon, 1 ), 'startDate' );}}
+						{{endif}}
+						{{if $startDate}}
+							{{$nextEndDate = $event->nextOccurrence( $startDate ?: $date, 'endDate' );}}
+							{{$sameDay = ( $nextEndDate AND $startDate->calendarDate() == $nextEndDate->calendarDate() );}}
+							{$startDate->calendarDate()}{{if !$event->all_day}} {$startDate->localeTime( FALSE )} {{endif}}
+							{{if $event->_end_date AND $event->nextOccurrence( $startDate ?: $date, 'endDate' ) }}
+								<span class="i-opacity_4"><i class="fa-solid fa-arrow-right-long" style="margin-inline:.5em;" aria-hidden="true"></i></span>
+								{{if !$sameDay}}
+									{$event->nextOccurrence( $startDate ?: $date, 'endDate' )->calendarDate()}
+								{{endif}}
+								{{if !$event->all_day}}
+									{{if !$sameDay}} {{endif}}
+									{$event->nextOccurrence( $startDate ?: $date, 'endDate' )->localeTime( FALSE )}
+								{{endif}}
+							{{endif}}
+						{{else}}
+							{$event->lastOccurrence( 'startDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'startDate' )->localeTime( FALSE )} {{endif}}
+							{{if $event->_end_date AND $event->lastOccurrence( 'endDate' ) }}
+								<span class="i-opacity_4"><i class="fa-solid fa-arrow-right-long" style="margin-inline:.5em;" aria-hidden="true"></i></span>{$event->lastOccurrence( 'endDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'endDate' )->localeTime( FALSE )}{{endif}}
+							{{endif}}
+						{{endif}}
+					</p>
+					<h2 class='ipsData__title' data-ips-hook='title'>
+						<div class="ipsBadges" data-ips-hook='badges'>
+							{{if $event->hidden() === 1}}<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i></span>{{endif}}
+						</div>
+						<a href='{$event->url( "getPrefComment" )}' title='{$event->title}'>{$event->title}</a>
+					</h2>
+				</div>
+			</div>
+			<div>
+				<div class="ipsColumns">
+					<div class="ipsColumns__primary" data-ips-hook='details'>
+						{{if $event->recurring}}<p class='i-color_soft i-margin-bottom_2'>{$event->_recurring_text}</p>{{endif}}
+						<div class='ipsRichText {{if ( \IPS\Request::i()->isAjax() or $truncate ) && $event->content}} ipsTruncate_3{{endif}}'>
+							{{if $event->content}}
+								{{if \IPS\Request::i()->isAjax() or $truncate}}
+									{$event->truncated()|raw}
+								{{else}}
+									{$event->content|raw}
+								{{endif}}
+							{{endif}}
+							<p class='ipsRichText i-margin-block_2'><a href='{$event->url( "getPrefComment" )}'>{lang="event_details"}</a></p>
+						</div>
+						{{if $event->rsvp }}
+							<h4 class="i-font-weight_500 i-margin-top_3">{lang="event_rsvp_attendees_list" pluralize="$event->attendeeCount( \IPS\calendar\Event::RSVP_YES )"}</h4>
+							{{if \count( $event->attendees( \IPS\calendar\Event::RSVP_YES, 5 ) )}}
+								<ul class='ipsCaterpillar i-margin-top_2'>
+									{{foreach $event->attendees( \IPS\calendar\Event::RSVP_YES, 5 ) as $attendee}}
+										<li>{template="userPhoto" app="core" group="global" params="$attendee, 'tiny'"}</li>
+									{{endforeach}}
+								</ul>
+							{{endif}}
+						{{endif}}
+					</div>
+					{{if $map !== FALSE AND $event->map( $map[0], $map[1] )}}
+						<div class='ipsColumns__secondary i-basis_300 cCalendarBlock_map'>
+							{$event->map( $map[0], $map[1] )|raw}
+						</div>
+					{{endif}}
+				</div>
+				<div class="i-flex i-flex-wrap_wrap i-gap_2 i-align-items_center i-margin-top_3" data-ips-hook='stats'>
+					<a href='{$event->container()->url()}' class='cEvents_event cEvents_eventSmall cEvents_style{$event->container()->id} i-margin-end_auto'>{$event->container()->_title}</a>
+					<div class="i-flex i-flex-wrap_wrap i-gap_3 i-align-items_center">
+						{{if $event->container()->allow_comments}}<a href='{$event->url()->setQueryString( 'tab', 'comments' )}' class="i-color_soft">{lang="event_comment_count" pluralize="$event->comments"}</a>{{endif}}
+						{{if $event->container()->allow_reviews}}<a href='{$event->url()->setQueryString( 'tab', 'reviews' )}' class="i-color_soft">{lang="event_review_count" pluralize="$event->reviews"}</a>{{endif}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    {{if settings.core_datalayer_enabled}}
+    <script>
+        $('body').trigger( 'ipsDataLayer', {
+            _key: 'content_view',
+            _properties: {
+                {{foreach $event->getDataLayerProperties() as $key => $value}}
+                {expression="json_encode( $value )" raw="true"},
+                {{endforeach}}
+                'hovercard',
+            }
+        } )
+    </script>
+    {{endif}}
+</li>

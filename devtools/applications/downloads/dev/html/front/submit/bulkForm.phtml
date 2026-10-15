@@ -1,0 +1,39 @@
+<ips:template parameters="$form, $category" />
+
+{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack('submit_bulk_information')"}
+<hr class='ipsHr'>
+
+{{if $form->error}}
+	<div class="ipsMessage ipsMessage--error">
+		{$form->error}
+	</div>
+	<br>
+{{endif}}
+
+
+<form accept-charset='utf-8' method="post" action="{$form->action}" enctype="multipart/form-data" id='elDownloadsSubmit' data-ipsForm data-ipsFormSubmit>
+	<input type="hidden" name="{$form->id}_submitted" value="1">
+	{{foreach $form->hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+
+	{{foreach $form->elements as $fileName => $collection}}
+		<h2 class='ipsBox__header'>{$fileName}</h2>
+		<div class='i-background_3 i-padding_2'>
+			<div class='i-background_1 i-padding_3'>
+				<ul class='ipsForm ipsForm--vertical ipsForm--bulk-submit-files'>
+					{{foreach $collection as $input}}
+						{{if $input instanceof \IPS\Helpers\Form\FormAbstract}}
+							{$input|raw}
+						{{endif}}
+					{{endforeach}}
+				</ul>
+			</div>
+		</div>
+		<br><hr class='ipsHr'><br>
+	{{endforeach}}
+
+	<div class='i-text-align_end'>
+		<button type='submit' class='ipsButton ipsButton--primary' data-role='submitForm'>{lang="save_and_submit_files"}</button>
+	</div>
+</form>

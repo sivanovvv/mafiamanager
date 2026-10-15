@@ -1,0 +1,16 @@
+<ips:template parameters="$url, $item" />
+
+{{if $item instanceof \IPS\cms\Media}}
+	<li data-role='mediaItem' data-fileid='{$item->id}' data-uploaded='{datetime="$item->added" dateonly="true"}' data-path='{$item->full_path}' data-filename='{$item->filename}' data-url='{$item->url()}?_cb={expression="time()"}' data-fileType='{{if $item->is_image}}image{{else}}file{{endif}}'>
+		<div class='cMedia_item {{if $item->is_image}}cMedia_itemImage{{endif}}' title='{$item->filename}' data-ipsTooltip>
+			<div class='ipsThumb'>
+				{{if $item->is_image}}
+					<img src='{$item->url()}?_cb={expression="time()"}' alt="">
+				{{else}}
+					<i class='fa-solid fa-{$item->file_icon}' aria-hidden="true"></i>
+				{{endif}}
+			</div>
+			<div class='cMedia_filename'><p class='ipsTruncate_1'>{$item->filename}</p></div>
+		</div>
+	</li>
+{{endif}}

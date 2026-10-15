@@ -1,0 +1,8 @@
+<ips:template parameters="$member, $vid, $securityKey, $email" />
+{$email->language->addToStack("email_loginlink_validate", FALSE)}
+
+=====
+{$email->language->addToStack("email_validate_link", FALSE)}: {url="app=core&module=system&controller=register&do=validate&vid={$vid}&mid={$member->member_id}&security_key={$securityKey}" plain="true" base="front"}
+=====
+
+-- {setting="board_name"}

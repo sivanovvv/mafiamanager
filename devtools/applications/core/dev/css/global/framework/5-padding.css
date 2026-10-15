@@ -1,0 +1,63 @@
+/*
+	----------------
+	- Padding
+	----------------
+*/
+
+.i-padding_1{ padding: var(--i-sp_1); }
+.i-padding_2{ padding: var(--i-sp_2); }
+.i-padding_3{ padding: var(--i-sp_3); }
+.i-padding_4{ padding: var(--i-sp_4); }
+.i-padding_5{ padding: var(--i-sp_5); }
+
+.i-padding-top_1,
+.i-padding-block_1{ padding-top: var(--i-sp_1); }
+.i-padding-bottom_1,
+.i-padding-block_1{ padding-bottom: var(--i-sp_1); }
+.i-padding-top_2,
+.i-padding-block_2{ padding-top: var(--i-sp_2); }
+.i-padding-bottom_2,
+.i-padding-block_2{ padding-bottom: var(--i-sp_2); }
+.i-padding-top_3,
+.i-padding-block_3{ padding-top: var(--i-sp_3); }
+.i-padding-bottom_3,
+.i-padding-block_3{ padding-bottom: var(--i-sp_3); }
+.i-padding-top_4,
+.i-padding-block_4{ padding-top: var(--i-sp_4); }
+.i-padding-bottom_4,
+.i-padding-block_4{ padding-bottom: var(--i-sp_4); }
+.i-padding-top_5,
+.i-padding-block_5{ padding-top: var(--i-sp_5); }
+.i-padding-bottom_5,
+.i-padding-block_5{ padding-bottom: var(--i-sp_5); }
+
+.i-padding-start_1,
+.i-padding-inline_1{ padding-inline-start: var(--i-sp_1); }
+.i-padding-end_1,
+.i-padding-inline_1{ padding-inline-end: var(--i-sp_1); }
+.i-padding-start_2,
+.i-padding-inline_2{ padding-inline-start: var(--i-sp_2); }
+.i-padding-end_2,
+.i-padding-inline_2{ padding-inline-end: var(--i-sp_2); }
+.i-padding-start_3,
+.i-padding-inline_3{ padding-inline-start: var(--i-sp_3); }
+.i-padding-end_3,
+.i-padding-inline_3{ padding-inline-end: var(--i-sp_3); }
+.i-padding-start_4,
+.i-padding-inline_4{ padding-inline-start: var(--i-sp_4); }
+.i-padding-end_4,
+.i-padding-inline_4{ padding-inline-end: var(--i-sp_4); }
+.i-padding-start_5,
+.i-padding-inline_5{ padding-inline-start: var(--i-sp_5); }
+.i-padding-end_5,
+.i-padding-inline_5{ padding-inline-end: var(--i-sp_5); }
+
+.i-padding_0{ padding: 0 }
+.i-padding-top_0,
+.i-padding-block_0{ padding-top: 0; }
+.i-padding-bottom_0,
+.i-padding-block_0{ padding-bottom: 0; }
+.i-padding-start_0,
+.i-padding-inline_0{ padding-inline-start: 0; }
+.i-padding-end_0,
+.i-padding-inline_0{ padding-inline-end: 0; }

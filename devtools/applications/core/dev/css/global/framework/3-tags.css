@@ -1,0 +1,79 @@
+/*
+	----------------
+	- Tags
+	----------------
+*/
+
+.ipsTags{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: .5em;
+	font-size: max(.85em, 11px);
+	font-weight: 550;
+	vertical-align: middle;
+}
+
+.ipsTags a{
+	text-decoration: none !important;
+}
+
+	.ipsTags__item, .ipsTags__more{
+		background: color-mix(in srgb, currentColor 10%, transparent);
+		color: var(--i-color_primary);
+		border-radius: min(var(--i-design-radius), .4em);
+		display: flex;
+	}
+
+	@supports not (color: color-mix(in hsl, red, red)){
+		.ipsTags__item, .ipsTags__more{
+			background-color: var(--i-background_4);
+			color: var(--i-link--co);
+		}
+	}
+
+		.ipsTags__item--prefix{
+			background: var(--i-primary);
+			color: var(--i-primary-contrast);
+		}
+
+		@media (any-hover:hover){
+			.ipsTags__item:hover,
+			.ipsTags__more:hover{
+				background: color-mix(in srgb, currentColor 20%, transparent);
+			}
+			.ipsTags__item--prefix:hover{
+				background: color-mix(in srgb, var(--i-primary) 80%, currentColor);
+			}
+		}
+
+	.ipsTags__tag{
+		color: inherit;
+		padding: .2em 1em;
+		text-decoration: none;
+	}
+
+	/* +4 more */
+	.ipsTags__more .ipsTags__tag{
+		display: flex;
+		align-items: center;
+		gap: .5em;
+	}
+
+	.ipsTags__more .fa-solid{
+		font-size: 8px;
+		opacity: .6;
+		line-height: 1;
+	}
+
+	.ipsTags__remove{
+		color: inherit;
+		padding: .2em .6em;
+		border-start-end-radius: inherit;
+		border-end-end-radius: inherit;
+		border-inline-start: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	}
+
+	.ipsTags__remove:hover{
+		background: color-mix(in srgb, currentColor 6%, transparent);
+	}

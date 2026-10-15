@@ -1,0 +1,47 @@
+<ips:template parameters="$category" />
+<editor-panel id='panel__{$category->key}' aria-hidden='true' inert>
+    <button type="button" data-panel-nav="back" data-on-click="panelNavigation">{lang="theme_editor_back"}</button>
+    <div class='theme-editor__scroll'>
+        <header>
+            <h2 data-panel-name>{$category->_title}</h2>
+		</header>
+		{{if $category->hasChildren( null, null, false )}}
+		    <nav class='theme-editor__nav'>
+		        {{foreach $category->children( null, null, false ) as $child}}
+		            {{if $child->hasContents()}}
+		            <button aria-controls='panel__{$child->key}' data-panel-nav type='button' data-on-click="panelNavigation"><i class='{$child->icon()}' aria-hidden="true"></i> {$child->_title}</button>
+		            {{endif}}
+		        {{endforeach}}
+		    </nav>
+		{{endif}}
+		{{if $category->hasSettings() and $category->hasColors()}}
+			<i-tabs class="ipsTabs ipsTabs--stretch" id="ipsTabs-{$category->key}" data-ipsTabBar data-ipsTabBar-contentarea="#ipsTabs-{$category->key}-content">
+				<div role='tablist'>
+					<button type="button" class="ipsTabs__tab" id="ipsTabs-{$category->key}_settings" role="tab" aria-controls="ipsTabs-{$category->key}_settings_panel" aria-selected="true"><i class='fa-solid fa-sliders' aria-hidden="true"></i> {lang="theme_editor_panel_settings"}</button>
+					<button type="button" class="ipsTabs__tab" id='ipsTabs-{$category->key}_colors' role="tab" aria-controls="ipsTabs-{$category->key}_colors_panel" aria-selected="false"><i class='fa-solid fa-palette' aria-hidden="true"></i> {lang="theme_editor_panel_colors"}</button>
+				</div>
+			</i-tabs>
+		{{endif}}
+		<div id='ipsTabs-{$category->key}-content'>
+			{{if $category->hasSettings()}}
+				<editor-tab-content id='ipsTabs-{$category->key}_settings_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs-{$category->key}_settings">
+					{{foreach $category->settings() as $setting}}
+						{$setting->editorHtml()|raw}
+					{{endforeach}}
+				</editor-tab-content>
+			{{endif}}
+			{{if $category->hasColors()}}
+				<editor-tab-content id='ipsTabs-{$category->key}_colors_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs-{$category->key}_colors" {{if $category->hasSettings()}}hidden{{endif}}>
+					{{foreach $category->colors() as $color}}
+						{$color->editorHtml()|raw}
+					{{endforeach}}
+				</editor-tab-content>
+			{{endif}}
+		</div>
+	</div>
+</editor-panel>
+{{if $category->hasChildren( null, null, false )}}
+    {{foreach $category->children( null, null, false ) as $child}}
+        {$child->editorHtml()|raw}
+    {{endforeach}}
+{{endif}}

@@ -1,0 +1,18 @@
+<ips:template parameters="$transaction" />
+
+<p class='i-font-size_2 i-text-align_center'>
+	<strong>{lang="order_fail_blurb"}</strong>
+</p>
+
+{{if isset( $transaction->extra['publicNote'] )}}
+	<div class='ipsRichText  i-background_3 i-padding_3 i-margin-block_2'>
+		{$transaction->extra['publicNote']}
+	</div>
+{{endif}}
+
+<p class='i-text-align_center'>
+	{{if \IPS\Member::loggedIn()->canUseContactUs() and !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'contact' )}}
+		<a href="{url="app=core&module=contact&controller=contact" seoTemplate="contact"}" class='ipsButton ipsButton--primary ipsButton--small'>{lang="contact"}</a>
+	{{endif}}
+	<a href="{$transaction->invoice->checkoutUrl()}" class='ipsButton ipsButton--secondary ipsButton--small'>{lang="try_another_payment"}</a>
+</p>

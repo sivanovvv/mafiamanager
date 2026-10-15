@@ -1,0 +1,38 @@
+<ips:template parameters="$database, $categories, $url" />
+<header class='ipsPageHeader ipsBox ipsPull ipsPageHeader--database-index'>
+	<div class="ipsPageHeader__row">
+		<div class='ipsPageHeader__primary'>
+			<h1 class='ipsPageHeader__title'>{$database->_title}</h1>
+			{{if $database->_description}}
+				<div class='ipsPageHeader__desc'>
+					{$database->_description}
+				</div>
+			{{endif}}
+		</div>
+		{{if $database->cat_index_type == 1}}
+			<div class="ipsButtons">
+				<a href="{$url}" class="ipsButton ipsButton--small ipsButton--text"><i class="fa-solid fa-star" aria-hidden="true"></i> {lang="cms_show_featured" sprintf="$database->recordWord()"}</a>
+			</div>
+		{{endif}}
+	</div>
+</header>
+<section>
+	<ol class='cCmsDatabase_index' data-controller='core.global.core.table, forums.front.forum.forumList' data-baseURL=''>
+		<li class='ipsBox ipsBox--cmsDatabaseCategory ipsPull'>
+			<h2 class="ipsBox__header">
+				{lang="content_categories_title"}
+			</h2>
+			{{if ! \count($categories)}}
+				<div class="ipsBox ipsBox--padding">{lang="cms_no_cats_to_show"}</div>
+			{{else}}
+				<i-data>
+					<ol class="ipsData ipsData--{$database->display_settings['categories']['layout']} ipsData--category ipsData--database-category">
+						{{foreach $categories as $category}}
+							{template="categoryRow" group="category_index" location="database" app="cms" params="$category"}
+						{{endforeach}}
+					</ol>
+				</i-data>
+			{{endif}}
+		</li>
+	</ol>
+</section>

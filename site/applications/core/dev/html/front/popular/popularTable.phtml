@@ -1,0 +1,22 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div data-baseurl="{$table->baseUrl}" data-resort='{$table->resortKey}' data-tableID='pastLeaders' data-controller="core.global.core.genericTable">
+	<div>
+		{{if $table->pages > 1}}
+			<div class="ipsButtonBar ipsButtonBar--top">
+				<div data-role="tablePagination" class='ipsButtonBar__pagination'>
+					{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+				</div>	
+			</div>
+		{{endif}}
+		<ol class='cPastLeaders ipsGrid ipsGrid--lines i-basis_300' data-role="tableRows">
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+		</ol>
+		{{if $table->pages > 1}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div data-role="tablePagination" class='ipsButtonBar__pagination'>
+					{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+				</div>	
+			</div>
+		{{endif}}
+	</div>
+</div>

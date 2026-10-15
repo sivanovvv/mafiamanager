@@ -1,0 +1,47 @@
+<ips:template parameters="$member, $followers, $followersCount" />
+{{if !\IPS\Request::i()->isAjax()}}
+	<section class="ipsBox ipsBox--allFollowers ipsPull">
+		<header class='ipsBox__header'>{lang="members_followers" sprintf="$member->name"}</header>
+{{endif}}
+{{if $followersCount > 50}}
+	{{$url = \IPS\Http\Url::internal( "app=core&module=members&controller=profile&do=followers&id={$member->member_id}", 'front', 'profile_followers', $member->members_seo_name );}}
+	<div class="ipsButtonBar ipsButtonBar--top">
+		<div class="ipsButtonBar__pagination" data-role="tablePagination">
+			{template="pagination" group="global" app="core" location="global" params="$url, ceil( $followersCount / 50 ), (int) \IPS\Request::i()->page ?: 1, 50"}
+		</div>
+	</div>
+{{endif}}
+<i-data>
+	<ul class='ipsData ipsData--table ipsData--allFollowers'>
+		{{if is_array( $followers ) and \count( $followers )}}
+			{{foreach $followers AS $follower}}
+				<li class='ipsData__item {{if $follower['follow_is_anon']}}i-opacity_4{{endif}}'>
+					<div class='ipsData__icon'>
+						{template="userPhoto" app="core" group="global" params="\IPS\Member::load($follower['follow_member_id']), 'fluid', NULL, '', FALSE"}
+					</div>
+					<div class='ipsData__main'>
+						<h4 class='ipsData__title'>{expression="\IPS\Member::load($follower['follow_member_id'])->link( NULL, FALSE )" raw="true"}</h4> {{if $follower['follow_is_anon']}} {lang="anon_follower"}{{endif}}
+						<div class='ipsData__meta'>{expression="\IPS\Member\Group::load( \IPS\Member::load($follower['follow_member_id'])->member_group_id )->formattedName" raw="true"}</div>
+					</div>
+					{{if \IPS\Member::loggedIn()->member_id != $follower['follow_member_id'] and ( !\IPS\Member::load($follower['follow_member_id'])->members_bitoptions['pp_setting_moderate_followers'] or \IPS\Member::loggedIn()->following( 'core', 'member', $follower['follow_member_id'] ) )}}
+						<div>{template="memberFollow" app="core" group="profile" params="'core', 'member', $follower['follow_member_id'], \IPS\Member::load( $follower['follow_member_id'] )->followersCount(), TRUE"}</div>
+					{{endif}}
+				</li>
+			{{endforeach}}
+			{{else}}
+				<li class='ipsData__item'>
+					{lang="no_followers_yet"}
+				</li>
+		{{endif}}
+	</ul>
+</i-data>
+{{if $followersCount > 50}}
+	<div class="ipsButtonBar ipsButtonBar--bottom">
+		<div class="ipsButtonBar__pagination" data-role="tablePagination">
+			{template="pagination" group="global" app="core" location="global" params="$url, ceil( $followersCount / 50 ), (int) \IPS\Request::i()->page ?: 1, 50"}
+		</div>
+	</div>
+{{endif}}
+{{if !\IPS\Request::i()->isAjax()}}
+	</section>
+{{endif}}

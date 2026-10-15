@@ -1,0 +1,17 @@
+<ips:template parameters="$featured" />
+
+{{if \count( $featured )}}
+	<section class="ipsBox ipsBox--calendarFeatured cEvents__overview-featured">
+		<header class="ipsBox__header">
+			<h2>{lang="featured_events"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'carousel--events-featured'"}
+		</header>
+		<i-data>
+			<ul class='ipsData ipsData--wallpaper ipsData--carousel ipsData--events-featured i-basis_100p' id='carousel--events-featured' tabindex="0">
+				{{foreach $featured as $idx => $event}}
+					{template="featuredEvent" app="calendar" group="events" params="$event, $idx"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</section>
+{{endif}}

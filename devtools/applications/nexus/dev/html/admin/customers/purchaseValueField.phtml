@@ -1,0 +1,11 @@
+<ips:template parameters="$field" />
+<select class="ipsInput ipsInput--select" name="{$field->name}[0]">
+	<option value="g" {{if $field->value[0] === 'g'}}selected{{endif}}>{lang="greater_than"}</option>
+	<option value="e" {{if $field->value[0] === 'e'}}selected{{endif}}>{lang="exactly"}</option>
+	<option value="l" {{if $field->value[0] === 'l'}}selected{{endif}}>{lang="less_than"}</option>
+</select>
+<br>
+{template="money" app="nexus" group="forms" location="global" params="$field->name . '[1]', json_decode( ( $field->value[1] ?? '[]' ), TRUE ), array( 'unlimitedLang' => NULL )"}
+<br> {lang="or"} 
+<input type="checkbox" class="ipsInput ipsInput--toggle" name="{$field->name}[2]" id="{$field->name}_nr" data-control="unlimited" {{if !$field->value[0]}}checked{{endif}}>
+<label for="{$field->name}_nr" class='ipsField_unlimited'>{lang="no_restriction"}</label>

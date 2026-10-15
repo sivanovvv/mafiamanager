@@ -1,0 +1,9 @@
+<ips:template parameters="$label, $bgcolor=null" />
+<span>
+    <style>
+        @scope {
+            .ipsBadge { --i-badge:{$bgcolor}; }
+        }
+    </style>
+    <span class='ipsBadge'>{$label|raw}</span>
+</span>

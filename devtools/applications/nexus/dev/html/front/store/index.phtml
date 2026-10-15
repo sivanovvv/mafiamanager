@@ -1,0 +1,87 @@
+<ips:template parameters="$credits, $newProducts, $popularProducts" />
+
+{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack('store')"}
+
+{{if $credits->amount->isGreaterThanZero()}}
+	<div class='ipsMessage ipsMessage--info'>
+		{lang="store_credit_message" sprintf="$credits"}
+	</div>
+{{endif}}
+
+<section class='ipsBox ipsBox--commerceCategories ipsPull'>
+	<header class='ipsBox__header'>
+		<h2>{lang="categories"}</h2>
+		{template="carouselNavigation" group="global" app="core" params="'carousel--commerce-categories'"}
+	</header>
+	<nav class='ipsBox__content'>
+		<i-data>
+			<ul class='ipsData ipsData--wallpaper ipsData--carousel ipsData--commerceCategories' id='carousel--commerce-categories' tabindex="0">
+				{{foreach \IPS\nexus\Package\Group::rootsWithViewablePackages() as $group}}
+					<li class="ipsData__item">
+						<a href='{$group->url()}' class='ipsLinkPanel' aria-hidden="true" tabindex="-1"><span>{$group->_title}</span></a>
+						<div class="ipsData__image" aria-hidden="true">
+							{{if $group->image}}
+								<img src='{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $group->image )"}' alt='' loading='lazy'>
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+						</div>
+						<div class="ipsData__content">
+							<div class="ipsData__main">
+								<h3 class="ipsData__title">{$group->_title}</h3>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</nav>
+</section>
+
+{{if \count( \IPS\nexus\Package\Item::featured() )}}
+	<section class='ipsBox ipsBox--commerceFeaturedProducts ipsPull'>
+		<header class='ipsBox__header'>
+			<h2>{lang="featured_products"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'carousel--commerce-featured'"}
+		</header>
+		<i-data>
+			<ul class='ipsData ipsData--grid ipsData--carousel ipsData--commerce-featured ipsBox__content' id='carousel--commerce-featured' tabindex="0">
+				{{foreach \IPS\nexus\Package\Item::featured() as $package}}
+					{template="packageBlock" group="store" params="$package"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</section>
+{{endif}}
+	
+{{if \count( $newProducts )}}
+	<section class='ipsBox ipsBox--commerceNewProducts ipsPull'>
+		<header class='ipsBox__header'>
+			<h2>{lang="new_products"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'carousel--commerce-new'"}
+		</header>
+		<i-data>
+			<ul class='ipsData ipsData--grid ipsData--carousel ipsData--commerce-new ipsBox__content' id='carousel--commerce-new' tabindex="0">
+				{{foreach $newProducts as $package}}
+					{template="packageBlock" group="store" params="$package"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</section>
+{{endif}}
+
+{{if \count( $popularProducts )}}
+	<section class='ipsBox ipsBox--commercePopularProducts ipsPull'>
+		<header class='ipsBox__header'>
+			<h2>{lang="popular_products"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'carousel--commerce-popular'"}
+		</header>
+		<i-data>
+			<ul class='ipsData ipsData--grid ipsData--carousel ipsData--commerce-popular i-basis_300 ipsBox__content' id='carousel--commerce-popular' tabindex="0">
+				{{foreach $popularProducts as $package}}
+					{template="packageBlock" group="store" params="$package"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</section>
+{{endif}}

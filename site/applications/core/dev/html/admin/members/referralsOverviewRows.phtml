@@ -1,0 +1,14 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li class="ipsData__item">
+		<div class="ipsData__main">
+			<p class='ipsData__title'>
+				{$row['member_id']|raw}
+			</p>
+			<div class='ipsData__desc'>
+				{$row['email']}
+			</div>
+		</div>
+	</li>
+{{endforeach}}

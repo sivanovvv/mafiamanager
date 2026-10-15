@@ -1,0 +1,112 @@
+<ips:template parameters="$forum, $isSubForum=FALSE" />
+{{if $forum->can('view')}}
+{{$lastPosts = $forum->lastPost(2);}}
+{{$club = $forum->club();}}
+	<li data-ips-hook="gridItem" class="{$forum->ui( 'css' )} ipsData__item {{if $forum->redirect_on}}ipsData__item--redirect{{elseif $forum->password}}ipsData__item--password{{else}}ipsData__item--forum{{endif}}" data-forumID="{$forum->_id}" {{if \IPS\forums\Topic::containerUnread( $forum ) && !$forum->redirect_on}}data-ips-unread{{else}}data-ips-read{{endif}} {template="formattedInlineStyle" params="$forum" app="core" group="global" location="front"} {$forum->ui( 'dataAttributes' )}>
+		{{if $forum->password && !$forum->loggedInMemberHasPasswordAccess()}}
+			<a href="{$forum->url()->setQueryString( 'passForm', '1' )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="forum_requires_password" sprintf="$forum->_title"}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$forum->_title}</span></a>
+		{{else}}
+			<a href="{$forum->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{{if $club}}{lang="club_node" sprintf="$club->name, $forum->_title"}{{else}}{$forum->_title}{{endif}}</span></a>
+		{{endif}}
+		<a {{if $forum->password && !$forum->loggedInMemberHasPasswordAccess()}}href="{$forum->url()->setQueryString( 'passForm', '1' )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="forum_requires_password" sprintf="$forum->_title"}'{{else}}href="{$forum->url()}"{{endif}} class='ipsData__image' title='{{if $club}}{lang="club_node" sprintf="$club->name, $forum->_title"}{{else}}{$forum->_title}{{endif}}' aria-hidden="true" tabindex="-1">
+			{{if $club}}
+				{{$coverPhoto = $club->coverPhoto( FALSE );}}
+				{{$cfObject = $coverPhoto->object;}}
+				{{if $coverPhoto->file}}
+					<img src="{$coverPhoto->file->url}" alt='' loading='lazy'>
+				{{elseif $club->profile_photo}}
+					<img src='{file="$club->profile_photo" extension="core_Clubs"}' alt='' loading='lazy'>
+				{{elseif ! empty( $cfObject::$coverPhotoDefault )}}
+					<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$coverPhoto->object->coverPhotoBackgroundColor()};"></div>
+				{{endif}}
+			{{else}}
+				{{if $forum->card_image}}
+					<img src='{file="$forum->card_image" extension="forums_Cards"}' alt='' loading='lazy'>
+				{{elseif $forum->icon}}
+					{$forum->getIcon()|raw}
+				{{else}}
+					<span class='ipsIcon ipsIcon--fa' aria-hidden="true"><i class="fa-ips"></i></span>
+				{{endif}}
+			{{endif}}
+		</a>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<div class='ipsData__title'>
+					{{if !$forum->redirect_on AND \IPS\forums\Topic::containerUnread( $forum ) AND \IPS\Member::loggedIn()->member_id}}
+						<span class="ipsBadge ipsBadge--new" data-ips-badge-new>{lang="new"}</span>
+					{{endif}}
+					<h3 data-ips-hook="title">
+						{{if $forum->password && !$forum->loggedInMemberHasPasswordAccess()}}
+							<a href="{$forum->url()->setQueryString( 'passForm', '1' )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="forum_requires_password" sprintf="$forum->_title"}'>{$forum->_title}</a>
+						{{else}}
+							<a href="{$forum->url()}">{$forum->_title}</a>
+						{{endif}}
+						{{if $forum->password}}
+							{{if !$forum->loggedInMemberHasPasswordAccess()}}
+								<i class="fa-solid fa-lock i-font-size_-2 i-color_soft" aria-hidden="true"></i>
+							{{endif}}
+						{{endif}}
+						{{if $forum->redirect_on}}
+							<i class="fa-solid fa-arrow-right i-font-size_-2 i-color_soft" aria-hidden="true"></i>
+						{{endif}}
+					</h3>
+				</div>
+				{{if $club}}<div class="ipsData__club"><a href="{$club->url()}">{$club->name}</a></div>{{endif}}
+				{{if $forum->description}}
+					{template="richText" group="global" app="core" location="global" params="$forum->description, array('ipsData__desc ipsData__desc--all')"}
+				{{endif}}
+				{{if $forum->hasChildren()}}
+					<ul data-ips-hook="children" class="ipsSubList">
+						{{foreach $forum->children() as $subforum}}
+							<li class="ipsSubList__item {{if \IPS\forums\Topic::containerUnread( $subforum )}}ipsSubList__item--unread{{else}}ipsSubList__item--read{{endif}}">
+								<a href="{$subforum->url()}">{$subforum->_title}</a>
+							</li>
+						{{endforeach}}
+					</ul>
+				{{endif}}
+			</div>
+			<ul data-ips-hook="stats" class='ipsData__stats'>
+				{{if !$forum->redirect_on}}
+					{{$count = \IPS\forums\Topic::contentCount( $forum, TRUE );}}
+					<li>{lang="posts_number" pluralize="$count" format="long"}</li>
+				{{else}}
+					<li>{lang="redirect_hits" pluralize="$forum->redirect_hits"}</li>
+				{{endif}}
+				{{if \IPS\forums\Topic::modPermission( 'unhide', NULL, $forum ) AND $forum->queued_topics}}
+					<li class='i-color_negative i-link-color_inherit'>
+						<i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i>
+						<a href='{$forum->url()->setQueryString( array( 'filter' => 'queued_topics' ) )}'>{lang="queued_topics_badge" pluralize="$forum->queued_topics"}</a>
+					</li>
+				{{endif}}
+				{{if \IPS\forums\Topic::modPermission( 'unhide', NULL, $forum ) AND $forum->queued_posts}}
+					<li class='i-color_negative i-link-color_inherit'>
+						<i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i>
+						<a href='{$forum->url()->setQueryString( array( 'filter' => 'queued_posts' ) )}'>{lang="queued_posts_badge" pluralize="$forum->queued_posts"}</a>
+					</li>
+				{{endif}}
+			</ul>
+			{{if $lastPosts and count( $lastPosts )}}
+				{{foreach $lastPosts as $lastPost}}
+					<div class="ipsData__last" data-ips-hook="latestPoster">
+						{template="userPhoto" app="core" group="global" params="$lastPost['author'], 'fluid'"}
+						<div class="ipsData__last-text">
+							<div class="ipsData__last-primary"><a href="{{if member.member_id}}{$lastPost['topic_url']->setQueryString( 'do', 'getNewComment' )}{{else}}{$lastPost['topic_url']}{{endif}}" title='{$lastPost['topic_title']}'>{$lastPost['topic_title']}</a></div>
+							<small class="ipsData__last-secondary">
+								{{if $lastPost['last_poster_anon']}}
+									{lang="byline_nodate" htmlsprintf="$lastPost['author']->link( NULL, NULL, TRUE )"}, 
+								{{else}}
+									{lang="byline_nodate" htmlsprintf="$lastPost['author']->link()"}, 
+								{{endif}}
+								{{if $lastPost['topic_title']}}
+									<a href='{{if member.member_id}}{$lastPost['topic_url']->setQueryString( 'do', 'getLastComment' )}{{else}}{$lastPost['topic_url']}{{endif}}' title='{lang="get_last_post"}'>{datetime="$lastPost['date']"}</a>
+								{{else}}
+									{datetime="$lastPost['date']"}
+								{{endif}}
+							</small>
+						</div>
+					</div>
+				{{endforeach}}
+			{{endif}}
+		</div>
+	</li>
+{{endif}}

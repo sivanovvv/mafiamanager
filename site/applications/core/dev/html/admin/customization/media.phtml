@@ -1,0 +1,65 @@
+<ips:template parameters="$media, $theme" />
+<div data-controller='core.admin.customization.media' data-theme-id="{$theme->id}">
+	<div class='cMedia_manager ipsBox ipsPull'>
+		<div class='cMedia_manager__side'>
+			<div id='elMedia_sidebar'>
+				<div data-role='mediaSidebar'>
+					<div data-role='itemInformation'>
+						<!-- <div class='cMedia_preview i-margin-bottom_3' data-role='itemPreview'></div> -->
+						<div class=''>
+							<h3 class='ipsTitle ipsTitle--h4' data-role='itemFilename'>{lang="media_filename"}</h3>
+							<input type='text' class='ipsInput ipsInput--text ipsInput--wide' value='' data-role='itemTag' readonly onclick="this.select()">
+							<p class='i-font-size_-1 i-color_soft i-margin-top_1'>{lang="media_tag_desc_core"}</p>
+						</div>
+
+						<ul class="cMedia_manager__fileInfo">
+							<!-- <li>
+								<h3 class='ipsTitle ipsTitle--h6'>{lang='core_media_url'}</h3>
+								<p class='i-font-size_1' data-role='itemUrl'></p>
+								<p class='i-font-size_-1 i-color_soft'>{lang='media_url_desc'}</p>
+							</li> -->
+							<li>
+								<h3 class='ipsTitle ipsTitle--h6'>{lang="media_uploaded"}</h3>
+								<p class='i-color_soft' data-role='itemUploaded'></p>
+							</li>
+							<li>
+								<h3 class='ipsTitle ipsTitle--h6'>{lang="media_size"}</h3>
+								<p class='i-color_soft' data-role='itemFilesize'></p>
+							</li>
+							<li data-role='itemDimensionsRow'>
+								<h3 class='ipsTitle ipsTitle--h6'>{lang="media_dims"}</h3>
+								<p class='i-color_soft' data-role='itemDimensions'></p>
+							</li>
+						</ul>
+
+						<ul class="i-margin-top_2 ipsButtons ipsButtons--fill">
+							<li><a href='#' class='ipsButton ipsButton--small ipsButton--secondary' data-role='replaceFile' data-baseUrl="{url="app=core&module=customization&controller=media&do=replace&set_id={$theme->id}&id="}"><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> {lang="replace_media_file"}</a></li>
+							<li data-action='deleteSelected'><a href='#' class='ipsButton ipsButton--negative ipsButton--small'><i class="fa-solid fa-trash-can" aria-hidden="true"></i> {lang="theme_resources_delete"}</a></li>
+						</ul>
+					</div>
+					<div data-role='multipleItems'>
+						<div class='i-padding_3 i-font-size_2 i-color_soft i-text-align_center' data-role='multipleItemsMessage'></div>
+						<div data-action='deleteSelected'><a href='#' class='ipsButton ipsButton--negative ipsButton--small ipsButton--wide'><i class="fa-solid fa-trash-can" aria-hidden="true"></i> {lang="theme_resources_delete"}</a></div>
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div class='cMedia_manager__main'>
+			<div class='cMedia__managerToolbar'>
+				<input type='search' class='ipsInput ipsInput--text' data-role='mediaSearch' id='elMedia_searchField' placeholder='{lang="core_search_media"}'>
+				<ul class='ipsButtons ipsButtons--fill ipsButtons--media i-flex_11 i-align-items_stretch'>
+					<li><a href='{url="app=core&module=customization&controller=media&do=upload&set_id={$theme->id}"}' data-ipsDialog data-ipsDialog-forceReload data-ipsDialog-remoteSubmit data-ipsDialog-title='{lang="core_add_media"}' class='ipsButton ipsButton--primary' data-role='uploadButton'><i class='fa-solid fa-cloud-arrow-up' aria-hidden="true"></i> {lang="core_add_media"}</a></li>
+					<!-- <li class='ipsHide' data-action='deleteSelected'><a href='#' class='ipsButton ipsButton--negative ipsButton--small'><i class="fa-solid fa-trash-can" aria-hidden="true"></i> {lang="theme_resources_delete"}</a></li> -->
+				</ul>
+			</div>
+			<div class='i-background_2' data-role="fileListing" id='elMedia_fileList' data-showing='root'>
+				<style data-role="searchStyleTag"></style>
+				<ul class='cMedia_manager__items'>
+					{{foreach $media as $id => $data}}
+						{$data|raw}
+					{{endforeach}}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,53 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/forums\/forumButtons",
+            "front\/forums\/forumDisplay",
+            "front\/forums\/forumTable",
+            "front\/forums\/topicHover",
+            "front\/forums\/topicRow",
+            "front\/forums\/topicRowSnippet",
+            "front\/global\/commentTableHeader",
+            "front\/global\/manageFollowNodeRow",
+            "front\/global\/row",
+            "front\/global\/searchNoPermission",
+            "front\/index\/forumGridItem",
+            "front\/index\/forumSummaryRow",
+            "front\/index\/index",
+            "front\/index\/indexButtons",
+            "front\/index\/simplifiedForumTable",
+            "front\/index\/simplifiedTopicRow",
+            "front\/index\/simplifiedTopicRowSnippet",
+            "front\/index\/simplifiedView",
+            "front\/index\/simplifiedViewForumSidebar",
+            "front\/index\/simplifiedViewForumSidebar_children",
+            "front\/index\/simplifiedViewSidebar",
+            "front\/index\/simplifiedViewSidebar_children",
+            "admin\/settings\/archiveRules",
+            "front\/submit\/createTopicForm",
+            "front\/topics\/activity",
+            "front\/topics\/expertBadge",
+            "front\/topics\/post",
+            "front\/topics\/postContainer",
+            "front\/topics\/postHeader",
+            "front\/topics\/topic",
+            "front\/topics\/topicHelpfulMessage",
+            "front\/topics\/topicSolutionMessage",
+            "front\/widgets\/pollWidget",
+            "front\/widgets\/postFeed",
+            "front\/widgets\/topicFeedRow"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

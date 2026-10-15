@@ -1,0 +1,76 @@
+<ips:template parameters="$member, $rep=NULL, $trophy=0, $contentLabel='members_member_posts', $contentCount='member_posts'" />
+{{$usePoints = false;}}
+{{if ( \IPS\Settings::i()->reputation_leaderboard_type == 'points' and $contentCount != 'pp_reputation_points' ) or $contentCount == 'achievements_points'}}
+    {{$usePoints = true;}}
+    {{$rep = $rep ?: $member->achievements_points;}}
+{{else}}
+    {{$rep = $rep ?: $member->pp_reputation_points;}}
+{{endif}}
+{{$contentCount = $contentCount ? $member->$contentCount : $member->member_posts;}}
+{{$coverPhoto = $member->coverPhoto();}}
+<li class='i-padding_2 i-flex i-flex-direction_column'>
+	<div class='ipsCoverPhoto' data-controller='core.global.core.coverPhoto' data-url="{$member->url()->csrf()}" data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}'>
+		{{if $coverPhoto->file}}
+			<div class='ipsCoverPhoto__container'>
+				<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' alt='' loading='lazy'>
+			</div>
+		{{else}}
+			<div class='ipsCoverPhoto__container'>
+				<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$member->coverPhotoBackgroundColor()};"></div>
+			</div>
+		{{endif}}
+	</div>
+	<div class='cUserHovercard__grid i-grid i-gap_lines'>
+		<div class='i-padding_2 i-flex i-align-items_center'>
+			<div class='i-flex_11 ipsPhotoPanel'>
+				{template="userPhoto" group="global" app="core" params="$member, 'fluid'"}
+				<div class='ipsPhotoPanel__text'>
+					<h4 class='ipsTitle ipsTitle--h4' data-searchable>
+						{{if member.canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) )}}
+							{template="userLink" app="core" group="global" params="$member"}
+						{{else}}
+							{$member->name}
+						{{endif}}
+					</h4>
+					<div class='ipsPhotoPanel__secondary i-font-weight_600'>{$member->groupName|raw}</div>
+				</div>
+			</div>
+			{{if $trophy}}
+				<span class="i-flex_00 ipsLeaderboard_trophy ipsLeaderboard_trophy_{$trophy}">
+					<i class="fa-solid fa-trophy" aria-hidden="true"></i>
+				</span>
+			{{endif}}
+		</div>
+		<div class="ipsFluid">
+			<div class='i-grid i-place-content_center i-text-align_center {{if $rep > 0}}i-color_positive{{elseif $rep < 0}}i-color_negative{{endif}}'>
+				<div class='{{if $rep == 0}}i-color_hard{{endif}} i-font-size_3 i-font-weight_600'>
+				    {{if $usePoints}}
+				        <span title="{lang="points_badge_tooltip_period"}" data-ipsTooltip><i class='fa-solid {{if $rep > 0}}fa-plus-circle{{elseif $rep < 0}}fa-minus-circle{{else}}fa-circle-o{{endif}}' aria-hidden="true"></i> {expression="\IPS\Member::loggedIn()->language()->formatNumber( $rep )"}</span>
+				    {{else}}
+					    {{if member.group['gbw_view_reps']}}
+						    <a href='{url="app=core&module=members&controller=profile&id={$member->member_id}&do=reputation" seoTemplate="profile_reputation" seoTitle="$member->members_seo_name"}' class='i-color_inherit' title="{lang="reputation_badge_tooltip_period"}" data-ipsTooltip><i class='fa-solid {{if $rep > 0}}fa-plus-circle{{elseif $rep < 0}}fa-minus-circle{{else}}fa-circle-o{{endif}}' aria-hidden="true"></i> {expression="\IPS\Member::loggedIn()->language()->formatNumber( $rep )"}</a>
+					    {{else}}
+						    <span title="{lang="reputation_badge_tooltip_period"}" data-ipsTooltip><i class='fa-solid {{if $rep > 0}}fa-plus-circle{{elseif $rep < 0}}fa-minus-circle{{else}}fa-circle-o{{endif}}' aria-hidden="true"></i> {expression="\IPS\Member::loggedIn()->language()->formatNumber( $rep )"}</span>
+						{{endif}}
+					{{endif}}
+				</div>
+				<div class='{{if $rep == 0}}i-color_soft{{endif}} i-font-weight_500'>{{if $usePoints}}{lang="points"}{{elseif \IPS\Content\Reaction::isLikeMode()}}{lang="rep_system_like"}{{else}}{lang="rep_level_points"}{{endif}}</div>
+			</div>
+			<div class='i-grid i-place-content_center i-text-align_center'>
+				<div class='i-color_hard i-font-size_3 i-font-weight_600'>{number="$contentCount"}</div>
+				<div class='i-color_soft i-font-weight_500'>{lang="{$contentLabel}"}</div>
+			</div>
+		</div>
+	</div>
+	{{$showFollowButton = ( \IPS\Member::loggedIn()->member_id != $member->member_id and ( !$member->members_bitoptions['pp_setting_moderate_followers'] or \IPS\Member::loggedIn()->following( 'core', 'member', $member->member_id ) ) );}}
+	<ul class='ipsButtons ipsButtons--fill i-margin-top_auto i-padding-top_1'>
+		{{if $showFollowButton}}
+			<li>
+				{template="memberFollow" app="core" group="profile" params="'core', 'member', $member->member_id, $member->followersCount(), TRUE"}
+			</li>
+		{{endif}}
+		<li>
+			<a href='{url="app=core&module=members&controller=profile&do=content&id={$member->member_id}" base="front" seoTemplate="profile_content" seoTitle="$member->members_seo_name"}' class='ipsButton ipsButton--primary ipsButton--wide'><i class="fa-regular fa-file-lines" aria-hidden="true"></i><span>{lang="find_content"}</span></a>
+		</li>
+	</ul>
+</li>

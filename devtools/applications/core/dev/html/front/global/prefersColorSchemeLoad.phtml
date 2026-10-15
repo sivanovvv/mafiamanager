@@ -1,0 +1,5 @@
+<ips:template parameters="" />
+{{if (cssvar.set__i-change-scheme == "1" && isset(\IPS\Request::i()->cookie['scheme_preference']) && \IPS\Request::i()->cookie['scheme_preference'] === 'system') || (cssvar.set__i-change-scheme == "0" && cssvar.set__i-default-scheme == "system") || (cssvar.set__i-change-scheme == "1" && !isset(\IPS\Request::i()->cookie['scheme_preference']) && cssvar.set__i-default-scheme == "system") }}
+	{{/*}}<!-- If you can change the color scheme and you've chosen System OR if you can't change the color scheme and it's set to System.. apply it -->{{*/}}
+	<script>(() => document.documentElement.setAttribute('data-ips-scheme', (window.matchMedia('(prefers-color-scheme:dark)').matches) ? 'dark':'light'))();</script>
+{{endif}}

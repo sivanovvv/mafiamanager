@@ -1,0 +1,61 @@
+<ips:template parameters="$listItems" />
+<ul class="i-grid i-gap_2">
+	{{if \count( $listItems )}}
+		{{$count = 1;}}
+		{{foreach $listItems as $idx => $listItem}}
+			<li class='{{if $count < \count( $listItems )}}i-border-bottom_3{{endif}}'>
+				{{$count++;}}
+				<div class='i-flex i-align-items_center i-gap_1 {{if $listItem['critical']}}i-color_negative i-font-weight_bold{{elseif $listItem['advice']}}i-color_issue{{else}}i-color_positive{{endif}}'>
+
+					{{if $listItem['critical']}}
+						<i class="fa-solid fa-triangle-exclamation i-flex_00" aria-hidden="true"></i>
+					{{elseif $listItem['advice']}}
+						<i class="fa-solid fa-circle-info i-flex_00" aria-hidden="true"></i>
+					{{elseif $listItem['success']}}
+						<i class="fa-solid fa-check i-flex_00" aria-hidden="true"></i>
+					{{else}}
+						<i class="fa-solid fa-circle-info i-flex_00" aria-hidden="true"></i>
+					{{endif}}
+					
+					<p class='i-flex_11'>{$listItem['detail']}</p>
+				
+					{{if !empty( $listItem['link'] )}}
+						<a href="{$listItem['link']}" {{if !isset( $listItem['skipDialog'] )}}data-ipsDialog data-ipsDialog-title="{{if !empty( $listItem['dialogTitle'] )}}{lang="$listItem['dialogTitle']"}{{else}}{lang="self_service"}{{endif}}"{{endif}} class="ipsButton ipsButton--inherit ipsButton--small i-flex_00" {{if isset($listItem['dialogSize'])}}data-ipsDialog-size="{$listItem['dialogSize']}"{{endif}}>
+					{{elseif !empty( $listItem['element'] )}}
+						<a href="#{$listItem['element']}" data-ipsDialog data-ipsDialog-content='#{$listItem['element']}' data-ipsDialog-title="{{if !empty( $listItem['dialogTitle'] )}}{lang="$listItem['dialogTitle']"}{{else}}{lang="self_service"}{{endif}}" class="ipsButton ipsButton--inherit ipsButton--small i-flex_00">
+					{{endif}}
+
+					{{if !empty( $listItem['learnmore'] )}}
+						{lang="health_learn_more"}</a>
+					{{elseif !empty( $listItem['link'] ) OR !empty( $listItem['element'] )}}
+						{lang="health_fix_this"}</a>
+					{{endif}}
+
+				</div>
+
+				{{if !empty( $listItem['element'] )}}
+					<div id="{$listItem['element']}" class='ipsHide'>
+						<div class='i-padding_4 i-font-size_2'>
+							{$listItem['body']|raw}
+						</div>
+						{{if empty( $listItem['learnmore'] )}}
+						<div class="i-background_2 i-padding_3 i-text-align_center">
+							{{if !empty( $listItem['button'] )}}
+								<a href="{$listItem['button']['href']}" class="ipsButton {$listItem['button']['css']}">{lang="$listItem['button']['lang']"}</a>
+							{{endif}}	
+							<a href="{url="app=core&module=support&controller=support"}" class="ipsButton ipsButton--secondary">{lang="support_check_again"}</a>
+						</div>
+						{{endif}}
+					</div>
+				{{endif}}
+			</li>
+		{{endforeach}}
+	{{else}}
+		<li>
+			<div class="i-flex i-align-items_center i-color_positive">
+				<i class="fa-solid fa-check i-margin-end_icon" aria-hidden="true"></i>
+				<p class='i-flex_11'>{lang="health_no_issues"}</p>
+			</div>
+		</li>
+	{{endif}}
+</ul>

@@ -1,0 +1,12 @@
+<ips:template parameters="$baseUrl, $pages, $activePage=1, $perPage=25, $ajax=FALSE, $pageParam='page'" />
+{{if $pages > 1}}
+	<ul class="ipsMiniPagination" id='elPagination_{expression="md5($baseUrl)"}'>
+		{{foreach range( 1, ( 4 > $pages ) ? $pages : 4 ) as $i}}
+			<li hidden><a href='{$baseUrl->setPage( $pageParam, $i )}' data-ipsTooltip title='{lang="go_to_page_x" sprintf="$i"}'>{$i}</a></li>
+		{{endforeach}}
+		{{if $pages > 4}}
+			<li hidden><a href='{$baseUrl->setPage( $pageParam, $pages )}' data-ipsTooltip title='{lang="last_page"}'>{$pages} <i class='fa-solid fa-caret-right' aria-hidden="true"></i></a></li>
+		{{endif}}
+		<li><a href='{$baseUrl->setPage( $pageParam, $pages )}' data-ipsTooltip title='{lang="last_page"}'><span><i class="fa-regular fa-file-lines" aria-hidden="true"></i> {$pages}</span></a></li>
+	</ul>
+{{endif}}

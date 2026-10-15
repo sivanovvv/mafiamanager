@@ -1,0 +1,25 @@
+{
+    "added": [],
+    "edited": [
+        "newInvoice",
+        "acp_notification_Withdrawal",
+        "invoiceWarning",
+        "invoiceMarkedPaid",
+        "transactionGatewayPending",
+        "acp_notification_Advertisement",
+        "payoutComplete",
+        "transactionApproved",
+        "invoiceTrackExpired",
+        "transactionHeld",
+        "transactionWaiting",
+        "transactionFailed",
+        "commissionRevoked",
+        "transactionRefunded",
+        "commissionEarned",
+        "invoiceNotify",
+        "acp_notification_Transaction",
+        "purchaseNotify",
+        "giftVoucher"
+    ],
+    "removed": []
+}

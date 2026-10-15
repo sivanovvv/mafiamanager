@@ -1,0 +1,56 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+{{$pinnedTags = $table->getPinnedTagItems();}}
+<header class='ipsPageHeader ipsPageHeader--promote-public-table ipsBox'>
+	<h1 class='ipsPageHeader__title'>{lang="promote_table_header"}</h1>
+	<p class='ipsPageHeader__desc'>{lang="promote_table_header_desc"}</p>
+</header>
+
+<div class='ipsBox ipsBox--promotePublicTable ipsPull'>
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+			</div>
+		</div>
+	{{endif}}
+
+	{{if \is_array( $rows ) AND \count( $rows )}}
+		<div class='{{foreach $table->classes as $class}}{$class} {{endforeach}}' id='elTable_{$table->uniqueId}' data-role="tableRows">
+			<i-data>
+				<div class='ipsData ipsData--grid ipsData--featured-content'>
+					{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+				</div>
+			</i-data>
+		</div>
+	{{elseif ! $pinnedTags}}
+		<p class='ipsEmptyMessage'>{lang="promote_table_none"}</p>
+	{{endif}}
+
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--bottom">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+			</div>
+		</div>
+	{{endif}}
+	{{if $pinnedTags}}
+	    {{foreach $pinnedTags as $row}}
+	        {{$tag = $row['tag'];}}
+            {{if $pinnedItems = $tag->getPinnedItems()}}
+                <div id='elTagPinnedItems'>
+                    <h3 class="i-color_soft i-text-transform_uppercase i-font-weight_600 i-font-size_-2 i-padding-block_2 i-padding-inline_3 i-background_2 i-border-top_3 i-border-bottom_3">
+                        <a href="{$tag->url()}">{lang="tags__pinned_entries" sprintf="$tag->text"}</span></a>
+                    </h3>
+                    <i-data>
+                        <ol class='ipsData ipsData--grid ipsData--carousel' id="tags-pinned-carousel" tabindex="0">
+                            {{foreach $pinnedItems as $pinned}}
+                                {template="pinnedItem" app="core" group="tags" location="front" params="$pinned, $tag, false"}
+                            {{endforeach}}
+                        </ol>
+						{template="carouselNavigation" group="global" app="core" params="'tags-pinned-carousel'"}
+                    </i-data>
+                </div>
+            {{endif}}
+        {{endforeach}}
+	{{endif}}
+</div>

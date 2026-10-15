@@ -1,0 +1,20 @@
+<ips:template parameters="$count, $previousCount=NULL, $chart=FALSE" />
+{{if $previousCount === NULL}}
+	{template="overviewCount" location="admin" app="core" group="stats" params="$count"}
+{{else}}
+	<span class='cStat__number cStat__number--large' data-number='{$count}'>{number="$count"}</span>
+	<p class='cStat__change cStat__change--large {{if $previousCount > $count}}i-color_negative{{elseif $previousCount < $count}}i-color_positive{{else}}i-color_soft{{endif}}' data-ipsTooltip title="{lang="previous_period"} {number="$previousCount"}">
+		{{if $previousCount > $count}}
+			-{expression="round( 100 - ( $count / $previousCount * 100 ), 2 )"}%
+		{{elseif $previousCount < $count}}
+			{{if $previousCount}}+{expression="round( ( ( $count - $previousCount ) / $previousCount ) * 100, 2 )"}%{{else}}+ ∞{{endif}}
+		{{else}}
+			&mdash;
+		{{endif}}
+	</p>
+{{endif}}
+
+{{if $chart}}
+	<hr class='ipsHr'>
+	{$chart|raw}
+{{endif}}

@@ -1,0 +1,14 @@
+<ips:template parameters="$canAdd" />
+<div class='i-background_2 i-padding_3'>
+	<div>
+		<h4 class="i-font-weight_600 i-color_hard i-font-size_3">{lang="profile_complete_blurb_title"}</h4>
+		<div>
+			{lang="profile_complete_blurb_desc"}
+			{{if ! $canAdd}}
+				<div class="ipsMessage ipsMessage--info">
+					{lang="profile_complete_no_add"}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+</div>

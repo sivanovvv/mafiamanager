@@ -1,0 +1,20 @@
+<ips:template parameters="$folders, $rootId, $pages=array(), $title=null, $currentContainer=null, $layout='table', $isCarousel=false" />
+{{if $title}}
+<h3 class='ipsWidget__header'>{$title}</h3>
+{{endif}}
+<div class='ipsWidget__content'>
+    <nav class="ipsWidget__nav" data-navType='folder' data-navId='{$rootId}' data-controller='cms.front.blocks.navigation'>
+        {{if \is_array( $folders )}}
+            {{foreach $folders as $folder}}
+                {template="navigationLine" app="cms" group="widgets" params="$folder, null, $currentContainer"}
+            {{endforeach}}
+        {{else}}
+            {template="navigationLine" app="cms" group="widgets" params="$folders, null, $currentContainer"}
+        {{endif}}
+        {{if $rootId == 0 AND \count( $pages )}}
+            <div>
+                {template="folderNavigationItems" app="cms" group="widgets" params="$pages"}
+            </div>
+        {{endif}}
+    </nav>
+</div>

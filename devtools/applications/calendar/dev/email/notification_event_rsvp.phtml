@@ -1,0 +1,37 @@
+<ips:template parameters="$content, $member, $email" />
+{$email->language->addToStack("email_event_rsvp", FALSE, array( 'sprintf' => array( $member->name, $content->url(), $content->mapped('title') ) ) )}
+<br><br>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#ffffff" class='responsive_table background_1'>
+	<tr>
+		<td dir='{dir}' width="100%" bgcolor="#f9f9f9" class='responsive_fullwidth background_2'>
+			<table cellpadding="10" cellspacing="0" border="0" width="100%">
+				<tr>
+					<td dir='{dir}' colspan='2' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" class="background_2 color_hard">
+						<strong>{$email->language->get("rsvp_attend_event")}</strong>
+					</td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+					    {$email->language->addToStack( 'x_members', false, array( 'pluralize' => array( $content->attendeeCount( $content::RSVP_YES ) ) ) )}
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' colspan='2' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_2 color_hard">
+						<strong>{$email->language->get("rsvp_maybe_event")}</strong>
+					</td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+					    {$email->language->addToStack( 'x_members', false, array( 'pluralize' => array( $content->attendeeCount( $content::RSVP_MAYBE ) ) ) )}
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' colspan='2' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_2 color_hard">
+						<strong>{$email->language->get("rsvp_notgoing_event")}</strong>
+					</td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+					    {$email->language->addToStack( 'x_members', false, array( 'pluralize' => array( $content->attendeeCount( $content::RSVP_NO ) ) ) )}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

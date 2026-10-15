@@ -1,0 +1,238 @@
+<ips:template parameters="$title,$html,$location=array()" />
+<!DOCTYPE html>
+<html lang="{expression="\IPS\Member::loggedIn()->language()->bcp47()"}" dir="{{if member.language()->isrtl}}rtl{{else}}ltr{{endif}}" {{if isset(\IPS\Request::i()->cookie['acptheme']) AND \IPS\Request::i()->cookie['acptheme'] == 'dark'}}data-ips-scheme="dark"{{elseif !isset(\IPS\Request::i()->cookie['acptheme']) AND isset(\IPS\Request::i()->cookie['acpthemedefault']) AND \IPS\Request::i()->cookie['acpthemedefault'] == 'dark'}}data-ips-scheme="dark"{{else}}data-ips-scheme="light"{{endif}}>
+	<head>
+		<meta charset="utf-8">
+		<title>{$title}</title>
+		{template="includeCSS" app="core" group="global" location="global" params=""}
+		{template="includeJS" app="core" group="global" location="global" params=""}
+		{template="favico" app="core" group="global" location="front" params=""}
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="referrer" content="origin-when-cross-origin">
+	</head>
+	<body data-baseurl='{setting="base_url"}' class='ipsApp ipsApp_admin {{if ( \IPS\IN_DEV ) AND !\IPS\DEV_HIDE_DEV_TOOLS}}cAdminDevModeOn{{endif}} {{if isset( \IPS\Request::i()->cookie['hideAdminMenu'] )}}cAdminHideMenu{{endif}} {{foreach output.bodyClasses as $class}} {$class}{{endforeach}}' data-controller="{expression="implode( ',', \IPS\Output::i()->globalControllers )"}" {{if isset( output.inlineMessage )}}data-message="{expression="output.inlineMessage"}"{{endif}} data-pageApp='{$location['app']}' data-pageLocation='admin' data-pageModule='{$location['module']}' data-pageController='{$location['controller']}' {{if isset( \IPS\Request::i()->id )}}data-pageID='{expression="(int) \IPS\Request::i()->id"}'{{endif}}>
+		{{if ( \IPS\IN_DEV ) AND !\IPS\DEV_HIDE_DEV_TOOLS}}
+			<a class='cAdminDevModeWarning' data-ipsDialog data-ipsDialog-content='#elDevModeDialog' data-ipsDialog-size='narrow' data-ipsDialog-title="{{if \IPS\IN_DEV}}{lang="acp_indev_on_title"}{{endif}}" data-ipsTooltip title="{{if \IPS\IN_DEV}}{lang="acp_indev_on"}{{endif}}"><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i></a>
+			<!-- <div class='cAdminDevModeBar'></div> -->
+			<div id='elDevModeDialog' class='ipsHide i-padding_3'>
+				<p class='i-margin-bottom_1'>
+					{{if \IPS\IN_DEV}}
+						{lang="acp_indev_on_blurb"}
+					{{endif}}
+				</p>
+				<p>
+					<i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i> {lang="acp_not_production_tho"}
+				</p>
+			</div>
+		{{endif}}
+		<div id='acpMainLayout'>
+			<nav id='acpAppMenu'>
+				{{if isset( \IPS\Output::i()->sidebar['appmenu'] )}}{expression="\IPS\Output::i()->sidebar['appmenu']" raw="true"}{{endif}}
+			</nav>
+			<div id='acpMainArea'>
+
+				<div id='ipsLayout_header' role='banner' data-controller='core.admin.core.mobileNav'>
+					{{if member.hasAcpRestriction( 'core', 'overview', 'livesearch_manage')}}
+					<div class='acpSearch'>
+						<i class='fa-solid fa-magnifying-glass' aria-hidden="true"></i>
+						<input type='text' id='acpSearchKeyword' placeholder='{lang="search_admincp"}'>
+						<button class="acpSearch__close" type="button" data-role="closeLiveSearch"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span class="ipsInvisible">{lang="acp_close_search"}</span></button>
+					</div>
+					{{endif}}
+					<ul id='elAdminControls'>
+						<li class='ipsResponsive_showDesktop'>
+							<a href='{expression="\IPS\Http\Url::baseUrl()"}' target='_blank' rel="noopener">
+								<i class='fa-solid fa-house' aria-hidden="true"></i> {lang="site"}
+							</a>
+						</li>
+						{{if isset( \IPS\Output::i()->sidebar['quickLinks'] )}}
+						<li class='ipsResponsive_showDesktop'>
+						    <button type="button" id="elAcpTools" popovertarget="elAcpTools_menu">
+						        <i class='fa-solid fa-link' aria-hidden="true"></i>{lang="acp_quick_links"}<i class='fa-solid fa-angle-down' aria-hidden="true"></i>
+							</button>
+							<i-dropdown popover id="elAcpTools_menu">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">
+										{{foreach \IPS\Output::i()->sidebar['quickLinks'] as $link}}
+											{$link|raw}
+										{{endforeach}}
+									</ul>
+								</div>
+							</i-dropdown>
+						</li>
+						{{endif}}
+						{{if \IPS\Dispatcher\Admin::showSwitchLink()}}
+							<li class='ipsResponsive_showDesktop acpHighlightLink_wrap'>
+								<a href='https://invisioncommunity.com/services/switch-to-invision/' target='_blank' rel='external noopener nofollow' class='acpHighlightLink'>{lang="acp_switch_to_cloud"}</a>
+								<span class="acpHighlightLink_close">
+									<a data-ipsToolTip title='{lang="acp_switch_to_cloud_hide"}' href='{url="app=core&module=overview&controller=dashboard&do=switchSnooze"}'>
+										<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+										<span class="ipsInvisible">{lang="acp_switch_to_cloud_hide"}</span>
+									</a>
+								</span>
+							</li>
+						{{endif}}
+						{{$notificationsCount = \IPS\core\AdminNotification::notificationCount();}}
+						<li data-controller="core.admin.core.notificationMenu">
+							<button type="button" id="elFullAcpNotifications" popovertarget="elFullAcpNotifications_menu" class="cAcpNotifications {{if $notificationsCount}}cAcpNotifications_active{{endif}}">
+								<i class="fa-solid fa-bell" data-role="notificationIcon" aria-hidden="true"></i>
+								<span class="ipsNotification {{if !$notificationsCount}}ipsHide{{endif}}" data-role="notificationCount">{number="$notificationsCount"}</span>
+							</button>
+							<i-dropdown popover id="elFullAcpNotifications_menu">
+								<div class="iDropdown">
+									<div class='iDropdown__header'>
+										<p class='iDropdown__headerTitle'>{lang="acp_notifications"}</p>
+										<a href="{url="app=core&module=overview&controller=notifications&do=settings"}" class="ipsButton ipsButton--inherit ipsButton--small"><i class="fa-solid fa-gear" aria-hidden="true"></i> {lang="settings"}</a>
+									</div>
+									<div class='iDropdown__content'>
+										<i-data>
+											<ol class="ipsData ipsData--table ipsData--notification-list" data-ipsfetch="{url='app=core&module=overview&controller=notifications'}" data-role="notificationList"></ol>
+										</i-data>
+									</div>
+									<a href='{url="app=core&module=overview&controller=notifications"}' class="iDropdown__footer"><i class='fa-solid fa-bars' aria-hidden="true"></i> {lang="see_all_notifications"}</a>
+								</div>
+							</i-dropdown>
+						</li>
+						<li class='ipsResponsive_showDesktop'>
+							<button type="button" id="elAdminUser" popovertarget="elAdminUser_menu" data-controller='core.admin.core.changeTheme'>
+								<span class='ipsUserPhoto ipsUserPhoto--tiny'><img src='{member="photo"}' alt=''></span>
+								<i class='fa-solid fa-angle-down' aria-hidden="true"></i>
+							</button>
+							<i-dropdown popover id="elAdminUser_menu">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">
+										<li><a href='{url="app=core&module=members&controller=members&do=adminDetails"}' data-ipsDialog data-ipsDialog-url='{url="app=core&module=members&controller=members&do=adminDetails"}' data-ipsDialog-title='{lang="change_details"}' data-ipsDialog-size='medium'><i class='fa-solid fa-user' aria-hidden="true"></i> {lang="change_details"}</a></li>
+									</ul>
+									<ul class="iDropdown__items" data-i-dropdown-selectable="radio">
+										<li><hr></li>
+										<li class="iDropdown__title">{lang="theme"}</li>
+										<li>
+											<button type="button" {{if !isset(\IPS\Request::i()->cookie['acptheme']) OR !\IPS\Request::i()->cookie['acptheme']}}aria-selected="true"{{endif}} data-ipsMenuValue="os" data-i-dropdown-persist><i class="iDropdown__input" aria-hidden="true"></i>{lang="acptheme_os_preference"}</button>
+										</li>
+										<li>
+											<button type="button" {{if isset(\IPS\Request::i()->cookie['acptheme']) AND \IPS\Request::i()->cookie['acptheme'] == 'light'}}aria-selected="true"{{endif}} data-ipsMenuValue="light" data-i-dropdown-persist><i class="iDropdown__input" aria-hidden="true"></i>{lang="acptheme_light"}</button>
+										</li>
+										<li>
+											<button type="button" {{if isset(\IPS\Request::i()->cookie['acptheme']) AND \IPS\Request::i()->cookie['acptheme'] == 'dark'}}aria-selected="true"{{endif}} data-ipsMenuValue="dark" data-i-dropdown-persist><i class="iDropdown__input" aria-hidden="true"></i>{lang="acptheme_dark"}</button>
+										</li>
+									</ul>
+									{{$languages = \IPS\Lang::getEnabledLanguages();}}
+									{{if \count( $languages ) > 1}}
+									<ul class="iDropdown__items" data-i-dropdown-selectable="radio">
+										<li><hr></li>
+										<li class="iDropdown__title">{lang='acp_language'}</li>
+										{{foreach $languages as $id => $lang }}
+											<li>
+												<a href='{url="app=core&module=system&controller=language&id={$id}" csrf="true" ref="\IPS\Request::i()->url()"}' {{if \IPS\Member::loggedIn()->acp_language == $id || ( $lang->default && \IPS\Member::loggedIn()->acp_language === 0 )}} aria-selected="true"{{endif}}>{{if $lang->get__icon()}}<i class='{$lang->get__icon()}' aria-hidden="true"></i> {{endif}}{$lang->title} {{if $lang->default}}{lang="default"}{{endif}}</a>
+											</li>
+										{{endforeach}}
+									</ul>
+									{{endif}}
+									<ul class="iDropdown__items">
+										<li><hr></li>
+										<li><a href='{url="app=core&module=system&controller=login&do=logout" csrf="true"}'><i class='fa-solid fa-power-off' aria-hidden="true"></i> {lang="sign_out"}</a></li>
+									</ul>
+								</div>
+							</i-dropdown>
+						</li>
+						<li class="ipsResponsive_hideDesktop">
+							<button type='button' popovertarget='ipsOffCanvas--acpNavigation'>
+								<i class="fa-solid fa-bars" aria-hidden="true"></i>
+							</button>
+						</li>
+					</ul>
+				</div>
+
+				{{if !\in_array( \IPS\Request::i()->controller, array( 'notifications', 'upgrade' ) )}}
+					<div data-controller="core.global.core.notificationList" class="cNotificationList i-grid i-gap_1">
+						{{foreach \IPS\core\AdminNotification::notifications( NULL, array( \IPS\core\AdminNotification::SEVERITY_HIGH, \IPS\core\AdminNotification::SEVERITY_CRITICAL ) ) as $notification}}
+							{{$style = $notification->style();}}
+							<div class="ipsMessage ipsMessage--acp ipsMessage--{$style} cAcpNotificationBanner">
+								<i class='fa-solid fa-{{if $style == $notification::STYLE_INFORMATION OR $style == $notification::STYLE_EXPIRE}}info-circle{{else}}warning{{endif}} ipsMessage__icon' aria-hidden="true"></i>
+								<div class="i-flex i-justify-content_space-between i-gap_2">
+									<div class="i-flex_11">
+										<h3 class="ipsMessage__title">{$notification->title()|raw}</h3>
+										<div class='i-font-size_-2 i-font-weight_normal'>{$notification->body()|raw}</div>
+									</div>
+									{{$dismissible = $notification->dismissible();}}
+									{{if $dismissible !== $notification::DISMISSIBLE_NO}}
+										<a href='{url="app=core&module=overview&controller=notifications&do=dismiss&id={$notification->id}" csrf="true"}' class="ipsMessage__close i-flex_00" title='{lang="acp_notification_dismiss_{$dismissible}"}' data-ipsTooltip data-action="dismiss">
+											<i class="fa-solid fa-times" aria-hidden="true"></i>
+											<span class="ipsInvisible">{lang="closed"}</span>
+										</a>
+									{{endif}}
+								</div>
+							</div>
+						{{endforeach}}
+					</div>
+				{{endif}}
+				{{if !\in_array( 'acpHeader', \IPS\Output::i()->hiddenElements)}}
+					{{if isset( \IPS\Output::i()->customHeader )}}
+						{expression="\IPS\Output::i()->customHeader" raw="true"}
+					{{else}}
+						<div id='acpPageHeader'>
+							{{if isset( \IPS\Output::i()->headerMessage )}}
+								{expression="\IPS\Output::i()->headerMessage" raw="true"}
+							{{endif}}
+							{template="breadcrumb" app="core" location="admin" group="global"}
+							<div class='acpPageHeader_flex'>
+								{{if \IPS\Output::i()->showTitle}}
+									<h1 class='ipsTitle ipsTitle--h3'>
+										{$title}
+										{{if \IPS\Output::i()->editUrl}}
+											<a href="{expression="\IPS\Output::i()->editUrl"}" class="i-font-size_1" data-ipsDialog data-ipsDialog-title="{lang="edit"}"><i class="fa-solid fa-pencil" aria-hidden="true"></i></a>
+										{{endif}}
+										{{if \IPS\IN_DEV}}
+											{template="searchKeywords" group="global" app="core" params="'app=' . \IPS\Request::i()->app . '&module=' . \IPS\Request::i()->module . '&controller=' . \IPS\Request::i()->controller . ( ( isset( \IPS\Request::i()->do ) and \IPS\Request::i()->do != 'do' ) ? ( '&do=' . \IPS\Request::i()->do ) : '' ) . ( ( \IPS\Request::i()->controller == 'enhancements' and ( isset( \IPS\Request::i()->id ) ) ) ? ( '&id=' . \IPS\Request::i()->id ) : '' )"}
+										{{endif}}
+									</h1>
+								{{endif}}
+
+								{{if isset(\IPS\Output::i()->sidebar['actions'])}}
+									<div class='acpToolbar'>
+										{template="pageButtons" app="core" group="global" location="admin" params="\IPS\Output::i()->sidebar['actions']"}
+									</div>
+								{{endif}}
+							</div>
+						</div>
+					{{endif}}
+				{{endif}}
+				<div id='acpContent'>
+					{{if !\IPS\Output::i()->responsive}}
+						<div class='ipsResponsive_showPhone i-text-align_center ipsBox ipsBox--padding'>
+							<i class='ipsLargeIcon fa-solid fa-tablet-screen-button' aria-hidden="true"></i>
+							<h2 class='ipsTitle ipsTitle--h4 i-margin-top_2 i-margin-bottom_3'>{lang="not_mobile"}</h2>
+							<p>{lang="not_mobile_desc"}</p>
+						</div>
+						<div class='ipsResponsive_hidePhone'>
+							{$html|raw}
+						</div>
+					{{else}}
+						{$html|raw}
+					{{endif}}
+				</div>
+			</div>
+		</div>
+		
+		<div id='acpLiveSearchResults' class='ipsHide' data-controller='core.admin.core.liveSearch'>
+			<div class='cAcpSearch'>
+				<div class='cAcpSearch_areas' data-role="searchMenu">
+					<div data-ipsSideMenu data-ipsSideMenu-type='radio'>
+						<ul class="ipsSideMenu_list">
+							{{foreach \IPS\Application::allExtensions( 'core', 'LiveSearch', TRUE, 'core', 'Settings' ) as $key => $extension}}
+								{{if $extension->hasAccess()}}
+									<li><a href="#" class="ipsSideMenu_item ipsSideMenu_itemDisabled" data-ipsMenuValue='{$key}' {{if method_exists( $extension, 'isDefault' ) and $extension->isDefault()}}data-role="defaultTab"{{endif}}>{lang="acp_search_title_{$key}"} <span data-role="resultCount" class='ipsSideMenu_itemCount ipsLoading ipsLoading--tiny'>&nbsp;&nbsp;</span></a></li>
+								{{endif}}
+							{{endforeach}}
+						</ul>
+					</div>
+				</div>
+				<div class='cAcpSearch_results ipsScrollbar' data-role="searchResults"><div class="cAcpSearch_none ipsEmptyMessage">{lang="no_results"}</div></div>
+			</div>
+		</div>
+		{{if isset( \IPS\Output::i()->sidebar['mobilenav'] )}}{expression="\IPS\Output::i()->sidebar['mobilenav']" raw="true"}{{endif}}
+		<i-tooltip popover="manual" id="ipsTooltip" role="tooltip"></i-tooltip>
+		<div id="ipsAriaLive" class="ipsInvisible" aria-live="polite" aria-atomic="true"></div>
+	</body>
+</html>

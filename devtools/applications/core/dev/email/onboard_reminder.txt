@@ -1,0 +1,4 @@
+<ips:template parameters="$email" />
+{$email->language->addToStack("onboard_welcome_message_email")}
+
+{$email->language->addToStack("onboard_finish_setup", FALSE)}: {url="app=core&module=overview&controller=onboard" base="admin" plain="true"}

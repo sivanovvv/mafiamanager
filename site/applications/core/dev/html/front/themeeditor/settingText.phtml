@@ -1,0 +1,11 @@
+<ips:template parameters="$setting" />
+<theme-setting data-setting='{$setting->key}' data-type='{$setting->type}' {{if $setting->refresh}}data-setting-refresh{{endif}}>
+    <div class="theme-editor__align-setting">
+        <label for='{$setting->key}'>{$setting->name}</label>
+        <button class='theme-editor__revert' type='button' data-revert='{$setting->key}' {{if $setting->value() == $setting->defaultValue()}}hidden{{endif}} data-ipstooltip title='{lang="theme_editor_revert"}' data-on-click="revertSetting"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span class="ipsInvisible">{lang="theme_editor_revert"}</span></button>
+    </div>
+    <input type='text' spellcheck='false' id='{$setting->key}' name='{$setting->key}' value='{$setting->value()|raw}' enterkeyhint='done' data-default="{$setting->defaultValue()}" data-on-input="changingTextInput" data-on-change="settingHasBeenChanged">
+    {{if $desc = $setting->desc}}
+        <small>{$desc|raw}</small>
+    {{endif}}
+</theme-setting>

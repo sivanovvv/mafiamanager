@@ -1,0 +1,40 @@
+<ips:template parameters="$blockKey, $subBlock, $details, $savedBlockId, $additionalClasses='', $hidden=false" />
+
+<div
+	class='ipsBox cStatTile {$additionalClasses}'
+	data-role='statsBlock'
+	data-refresh='{$details["refresh"]}'
+	data-block='{$blockKey}'
+	data-subblock='{$subBlock}'
+	data-app='{$details["app"]}'
+	data-controller='core.admin.stats.overviewBlock'
+    {{if $savedBlockId}}data-savedstatid="{$savedBlockId}"{{endif}}
+	{{if isset( $details["form"] ) AND $details['form'] === TRUE}}data-filters='{expression="json_encode( $details['savedFilters'] ?? [] )"}'{{endif}}
+	{{if $hidden}}hidden{{endif}}
+	style="view-transition-name: {$blockKey}_{$subBlock}"
+>
+	<div class='cStatTile__header'>
+		<h2 class='cStatTile__title' data-role="stat_title">{$details['title']}</h2>
+		<div class="cStatTile__icons">
+			{{if isset( $details['form'] ) AND $details['form'] === TRUE}}
+                {{ $filterFormUrl = (string) \IPS\Http\Url::internal( "app=core&module=stats&controller=overview&do=loadBlockForm&blockKey={$blockKey}&subBlockKey={$subBlock}" )->setQueryString([ 'saved_block_id' => $savedBlockId ]); }}
+                {template="statBlockButton" app="core" group="reports" location="admin" params="'overview_stats_form', 'filterForm', '', 'filter', $filterFormUrl, headerLang: 'statsreports_update_filters'"}
+			{{endif}}
+
+            {{$components = explode( "_", $blockKey, 2 );$app=array_shift($components);$block=array_shift($components);}}
+            {{ $saveEditForm = (string) \IPS\Http\Url::internal( "app=core&module=overview&controller=mycharts&do=saveBlock&block=" . $block . "&subblock={$subBlock}&blockapp={$app}" . ($savedBlockId ? '&saved_block_id=' . $savedBlockId : '') ); }}
+			{{if $savedBlockId}}
+				{template="statBlockButton" app="core" group="reports" location="admin" params="'statsreports_edit_block', 'saveReport', '', 'pencil', $saveEditForm, 'statsreports_edit_block'"}
+				{template="statBlockButton" app="core" group="reports" location="admin" params="'mychart_remove', 'removeBlock', 'ipsButton--negative', 'trash'"}
+			{{else}}
+				{template="statBlockButton" app="core" location="admin" group="reports" params="dropdownSource:$saveEditForm, headerLang: 'statsreports_add_block_to_report'"}
+			{{endif}}
+		</div>
+	</div>
+	{{if $details['description']}}
+		<div class="cStatTile__desc i-color_soft">{lang="$details['description']"}</div>
+	{{endif}}
+	<div class='cStatTile__body ipsLoading ipsLoading--small'>
+        <div class='cStatTile__bodyInner' data-role='statBlockContent'></div>
+	</div>
+</div>

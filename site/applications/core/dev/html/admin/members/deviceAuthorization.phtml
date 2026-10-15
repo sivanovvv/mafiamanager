@@ -1,0 +1,15 @@
+<ips:template parameters="$authorized, $active, $anonymous" />
+{{if $authorized}}
+	{{if $active}}
+		<i class="fa-solid fa-check" aria-hidden="true"></i>
+		{{if $anonymous}}
+			{lang="device_table_login_key_anonymous"}
+		{{else}}
+			{lang="device_table_login_key_ok"}
+		{{endif}}
+	{{else}}
+		<i class="fa-regular fa-clock" aria-hidden="true"></i> {lang="device_table_login_key_expired"}
+	{{endif}}
+{{else}}
+	<i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="device_table_login_key_no"}
+{{endif}}

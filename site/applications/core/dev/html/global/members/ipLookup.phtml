@@ -1,0 +1,44 @@
+<ips:template parameters="$url, $geolocation, $map, $hostName, $counts" />
+
+<h2 class='ipsBox__header'>{lang="ip_address_info"}</h2>
+<div class='i-background_2 cIPInfo' data-ips-template="ipLookup">
+	{{if $geolocation or $hostName}}
+		<div class='ipsColumns ipsColumns--lines ipsColumns--ipLookUp'>
+			<div class='ipsColumns__secondary i-basis_340 i-padding_3 i-background_1'>
+				<div class='cIPInfo_map'>
+					{{if $hostName}}
+						<p class="i-margin-bottom_3">{lang="ip_geolocation_hostname" sprintf="$hostName"}</p>
+					{{endif}}
+					{{if $geolocation}}
+						{{if $map}}
+							{$map|raw}
+						{{endif}}
+						<p class="i-margin-top_2 i-color_hard i-font-weight_500">{$geolocation|raw}</p>
+						<p class="i-margin-top_2 i-color_soft i-font-size_-2"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {lang="ip_geolocation_info"}</p>
+					{{endif}}
+				</div>
+			</div>
+			<div class='ipsColumns__primary'>
+	{{endif}}
+	<div class="ipsSpanGrid i-background_1">
+		{{foreach $counts as $key => $value}}
+			{{if $value}}
+				<div class='ipsSpanGrid__4 i-padding_3 i-text-align_center'>
+					<a href="{$url->setQueryString( 'area', $key )}" class="i-color_inherit">
+						<span class='i-font-size_6 cIPInfo_value'>{$value}</span><br>
+						<p class='ipsTruncate_1 ipsMinorTitle'>{lang="ipAddresses__{$key}"}</p>
+					</a>
+				</div>
+			{{else}}
+				<div class='ipsSpanGrid__4 i-padding_3 i-text-align_center i-color_soft i-opacity_4'>
+					<span class='i-font-size_6 cIPInfo_value'>{$value}</span><br>
+					<p class='ipsTruncate_1 ipsMinorTitle'>{lang="ipAddresses__{$key}"}</p>
+				</div>
+			{{endif}}
+		{{endforeach}}
+	</div>
+	{{if $geolocation}}
+			</div>
+		</div>
+	{{endif}}
+</div>

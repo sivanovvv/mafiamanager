@@ -1,0 +1,96 @@
+<ips:template parameters="$menu, $currentTab, $currentItem" />
+<ul id='acpAppList' data-controller='core.admin.core.nav'>
+	<li id='elLogo'>
+		<a href='{url="&"}'>
+			<img src='{resource="logo.png" app="core" location="admin"}' alt=''>
+		</a>
+	</li>
+	{{foreach $menu['tabs'] as $tab => $items}}
+		<li class='{{if $tab === $currentTab}}acpAppList_active{{endif}}' data-tab="tab_{$tab}">
+			<a href='{url="$menu['defaults'][$tab]"}'>
+				{{$totalBadge = 0;}}
+				{{foreach $items as $appAndModule => $item}}
+					{{foreach $item as $key => $url}}
+						{{$badgeNumber = NULL; try { $badgeNumber = \IPS\Application::load( mb_substr( $appAndModule, 0, mb_strpos( $appAndModule, '_' ) ) )->acpMenuNumber( $url ); } catch( \Exception $ex ){ } }}
+						{{if $badgeNumber}}
+							{{$totalBadge += $badgeNumber;}}
+						{{endif}}
+					{{endforeach}}
+				{{endforeach}}
+				<span class='acpAppList_icon'>
+					<i class='fa-solid fa-{lang="menutab__{$tab}_icon"}' aria-hidden="true"></i>
+				</span>
+				<span class='acpAppList__label'>{lang="menutab__{$tab}"}</span>
+				{{if $totalBadge > 0}}
+					<span class='ipsNotification'>{$totalBadge}</span>
+				{{endif}}
+			</a>
+			<div class='acpAppList__sub'>
+				<ul class=''>
+					<li class='acpAppList_header'>{lang="menutab__{$tab}"}</li>
+					{{$currentApp = \IPS\Request::i()->appKey ?? 'core';}}
+					{{if $tab == 'developer'}}
+					    <li data-menuKey='{$appAndModule}'>
+					        <h3 class='i-margin-bottom_2'>
+								<button type="button" id="elDevCenterMenu" popovertarget="elDevCenterMenu_menu">
+					            	{lang="__app_{$currentApp}"} <i class='fa fa-solid fa-caret-down' aria-hidden="true"></i>
+								</button>
+					        </h3>
+							<i-dropdown popover id="elDevCenterMenu_menu" data-i-dropdown-selectable="radio">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">
+										{{foreach \IPS\Application::applications() as $app}}
+											<li>
+												{{$controller = (\IPS\Request::i()->app === "core" and \IPS\Request::i()->module === "developer" and \IPS\Dispatcher::i()->controller) ? "&controller=" . \IPS\Dispatcher::i()->controller : "";}}
+												<a href='{url="app=core&module=developer{$controller}&appKey={$app->directory}"}' {{if $currentApp === $app->directory}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="__app_{$app->directory}"}</a>
+											</li>
+										{{endforeach}}
+									</ul>
+								</div>
+							</i-dropdown>
+					    </li>
+					{{endif}}
+					{{foreach $items as $appAndModule => $item}}
+							<li data-menuKey='{$appAndModule}'>
+							    <h3>{lang="menu__{$appAndModule}"}</h3>
+							    <ul>
+									{{foreach $item as $key => $url}}
+										<li class='{{if $appAndModule . "_" . $key === $currentItem}}acpAppListItem_active{{endif}}'>
+											{{$badgeNumber = NULL; try { $badgeNumber = \IPS\Application::load( mb_substr( $appAndModule, 0, mb_strpos( $appAndModule, '_' ) ) )->acpMenuNumber( $url ); } catch( \Exception $ex ){ } }}
+											{{if $badgeNumber}}
+												<a href='{url="$url"}'>
+												    {{if isset( $menu['badges'][ $appAndModule . "_" . $key] )}}<span class="ipsBadge ipsBadge--icon ipsBadge--small ipsBadge--style1">{$menu['badges'][ $appAndModule . "_" . $key]|raw}</span>{{endif}}
+													{lang="menu__{$appAndModule}_{$key}"}
+													<span class='ipsNotification'>{$badgeNumber}</span>
+												</a>
+											{{else}}
+												{{$customLink = NULL; try { $customLink = \IPS\Dispatcher::i()->acpMenuCustom( $url ); } catch( \Exception $ex ){ } }}
+												{{if $customLink}}
+													{$customLink|raw}
+												{{else}}
+													<a href='{url="$url"}'>
+													    {{if isset( $menu['badges'][ $appAndModule . "_" . $key] )}}<span class="ipsBadge ipsBadge--icon ipsBadge--small ipsBadge--style1">{$menu['badges'][ $appAndModule . "_" . $key]|raw}</span>{{endif}}
+													    {lang="menu__{$appAndModule}_{$key}"}
+													</a>
+												{{endif}}
+											{{endif}}
+										</li>
+									{{endforeach}}
+								</ul>
+							</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		</li>
+	{{endforeach}}
+	<!-- <li id='elHideMenu' class='ipsJS_show'>
+		<a href='#'>
+			<i class='fa-solid fa-angle-left' data-action='toggleClose' aria-hidden="true"></i>
+			<i class='fa-solid fa-angle-right' data-action='toggleOpen' aria-hidden="true"></i>
+		</a>
+	</li> -->
+	<li id='elReorderAppMenu'>
+		<button type="button" data-action='reorder' title='{lang="reorder_menu"}' data-ipsTooltip><i class="fa-solid fa-bars-staggered" aria-hidden="true"></i><span class="ipsInvisible">{lang="reorder_menu"}</span></button>
+		<button type="button" data-action='saveOrder' title='{lang="save_reorder_menu"}' data-ipsTooltip class='ipsButton ipsButton--primary ipsButton--icon ipsButton--small' hidden><i class='fa-solid fa-check' aria-hidden="true"></i><span class="ipsInvisible">{lang="save_reorder_menu"}</span></button>
+	</li>
+</ul>

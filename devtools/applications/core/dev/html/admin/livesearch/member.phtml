@@ -1,0 +1,9 @@
+<ips:template parameters="$member" />
+<li class='ipsPhotoPanel ipsPhotoPanel_mini i-padding_2' data-role='result'>
+	{template="userPhoto" app="core" group="global" params="$member, 'mini'"}
+	<div class="ipsPhotoPanel__text">
+		<h2 class='ipsPhotoPanel__primary'><a href='{url="app=core&module=members&controller=members&do=view&id="}{$member->member_id}'>{{if $member->name}}{$member->name}{{else}}{template="memberReserved" app="core" group="members" params="$member"}{{endif}}</a></h2>
+		<p class='ipsPhotoPanel__secondary'>{expression="$member->groupName" raw="true"} &middot; <span class='i-color_soft'>{$member->email}</span></p>
+	</div>
+</li>
+

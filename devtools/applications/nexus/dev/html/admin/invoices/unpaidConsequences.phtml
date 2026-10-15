@@ -1,0 +1,44 @@
+<ips:template parameters="$invoice" />
+{{if ( $consequences = $invoice->unpaidConsequences() and \count( $consequences ) )}}
+	<div class="i-margin-top_1 ipsMessage ipsMessage--general">
+		{lang="invoice_unpaid_consequences"}
+		<ul class="cInvoiceUnpaidConsequences">
+			{{foreach $consequences as $k => $v}}
+				{{if $k !== 'unassociate'}}
+					<li>
+						{{if \is_array( $v )}}
+							{{if isset( $v['message'] )}}
+								{$v['message']}
+								<span class="cInvoiceUnpaidConsequences_warning">{$v['warning']}</span>
+							{{else}}
+								{lang="invoice_unpaid_$k"}
+								<ul>
+									{{foreach $v as $k2 => $v2}}
+										<li>
+											{{if \is_array( $v2 )}}
+												{$v2['message']|raw}
+												<span class="cInvoiceUnpaidConsequences_warning">{$v2['warning']}</span>
+											{{else}}
+												{$v2|raw}
+												{{if $k === 'purchases' and isset( $consequences['unassociate'] ) and isset( $consequences['unassociate'][ $k2 ] ) and $childPurchases = array_filter( $consequences['unassociate'][ $k2 ], function( $c ) use( $consequences ) { return !array_key_exists( $c, $consequences['purchases'] ); }, ARRAY_FILTER_USE_KEY )}}
+													{lang="invoice_unpaid_unassociate"}
+													<ul>
+														{{foreach $childPurchases as $child}}
+															<li>{$child|raw}</li>
+														{{endforeach}}
+													</ul>
+												{{endif}}
+											{{endif}}
+										</li>
+									{{endforeach}}
+								</ul>
+							{{endif}}
+						{{else}}
+							{$v}
+						{{endif}}
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+	</div>
+{{endif}}

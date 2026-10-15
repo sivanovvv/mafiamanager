@@ -1,0 +1,9 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class='ipsPhotoPanel ipsPhotoPanel_mini'>
+		{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $row['member_given'] ), 'mini'"}
+		<div>
+			<h3 class='ipsTruncate ipsTruncate_line'>{template="userLink" app="core" group="global" params="\IPS\Member::load( $row['member_given'] )"}</h3>
+		</div>
+	</li>
+{{endforeach}}

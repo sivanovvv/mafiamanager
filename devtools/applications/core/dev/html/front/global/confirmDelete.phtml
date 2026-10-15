@@ -1,0 +1,16 @@
+<ips:template parameters="$message, $form, $title" />
+
+<section class='i-text-align_center ipsBox i-padding_3'>
+    <br><br>
+    <i class='i-font-size_6 fa-solid fa-triangle-exclamation' aria-hidden="true"></i>
+
+    <p class='i-font-size_6'>
+        {lang="$title"}
+    </p>
+
+    <p class='i-font-size_2'>
+        {lang="$message"}
+    </p>
+    <hr class='ipsHr'>
+    {$form|raw}
+</section>

@@ -1,0 +1,20 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "global\/forms\/paymentRequestApi",
+            "front\/store\/reviews"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

@@ -1,0 +1,107 @@
+<ips:template parameters="$name, $value, $required, $maxlength=NULL, $disabled=FALSE, $class='', $placeholder='', $nullLang=NULL, $autoComplete=NULL" />
+
+{{$valueAsArray = \is_array( $value ) ? $value : ( \is_string( $value ) ? explode( ',', $value ) : [] );}}
+{{$valueToDisplay = \is_array( $value ) ? implode( "\n", $value ) : $value;}}
+
+{{if ( !isset( $autoComplete['commaTrigger'] ) || $autoComplete['commaTrigger'] !== FALSE )}}
+	{{// If the stored value has commas in it, we need to explode then implode to get the newlines}}
+	{{if $valueToDisplay and mb_stripos( $valueToDisplay, ',') !== FALSE}}
+		{{$valueToDisplay = implode("\n", explode(",", $valueToDisplay));}}
+	{{endif}}	
+{{endif}}
+
+<div>
+{{if ( isset( $autoComplete['freeChoice'] ) && !$autoComplete['freeChoice'] ) || ( isset( $autoComplete['prefix'] ) and $autoComplete['prefix'] ) }}
+<div {{if isset( $autoComplete['freeChoice'] ) && !$autoComplete['freeChoice']}}class="ipsJS_show"{{endif}} {{if isset( $autoComplete['prefix'] ) and $autoComplete['prefix']}}data-controller='core.global.core.prefixedAutocomplete'{{endif}}>
+{{endif}}
+{{if isset( $autoComplete['prefix'] ) and $autoComplete['prefix']}}
+	<div data-role='prefixRow' class='ipsHide' id='{{if ! empty($htmlId)}}{$htmlId}{{else}}{$name}{{endif}}_prefixWrap'>
+		<input type='checkbox' name='{$name}_freechoice_prefix' {{if isset($valueAsArray['prefix'])}}checked{{endif}} class='ipsJS_hide'> <button type="button" id="{{if ! empty($htmlId)}}{$htmlId}{{else}}{$name}{{endif}}_prefix" popovertarget="{{if ! empty($htmlId)}}{$htmlId}{{else}}{$name}{{endif}}_prefix_menu" data-role="prefixButton" class='ipsButton ipsButton--soft ipsButton--small'><span>{{if isset($valueAsArray['prefix'])}}{$valueAsArray['prefix']}{{else}}{lang="select_prefix"}{{endif}}</span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+		<input type='hidden' data-role='prefixValue' name='{$name}_prefix' value='{{if isset($valueAsArray['prefix'])}}{$valueAsArray['prefix']}{{endif}}'>
+		<i-dropdown popover id="{{if ! empty($htmlId)}}{$htmlId}{{else}}{$name}{{endif}}_prefix_menu" data-i-dropdown-selectable="radio">
+			<div class="iDropdown">
+				<ul class="iDropdown__items" data-role="prefixMenu">
+					<li>
+						<button type="button" data-ipsMenuValue='-' aria-selected="true">{lang="no_prefix"}</button>
+					</li>
+					<li>
+						<hr>
+					</li>
+				</ul>
+			</div>
+		</i-dropdown>
+	</div>
+	<noscript>
+		<input type="hidden" name="{$name}_first_as_prefix" value="0">
+		{{$valueKeys = \is_array( $value ) ? array_keys( $value ) : array_keys( explode( ',', $value ) );}}
+		<input type="checkbox" name="{$name}_first_as_prefix" value="1" id="{$name}_first_as_prefix" {{if array_shift( $valueKeys ) === 'prefix'}}checked{{endif}}> <label for="{$name}_first_as_prefix">{lang="use_first_tag_as_prefix"}</label>
+	</noscript>
+{{endif}}
+<textarea
+	name="{$name}"
+	id='elInput_{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}'
+	class="ipsInput ipsInput--text {$class}"
+	{{if $maxlength !== NULL}}maxlength="{$maxlength}"{{endif}}
+	{{if $required === TRUE}}aria-required='true'{{endif}}
+	{{if $disabled}}disabled aria-disabled='true'{{endif}}
+	{{if $placeholder}}placeholder="{$placeholder}"{{endif}}
+	data-ipsAutocomplete
+	{{if isset( $autoComplete['freeChoice'] ) && !$autoComplete['freeChoice']}}data-ipsAutocomplete-freeChoice='false'{{endif}}
+    {{if isset( $autoComplete['suggestionsOnly'] ) && $autoComplete['suggestionsOnly']}}data-ipsautocomplete-suggestionsOnly="true"{{endif}}
+	{{if isset( $autoComplete['forceLower'] ) && $autoComplete['forceLower']}}data-ipsAutocomplete-forceLower{{endif}}
+	data-ipsAutocomplete-lang='{{if isset( $autoComplete['lang'] ) && $autoComplete['lang']}}{$autoComplete['lang']}{{else}}ac_optional{{endif}}'
+	{{if isset( $autoComplete['maxItems'] )}}data-ipsAutocomplete-maxItems='{$autoComplete['maxItems']}'{{endif}}
+	{{if isset( $autoComplete['addTokenText'] )}}data-ipsAutocomplete-addTokenText='{$autoComplete['addTokenText']}'{{endif}}
+	{{if isset( $autoComplete['addTokenTemplate'] )}}data-ipsAutocomplete-addTokenTemplate='{$autoComplete['addTokenTemplate']}'{{endif}}
+	{{if !empty($autoComplete['unique'])}}
+		data-ipsAutocomplete-unique
+	{{endif}}
+	{{if isset($autoComplete['source']) AND \is_array( $autoComplete['source'] )}}
+		list='{$name}_datalist'
+	{{elseif !empty($autoComplete['source'])}}
+		data-ipsAutocomplete-dataSource="{url="{$autoComplete['source']}"}"
+		data-ipsAutocomplete-queryParam='input'
+	{{endif}}
+	{{if !empty($autoComplete['resultItemTemplate'])}}
+		data-ipsAutocomplete-resultItemTemplate="{$autoComplete['resultItemTemplate']}"
+	{{endif}}
+	{{if isset( $autoComplete['minLength'] )}}data-ipsAutocomplete-minLength='{$autoComplete['minLength']}'{{endif}}
+	{{if isset( $autoComplete['maxLength'] )}}data-ipsAutocomplete-maxLength='{$autoComplete['maxLength']}'{{endif}}
+	{{if isset( $autoComplete['minAjaxLength'] )}}data-ipsAutocomplete-minAjaxLength='{$autoComplete['minAjaxLength']}'{{endif}}
+	{{if isset( $autoComplete['disallowedCharacters'] )}}data-ipsAutocomplete-disallowedCharacters='{expression="json_encode( $autoComplete['disallowedCharacters'] )"}'{{endif}}
+	{{if isset( $autoComplete['commaTrigger'] ) && $autoComplete['commaTrigger'] === FALSE}}data-ipsAutocomplete-commaTrigger='false'{{endif}}
+	{{if isset( $autoComplete['minimized'] )}}data-ipsAutocomplete-minimized{{endif}}
+>{{if $valueToDisplay}}{$valueToDisplay}{{endif}}</textarea>
+
+{{if ( isset( $autoComplete['freeChoice'] ) && !$autoComplete['freeChoice'] ) || ( isset( $autoComplete['prefix'] ) and $autoComplete['prefix'] ) }}
+</div>
+{{endif}}
+</div>
+
+{{if isset( $autoComplete['desc'] )}}
+	<div class='ipsFieldRow__desc'>
+		{$autoComplete['desc']|raw}
+	</div>
+{{endif}}
+
+{{if $nullLang}}
+	<div class="ipsFieldRow__inlineCheckbox i-margin-top_1">
+		{lang="or"} 
+		<input type="checkbox" data-control="unlimited" name="{$name}_null" id="{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}_null" value="1" {{if $value === NULL}}checked{{endif}} {{if $disabled}}disabled{{endif}} aria-controls='{$name}' aria-labelledby='{$name}_null_label' class="ipsInput ipsInput--toggle">
+		<label for='{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}_null' id='{expression="preg_replace('/[^a-zA-Z0-9\-_]/', '_', $name)"}_null_label' class='ipsField_unlimited'>{lang="$nullLang"}</label>
+	</div>
+{{endif}}
+
+{{if isset($autoComplete['source']) AND \is_array( $autoComplete['source'] )}}
+	<datalist id="{$name}_datalist">
+	    {{if isset( $autoComplete['formatSource'] ) and $autoComplete['formatSource']}}
+	        {{foreach $autoComplete['source'] as $k => $v}}
+	            <option value="{$k}">{$v|raw}</option>
+	        {{endforeach}}
+	    {{else}}
+		    {{foreach $autoComplete['source'] as $v}}
+			    <option value="{$v}">{$v}</option>
+		    {{endforeach}}
+		{{endif}}
+	</datalist>
+{{endif}}

@@ -1,0 +1,22 @@
+<ips:template parameters="$log" />
+<div id="elQueryLog" data-ips-scheme="dark">
+	<h3>{expression="\count( $log )"}</h3>
+	{{foreach $log as $i => $query}}
+		<div>
+			<pre class="prettyprint language-sql" data-ipsDialog data-ipsDialog-content="#elQueryLog{$i}_menu">{{if $query['server']}}({$query['server']}): {{endif}}{$query['query']}</pre>
+			{{if $query['extra']}}
+				<div class="i-text-align_center">
+					<strong class="i-color_warning"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> {$query['extra']}</strong>
+				</div>
+				<br>
+			{{endif}}
+			<div id='elQueryLog{$i}_menu' class='i-padding_3 ipsHide elQueryLogMenu'>
+				<br>
+				<pre class="prettyprint language-sql">{$query['query']}</pre>
+				<hr class="ipsHr">
+				<pre class="prettyprint language-php">{expression="var_export( $query['backtrace'], true )" raw="true"}</pre>
+				<br>
+			</div>
+		</div>
+	{{endforeach}}
+</div>

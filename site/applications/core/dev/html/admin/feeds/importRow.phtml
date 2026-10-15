@@ -1,0 +1,7 @@
+<ips:template parameters="$node" />
+{{$url = $node->_importedIntoUrl;}}
+{{if $url}}
+    <a href="{$url}" target="_blank" data-ipsToolTip title="{$url}" class="ipsBadge ipsBadge--style6">{$node->_application->_title} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+{{else}}
+    <span class="ipsBadge ipsBadge--style6">{$node->_application->_title}</span>
+{{endif}}

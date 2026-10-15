@@ -1,0 +1,33 @@
+<ips:template parameters="$club" />
+{{$memberStatus = $club->memberStatus( \IPS\Member::loggedIn() );}}
+<li class="ipsData__item {{if settings.clubs_require_approval and !$club->approved}}ipsModerated{{endif}}">
+	<a href='{$club->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$club->name}</span></a>
+	<div class='ipsData__icon' data-ips-hook="icon">
+		{template="clubIcon" group="clubs" app="core" params="$club, 'tiny'"}
+	</div>
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			<div class='ipsData__title'>
+				<div class='ipsBadges' data-ips-hook="badges">
+				    {{foreach $club->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</div>
+				<h4>
+					<a href='{$club->url()}' title="{$club->name}">{$club->name}</a>
+				</h4>
+			</div>
+			<div class='ipsData__desc ipsTruncate_4'>
+				{$club->about}
+			</div>
+		</div>
+		<ul class='ipsData__stats' data-ips-hook="info">
+			<li>
+				{lang="club_{$club->type}"}
+			</li>
+			{{if $club->type !== $club::TYPE_PUBLIC}}
+				<li class="i-color_soft">
+					{lang="club_members_count" pluralize="$club->members"}
+				</li>
+			{{endif}}
+		</ul>
+	</div>
+</li>

@@ -1,0 +1,21 @@
+<ips:template parameters="$url, $itemLang, $number, $destination, $albumNumber, $albumDestination" />
+<div class="i-padding_3 i-background_1">
+	<p class="i-margin-bottom_1">
+		{{if $destination}}
+			{lang="node_mass_content_move_blurb" sprintf="$number, $itemLang, $destination->_title"}
+		{{else}}
+			{lang="node_mass_content_delete_blurb" sprintf="$number, $itemLang"}
+		{{endif}}
+	</p>
+	<p class="i-margin-bottom_1">
+		{{if $albumDestination}}
+			{lang="galnode_mass_content_move_blurb" sprintf="$albumNumber, $albumDestination->_title"}
+		{{else}}
+			{lang="galnode_mass_content_delete_blurb" sprintf="$albumNumber"}
+		{{endif}}
+	</p>
+	<p class="i-margin-bottom_1">{lang="node_mass_content_blurb_2"}</p>
+</div>
+<div class="ipsSubmitRow">
+	<a class="ipsButton ipsButton--primary" {{if $number OR $albumNumber}}href="{$url->setQueryString( 'confirm', 1 )}"{{else}}disabled{{endif}}>{lang="node_mass_content_confirm"}</a>
+</div>

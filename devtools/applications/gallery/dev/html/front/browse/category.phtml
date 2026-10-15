@@ -1,0 +1,71 @@
+<ips:template parameters="$category, $albums, $table" />
+
+{{if $club = $category->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $category"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<header class="ipsPageHeader ipsBox ipsBox--galleryCategoryHeader ipsPull">
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" class="ipsPageHeader__title">{$category->_title}</h1>
+			{{if \IPS\Member::loggedIn()->language()->get('gallery_category_' . $category->_id . '_desc')}}
+				{template="richText" group="global" app="core" location="global" params="$category->description, array('')"}
+			{{endif}}
+		</div>
+		<div data-ips-hook="buttons" class='ipsButtons'>
+			{{if \IPS\Application::appIsEnabled('cloud')}}
+					{template="analyticsButton" app="cloud" group="analytics" params="$category, $category->id"}
+				{{endif}}
+			{{$followerCount = \IPS\gallery\Image::containerFollowerCount( $category );}}
+			{template="follow" app="core" group="global" params="'gallery', 'category', $category->_id, $followerCount"}
+		</div>
+	</div>
+	{{if $category->show_rules}}
+		<div class="ipsPageHeader__row" data-controller="core.front.core.lightboxedImages">
+			{{if $category->show_rules == 1}}
+				<a href="{$category->rules_link}" class='ipsJS_show' data-ipsDialog data-ipsDialog-title="{lang="gallery_category_{$category->id}_rulestitle"}" data-ipsDialog-content="#elCategoryRules">{lang="category_rules"}</a>
+				<div id='elCategoryRules' class='ipsHide'>
+					{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('gallery_category_' . $category->id . '_rules'), array('')"}
+				</div>
+			{{elseif $category->show_rules == 2}}
+				<strong>{lang="gallery_category_{$category->id}_rulestitle"}</strong>
+				{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('gallery_category_' . $category->id . '_rules'), array('')"}
+			{{endif}}
+		</div>
+	{{endif}}
+</header>
+
+{{if $category->can('add') and ( $category->allow_albums != 2 or member.group['g_create_albums'] or \IPS\gallery\Album::loadForSubmit( $category ) )}}
+	<ul class="ipsButtons ipsButtons--main">
+		{template="categoryButtons" group="browse" params="$category->can('add'), $category, NULL"}
+	</ul>
+{{endif}}
+
+{{if $category->children()}}
+	<div class="ipsBox ipsBox--galleryCategoryChildren ipsBox--padding ipsPull">
+		{template="categoryGrid" group="browse" app="gallery" params="$category->children()"}
+	</div>
+{{endif}}
+
+{{if $albums}}
+	<div class='ipsBox ipsBox--galleryCategoryAlbums ipsPull'{{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+		{$albums|raw}
+	</div>
+{{endif}}
+
+{{if $table}}
+	<div class='ipsBox ipsBox--galleryCategoryTable ipsPull'>
+		{$table|raw}
+	</div>
+{{endif}}
+
+<div class="ipsBox ipsPageActions ipsBox--padding ipsPull ipsResponsive_showPhone">
+	{template="follow" app="core" group="global" params="'gallery', 'category', $category->_id, $followerCount"}
+</div>
+
+{{if $category->club()}}
+	</div>
+{{endif}}

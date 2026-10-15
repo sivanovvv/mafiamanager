@@ -1,0 +1,81 @@
+<ips:template parameters="$id, $action, $tabs, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL, $errorTabs=array()" />
+
+<div class='cOnboard' data-controller='core.admin.dashboard.onboard'>
+	<form accept-charset='utf-8' data-formId="{$id}" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} data-ipsForm class="ipsFormWrap ipsFormWrap--onboard" {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}}>
+		<input type="hidden" name="{$id}_activeTab" value="{$form->activeTab}">
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			{{if \is_array($v)}}
+				{{foreach $v as $_v}}
+					<input type="hidden" name="{$k}[]" value="{$_v}">
+				{{endforeach}}
+			{{else}}
+				<input type="hidden" name="{$k}" value="{$v}">
+			{{endif}}
+		{{endforeach}}
+		{{if $uploadField}}
+			<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		{{endif}}
+		{{if $form->error}}
+			<div class="ipsMessage ipsMessage--error">
+				{$form->error}
+			</div>
+		{{endif}}
+		{{if !empty( $errorTabs )}}
+			<p class="ipsMessage ipsMessage--error ipsJS_show">{lang="tab_error"}</p>
+		{{endif}}
+
+		{{$count = 1;}}
+		{{foreach $tabs as $name => $collection}}
+			{{if $name}}
+				{{$closed = TRUE;}}
+				{{if $count == 1}}
+					{{$closed = FALSE;}}
+				{{endif}}
+				<div class='ipsBox i-margin-bottom_3 cOnboard__section {{if $closed}}cOnboard__section--closed{{endif}}' data-role="sectionWrap">
+					<h2 class='ipsTitle ipsTitle--h3 i-padding_3 cOnboard__sectionTitle' data-role="sectionToggle">
+						<i class="fa-solid fa-angle-down i-margin-end_icon cOnboard__sectionIcon" data-role="closeSection" aria-hidden="true"></i>
+						{{if \in_array( $name, $errorTabs )}}<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> {{endif}}{lang="$name"}
+					</h2>
+
+					<div class="ipsColumns ipsColumns--lines cOnboard__sectionContents" aria-hidden="false" data-role="sectionForm">
+						{{$key = str_replace( 'onboard_tab_', '', $name );}}
+						<div class='ipsColumns__secondary i-basis_400 i-padding_3 cOnboard__column cOnboard__column--info'>
+							<div class="ipsFluid i-basis_300 i-gap_5">
+								<div>
+									<h3 class='cOnboard__infoTitle'>{lang="onboard_what_are_these"}</h3>
+									<p>{lang="onboard_msg_$key"}</p>
+								</div>
+								<div>
+									<h3 class='cOnboard__infoTitle'>{lang="onboard_where_are_these"}</h3>
+									<p>{lang="onboard_location_$key"}</p>
+								</div>
+							</div>
+						</div>
+
+						<div class='ipsColumns__primary cOnboard__column cOnboard__column--form i-padding-block_2'>
+							<ul class='ipsForm {$form->class} ipsForm--onboard'>
+								{{foreach $collection as $input}}
+									{{if \is_string( $input )}}
+										{$input|raw}
+									{{else}}
+										{$input->rowHtml( $form )|raw}
+									{{endif}}
+								{{endforeach}}
+							</ul>
+						</div>
+					</div>
+
+					<div class='ipsSubmitRow' data-role="sectionButtons">
+						<button class='ipsButton ipsButton--inherit' data-action="nextStep" type='button'>{lang="next"}</button>
+					</div>
+				</div>
+				{{$count++;}}
+			{{endif}}
+		{{endforeach}}
+
+		<div class="ipsBox i-padding_3 i-text-align_center">
+			{expression="implode( '', $actionButtons)" raw="true"}
+		</div>
+	</form>
+</div>

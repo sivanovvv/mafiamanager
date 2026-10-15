@@ -1,0 +1,4 @@
+<ips:template parameters="$theme" />
+{{if mb_strtolower( $theme->author_name ) != 'invision power services' and ( $theme->author_name != '' OR $theme->author_url != '' )}}
+{{if $theme->author_name != '' }} {lang="byline_nodate" sprintf="$theme->author_name"}{{endif}}{{if $theme->author_url}} {template="basicUrl" group="global" app="core" location="global" params="$theme->website(), TRUE, $theme->website(), TRUE, TRUE, TRUE"}{{endif}}
+{{endif}}

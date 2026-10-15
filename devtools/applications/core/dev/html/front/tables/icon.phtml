@@ -1,0 +1,7 @@
+<ips:template parameters="$class, $container=NULL" />
+<i class='fa-solid fa-{$class::$icon}' aria-hidden="true"></i> 
+{{if $container === NULL}}
+	{lang="$class::$title"}
+{{else}}
+	<a href="{$container->url()}">{lang="icon_blurb_in_containers" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $class::$title ), $container->_title"}</a>
+{{endif}}

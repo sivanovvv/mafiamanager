@@ -1,0 +1,12 @@
+<ips:template parameters="$image, $commentsAndReviews" />
+<div data-role="imageComments">
+{{if $commentsAndReviews}}
+	{{if ( $image->directContainer()->allow_reviews && $image->container()->allow_reviews ) && ( $image->directContainer()->allow_comments && $image->container()->allow_comments ) }}
+		<span id="replies"></span>
+		<h2 hidden>{lang="user_feedback"}</h2>
+	{{endif}}
+	<div class='ipsBox ipsBox--galleryImageCommentsReviews ipsPull'>
+		{$commentsAndReviews|raw}
+	</div>
+{{endif}}
+</div>

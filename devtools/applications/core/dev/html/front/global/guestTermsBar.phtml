@@ -1,0 +1,48 @@
+<ips:template parameters="$currentUrl" />
+
+{{$termsLang = \IPS\Member::loggedIn()->language()->addToStack( 'terms_of_use' );}}
+{{$privacyLang = \IPS\Member::loggedIn()->language()->addToStack( 'terms_privacy' );}}
+{{$glLang = \IPS\Member::loggedIn()->language()->addToStack( 'guidelines' );}}
+{{$termsUrl = (string) \IPS\Http\Url::internal( 'app=core&module=system&controller=terms', 'front', 'terms' );}}
+{{$terms = "<a href='$termsUrl'>$termsLang</a>";}}
+
+{{if \IPS\Settings::i()->privacy_type == 'internal'}}
+	{{$privacyUrl = (string) \IPS\Http\Url::internal( 'app=core&module=system&controller=privacy', 'front', 'privacy' );}}
+{{else}}
+	{{$privacyUrl = \IPS\Settings::i()->privacy_link;}}
+{{endif}}
+{{$privacy = "<a href='$privacyUrl'>$privacyLang</a>";}}
+
+{{if \IPS\Settings::i()->gl_type == 'internal'}}
+	{{$glUrl = (string) \IPS\Http\Url::internal( 'app=core&module=system&controller=guidelines', 'front', 'guidelines' );}}
+{{else}}
+	{{$glUrl = \IPS\Settings::i()->gl_link;}}
+{{endif}}
+{{$guidelines = "<a href='$glUrl'>$glLang</a>";}}
+{{$cookiesUrl = (string) \IPS\Http\Url::internal( 'app=core&module=system&controller=cookies', 'front', 'cookies' );}}
+{{$cookies = \IPS\Member::loggedIn()->language()->addToStack( 'cookies_message', FALSE, array( 'sprintf' => array( $cookiesUrl, $cookiesUrl ) ) );}}
+<i-cookie-consent id='elGuestTerms' role="region" aria-labelledby="elGuestTermsLabel" hidden data-role='{{if \IPS\Request::i()->cookieConsentEnabled()}}cookieConsentBar{{else}}guestTermsBar{{endif}}' tabindex="-1">
+	<div class='ipsWidth'>
+		<div class='ipsColumns i-align-items_center i-gap_3'>
+			<div class='ipsColumns__primary'>
+				<h4 class='ipsTitle ipsTitle--h5 ipsTitle--margin' id="elGuestTermsLabel">{lang="guest_terms_title"}</h4>
+				<p class='i-color_soft'>{lang="guest_terms_bar_text_value" htmlsprintf="$terms, $privacy, $guidelines, $cookies"}</p>
+			</div>
+			<div class='ipsColumns__secondary'>
+                {{if \IPS\Request::i()->cookieConsentEnabled()}}
+					<form action="{url="app=core&module=system&controller=cookies&do=cookieConsentToggle&ref={$currentUrl}" csrf="true"}" method="post">
+						<input type="hidden" name='ref' value="{$currentUrl}">
+						<div class="ipsButtons">
+							<button name="status" value="0" class='ipsButton ipsButton--inherit'>{lang='cookieconstent_reject'}</button>
+							<button name="status" value="1" class='ipsButton ipsButton--positive'><i class='fa-solid fa-check' aria-hidden="true"></i> {lang='accept_cookies'}</button>
+						</div>
+					</form>
+                {{else}}
+					<div class="ipsButtons">
+						<a href='{url="app=core&module=system&controller=terms&do=dismiss&ref={$currentUrl}" csrf="true"}' rel='nofollow' class='ipsButton ipsButton--positive' data-action="dismissTerms"><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="guest_terms_close"}</a>
+					</div>
+                {{endif}}
+            </div>
+		</div>
+	</div>
+</i-cookie-consent>

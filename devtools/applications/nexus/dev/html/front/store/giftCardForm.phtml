@@ -1,0 +1,96 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+{{if $form->error}}
+	<div class="ipsMessage ipsMessage--error i-margin-bottom_3">
+		{$form->error}
+	</div>
+{{endif}}
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--gift-card" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<div class='ipsSpanGrid'>
+		<div class='ipsSpanGrid__6'>
+			<div class="ipsColumns cNexusStep_block">
+				<div class="ipsColumns__secondary i-basis_50">
+					<span class="cNexusStep_step">1</span>
+				</div>
+				<div class="ipsColumns__primary">
+					<h2 class="ipsTitle ipsTitle--h3">{lang="gift_voucher_personalize"}</h2>
+					<p>
+						{lang="gift_voucher_personalize_desc"}
+					</p>
+				</div>
+			</div>
+			<hr class='ipsHr'>
+			<ul class='ipsForm {$class} ipsForm--vertical ipsForm--gift-card'>
+				<li class="ipsFieldRow">
+					<div class="ipsFieldRow__content">	
+						<input type='hidden' name='gift_voucher_color' value='{expression="str_replace( '#', '', $elements['']['gift_voucher_color']->value )"}'>
+						<ul class='ipsList ipsList--inline i-gap_0 cNexusGiftcard_swatches'>
+							<li class='i-background_2'><a href='#' data-color='3b3b3b' style='background-color: #3b3b3b'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='16a085' style='background-color: #16a085'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='27ae60' style='background-color: #27ae60'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='2980b9' style='background-color: #2980b9'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='2c3e50' style='background-color: #2c3e50'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='8e44ad' style='background-color: #8e44ad'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='f39c12' style='background-color: #f39c12'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='d35400' style='background-color: #d35400'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='c0392b' style='background-color: #c0392b'>&nbsp;</a></li>
+							<li class='i-background_2'><a href='#' data-color='7f8c8d' style='background-color: #7f8c8d'>&nbsp;</a></li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+			<div id='elNexusGiftcard' class='ipsInnerBox i-margin-top_3' data-role='giftCardArea'>
+				<div id='elNexusGiftcard_card' data-role='giftCard'>
+					<span data-role='icon'><i class='fa-solid fa-gift' aria-hidden="true"></i></span>
+					<h2>{lang="gift_voucher"}</h2>
+					<strong data-role='siteName'>{setting="board_name"}</strong>
+					<strong data-role='value' class='cNexusGiftcard_content'></strong>
+					<span data-role='redeem' class='cNexusGiftcard_redeem ipsResponsive_hidePhone'>{lang="gift_voucher_redeem"}</span>
+				</div>
+				<div class='i-padding_3' id='elNexusGiftcard_personalize'>
+					<div class='cNexusGiftcard_content' data-role='to'>
+						{lang="to"} <input type='text' class='ipsInput ipsInput--text' name='gift_voucher_recipient' value='{$elements['']['gift_voucher_recipient']->value}' placeholder="{lang="gift_voucher_recipient"}">,
+					</div>
+					<div class='cNexusGiftcard_content i-margin-block_2' data-role='message'>
+						<textarea class='ipsInput ipsInput--text' name='gift_voucher_message' rows='3' placeholder='{lang="gift_voucher_message"}'>{$elements['']['gift_voucher_message']->value}</textarea>
+					</div>
+					<div class='cNexusGiftcard_content'>{lang="from"} <input type='text' class='ipsInput ipsInput--text' name='gift_voucher_sender' value='{$elements['']['gift_voucher_sender']->value}' placeholder='{lang="gift_voucher_sender"}'></div>
+				</div>
+			</div>
+		</div>
+		<div class='ipsSpanGrid__6'>
+			<div class="ipsColumns cNexusStep_block ">
+				<div class="ipsColumns__secondary i-basis_50">
+					<span class="cNexusStep_step">2</span>
+				</div>
+				<div class="ipsColumns__primary">
+					<h2 class="ipsTitle ipsTitle--h3">{lang="gift_voucher_choose_amount"}</h2>
+					<p>
+						{lang="gift_voucher_choose_amount_desc"}
+					</p>
+				</div>
+			</div>
+			<hr class='ipsHr'>
+			<ul class='ipsForm ipsForm--vertical ipsForm--gift-card-summary'>
+				{{foreach $elements as $collection}}
+					{{foreach $collection as $inputName => $input}}
+						{{if !\in_array( $inputName, array( 'gift_voucher_color', 'gift_voucher_recipient', 'gift_voucher_message', 'gift_voucher_sender') )}}
+							{$input|raw}
+						{{endif}}
+					{{endforeach}}
+				{{endforeach}}
+			</ul>
+
+			<div class='i-text-align_start i-margin-top_3'>
+				<button type='submit' class='ipsButton ipsButton--primary'>{lang="add_gift_voucher_to_cart"}</button>
+			</div>
+		</div>
+	</div>
+</form>

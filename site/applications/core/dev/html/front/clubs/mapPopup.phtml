@@ -1,0 +1,14 @@
+<ips:template parameters="$club" />
+<div class='ipsPhotoPanel ipsPhotoPanel--mini'>
+	{template="clubIcon" group="clubs" app="core" params="$club, 'mini'"}
+	<div class='i-padding_2'>
+		<h3 class='ipsTitle ipsTitle--h3'>
+			<a href='{$club->url()}'>{$club->name}</a>
+		</h3>
+		<p class='i-color_soft'>
+			{lang="club_{$club->type}"}
+			&nbsp;&middot;&nbsp;
+			{lang="club_members_count" pluralize="$club->members"}
+		</p>
+	</div>
+</div>

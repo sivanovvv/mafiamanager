@@ -1,0 +1,8 @@
+<ips:template parameters="$charts" />
+<div class='ipsGrid ipsGrid--max-2 ipsGrid--myCharts i-basis_600 i-padding_2'>
+{{foreach $charts AS $chart}}
+	<div data-controller='core.admin.members.lazyLoadingProfileBlock' data-url='{url="app=core&module=overview&controller=mycharts&do=getChart&chartId="}{$chart}{{if !empty(request.date["start"])}}&date[start]={expression="request.date['start']"}{{endif}}{{if !empty(request.date["end"])}}&date[end]={expression="request.date['end']"}{{endif}}{{if !empty(request.predate)}}&predate={expression="request.predate"}{{endif}}'>
+		<div class="i-text-align_center ipsLoading ipsLoading--small"></div>
+	</div>
+{{endforeach}}
+</div>

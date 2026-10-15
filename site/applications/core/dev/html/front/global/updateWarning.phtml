@@ -1,0 +1,28 @@
+<ips:template parameters="" />
+{{if \IPS\Member::loggedIn()->isAdmin()}}
+	{{$notifications = \IPS\core\AdminNotification::notifications( NULL, array( \IPS\core\AdminNotification::SEVERITY_CRITICAL ) ); }}
+	{{if \count($notifications)}}
+		<div data-controller="core.global.core.notificationList" class="cNotificationList i-grid i-gap_1">
+			{{foreach $notifications as $notification}}
+				{{$style = $notification->style();}}
+				<div class="ipsMessage ipsMessage--acp ipsMessage--{$style} ipsPull">
+					<i class='fa-solid fa-{{if $style == $notification::STYLE_INFORMATION OR $style == $notification::STYLE_EXPIRE}}circle-info{{else}}download{{endif}} ipsMessage__icon' aria-hidden="true"></i>
+					<div class="i-flex i-justify-content_space-between i-gap_2">
+						<div class="i-flex_11">
+							<p class="ipsMessage__title">{$notification->title()|raw}</p>
+							<span class='i-font-size_-2 i-font-weight_normal i-opacity_8'>{lang="acp_notification_frontend_explain"}</span>
+						</div>
+						{{$dismissible = $notification->dismissible();}}
+						{{if $dismissible !== $notification::DISMISSIBLE_NO}}
+							<a href="{url="app=core&module=system&controller=ajax&do=dismissAcpNotification&id={$notification->id}" csrf="true"}" class="ipsMessage__close i-flex_00" title="{lang="acp_notification_dismiss_{$dismissible}"}" data-ipsTooltip data-action="dismiss">
+								<i class="fa-solid fa-times" aria-hidden="true"></i>
+								<span class="ipsInvisible">{lang="closed"}</span>
+							</a>
+						{{endif}}
+					</div>
+					{$notification->body()|raw}
+				</div>
+			{{endforeach}}
+		</div>
+	{{endif}}
+{{endif}}

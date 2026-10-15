@@ -1,0 +1,249 @@
+<ips:template parameters="$category=NULL, $subcategories=NULL, $url=NULL, $havePackages=FALSE, $currency=NULL, $havePackagesWhichAcceptReviews = FALSE, $havePackagesWhichUseStockLevels = FALSE" />
+
+<div data-role="categorySidebar">
+	{{if !\IPS\nexus\Package\Group::theOnlyNode( array(), TRUE, FALSE )}}
+	<div class='ipsWidget' id='elNexusCategoriesBox'>
+		<h2 class='ipsWidget__header'>{lang="categories"}</h2>
+		<div class='ipsWidget__content i-padding_2'>
+			{{if $subcategories !== NULL AND \count( $subcategories )}}
+				<div class='ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios' id='elCategories_menu'>
+					<h3 class='ipsSideMenu__view'>
+						<a href='#elCategories_menu' data-action='openSideMenu'><i class='fa-solid fa-bars' aria-hidden="true"></i><span>{lang="categories"}</span></a>
+					</h3>
+					<div class="ipsSideMenu__menu">
+						<div class='cNexusCategoriesBox_back'>
+							{{if $category && $category->parent()}}
+								<a href='{$category->parent()->url()}' class='ipsButton ipsButton--small ipsButton--inherit'><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i><span>{$category->parent()->_title}</span></a>
+							{{else}}
+								<a href='{url="app=nexus&module=store&controller=store" seoTemplate="store"}' class='ipsButton ipsButton--small ipsButton--inherit'><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i><span>{lang="all_categories"}</span></a>
+							{{endif}}
+						</div>
+						<hr class='ipsHr'>
+						<h4 class='ipsSideMenu__title'>{$category->_title}</h4>
+						<ul class='ipsSideMenu__list'>
+							{{foreach $subcategories as $idx => $subcategory}}
+								<li>
+									<a href='{$subcategory->url()}' class='ipsSideMenu_item'><span class='ipsSideMenu__toggle'></span><span class='ipsSideMenu__text'>{$subcategory->_title}</span></a>
+									{{if $subcategory->hasSubgroups()}}
+										<ul class='ipsSideMenu__list'>
+											{{foreach $subcategory->children( 'view', NULL, FALSE ) as $cidx => $child}}
+												<li>
+													{{if $cidx >= 5}}
+														<a href='{$subcategory->url()}' class='ipsSideMenu_item'>
+															<span class='i-color_soft i-font-size_-2'>{lang="and_x_more" pluralize="\count( $subcategory->children( 'view', NULL, FALSE ) ) - 5"}</span>
+														</a>
+														{{break;}}
+													{{else}}
+														<a href="{$child->url()}" class='ipsSideMenu_item'><span class='ipsSideMenu__text'>{$child->_title}</span></a>
+													{{endif}}
+												</li>
+											{{endforeach}}
+										</ul>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</div>
+			{{elseif $category && $category->parent()}}
+				{{$siblings = $category->parent()->children( 'view', NULL, FALSE );}}
+				<div class='ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios' id='elCategories_menu'>
+					<h3 class='ipsSideMenu__view'>
+						<a href='#elCategories_menu' data-action='openSideMenu'><i class='fa-solid fa-bars' aria-hidden="true"></i><span>{lang="categories"}</span></a>
+					</h3>
+					<div class="ipsSideMenu__menu">
+						<div class='cNexusCategoriesBox_back'>
+							<a href='{$category->parent()->url()}' class='ipsButton ipsButton--small ipsButton--inherit'><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i><span>{$category->parent()->_title}</span></a>
+						</div>
+						<hr class='ipsHr'>
+						<h4 class='ipsSideMenu__title'>{$category->parent()->_title}</h4>
+						<ul class='ipsSideMenu__list'>
+							{{foreach $siblings as $idx => $sibling}}
+								<li>
+									<a href='{$sibling->url()}' class='ipsSideMenu_item {{if $category && $category == $sibling}}ipsSideMenu_itemActive{{endif}}'><span class='ipsSideMenu__toggle'></span class='ipsSideMenu__text'>{$sibling->_title}</a>
+									{{if $sibling instanceof \IPS\nexus\Package\Group && $sibling->hasSubgroups()}}
+										<ul class='ipsSideMenu__list'>
+											{{$cidx = 0;}}
+											{{foreach $sibling->children( 'view', NULL, FALSE ) as $child}}
+												{{if $child->hasPackages( NULL, array(), TRUE ) OR $child->hasSubgroups()}}
+													{{$cidx++;}}
+													<li>
+														{{if $cidx >= 5}}
+															<a href='{$sibling->url()}' class='ipsSideMenu_item'><span class='i-color_soft i-font-size_-2'>{lang="and_x_more" pluralize="\count( $sibling->children( 'view', NULL, FALSE ) ) - 5"}</span></a>
+															{{break;}}
+														{{else}}
+															<a href="{$child->url()}" class='ipsSideMenu_item'><span class='ipsSideMenu__toggle'></span><span class='ipsSideMenu__text'>{$child->_title}</span></a>
+														{{endif}}
+													</li>
+												{{endif}}
+											{{endforeach}}
+										</ul>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</div>
+			{{else}}
+				<div class='ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios' id='elCategories_menu'>
+					<h3 class='ipsSideMenu__view'>
+						<a href='#elCategories_menu' data-action='openSideMenu'><i class='fa-solid fa-bars' aria-hidden="true"></i><span>{lang="categories"}</span></a>
+					</h3>
+					<div class="ipsSideMenu__menu">
+						<ul class='ipsSideMenu__list'>
+							{{foreach \IPS\nexus\Package\Group::rootsWithViewablePackages() as $group}}
+								<li>
+									<a href='{$group->url()}' class='ipsSideMenu_item {{if $category && $category == $group}}ipsSideMenu_itemActive{{endif}}'><span class='ipsSideMenu__toggle'></span><span class='ipsSideMenu__text'>{$group->_title}</span></a>
+									{{if $group->hasSubgroups()}}
+										<ul class='ipsSideMenu__list'>
+											{{$idx = 0;}}
+											{{foreach $group->children( 'view', NULL, FALSE ) as $child}}
+												{{if $child->hasPackages( NULL, array(), TRUE ) OR $child->hasSubgroups()}}
+													{{$idx++;}}
+													<li>
+														{{if $idx >= 5}}
+															<a href='{$group->url()}' class='ipsSideMenu_item'><span class='i-color_soft i-font-size_-2'>{lang="and_x_more" pluralize="\count( $group->children( 'view', NULL, FALSE ) ) - 5"}</span></a>
+															{{break;}}
+														{{else}}
+															<a href="{$child->url()}" class='ipsSideMenu_item'><span class='ipsSideMenu__toggle'></span><span class='ipsSideMenu__text'>{$child->_title}</span></a>
+														{{endif}}
+													</li>
+												{{endif}}
+											{{endforeach}}
+										</ul>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	{{endif}}
+	
+	{{if $category and ( $havePackages or request.filter or request.minPrice or request.maxPrice or request.minRating or request.inStock )}}
+	<div class='ipsWidget' id='elNexusFiltersBox'>
+		
+		<h2 class='ipsWidget__header'>
+			{lang="store_filter_by"}
+			{{if request.filter or request.minPrice or request.maxPrice or request.minRating or request.inStock}}
+				<a href="{$category->url()}" data-action="filter" class="ipsWidget__header-secondary">{lang="store_clear_filters"}</a>
+			{{endif}}
+		</h2>
+		<div class='ipsWidget__content i-padding_2'>
+			{{foreach $category->filters( \IPS\Member::loggedIn()->language() ) as $filterId => $values}}
+				<div class="ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios">
+					<h4 class='ipsSideMenu__title'>{lang="nexus_product_filter_{$filterId}_public"}</h4>
+					<ul class='ipsSideMenu__list'>
+						{{foreach $values as $valueId => $value}}
+							<li>
+								{{$active = ( isset( request.filter[ $filterId ] ) and \in_array( $valueId, explode( ',', request.filter[ $filterId ] ) ) );}}
+								<a data-action="filter" href='{{if $active}}{$url->setQueryString( 'filter', \IPS\nexus\Package\Filter::queryString( \IPS\Request::i()->filter, $filterId, NULL, $valueId ) )}{{else}}{$url->setQueryString( 'filter', \IPS\nexus\Package\Filter::queryString( ( \IPS\Request::i()->filter ?? array() ), $filterId, $valueId ) )}{{endif}}' class='ipsSideMenu_item {{if $active}}ipsSideMenu_itemActive{{endif}}'>
+									<span class="ipsSideMenu__toggle"></span>
+									<span class='ipsSideMenu__text'>{$value}</span>
+								</a>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endforeach}}
+			<div class="ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios">
+				<h4 class='ipsSideMenu__title'>{lang="price"}</h4>
+				<ul class='ipsSideMenu__list'>
+					{{$haveCategoryPriceFilters = ( $category->price_filters and $priceFilters = json_decode( $category->price_filters, TRUE ) and isset( $priceFilters[ $currency ] ) and \count( $priceFilters[ $currency ] ) ); $lastAmount = 0; $activePriceFilter = FALSE;}}
+					{{if $haveCategoryPriceFilters}}
+						{{foreach $priceFilters[ $currency ] as $amount}}
+							<li>
+								{{if $lastAmount}}
+									{{if request.minPrice and request.maxPrice and request.minPrice == $lastAmount and request.maxPrice == $amount}}
+										{{$activePriceFilter = TRUE;}}
+										<a data-action="filter" href='{$url->setQueryString( 'minPrice', NULL )->setQueryString( 'maxPrice', NULL )}' class='ipsSideMenu_item ipsSideMenu_itemActive'>
+									{{else}}
+										<a data-action="filter" href='{$url->setQueryString( 'minPrice', $lastAmount )->setQueryString( 'maxPrice', $amount )}' class='ipsSideMenu_item'>
+									{{endif}}
+										<span class="ipsSideMenu__toggle"></span>
+										<span class='ipsSideMenu__text'>{money="$lastAmount" currency="$currency"}&ndash;{money="$amount" currency="$currency"}</span>
+									</a>
+								{{else}}
+									{{if request.maxPrice and request.maxPrice == $amount and !request.minPrice}}
+										{{$activePriceFilter = TRUE;}}
+										<a data-action="filter" href='{$url->setQueryString( 'maxPrice', NULL )->setQueryString( 'minPrice', NULL )}' class='ipsSideMenu_item ipsSideMenu_itemActive'>
+									{{else}}
+										<a data-action="filter" href='{$url->setQueryString( 'maxPrice', $amount )->setQueryString( 'minPrice', NULL )}' class='ipsSideMenu_item'>
+									{{endif}}
+										<span class="ipsSideMenu__toggle"></span>
+										<span class='ipsSideMenu__text'>{money="0" currency="$currency"}&ndash;{money="$amount" currency="$currency"}</span>
+									</a>
+								{{endif}}
+							</li>
+							{{$lastAmount = $amount;}}
+						{{endforeach}}
+						<li>
+							{{if request.minPrice and request.minPrice == $lastAmount and !request.maxPrice}}
+								{{$activePriceFilter = TRUE;}}
+								<a data-action="filter" href='{$url->setQueryString( 'minPrice', NULL )->setQueryString( 'maxPrice', NULL )}' class='ipsSideMenu_item ipsSideMenu_itemActive'>
+							{{else}}
+								<a data-action="filter" href='{$url->setQueryString( 'minPrice', $lastAmount )->setQueryString( 'maxPrice', NULL )}' class='ipsSideMenu_item'>
+							{{endif}}
+								<span class="ipsSideMenu__toggle"></span>
+								<span class='ipsSideMenu__text'>{money="$lastAmount" currency="$currency"}+</span>
+							</a>
+						</li>
+					{{endif}}
+					{{if !$activePriceFilter and ( request.minPrice or request.maxPrice )}}
+						<li>
+							<a data-action="filter" href='{$url->setQueryString( 'minPrice', NULL )->setQueryString( 'maxPrice', NULL )}' class='ipsSideMenu_item ipsSideMenu_itemActive'>
+								<span class="ipsSideMenu__toggle"></span>
+								{{if request.minPrice and request.maxPrice}}
+									{money="\IPS\Request::i()->minPrice" currency="$currency"}&ndash;{money="\IPS\Request::i()->maxPrice" currency="$currency"}
+								{{elseif request.minPrice}}
+									{money="\IPS\Request::i()->minPrice" currency="$currency"}+
+								{{else}}
+									{money="0" currency="$currency"}&ndash;{money="\IPS\Request::i()->maxPrice" currency="$currency"}
+								{{endif}}
+							</a>
+						</li>				
+					{{endif}}
+					<li>
+						<a href='{$url->setQueryString( 'do', 'priceFilter' )}' data-ipsDialog data-ipsDialog-size="narrow" data-ipsDialog-title="{lang="price_filter_set"}" class='ipsSideMenu_item'>
+							<span class="ipsSideMenu__toggle"></span>
+							<span class='ipsSideMenu__text'>{lang="custom_price_filter"}</span>
+						</a>
+					</li>				
+				</ul>
+			</div>
+			{{if $havePackagesWhichAcceptReviews}}
+				<div class="ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios">
+					<h4 class='ipsSideMenu__title'>{lang="minRating"}</h4>
+					<ul class='ipsSideMenu__list'>
+						{{foreach range( 5, 1 ) as $minRating}}
+							<li>
+								<a data-action="filter" href="{$url->setQueryString( 'minRating', \IPS\Request::i()->minRating == $minRating ? NULL : $minRating )}" class='ipsSideMenu_item {{if request.minRating and request.minRating == $minRating}}ipsSideMenu_itemActive{{endif}}'>
+									<span class="ipsSideMenu__toggle"></span>
+									<span class='ipsSideMenu__text'>{template="rating" group="global" app="core" params="'large', $minRating, \IPS\Settings::i()->reviews_rating_out_of"}</span>
+								</a>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endif}}
+			{{if $havePackagesWhichUseStockLevels}}
+				<div class="ipsSideMenu ipsSideMenu--truncate ipsSideMenu--pseudoRadios">
+					<h4 class='ipsSideMenu__title'>{lang="nexus_stock"}</h4>
+					<ul class='ipsSideMenu__list'>
+						<li>
+							<a data-action="filter" href="{$url->setQueryString( 'inStock', \IPS\Request::i()->inStock ? NULL : 1 )}" class='ipsSideMenu_item {{if request.inStock}}ipsSideMenu_itemActive{{endif}}'>
+								<span class="ipsSideMenu__toggle"></span>
+								<span class='ipsSideMenu__text'>{lang="in_stock_only"}</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	{{endif}}
+
+	{template="chooseCurrency" group="store" params="$category ? $category->url() : \IPS\Http\Url::internal('app=nexus&module=store&controller=store', 'front', 'store')"}
+</div>

@@ -1,0 +1,6 @@
+<ips:template parameters="$menu"/>
+{{foreach $menu->elements as $element}}
+    <button type="button" popovertarget="{$menu->id}_menu" class="{$menu->css}" data-id="{$element->id}" data-href="{$element->url}" {{foreach $element->dataAttributes as $attributeKey => $attributeValue}} {$attributeKey}="{$attributeValue}"{{endforeach}} title='{lang="$element->title"}' data-ipsTooltip>
+        {{if $element->icon}}<i class="{$element->icon}" aria-hidden="true"></i>{{endif}} <span>{lang="$element->title"}</span> {{if $element->notificationIcon}}<span class='ipsNotification'><i class="{$element->notificationIcon}" aria-hidden="true"></i></span>{{endif}}
+    </button>
+{{endforeach}}

@@ -1,0 +1,61 @@
+<ips:template parameters="$member, $followers" />
+
+{{$anonymousCount = $member->followersCount( \IPS\Content::FOLLOW_ANONYMOUS );}}
+
+	<a href='{url="app=core&module=members&controller=profile&do=followers&id={$member->member_id}" seoTemplate="profile_followers" seoTitle="$member->members_seo_name"}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="see_all_followers"}</span></a>
+	<div class="ipsData__icon"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
+	<div class="ipsData__main i-flex i-flex-wrap_wrap i-align-items_center">
+		<div class="i-flex_11">
+			<h3 class="ipsData__title">{lang="x_followers" pluralize="($followers !== NULL) ? $member->followersCount() : 0"}</h3>
+			<div class="ipsData__desc">
+				<ul class="ipsList ipsList--inline ipsList--sep">
+					{{if ! empty( $followers ) and is_array( $followers ) and \count( $followers )}}
+					    {{if $anonymousCount}}
+					        <li><span class='i-font-size_-2'>{lang="x_anonymous_followers" pluralize="$anonymousCount"}</span></li>
+					    {{endif}}
+					{{else}}
+						<li>{lang="no_followers_yet"}</li>
+					{{endif}}
+					{{if $followers !== NULL and $member->followersCount() > 12}}
+						<li hidden>
+							<a href='{url="app=core&module=members&controller=profile&do=followers&id={$member->member_id}" seoTemplate="profile_followers" seoTitle="$member->members_seo_name"}'>{lang="see_all_followers"}</a>
+						</li>
+					{{endif}}
+					{{if \IPS\Member::loggedIn()->member_id === $member->member_id}}
+						<li>
+							<button type="button" id="elFollowPref" popovertarget="elFollowPref_menu" data-role='followOption'>{lang="options"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+							<i-dropdown popover id="elFollowPref_menu" data-i-dropdown-selectable="radio">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">
+										<li>
+											<a href='{url="app=core&module=members&controller=profile&id={$member->member_id}&do=changeFollow&enabled=1" seoTemplate="profile" seoTitle="$member->members_seo_name" csrf="true"}' data-ipsMenuValue='enable' {{if !$member->members_bitoptions['pp_setting_moderate_followers']}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="allow_follow"}</a>
+										</li>
+										<li>
+											<a href='{url="app=core&module=members&controller=profile&id={$member->member_id}&do=changeFollow&enabled=0" seoTemplate="profile" seoTitle="$member->members_seo_name" csrf="true"}' data-ipsMenuValue='disable' {{if $member->members_bitoptions['pp_setting_moderate_followers']}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="disallow_follow"}</a>
+										</li>
+										<li><hr></li>
+									</ul>
+									<ul>
+										<li class='i-padding_2 i-color_soft'>
+											{lang="follow_setting_desc"}
+										</li>
+									</ul>
+								</div>
+							</i-dropdown>
+						</li>
+					{{endif}}
+				</ul>
+			</div>
+		</div>
+		{{if ! empty( $followers ) and is_array( $followers ) and \count( $followers )}}
+			<div class="i-flex_00">
+				<ul class='ipsCaterpillar ipsCaterpillar--reverse i-basis_30'>
+					{{foreach $followers as $idx => $follower}}
+						{{if $idx <= 5}}
+							<li class='ipsCaterpillar__item {{if $follower['follow_is_anon']}}i-opacity_4{{endif}}' data-ipsTooltip title='{expression="\IPS\Member::load( $follower['follow_member_id'] )->name"}{{if $follower['follow_is_anon']}} {lang="anon_follower"}{{endif}}'>{template="userPhoto" app="core" group="global" params="\IPS\Member::load($follower['follow_member_id']), 'fluid', NULL, '', FALSE"}</li>
+						{{endif}}
+					{{endforeach}}
+				</ul>
+			</div>
+		{{endif}}
+	</div>

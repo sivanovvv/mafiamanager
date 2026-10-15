@@ -1,0 +1,24 @@
+<ips:template parameters="$accessToken, $useRefreshTokens" />
+{{if $accessToken['status'] == 'revoked'}}
+	<i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="oauth_status_revoked"}
+{{elseif $accessToken['access_token_expires']}}
+	{{if $accessToken['access_token_expires'] > time()}}
+		<i class="fa-solid fa-check" aria-hidden="true"></i> {lang="oauth_status_active"}
+	{{else}}
+		{{if $useRefreshTokens and $accessToken['refresh_token']}}
+			{{if $accessToken['refresh_token_expires']}}
+				{{if $accessToken['refresh_token_expires'] > time()}}
+					<i class="fa-solid fa-rotate-right" aria-hidden="true"></i> {lang="oauth_status_refresh"}
+				{{else}}
+					<i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="oauth_status_expired"}
+				{{endif}}
+			{{else}}
+				<i class="fa-solid fa-rotate-right" aria-hidden="true"></i> {lang="oauth_status_refresh"}
+			{{endif}}
+		{{else}}
+			<i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="oauth_status_expired"}
+		{{endif}}
+	{{endif}}
+{{else}}
+	<i class="fa-solid fa-check" aria-hidden="true"></i> {lang="oauth_status_active"}
+{{endif}}

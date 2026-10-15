@@ -1,0 +1,49 @@
+<ips:template parameters="$comment, $item, $renewalTerm, $url" />
+
+{{$asNode = \IPS\nexus\Package::load( $item->id );}}
+<div class='ipsRichEmbed ipsRichEmbed--commerce-review cNexusEmbed'>
+	{template="embedHeader" group="embed" app="core" params="$comment, \IPS\Member::loggedIn()->language()->addToStack( 'x_reviewed_product', FALSE, array( 'sprintf' => array( $comment->author()->name ) ) ), $comment->mapped('date'), $url"}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_originalItem'>
+			<div>
+				{{if $images = $item->images() and \count( $images )}}
+					{{foreach $images as $image}}
+						<a href='{$url}' title="{$item->mapped('title')}" class='ipsRichEmbed_masthead'>
+							<img src='{$image}' alt="{$item->mapped('title')}" loading="lazy">
+						</a>
+						{{break;}}	
+					{{endforeach}}
+				{{else}}
+					<div class='ipsRichEmbed_masthead'></div>
+				{{endif}}
+				<div class='i-padding_3'>
+					<h3 class='ipsRichEmbed_itemTitle ipsTruncate_1'>
+						<a href='{$url}' title="{$item->mapped('title')}">{$item->mapped('title')}</a>
+					</h3>
+					<div>
+						{template="packageBlockPrice" app="nexus" group="store" params="$asNode->fullPriceInfo()"}
+					</div>
+					<div class='ipsRichEmbed__snippet'>
+						{$item->truncated(TRUE)|raw}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $comment->mapped('rating')" group="global"} 
+		{{if $comment->mapped('votes_total')}}
+			<p>{$comment->helpfulLine()|raw}</p>
+		{{endif}}
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

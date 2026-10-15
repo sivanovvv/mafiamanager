@@ -1,0 +1,63 @@
+<ips:template parameters="$rootId, $purchases, $halfSize=FALSE, $fromBillingAgreement=NULL" />
+{{foreach $purchases[$rootId] as $purchase}}
+	<li class='cNexusPurchaseList i-flex i-flex-direction_column i-gap_2 i-padding_3'>
+		<a href='{$purchase->url()}' class='ipsThumb i-aspect-ratio_7'>
+			{{if $image = $purchase->image()}}
+				<img src="{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $image->url )"}" alt='' loading='lazy'>
+			{{elseif $icon = $purchase->getIcon()}}
+			    <i class='fa fa-{$icon} i-font-size_7' aria-hidden="true"></i>
+			{{else}}
+				<i aria-hidden="true"></i>
+			{{endif}}
+		</a>
+		<h2 class='ipsTitle ipsTitle--h3'><a href="{$purchase->url()}" title="{lang="purchases_manage_purchase"}">{$purchase->name}</a></h2>
+		<p class="i-color_soft i-font-weight_500">{lang="$purchase->getTypeTitle()"}</p>
+		{{if isset( $purchases[ $purchase->id ])}}
+			<ul class='cNexusPurchaseSubList'>
+				{template="purchaseList" group="clients" params="$purchase->id, $purchases, TRUE"}
+			</ul>
+		{{endif}}
+		<div class='i-margin-top_auto i-padding-top_3 cNexusPurchaseList_info'>
+		
+			{{if !$fromBillingAgreement and $pendingInvoice = $purchase->invoice_pending and $pendingInvoice->status === $pendingInvoice::STATUS_PENDING}}
+				<p>
+					<i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="purchase_pending_invoice"} {{if $pendingInvoice->canView()}}<a href="{$pendingInvoice->checkoutUrl()}" title="{lang="order_pay_now_title"}">{lang="order_pay_now"}</a>{{endif}}
+				</p>
+				<hr class='ipsHr'>
+			{{endif}}
+	
+			<div class='i-flex i-flex-wrap_wrap i-gap_3'>
+				<div>
+					<h3 class='ipsMinorTitle'>{lang="purchase_status"}</h3>
+					<span>{{if $purchase->active}}{{if $purchase->grace_period and $expire = $purchase->expire and $expire->getTimestamp() < time()}}<span class='ipsBadge ipsBadge--positive'>{lang="purchase_in_grace_period_front"}</span>{{else}}<span class='ipsBadge ipsBadge--positive'>{lang="purchase_active"}</span>{{endif}}{{elseif $purchase->cancelled}}<span class='ipsBadge ipsBadge--negative'>{lang="purchase_canceled"}</span>{{else}}<span class='ipsBadge ipsBadge--neutral'>{lang="purchase_expired"}</span>{{endif}}</span>
+				</div>
+				<div>
+					<h3 class='ipsMinorTitle'>{lang="ps_start"}</h3>
+					<span>{$purchase->start->localeDate()}</span>
+				</div>
+				{{if $purchase->expire}}
+					<div>
+						<h3 class='ipsMinorTitle'>{lang="ps_expire"}</h3>
+						<span>{$purchase->expire->localeDate()}</span>
+					</div>
+				{{endif}}
+				{{if !$fromBillingAgreement and $purchase->billing_agreement AND !$purchase->billing_agreement->canceled}}
+					<div>
+						<h3 class='ipsMinorTitle'>{lang="ps_billing_agreement"}</h3>
+						<span><a href='{$purchase->billing_agreement->url()}'>{$purchase->billing_agreement->gw_id}</a></span>
+					</div>
+				{{endif}}
+			</div>
+		</div>
+		<div class='ipsButtons ipsButtons--fill ipsButtons--start i-padding-top_2' data-ips-hook="purchaseButtons">
+			{{if $fromBillingAgreement}}
+				<!-- <a href='{$purchase->url()}' class='ipsButton ipsButton--secondary ipsButton--small' title="{lang="purchases_manage_purchase"}"><i class="fa-solid fa-box-open" aria-hidden="true"></i> {lang="view"}</a> -->
+			{{else}}
+				{{if $canRenewUntil = $purchase->canRenewUntil(NULL,TRUE)}}
+					<a href="{$purchase->url()->setQueryString( 'do', 'renew' )->csrf()}" class='ipsButton ipsButton--inherit ipsButton--small' title="{lang="purchase_renew_now_title"}" {{if $canRenewUntil === TRUE OR $canRenewUntil > 1}}data-ipsDialog data-ipsDialog-size='narrow'{{endif}}><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> {lang="purchases_renewal_price"} {money="$purchase->renewal_price"}</a>
+				{{endif}}
+				<!-- <a href='{$purchase->url()}' class='ipsButton ipsButton--secondary ipsButton--small' title="{lang="purchases_manage_purchase"}"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {lang="manage"}</a> -->
+			{{endif}}
+		</div>
+	</li>
+{{endforeach}}

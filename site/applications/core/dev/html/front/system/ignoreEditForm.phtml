@@ -1,0 +1,31 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL" />
+
+<form accept-charset='utf-8' id="elIgnoreForm" class="ipsFormWrap ipsFormWrap--ignore-edit" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	<ul class="ipsForm {$class} ipsForm--vertical ipsForm--ignore-edit">
+		{{foreach $elements as $collection}}
+			<li class='ipsFieldRow ipsFieldRow--fullWidth'>
+				<ul class='ipsFieldRow__content ipsFieldRow__content--checkboxes'>
+					{{foreach $collection as $input}}
+						{{if $input instanceof \IPS\Helpers\Form\Checkbox}}
+							<li>
+								<label class="i-flex i-align-items_center i-gap_1">
+									{$input->html()|raw}
+									{lang="$input->name"}
+								</label>
+							</li>
+						{{endif}}
+					{{endforeach}}
+				</ul>
+			</li>
+		{{endforeach}}
+		<li class='ipsSubmitRow'>
+			{{foreach $actionButtons as $button}}
+				{$button|raw}
+			{{endforeach}}
+		</li>
+	</ul>
+</form>

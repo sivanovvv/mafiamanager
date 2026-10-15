@@ -1,0 +1,36 @@
+<ips:template parameters="$label, $element, $desc, $warning, $required=FALSE, $error=NULL, $prefix=NULL, $suffix=NULL, $id=NULL, $object=NULL, $form=NULL, $rowClasses=NULL" />
+<li class='ipsFieldRow{{if $object === NULL}} ipsFieldRow--textValue{{endif}}{{if $object instanceof \IPS\Helpers\Form\Checkbox and !( $object instanceof \IPS\Helpers\Form\YesNo )}} ipsFieldRow--checkbox{{endif}} {{if $error}}ipsFieldRow_error{{endif}} {{if $rowClasses}}{expression="implode(' ', $rowClasses)"}{{endif}}' {{if $id}}id="{$id}"{{endif}}>
+	{{if $object instanceof \IPS\Helpers\Form\Checkbox and !( $object instanceof \IPS\Helpers\Form\YesNo )}}
+		{$prefix|raw}
+		{$element|raw}
+		{$suffix|raw}
+		<div class='ipsFieldRow__content'>
+			<label class='ipsFieldRow__label' for='check_{$id}'><span>{$label|raw}</span> {{if $required}}<span class='ipsFieldRow__required'>{lang="required"}</span>{{endif}}</label>
+			{$desc|raw}
+			{$warning|raw}
+			{{if $error}}
+				<div class="ipsFieldRow__warning">{lang="$error"}</div>
+			{{endif}}
+		</div>
+	{{else}}
+		{{if $label}}
+			{{if $object instanceof \IPS\Helpers\Form\Editor}}
+				<div class='ipsFieldRow__label'>
+					<span>{$label|raw}</span> {{if $required}}<span class='ipsFieldRow__required'>{lang="required"}</span>{{endif}}
+				</div>
+			{{else}}
+				<label class='ipsFieldRow__label' {{if $object !== NULL AND $object->getLabelForAttribute() !== NULL}}for='{{if $object instanceof \IPS\Helpers\Form\YesNo}}check_{{endif}}{{if $object instanceof \IPS\Helpers\Form\TextArea}}elTextarea_{{endif}}{$object->getLabelForAttribute()}'{{endif}}>
+					<span>{$label|raw}</span> {{if $required}}<span class='ipsFieldRow__required'>{lang="required"}</span>{{endif}}
+				</label>
+			{{endif}}
+		{{endif}}
+		<div class='ipsFieldRow__content' {{if $object instanceof \IPS\Helpers\Form\Text && !$required && $object->options['autocomplete'] !== NULL && !$object->value}}data-controller='core.global.core.optionalAutocomplete'{{endif}}>
+			{$prefix|raw}
+			{$element|raw}
+			{$suffix|raw}
+			{$desc|raw}
+			{$warning|raw}
+			<p class="ipsFieldRow__warning" {{if $object !== NULL AND $object->getLabelForAttribute() !== NULL}}id='{{if $object instanceof \IPS\Helpers\Form\YesNo}}check_{{endif}}{$object->getLabelForAttribute()}--error'{{endif}}>{{if $error}}{lang="$error"}{{endif}}</p>
+		</div>
+	{{endif}}
+</li>

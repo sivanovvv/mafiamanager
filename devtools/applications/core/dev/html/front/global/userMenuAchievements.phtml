@@ -1,0 +1,23 @@
+<ips:template parameters="" />
+{{if member.canHaveAchievements() and \IPS\core\Achievements\Rank::show() and \IPS\core\Achievements\Rank::getStore() and $rank = member.rank()}}
+<li class='i-padding_2'>
+    <div class='elUserNav_achievements i-flex i-gap_2'>
+        <div class='elUserNav_achievements__icon i-basis_40 i-flex_00'>{$rank->html('i-aspect-ratio_10')|raw}</div>
+        <div class='elUserNav_achievements__content i-flex_11'>
+            <div><strong class='i-color_hard i-font-size_2'>{$rank->_title}</strong></div>
+            <div class='i-color_soft'>{lang="achievements_current_rank"} ({$rank->rankPosition()['pos']}/{$rank->rankPosition()['max']})</div>
+            {{if $nextRank = member.nextRank()}}
+                {{$progressId = 'ipsProgress-' . mt_rand();}}
+                <div class='i-margin-top_2'>
+	                <progress aria-labelledby="{$progressId}" class='ipsProgress ipsProgress--rank i-margin-bottom_1' value='{expression="(\IPS\Member::loggedIn()->achievements_points - $rank->points) / ($nextRank->points - $rank->points) * 100"}' max="100"></progress>
+	                <div id="{$progressId}" class='i-font-size_-2 i-color_soft'>{lang="achievements_next_rank" pluralize="$nextRank->points - \IPS\Member::loggedIn()->achievements_points"}</div>
+                </div>
+            {{endif}}
+        </div>
+    </div>
+</li>
+{{elseif member.canHaveAchievements() and \IPS\Settings::i()->achievements_rebuilding}}
+<li>
+    <p class="i-padding_2 i-color_soft">{lang="ranks_are_being_recalculated"}</p>
+</li>
+{{endif}}

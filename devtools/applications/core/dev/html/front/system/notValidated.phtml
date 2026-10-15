@@ -1,0 +1,19 @@
+<ips:template parameters="$validating=array()" />
+<section class='i-text-align_center ipsBox i-padding_3'>
+	<i class='ipsLargeIcon fa-solid fa-envelope' aria-hidden="true"></i>
+	<h1 class='ipsTitle ipsTitle--h2'>{lang="reg_confirm_email"}</h1>
+	<div class="ipsRichText i-font-size_2 i-margin-block_3">
+		<p>{lang="reg_confirm_email_desc"}</p>
+		<p>{lang="reg_confirm_email_must"}</p>
+	</div>
+	<ul class='ipsButtons ipsButtons--small'>
+		<li><a href='{url="app=core&module=system&controller=register&do=resend" seoTemplate="register" csrf="true"}' class='ipsButton ipsButton--inherit'>{lang="reg_resend_email"}</a></li>
+        {{if !$validating['new_reg']}}
+            <li><a href='{url="app=core&module=system&controller=register&do=changeEmail" seoTemplate="register"}' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="reg_change_email"}' data-ipsDialog-modal='true' class='ipsButton ipsButton--inherit'>{lang="reg_change_email"}</a></li>
+        {{endif}}
+        <li><a href='{url="app=core&module=system&controller=login&do=logout" csrf="true" seoTemplate="logout"}' class='ipsButton ipsButton--inherit'>{lang="sign_out"}</a></li>
+		{{if $validating['new_reg'] AND !\IPS\Member::loggedIn()->members_bitoptions['created_externally']}}
+			<li><a href='{url="app=core&module=system&controller=register&do=cancel" csrf="true" seoTemplate="register"}' class='ipsButton ipsButton--inherit' data-confirm data-confirmMessage='{lang="reg_cancel"}' data-confirmSubMessage='{lang="reg_cancel_confirm"}'>{lang="reg_cancel"}</a></li>
+		{{endif}}
+	</ul>
+</section>

@@ -1,0 +1,21 @@
+<ips:template parameters="$news" />
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--ips-news">
+		{{if isset($news) }}
+			{{foreach $news as $article}}
+				<li class="ipsData__item">
+					<span class='i-basis_120 i-color_soft i-text-align_end'>
+						{expression="\IPS\DateTime::ts( strtotime( $article['date'] ) )->relative()"}
+					</span>
+					<span class="ipsData__main">
+						<a href="{$article['link']}" target="_blank" rel="noopener">
+							{$article['title']}
+						</a>
+					</span>
+				</li>
+			{{endforeach}}
+		{{else}}
+			{lang="ipsnews_error_generic"}
+		{{endif}}
+	</ul>
+</i-data>

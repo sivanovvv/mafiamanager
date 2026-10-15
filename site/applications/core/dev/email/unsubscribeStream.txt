@@ -1,0 +1,3 @@
+<ips:template parameters="$streamId, $streamTitle, $key, $member, $email" />
+{$email->language->addToStack("unsubscribe_blurb_stream", FALSE, array( 'sprintf' => array( $streamTitle )))}
+{$email->language->addToStack("unsubscribe_blurb", FALSE)} {$email->language->addToStack( 'unsubscribe', FALSE )}: {url="app=core&module=discover&controller=streams&do=unsubscribeFromEmail&id={$streamId}&gkey={$key}"}

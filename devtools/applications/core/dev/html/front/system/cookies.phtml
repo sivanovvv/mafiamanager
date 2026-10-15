@@ -1,0 +1,36 @@
+<ips:template parameters="" />
+{{$prefix = \IPS\COOKIE_PREFIX;}}
+{template="pageHeader" if="!\IPS\Request::i()->isAjax()" group="global" params="\IPS\Member::loggedIn()->language()->addToStack('cookies_about')"}
+<div class='ipsBox ipsBox--cookies'>
+	<div class='ipsBox__padding ipsRichText'>
+		<p>{lang="cookies_about_header"}</p>
+ 	    <h3>{lang="cookies_standard"}</h3>
+        <p>{lang="cookie_standard_desc"}</p>
+        <details>
+	        <summary>{lang="cookies_standard"}</summary>
+	        <div>
+				{{foreach \IPS\Request::getEssentialCookies() as $cookie}}
+					<h4>{$prefix}{$cookie}</h4>
+					<div>{lang="cookie_{$cookie}_description"}</div>
+	            {{endforeach}}
+	        </div>
+	    </details>
+	    {{if \IPS\Request::i()->cookieConsentEnabled()}}
+	        <h3>{lang='cookies_optional'}
+	            {{$currentUrl = base64_encode((string) request.url());}}
+	            {{$status = (int) !\IPS\Member::loggedIn()->optionalCookiesAllowed;}}
+	            <a href='{url="app=core&module=system&controller=cookies&do=cookieConsentToggle&ref={$currentUrl}&status={$status}" csrf="true"}' rel='nofollow'>
+	                {{$allowed = $status ? "" : 'data-checked' ;}}
+					<span class="ipsSwitch i-font-size_3 i-margin-start_2" {$allowed}></span>
+	            </a>
+	        </h3>
+	        <p>{lang="cookies_optional_desc"}</p>
+	    {{endif}}
+		{{if \IPS\Member::loggedIn()->language()->checkKeyExists('cookie_3rdpartynotice_value') AND !empty( \IPS\Member::loggedIn()->language()->get('cookie_3rdpartynotice_value') )}}
+			<h3>{lang="cookies_third_party"}</h3>
+			{lang="cookie_3rdpartynotice_value"}
+		{{endif}}
+		<h3>{lang="cookies_change_header"}</h3>
+		<p>{lang="cookies_change_text"}</p>
+    </div>
+</div>

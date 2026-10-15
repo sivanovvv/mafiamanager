@@ -1,0 +1,16 @@
+<ips:template parameters="$purchase" />
+<div class="ipsPageHead_special">
+	{$purchase->name} (#{$purchase->id})
+</div>
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--purchases-hovercard">
+		{{foreach $purchase->custom_fields as $k => $v}}
+			{{if $displayValue = trim( \IPS\nexus\Package\CustomField::load( $k )->displayValue( $v, TRUE ) )}}
+				<li class="ipsData__item">
+					<span class=""><strong>{lang="nexus_pfield_{$k}"}</strong></span>
+					<span class="">{$displayValue|raw}</span>
+				</li>
+			{{endif}}
+		{{endforeach}}
+	</ul>
+</i-data>

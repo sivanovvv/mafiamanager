@@ -1,0 +1,46 @@
+<ips:template parameters="$customer, $tabs, $activeTabKey, $activeTabContents, $activeSubscription" />
+
+<div class='ipsBox'>
+	<div id='acpPageHeader' class='cNexusSupportHeader i-text-align_center'>
+		{template="userPhoto" group="global" app="core" params="$customer, 'medium'"}
+		<div>
+			<h1 class='i-font-size_5 i-color_hard i-font-weight_bold i-margin-top_2'>{$customer->cm_name}</h1>
+			<p class="i-font-size_2 i-color_soft i-font-weight_500">{$customer->email}</p>
+			<p class='i-font-weight_500 i-margin-top_2 i-color_soft'>{lang="customer_since" htmlsprintf="$customer->joined->html()"}</p>
+			{{if $activeSubscription}}
+				<p class="i-text-align_center i-color_positive i-font-size_1 i-margin-top_1">
+					{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_view' ) and $activeSubscription->purchase}}
+						<a href="{$activeSubscription->purchase->acpUrl()}" class="i-link-color_inherit">
+					{{endif}}
+					<i class="fa-solid fa-certificate" aria-hidden="true"></i> &nbsp; {lang="nexus_subs_subscriber" sprintf="$activeSubscription->package->_title"}
+					{{if member.hasAcpRestriction( 'nexus', 'customers', 'purchases_view' ) and $activeSubscription->purchase}}
+					</a>
+					{{endif}}
+				</p>
+			{{endif}}
+		</div>
+
+		{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'payments', 'invoices_add' )}}
+			<div class="i-margin-top_2"><a href='{url="app=nexus&module=payments&controller=invoices&do=generate&member={$customer->member_id}&_new=1"}' class='ipsButton ipsButton--primary ipsButton--wide ipsButton--large'>{lang="add_invoice"}</a></div>
+		{{endif}}
+	</div>
+</div>
+
+<div class='ipsBox'>
+	<i-tabs class='ipsTabs ipsTabs--stretch ipsTabs--customerTabs' id='ipsTabs_customer' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_customer_content'>
+		<div role='tablist'>
+			{{foreach $tabs as $k => $tab}}
+				<a href='{$customer->acpUrl()->setQueryString( array( 'do' => 'view', 'blockKey' => 'nexus_AccountInformation', 'block[nexus_AccountInformation]' => $k ) )}' class='ipsTabs__tab' id='ipsTabs_customer_{$k}' role="tab" aria-controls="ipsTabs_customer_{$k}_panel" aria-selected="{{if $activeTabKey == $k}}true{{else}}{{endif}}" data-ipsTooltip title='{lang="customer_tab_{$k}"}'>
+					<i class='{$tab['icon']}' aria-hidden="true"></i> <span class='ipsResponsive_showPhone'>{lang="customer_tab_{$k}"}</span>
+					{{if $tab['count']}}<span class='ipsNotification'>{$tab['count']}</span>{{endif}}
+				</a>
+			{{endforeach}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<div id='ipsTabs_customer_content' class='ipsTabs__panels acpFormTabContent'>
+		<div id='ipsTabs_customer_{$activeTabKey}_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby='ipsTabs_customer_{$activeTabKey}'>
+			{$activeTabContents|raw}
+		</div>
+	</div>
+</div>

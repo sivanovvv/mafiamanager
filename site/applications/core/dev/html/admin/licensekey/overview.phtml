@@ -1,0 +1,67 @@
+<ips:template parameters="$licenseData" />
+<div class="ipsBox i-flex i-align-items_center i-gap_2 i-padding_3 i-margin-bottom_block">
+	<div class="i-flex_11 i-basis_600">
+		<h3 class='ipsTitle ipsTitle--h4'>
+			{{if $licenseData['cloud']}}
+				{lang="license_name_cloud"}
+			{{else}}
+				{lang="license_name_license"}
+			{{endif}}
+			<br>
+			{expression="substr_replace( $licenseData['key'], '**********', -10 )"}
+		</h3>
+		
+		<p class='i-color_soft i-margin-top_2'>
+			{lang="license_url" sprintf="$licenseData['url']"}
+			{{if $licenseData['test_url']}}
+				<br>
+				{lang="license_test_url" sprintf="$licenseData['test_url']"}
+			{{endif}}
+		</p>
+	</div>
+	{{if $licenseData['expires']}}
+		<span class="i-font-size_-2 ipsBadge ipsBadge--{{if strtotime( $licenseData['expires'] ) > time()}}positive{{else}}negative{{endif}}">
+			{lang="license_expires"}{datetime="strtotime( $licenseData['expires'] )"}
+		</span>
+	{{endif}}
+</div>
+
+<div class="ipsBox">
+	<h3 class="ipsBox__header">{lang="licensekey_benefits_head"}</h3>
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--compact ipsData--license-key">
+			{{foreach array( 'forums', 'calendar', 'blog', 'gallery', 'downloads', 'cms', 'nexus', 'spam', 'copyright' ) as $k}}
+				{{if $k !== 'copyright' or ( isset( $licenseData['products'][ $k ] ) and $licenseData['products'][ $k ] )}}
+					<li class="ipsData__item">
+						<div class="ipsData__icon">
+							{{if isset( $licenseData['products'][ $k ] ) and $licenseData['products'][ $k ]}}
+								{{if $k == 'spam' and !$licenseData['cloud'] and strtotime( $licenseData['expires'] ) < time()}}
+									<i class="i-font-size_2 fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+								{{else}}
+									<i class="i-font-size_2 fa-solid fa-check" aria-hidden="true"></i>
+								{{endif}}
+							{{else}}
+								<i class="i-font-size_2 fa-solid fa-xmark" aria-hidden="true"></i>
+							{{endif}}
+						</div>
+						<div class="ipsData__main">
+							<h4 class="ipsData__title">{lang="license_benefit_$k"}</h4>
+						</div>
+					</li>
+				{{endif}}
+			{{endforeach}}
+			<li class="ipsData__item">
+				<div class="ipsData__icon">
+					{{if $licenseData['cloud'] OR ( $licenseData['expires'] and strtotime( $licenseData['expires'] ) > time() )}}
+						<i class="i-font-size_2 fa-solid fa-check" aria-hidden="true"></i>
+					{{else}}
+						<i class="i-font-size_2 fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+					{{endif}}
+				</div>
+				<div class="ipsData__main">
+					<h4 class="ipsData__title">{lang="license_benefit_support" sprintf="$licenseData['support']"}</h4>
+				</div>
+			</li>
+		</ul>
+	</i-data>
+</div>

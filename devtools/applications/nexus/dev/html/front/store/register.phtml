@@ -1,0 +1,38 @@
+<ips:template parameters="$packages" />
+
+<div class='ipsBox ipsBox--commerceRegister ipsPull'>
+	<div class="i-padding_3 i-border-bottom_3">
+		<h1 class='i-font-size_4 i-font-weight_600 i-color_hard'>{lang='sign_up'}: {lang="choose_product"}</h1>
+		<p class='i-font-size_2 i-font-weight_500 i-color_soft'>
+			{{if settings.nexus_reg_force}}
+				{lang="store_forced_purchase"}
+			{{else}}
+				{lang="store_optional_purchase"}
+			{{endif}}
+		</p>
+		{{if isset( $_SESSION['cart'] ) and \count( $_SESSION['cart'] )}}
+			<p class='i-font-size_2 i-text-align_center i-color_soft'>
+				<a href='{url="app=nexus&module=store&controller=cart" seoTemplate="store_cart"}'>{lang="continue_to_registration"} <i class='fa-solid fa-caret-right' aria-hidden="true"></i></a>
+			</p>
+		{{endif}}
+	</div>		
+	<section data-controller='nexus.front.store.register'>
+		<i-data>
+			<ul class='ipsData ipsData--grid ipsData--carousel ipsData--commerce-registration-products' id='commerce-registration-products' tabindex="0">
+				{{foreach $packages as $package}}
+					{template="packageBlock" group="store" params="$package"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+		{template="carouselNavigation" group="global" app="core" params="'commerce-registration-products'"}
+		<div data-role='productInformationWrapper' class='ipsHide cNexusRegister_info'>
+			<hr class='ipsHr'>
+			<a href='#' class='cNexusRegister_close ipsHide' data-action='closeInfo'>&times;</a>
+			<div class='i-margin-top_3' data-role='productInformation'></div>
+		</div>
+	</section>
+	
+	{{if !settings.nexus_reg_force}}
+		<p class="i-text-align_end i-padding_2 i-border-top_2 i-font-weight_600"><a href='{url="app=core&module=system&controller=register&noPurchase=1" seoTemplate="register"}'>{lang="continue_without_purchasing"} <i class='fa-solid fa-caret-right' aria-hidden="true"></i></a></p>
+	{{endif}}
+</div>

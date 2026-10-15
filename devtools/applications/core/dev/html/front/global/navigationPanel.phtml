@@ -1,0 +1,17 @@
+<ips:template parameters="" />
+<div class='ipsNavPanel' data-ips-hook="navigationPanel">
+	{template="logo" app="core" group="global" params="'side'"}
+	<i-navigation-panel class='ipsNavPanel__scroll'>
+		<nav>
+			{template="navColumn" app="core" group="global" params=""}
+		</nav>
+	</i-navigation-panel>
+</div>
+{{ /* }}<!-- Restore scroll position as soon as possible -->{{ */ }}
+<script>
+	(() => {
+		const pos = sessionStorage.getItem('navigationPanelScroll');
+		if(!pos) return;
+		document.querySelector('i-navigation-panel').scrollTop = pos;
+	})();
+</script>

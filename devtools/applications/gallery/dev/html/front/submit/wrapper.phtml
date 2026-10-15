@@ -1,0 +1,222 @@
+<ips:template parameters="$container, $images, $club, $allImagesForm" />
+
+{{if $club AND \is_array( $container ) AND !\IPS\Request::i()->isAjax()}}
+	{template="header" group="clubs" app="core" params="$club, $container['category']"}
+{{endif}}
+
+<div data-controller='gallery.front.submit.wrapper' data-role="submitWrapper" class='{{if !\IPS\Request::i()->isAjax()}}ipsBox{{endif}}'>
+	<div class='cGalleryDialog'>
+		<div class='cGalleryDialog_inner'>
+			<div class='cGalleryDialog_primary'>
+				<div class='cGalleryDialog_title'>
+					<div class='ipsTitle ipsTitle--h4'>
+						<span data-role='dialogTitle'>{lang="add_gallery_image"}</span>
+						<div data-role="containerInfo">
+							{{if \is_array( $container )}}
+								{template="container" group="submit" app="gallery" params="$container"}
+							{{endif}}
+						</div>
+					</div>
+				</div>
+				<div class='cGalleryDialog_container {{if \is_array( $container )}}ipsHide{{endif}}' data-role="container">
+					{{if !\is_array( $container )}}
+						{$container|raw}
+					{{endif}}
+				</div>
+				<div class='cGalleryDialog_imageForm {{if \is_string( $container )}} ipsHide{{endif}}{{if \IPS\gallery\Image::moderateNewItems( \IPS\Member::loggedIn(), ( is_array( $container ) ) ? $container['category'] : NULL, FALSE )}} cGalleryDialog_content_moderated{{endif}}' data-role="images">					
+					<div class="cGalleryDialog_imageFormAlign">
+						<div id='elGallerySubmit_toolBar'>
+							<ul class='ipsButtons'>
+								<li>
+									<button type="button" id="elCopyrightMenu" popovertarget="elCopyrightMenu_menu" class='ipsButton ipsButton--inherit ipsButton--small'>{lang="set_copyright_all"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+									<i-dropdown popover id="elCopyrightMenu_menu">
+										<div class="iDropdown">
+											<div class="i-padding_3">
+												<h3 class='ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="copyright"}</h3>
+												<p class='i-margin-bottom_3 i-color_soft'>{lang="set_copyright_desc"}</p>
+												{$allImagesForm->elements['']['image_copyright']->html()|raw}
+												<button class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide i-margin-top_3' type="button" popovertarget="elCopyrightMenu_menu">{lang="save"}</button>
+											</div>
+										</div>
+									</i-dropdown>
+								</li>
+								<li>
+									<button type="button" id="elCreditMenu" popovertarget="elCreditMenu_menu" class='ipsButton ipsButton--inherit ipsButton--small'>{lang="set_credit_all"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+									<i-dropdown popover id="elCreditMenu_menu">
+										<div class="iDropdown">
+											<div class="i-padding_3">
+												<h3 class='ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="credit"}</h3>
+												<p class='i-margin-bottom_3 i-color_soft'>{lang="credit_desc"}</p>
+												{$allImagesForm->elements['']['image_credit_info']->html()|raw}
+												<button class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide i-margin-top_3' type="button" popovertarget="elCreditMenu_menu">{lang="save"}</button>
+											</div>
+										</div>
+									</i-dropdown>
+								</li>
+								<li class='{{if !isset( $allImagesForm->elements['']['image_tags'] )}}ipsHide{{endif}} cGalleryTagsButton'>
+									<button type="button" id="elTagsMenu" popovertarget="elTagsMenu_menu" class='ipsButton ipsButton--inherit ipsButton--small'>{lang="set_tags_all"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+									<i-dropdown popover id="elTagsMenu_menu">
+										<div class="iDropdown">
+											<div class="i-padding_3">
+												<h3 class='ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="tags"}</h3>
+												<p class='i-margin-bottom_3 i-color_soft'>{lang="tags_all_desc"}</p>
+												<div data-role="globalTagsField">{{if isset( $allImagesForm->elements['']['image_tags'] )}}{$allImagesForm->elements['']['image_tags']->html()|raw}{{endif}}</div>
+												<button class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide i-margin-top_3' type="button" popovertarget="elTagsMenu_menu">{lang="save"}</button>
+											</div>
+										</div>
+									</i-dropdown>
+								</li>
+								{{if settings.gallery_nsfw}}
+								<li>
+									<button type="button" id="elNSFW" popovertarget="elNSFW_menu" class='ipsButton ipsButton--inherit ipsButton--small'>{lang="nsfw_set_all"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+									<i-dropdown popover id="elNSFW_menu">
+										<div class="iDropdown">
+											<div class="i-padding_3">
+												{$allImagesForm->elements['']['image_nsfw']->html()|raw} <label for='check_image_nsfw'>{lang="nsfw_enable_all"}</label>
+												<button class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide i-margin-top_3' type="button" popovertarget="elNSFW_menu">{lang="save"}</button>
+											</div>
+										</div>
+									</i-dropdown>
+								</li>
+								{{endif}}
+								{{if \IPS\Member::loggedIn()->member_id}}
+									<li>
+										<button type="button" id="elNotifyOption" popovertarget="elNotifyOption_menu" class='ipsButton ipsButton--inherit ipsButton--small'>{lang="gal_notification_options"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+										<i-dropdown popover id="elNotifyOption_menu">
+											<div class="iDropdown">
+												<div class="i-padding_3">
+													{$allImagesForm->elements['']['image_auto_follow']->html()|raw} <label for='check_image_auto_follow'>{lang="new_image_comments_notification"}</label>
+													<button class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide i-margin-top_3' type="button" popovertarget="elNotifyOption_menu">{lang="save"}</button>
+												</div>
+											</div>
+										</i-dropdown>
+									</li>
+								{{endif}}
+								<li>
+									<button type="button" id="elFileTypes" popovertarget="elFileTypes_menu" class='i-margin-start_auto ipsButton ipsButton--inherit ipsButton--small'>
+										<i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="allowed_file_types_link"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+									</button>
+									<i-dropdown popover id="elFileTypes_menu">
+										<div class="iDropdown">
+											<div class="i-padding_3">
+												<h3 class='ipsTitle ipsTitle--h3'>{lang="attach_allowed_types"}</h3>
+												<div class='i-margin-top_2 i-color_soft i-font-size_-2' data-role="allowedTypes"></div>
+											</div>
+										</div>
+									</i-dropdown>
+								</li>
+							</ul>
+						</div>
+						<div data-role='imageForm' class='i-padding_3'>
+							{{if \is_array( $container )}}
+								{$images|raw}
+							{{endif}}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='cGallerySubmit_imageDetails' data-role="imageDetails">
+				<form id='form_imageDetails' accept-charset='utf-8' method="post" action="{$allImagesForm->action}" enctype="multipart/form-data">
+					<div class='i-text-align_center i-color_soft i-font-size_2 i-opacity_4 i-margin-top_3' data-role='submitHelp'>
+						<i class='fa-regular fa-image i-font-size_6 i-color_soft' aria-hidden="true"></i>
+						<br><br> {lang="submit_help_info"}
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class='ipsSubmitRow cGallerySubmit_bottomBar {{if !\is_array( $container )}}ipsHide{{endif}}'>
+			<span data-role='imageErrors' class='ipsHide i-color_negative'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i> {lang="files_had_errors"}</span>
+			<button type='button' class='ipsButton ipsButton--negative' data-action="closeDialog">{lang="cancel"}</button>
+			<button type='submit' class='ipsButton ipsButton--primary' data-role='submitForm' form="elGallerySubmit" disabled>{lang="submit_all_images"}</button>
+		</div>
+	</div>
+
+	<div data-role="defaultImageDetailsForm" class='ipsHide'>
+		<div class='cGallerySubmit_details'>
+			<div class="i-padding_3">
+				<div class='cGallerySubmit_preview ipsThumb'></div>
+			</div>
+			<ul class='ipsForm ipsForm--vertical ipsForm--gallery-submit'>
+				<li class='ipsFieldRow'>
+					<label class='ipsFieldRow__label' for='image_details_DEFAULT'>{lang="image_title"}</label>
+					<div class='ipsFieldRow__content'>
+						{$allImagesForm->elements['']['image_title_DEFAULT']->html()|raw}
+						<div class='ipsFieldRow__desc'>{lang="image_title_default_filename"}</div>
+						<p class='i-color_warning ipsHide' data-errorField='image_title'></p>
+					</div>
+				</li>
+				<li class='ipsFieldRow'>
+					<label class='ipsFieldRow__label' for='image_description_DEFAULT'>{lang="image_description"}</label>
+					<div class='ipsFieldRow__content'>
+						<div data-role="imageDescriptionEditor" class='ipsHide'>
+							{$allImagesForm->elements['']['filedata__image_description_DEFAULT']->html()|raw}
+							<div class='i-text-align_end i-font-size_-2 i-margin-top_2'><a href='#' data-role="imageDescriptionUseTextarea">{lang="use_plain_editor"}</a></div>
+							<p class='i-color_warning ipsHide' data-errorField='image_description'></p>
+						</div>
+						<div data-role="imageDescriptionTextarea">
+							{$allImagesForm->elements['']['image_textarea_DEFAULT']->html()|raw}
+							<div class='i-text-align_end i-font-size_-2 i-margin-top_2'><a href='#' data-role="imageDescriptionUseEditor">{lang="use_rte_editor"}</a></div>
+							<p class='i-color_warning ipsHide' data-errorField='image_textarea'></p>
+						</div>
+					</div>
+				</li>
+
+				<li class='ipsFieldRow cGalleryTagsField {{if !isset( $allImagesForm->elements['']['image_tags_DEFAULT'] )}}ipsHide{{endif}}'>
+					<label class='ipsFieldRow__label' for='image_tags_default'>{lang="image_tags"}</label>
+					<div class='ipsFieldRow__content'>
+						{{if isset( $allImagesForm->elements['']['image_tags_DEFAULT'] )}}{expression="preg_replace( '/data-ipsAutocomplete(?!\-)/', '', $allImagesForm->elements['']['image_tags_DEFAULT']->html() )" raw="true"}{{endif}}
+						<p class='i-color_warning ipsHide' data-errorField='image_tags'></p>
+					</div>
+				</li>
+
+				<li class='ipsFieldRow'>
+					<label class='ipsFieldRow__label' for='image_credit_DEFAULT'>{lang="image_credit_info"}</label>
+					<div class='ipsFieldRow__content'>
+						{$allImagesForm->elements['']['image_credit_info_DEFAULT']->html()|raw}
+						<p class='i-color_warning ipsHide' data-errorField='image_credit'></p>
+					</div>
+				</li>
+				<li class='ipsFieldRow'>
+					<label class='ipsFieldRow__label' for='image_copyright_DEFAULT'>{lang="image_copyright"}</label>
+					<div class='ipsFieldRow__content'>
+						{$allImagesForm->elements['']['image_copyright_DEFAULT']->html()|raw}
+						<p class='i-color_warning ipsHide' data-errorField='image_copyright'></p>
+					</div>
+				</li>
+				<li class='ipsFieldRow ipsHide cGalleryMapField'>
+					<label class='ipsFieldRow__label' for='image_gps_show_DEFAULT'>{lang="image_gps_show"}</label>
+					<div class='ipsFieldRow__content'>
+						{$allImagesForm->elements['']['image_gps_show_DEFAULT']->html()|raw}
+						<div class='ipsFieldRow__desc'>{lang="image_gps_show_desc"}</div>
+						<p class='i-color_warning ipsHide' data-errorField='image_gps_show'></p>
+					</div>
+				</li>
+				<li class='ipsFieldRow ipsHide cGalleryThumbField'>
+					<label class='ipsFieldRow__label' for='image_thumbnail_DEFAULT'>{lang="image_thumbnail"}</label>
+					<div class='ipsFieldRow__content'>
+						{$allImagesForm->elements['']['image_thumbnail_DEFAULT']->html()|raw}
+						<p class='i-color_warning ipsHide' data-errorField='image_thumbnail'></p>
+					</div>
+				</li>
+				{{foreach $allImagesForm->elements[''] as $k => $v}}
+					{{if !\in_array( $k, array( 'image_title_DEFAULT', 'image_tags_DEFAULT', 'image_gps_show_DEFAULT', 'image_thumbnail_DEFAULT', 'image_textarea_DEFAULT', 'image_description_DEFAULT', 'filedata__image_description_DEFAULT', 'image_credit_info_DEFAULT', 'image_copyright_DEFAULT', 'image_auto_follow_DEFAULT', 'image_credit_info', 'image_copyright', 'image_auto_follow', 'image_tags', 'image_nsfw' ) )}}
+						<li class='ipsFieldRow'>
+							{{$langString = str_replace( '_DEFAULT', '', $k );}}
+							<label class='ipsFieldRow__label' for='{$k}'>{lang="$langString"}</label>
+							<div class='ipsFieldRow__content'>
+								{$v->html()|raw}
+							</div>
+						</li>
+					{{endif}}
+				{{endforeach}}
+				<li class='ipsSubmitRow'>
+					<button type='button' class='ipsButton ipsButton--secondary ipsButton--wide' data-role='saveDetails'>{lang="submit_go_back"}</button>
+					<p class='ipsHide' data-role='savedMessage'>
+						<i class='fa-solid fa-check' aria-hidden="true"></i> {lang="image_info_saved"}
+					</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div data-role="editedImageDetailsForm" class='ipsHide'></div>
+</div>

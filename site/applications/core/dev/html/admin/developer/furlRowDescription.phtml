@@ -1,0 +1,5 @@
+<ips:template parameters="$data, $topLevel=''" />
+<div>
+    {{if $topLevel}}{$topLevel}/{{endif}}{$data['friendly']} {{if isset( $data['alias'] ) and $data['alias']}}<span class='i-font-style_italic i-font-size_-2 i-color_soft'>({$data['alias']})</span>{{endif}}
+</div>
+<div class='i-color_soft'>{$data['real']}</div>

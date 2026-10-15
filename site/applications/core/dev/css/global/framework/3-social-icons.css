@@ -1,0 +1,61 @@
+.ipsSocialIcons{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-inline-start: auto;
+}
+
+	.ipsSocialIcons > li{
+		flex: 0 0 auto;
+	}
+
+	.ipsSocialIcons__icon{
+		font-size: 16px;
+		display: grid;
+		place-content: center;
+		position: relative;
+		width: 2.2em;
+		height: 2.2em;
+		color: inherit;
+		border-radius: min(var(--i-design-radius), .3em);
+	}
+
+	.ipsSocialIcons__icon svg{
+		fill: currentColor;
+		height: 1em;
+		width: auto;
+	}
+
+		.ipsSocialIcons__icon:hover{
+			background-color: var(--_brand, color-mix(in srgb, currentColor 10%, transparent));
+			color: #fff;
+		}
+
+	.ipsSocialIcons span{
+		position: absolute;
+		width: 1px; height: 1px; overflow: hidden;
+	}
+
+.ipsSocialIcons__icon--internal{ --_brand: #008b00; }
+.ipsSocialIcons__icon--deviantart{ --_brand: #00e59b; }
+.ipsSocialIcons__icon--email{ --_brand: #444; }
+.ipsSocialIcons__icon--facebook{ --_brand: #1778F2; }
+.ipsSocialIcons__icon--linkedin{ --_brand: #0a66c2; }
+.ipsSocialIcons__icon--reddit{ --_brand: #FF4500; }
+.ipsSocialIcons__icon--twitter, .ipsSocialIcons__icon--x{ --_brand: #000000; }
+.ipsSocialIcons__icon--vk{ --_brand: #507299; }
+.ipsSocialIcons__icon--weibo{ --_brand: #D32F2F; }
+.ipsSocialIcons__icon--youtube{ --_brand: #ff0000; }
+.ipsSocialIcons__icon--foursquare{ --_brand: #2D5BE3; }
+.ipsSocialIcons__icon--etsy{ --_brand: #F56400; }
+.ipsSocialIcons__icon--flickr{ --_brand: #ff0084; }
+.ipsSocialIcons__icon--github{ --_brand: #111; }
+.ipsSocialIcons__icon--instagram{ --_brand: #E13D62; }
+.ipsSocialIcons__icon--pinterest{ --_brand: #BD081C; }
+.ipsSocialIcons__icon--slack{ --_brand: #42C299; }
+.ipsSocialIcons__icon--xing{ --_brand: #B0D400; }
+.ipsSocialIcons__icon--tumblr{ --_brand: #36465D; }
+.ipsSocialIcons__icon--twitch{ --_brand: #772ce8; }
+.ipsSocialIcons__icon--discord{ --_brand: #5865f2; }
+.ipsSocialIcons__icon--bluesky{ --_brand: #59baff; }
+.ipsSocialIcons__icon--tiktok{ --_brand: #000000; }

@@ -1,0 +1,13 @@
+<ips:template parameters="" />
+<div class="i-padding_3">
+	<noscript>
+		<p class="ipsMessage ipsMessage--error">{lang="invoice_enable_js"}</p>
+	</noscript>
+	<div data-controller="nexus.admin.store.productselector" data-url="{url="app=nexus&module=payments&controller=invoices&do=productTree"}" class="ipsJS_show">
+		<ul class='ipsTree ipsTree_node'>
+			{{foreach \IPS\nexus\Package\Group::roots() as $group}}
+				{template="packageSelectorGroup" group="invoices" params="$group"}
+			{{endforeach}}
+		</ul>
+	</div>
+</div>

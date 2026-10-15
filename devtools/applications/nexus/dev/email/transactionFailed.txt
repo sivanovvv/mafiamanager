@@ -1,0 +1,35 @@
+<ips:template parameters="$transaction, $invoice, $invoiceSummary, $email" />
+
+{$email->language->addToStack("email_transaction_failed", FALSE)}
+
+{$email->language->addToStack("email_pay_now", FALSE)}: {$invoice->checkoutUrl()}
+
+&mdash; {setting="board_name"}
+
+-----
+**{expression="sprintf( $email->language->get('order_number'), $invoice->id )" raw="true"}**
+
+{$email->language->addToStack("email_view_order", FALSE)}: {$invoice->url()}
+
+{$email->language->addToStack("billing_address", FALSE)}
+===
+{$invoice->member->cm_name}
+{{if $invoice->billaddress}}{$invoice->billaddress->toString('\n')|raw}{{endif}}
+
+{$email->language->addToStack("order_details", FALSE)}
+===
+{{foreach $invoiceSummary['items'] as $k => $item}}
+{$item->quantity} x</span> {$item->name} [{$email->language->addToStack("each_short", FALSE, array( 'htmlsprintf' => array( $item->price->toString( $email->language ) ) ) )}] ({$item->linePrice()->toString( $email->language )})
+{{endforeach}}
+---
+{$email->language->get('subtotal')}: {$invoiceSummary['subtotal']->toString( $email->language )}
+{{if \count( $invoiceSummary['tax'] )}}
+---
+{{foreach $invoiceSummary['tax'] as $taxId => $tax}}
+{$email->language->get( 'nexus_tax_' . $taxId )} ({expression="$tax['rate']*100" raw="true"}%): {$tax['amount']->toString( $email->language )}
+{{endforeach}}
+{{endif}}
+---
+{$email->language->get('total')}: {$invoiceSummary['total']->toString( $email->language )}
+
+-- {setting="board_name"}

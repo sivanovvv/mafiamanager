@@ -1,0 +1,5 @@
+<ips:template parameters="$action" />
+{template="pageHeader" group="global" params="\IPS\Member::loggedIn()->language()->addToStack('unsubscribed')"}
+<div class='ipsBox ipsBox--padding'>
+	{{if $action === 'markSolved'}}{lang="unsubscribed_solved_desc"}{{elseif $action === 'expertNudge'}}{lang="unsubscribed_expert_nudge_desc"}{{else}}{lang="unsubscribed_desc"}{{endif}}
+</div>

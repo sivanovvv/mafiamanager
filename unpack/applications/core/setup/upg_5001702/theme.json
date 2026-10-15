@@ -1,0 +1,21 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "global\/forms\/hCaptcha"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "global\/framework\/3-pagination.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "normal": {
+        "added": [
+            "cal_skip_past_events",
+            "cal_skip_past_events_desc",
+            "task__hidepastevents",
+            "emailtpl_notification_event_rsvp"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

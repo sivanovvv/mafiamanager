@@ -1,0 +1,30 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "admin\/databases\/downloadDialog",
+            "admin\/databases\/manageDatabaseName",
+            "front\/global\/commentTableHeader",
+            "admin\/media\/fileListing",
+            "admin\/media\/media",
+            "admin\/pages\/revisionDate",
+            "admin\/records\/category",
+            "admin\/records\/categoryTree",
+            "global\/records\/customslug",
+            "admin\/records\/title",
+            "admin\/templates\/menu",
+            "admin\/templates\/templates"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

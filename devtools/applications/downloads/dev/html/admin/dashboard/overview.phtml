@@ -1,0 +1,30 @@
+<ips:template parameters="$data" />
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--compact ipsData--dashboard-overview">
+		{{foreach $data as $k => $v}}
+			<li class="ipsData__item">
+				<span class="i-basis_220">
+					<strong>{lang="$k"}</strong>
+				</span>
+				<span class="">
+					{{if \in_array( $k, array( 'total_disk_spaced', 'total_bandwidth', 'current_month_bandwidth' ) )}}
+						{filesize="$v"}
+					{{elseif $k === 'largest_file'}}
+						<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->name}</a> <span class="i-color_soft">({filesize="$v->filesize()"})</span>
+					{{elseif $k === 'most_viewed_file'}}
+						<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->name}</a> <span class="i-color_soft">({lang="num_views_with_number" pluralize="$v->views"})</span>
+					{{elseif $k === 'most_downloaded_file'}}
+						<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->name}</a> <span class="i-color_soft">({lang="num_downloads" pluralize="$v->downloads"})</span>
+					{{elseif $k === 'total_files' OR $k === 'total_views' OR $k === 'total_downloads'}}
+						{number="$v"}
+					{{else}}
+						{$v}
+					{{endif}}
+				</span>
+			</li>
+		{{endforeach}}
+	</ul>
+</i-data>
+<div class="i-padding_2 i-color_soft">
+	{lang="download_stats_disclaimer"}
+</div>

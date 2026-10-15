@@ -1,0 +1,20 @@
+<ips:template parameters="$carouselImage, $active=false" />
+{{$imageWidth=isset( $carouselImage->_dimensions['small'][0] ) ? $carouselImage->_dimensions['small'][0] : 0;}}
+{{$imageHeight=isset( $carouselImage->_dimensions['small'][1] ) ? $carouselImage->_dimensions['small'][1] : 0;}}
+<li {{if $active}}data-active{{endif}} {{if $imageWidth && $imageHeight}}style='--i-ratio:{$imageWidth}/{$imageHeight}'{{endif}} data-image-id="{$carouselImage->id}"  >
+	<figure class='ipsFigure'>
+		{{if $carouselImage->media }}
+		<a href='{$carouselImage->url()}' title='{lang="view_this_video" sprintf="$carouselImage->caption"}' class='ipsFigure__main' data-action="changeImage">
+			<video data-role="video" preload="metadata" loading="lazy"{{if $carouselImage->masked_file_name }} poster="{file="$carouselImage->masked_file_name" extension="gallery_Images"}"{{endif}}>
+				<source src="{file="$carouselImage->original_file_name" extension="gallery_Images"}{{if !$carouselImage->masked_file_name }}#t=1{{endif}}" type='{$carouselImage->file_type}' />
+			</video>
+			<i class="ipsFigure__play" aria-hidden="true"></i>
+		</a>
+		{{else}}
+		<a href='{$carouselImage->url()}' title='{lang="view_this_image" sprintf="$carouselImage->caption"}' class='ipsFigure__main' data-action="changeImage">
+			<img src='{file="$carouselImage->small_file_name" extension="gallery_Images"}' alt="{$carouselImage->caption}" loading="lazy">
+		</a>
+		{{endif}}
+		{template="nsfwOverlay" app="gallery" location="front" group="global" params="$carouselImage, FALSE"}
+	</figure>
+</li>

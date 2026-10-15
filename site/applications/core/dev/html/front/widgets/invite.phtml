@@ -1,0 +1,13 @@
+<ips:template parameters="$subject, $url, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_invite"}</h3>
+<div class='ipsWidget__content'>
+	<div class='ipsWidget__padding'>
+		<div class="i-text-align_center i-font-weight_600">
+			{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('block_invite_text', FALSE, array( 'sprintf' => array( \IPS\Settings::i()->board_name ) ) )"}
+		</div>
+		<ul class="ipsButtons i-margin-top_3">
+			<li><a class="ipsButton ipsButton--inherit" href='mailto:?subject={$subject}&body={$url}'><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>{lang="block_invite_button"}</span></a></li>
+			<li><a class="ipsButton ipsButton--inherit" href='{url="app=core&module=system&controller=settings&do=invite"}' data-ipsDialog data-ipsDialog-size="narrow"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i><span>{lang="block_invite_share"}</span></a></li>
+		</ul>
+	</div>
+</div>

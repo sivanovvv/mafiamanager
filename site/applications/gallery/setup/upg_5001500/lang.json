@@ -1,0 +1,18 @@
+{
+    "normal": {
+        "added": [
+            "gallery_image_comment_lc",
+            "gallery_image_lc",
+            "gallery_image_review_lc",
+            "gallery_album_lc",
+            "gallery_album_comment_lc"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

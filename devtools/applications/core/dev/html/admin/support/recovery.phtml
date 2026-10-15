@@ -1,0 +1,19 @@
+<ips:template parameters="$apps, $theme" />
+
+<div class="i-background_2 i-padding_3">
+	{{if \count( $apps )}}
+		<p>{lang="recovery_apps_disabled"}</p>
+			<ul class="ipsData ipsData--table">
+			{{foreach $apps as $app}}
+				<li class="ipsData__item">{$app->_title}</li>
+			{{endforeach}}
+			</ul>
+	{{endif}}
+	{{if $theme}}
+		<p>{lang="recovery_theme_restored"}</p>
+	{{endif}}
+	{{if \IPS\RECOVERY_MODE === TRUE }}
+	<p>{lang="recovery_end_blurb"}</p>
+	<pre>define( 'RECOVERY_MODE', TRUE );</pre>
+	{{endif}}
+</div>

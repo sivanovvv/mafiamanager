@@ -1,0 +1,6 @@
+<ips:template parameters="$notification, $extra, $email" />
+{$email->language->addToStack("dashboard_version_info", FALSE, array( 'htmlsprintf' => $notification->_details['version'], 'striptags' => TRUE ))}
+{{if $notification->details['security']}}
+***** {$email->language->addToStack('this_is_a_security_update')} *****
+{{endif}}
+{$email->language->addToStack("upgrade_now")}: {url="&app=core&module=system&controller=upgrade&_new=1" base="admin" plain="true"}

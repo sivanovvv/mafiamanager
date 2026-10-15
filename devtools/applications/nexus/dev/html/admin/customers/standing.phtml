@@ -1,0 +1,77 @@
+<ips:template parameters="$standing" />
+<div id='elCustomerStanding' class="i-margin-block_2">
+	{{foreach $standing as $k => $data}}
+		{{$positive = false;}}
+		{{if ( $data['thisval'] >= $data['avgval'] && $data['type'] != 'timetopay' ) || ( $data['thisval'] <= $data['avgval'] && $data['type'] != 'timetopay' )}}
+			{{$positive = true;}}
+		{{endif}}
+		<div class="ipsSpanGrid__3">
+			<div class="cCustomerStanding_value {{if $positive}}cCustomerStanding_positive{{else}}cCustomerStanding_negative{{endif}}">
+				{$data['value']}
+				{{if $positive}}
+					<span class='cCustomerStanding_arrow ipsCursor_pointer' data-ipsHover data-ipsHover-width='250' data-ipsHover-content='#el{$data['type']}'>
+						{{if $data['type'] != 'timetopay'}}
+							<i class='fa-solid fa-arrow-up' aria-hidden="true"></i>
+						{{else}}
+							<i class='fa-solid fa-arrow-down' aria-hidden="true"></i>
+						{{endif}}
+					</span>
+				{{else}}
+					<span class='cCustomerStanding_arrow ipsCursor_pointer' data-ipsHover data-ipsHover-width='250' data-ipsHover-content='#el{$data['type']}'>
+						{{if $data['type'] != 'timetopay'}}
+							<i class='fa-solid fa-arrow-down' aria-hidden="true"></i>
+						{{else}}
+							<i class='fa-solid fa-arrow-up' aria-hidden="true"></i>
+						{{endif}}
+					</span>
+				{{endif}}
+				<div id='el{$data['type']}' class='ipsHide'>
+					<div class='i-padding_3'>
+						{{if $positive}}
+							<p class='ipsType_uppercase i-text-align_center i-font-size_1 i-color_positive'>
+								<strong>
+									{expression="abs( \intval( $data['avgpct'] - $data['thispct'] ) )"}%
+	
+									{{if $data['type'] != 'timetopay'}}
+										{lang="above_average"}
+									{{else}}
+										{lang="below_average"}
+									{{endif}}
+								</strong>
+							</p>
+						{{else}}
+							<p class='ipsType_uppercase i-text-align_center i-font-size_1 i-color_negative'>
+								<strong>
+									{expression="abs( \intval( $data['avgpct'] - $data['thispct'] ) )"}%
+	
+									{{if $data['type'] != 'timetopay'}}
+										{lang="below_average"}
+									{{else}}
+										{lang="above_average"}
+									{{endif}}
+								</strong>
+							</p>
+						{{endif}}
+						<hr class='ipsHr'>
+	
+						<div class='i-margin-top_1 cCustomerStanding_progressIndicator'>
+							<p class='cCustomerStanding_values i-flex i-justify-content_space-between i-font-size_-1'>
+								<strong>{$data['lowest']}</strong>
+								<strong>{$data['highest']}</strong>
+							</p>
+							<div class='cCustomerStanding_progress'></div>
+							<div class='cCustomerStanding_markers'>
+								<span class='cCustomerStanding_markerAvg' style='left: {$data['avgpct']}%'>
+									<i class='fa-solid fa-caret-up' aria-hidden="true"></i>
+									<span>{lang="avg_short"}</span>
+								</span>
+								<span class='cCustomerStanding_markerThis' style='left: {$data['thispct']}%'><i class='fa-solid fa-caret-up' aria-hidden="true"></i></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<h3 class='ipsMinorTitle ipsTruncate ipsTruncate_line'>{$k}</h3>
+		</div>
+	{{endforeach}}
+</div>

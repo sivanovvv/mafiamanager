@@ -1,0 +1,33 @@
+<ips:template parameters="$name, $editor, $noUploaderError=NULL, $allowMedia=TRUE" />
+{{if !$noUploaderError && !$allowMedia}}
+<div data-ipsEditor-toolList data-ipseditor-no-attachments-placeholder></div>
+{{else}}
+	<div data-ipsEditor-toolList class="i-background_2" data-ipseditor-no-attachments-placeholder>
+		<div data-role='attachmentArea'>
+			<div class="ipsComposeArea_dropZone" id='elEditorDrop_{$name}'>
+				<div>
+					<ul class='ipsList ipsList--inline'>
+						{{if $noUploaderError}}
+							<li>
+								{lang="$noUploaderError"}
+								<a href="{url="app=core&module=system&controller=attachments" seoTemplate="attachments"}">{lang="manage_attachments"}</a>
+							</li>
+						{{endif}}
+						{{if $allowMedia}}
+							<li>
+								<button type="button" id="elEditorAttach_media{expression='md5($name)'}" popovertarget="elEditorAttach_media{expression='md5($name)'}_menu" class='ipsButton ipsButton--soft ipsButton--small'>{lang="editor_attach_other"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+								<i-dropdown popover id="elEditorAttach_media{expression='md5($name)'}_menu">
+									<div class="iDropdown">
+										<ul class="iDropdown__items">
+											<li><a href='#' data-ipsDialog data-ipsDialog-forceReload data-ipsDialog-title='{lang="editor_insert_existing_file"}' data-ipsDialog-url="{url="app=core&module=system&controller=editor&do=myMedia&postKey={$editor}&editorId={$name}" csrf="1"}">{lang="editor_insert_existing_file"}</a></li>
+										</ul>
+									</div>
+								</i-dropdown>
+							</li>
+						{{endif}}
+					</ul>
+				</div>
+			</div>		
+		</div>
+	</div>
+{{endif}}

@@ -1,0 +1,8 @@
+<ips:template parameters="$badge, $cssClass = NULL, $tooltip = TRUE, $showRare = FALSE" />
+
+<span class='i-position_relative'>
+    <img src='{{if $badge->badge_use_image}}{file="$badge->image" extension="core_Badges"}{{else}}{$badge->_icon}{{endif}}' loading="lazy" alt="{$badge->_title}" class='{$cssClass}' {{if $tooltip}}data-ipsTooltip title='{$badge->_title}'{{endif}}>
+    {{if $showRare && $badge->isRare()}}
+        <span class='ipsBadge ipsBadge--rare'>{lang="rare_badge"}</span>
+    {{endif}}
+</span>

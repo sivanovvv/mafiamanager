@@ -1,0 +1,7 @@
+<ips:template parameters="$comment, $member, $email" />
+{{$item = ( $comment instanceof \IPS\Content\Item ) ? $comment : $comment->item();}}
+{$email->language->addToStack("email_new_likes", FALSE, array( 'sprintf' => array( ( $comment->author()->group['gbw_view_reps'] ) ? $member->name : $email->language->get( 'notifications_anonymous' ), $comment->indefiniteArticle( $email->language ) ) ) )} <a href='{$item->url()}'>{$item->mapped('title')}</a>
+<br><br>
+{$comment->emailContent( $email, 'html' )|raw}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

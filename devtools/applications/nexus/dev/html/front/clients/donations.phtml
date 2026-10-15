@@ -1,0 +1,43 @@
+<ips:template parameters="" />
+<section class="ipsBox ipsBox--commerceDonations ipsPull">
+	<header class="ipsPageHeader ipsPageHeader--padding">
+		<h1 class='ipsPageHeader__title'>{lang="current_donation_goals"}</h1>
+	</header>
+	
+	{{if request.thanks}}
+		<p class="ipsMessage ipsMessage--success">{lang="thanks_for_your_donation"}</p>
+	{{endif}}
+	
+	<div class="ipsFluid i-gap_lines i-basis_400">
+		{{foreach \IPS\nexus\Donation\Goal::roots() as $goal}}
+			<div class="i-flex i-flex-direction_column" id="elDonationGoal{$goal->id}">
+				<div class="i-padding_3 i-flex_11">
+					<h2 class="ipsTitle ipsTitle--h3 i-margin-bottom_3">{$goal->_title}</h2>
+					{{if $desc = member.language()->get("nexus_donategoal_{$goal->id}_desc")}}
+						<div class="i-margin-bottom_3">
+							<div class="ipsRichText">
+								{$desc|raw}
+							</div>
+						</div>
+					{{endif}}
+				</div>
+				<div class="i-padding_3 i-padding-top_0">
+					{{if $goal->goal}}
+						{{$progressId = 'ipsProgress-' . mt_rand();}}
+						<p id="{$progressId}" class="i-text-align_center i-margin-bottom_2">
+							<strong>{lang="donate_progress" sprintf="new \IPS\nexus\Money( $goal->current, $goal->currency ), new \IPS\nexus\Money( $goal->goal, $goal->currency )"}</strong>
+						</p>
+						<progress aria-labelledby="{$progressId}" class='ipsProgress ipsProgress--donation i-margin-bottom_2' max='{$goal->goal}' value='{$goal->current}'></progress>
+					{{else}}
+						<p class="i-text-align_center">
+							<strong>{lang="donate_sofar" sprintf="new \IPS\nexus\Money( $goal->current, $goal->currency )"}</strong>
+						</p>
+					{{endif}}
+				</div>
+				<div class="ipsSubmitRow">
+					<a href="{$goal->url()->setQueryString( 'noDesc', 1 )}" class="ipsButton ipsButton--primary" {{if member.member_id }} data-ipsDialog {{endif}} >{lang="donate_to_goal"}</a>
+				</div>
+			</div>
+		{{endforeach}}
+	</div>
+</section>

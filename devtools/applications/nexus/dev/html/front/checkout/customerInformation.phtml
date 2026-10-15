@@ -1,0 +1,96 @@
+<ips:template parameters="$informationForm, $login, $loginError, $invoice" />
+{{if $login !== NULL}}
+	<section data-controller='nexus.front.checkout.register' {{if isset( \IPS\Request::i()->customer_submitted )}}data-regform="true"{{endif}}>
+		{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+		{{$buttonMethods = $login->buttonMethods();}}
+		{{if \IPS\Login::registrationType() != 'disabled' or ( $usernamePasswordMethods and $buttonMethods )}}
+			<div class='ipsFluid i-basis_280 i-gap_lines' data-role="memberChoice">
+				<div class='cNexusCheckout_returning'>
+					<h2 class="i-padding_3 ipsTitle ipsTitle--h3">{lang="returning_member"}</h2>
+					<div class=''>
+						{{if $loginError !== NULL}}
+							{template="message" group="global" location="global" app="core" params="$loginError, 'error'"}
+						{{endif}}
+						<form accept-charset='utf-8' method='post' action='{$login->url}' class="ipsForm ipsForm--fullWidth" data-controller="core.global.core.login">
+							<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+							{{if $usernamePasswordMethods}}
+								{template="loginForm" app="core" group="system" params="$login"}
+							{{elseif $buttonMethods}}
+								<div class='i-gap_2 i-margin-top_2'>
+									{{foreach $buttonMethods as $method}}
+										<div class='i-text-align_center'>
+											{$method->button()|raw}
+										</div>
+									{{endforeach}}
+								</div>
+							{{endif}}
+						</form>
+					</div>
+				</div>
+				<div class="i-background_2 i-padding_3">
+					{{if \IPS\Login::registrationType() != 'disabled'}}
+						<div class="i-margin-bottom_3">
+							<h2 class="ipsTitle ipsTitle--h3">{lang="new_customers"}</h2>
+							<p class="i-color_soft i-margin-bottom_3">{lang="new_customer_blurb"}</p>
+							{{if \IPS\Login::registrationType() == 'redirect'}}
+								<a href="{expression="\IPS\Settings::i()->allow_reg_target"}" target="_blank" rel="noopener" class='ipsButton ipsButton--primary'>{lang="sign_up"}</a>
+							{{else}}
+								<button data-action='newMember' class='ipsButton ipsButton--primary ipsButton--wide'>{lang="continue_as_new_member"}</button>
+							{{endif}}
+						</div>
+					{{endif}}
+					{{if $usernamePasswordMethods and $buttonMethods}}
+						<form accept-charset='utf-8' method='post' action='{$login->url}' data-controller="core.global.core.login">
+							<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+							<p class='i-color_soft i-font-weight_500'>{lang="sign_in_with_these"}:</p>
+							<div class='i-grid i-gap_2 i-text-align_center i-margin-top_2'>
+								{{foreach $buttonMethods as $method}}
+									<div>
+										{$method->button()|raw}
+									</div>
+								{{endforeach}}
+							</div>
+						</form>
+					{{endif}}
+				</div>
+			</div>
+			<div class="ipsJS_hide" data-role='newCustomerForm'>
+				<h2 class='ipsTitle ipsTitle--h3 ipsTitle--padding'>{lang="create_new_account"}</h2>
+				{$informationForm|raw}
+			</div>
+		{{else}}
+			<div class="i-padding_3">
+				<div>
+					{{if $loginError !== NULL}}
+						{template="message" group="global" location="global" app="core" params="$loginError, 'error'"}
+						<br>
+					{{endif}}
+					<form accept-charset='utf-8' method='post' action='{$login->url}' class="ipsForm" data-controller="core.global.core.login">
+						<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+						{{if $usernamePasswordMethods}}
+							{template="loginForm" app="core" group="system" params="$login"}
+						{{elseif $buttonMethods}}
+							<div class='i-gap_2 i-margin-top_2'>
+								{{foreach $buttonMethods as $method}}
+									<div class='i-text-align_center'>
+										{$method->button()|raw}
+									</div>
+								{{endforeach}}
+							</div>
+						{{endif}}
+					</form>
+				</div>
+			</div>
+		{{endif}}
+	</section>
+{{else}}
+	<div class='ipsColumns ipsColumns--reverse ipsColumns--lines ipsColumns--customerInformation'>
+		<div class='ipsColumns__primary'>
+			<h2 class='ipsTitle ipsTitle--h3 ipsTitle--padding'>{lang="billing_information"}</h2>
+			{$informationForm|raw}
+		</div>
+		<div class='ipsColumns__secondary i-basis_340'>
+			{template="checkoutOrderSummary" group="checkout" app="nexus" params="$invoice->summary()"}
+		</div>
+	</div>	
+{{endif}}

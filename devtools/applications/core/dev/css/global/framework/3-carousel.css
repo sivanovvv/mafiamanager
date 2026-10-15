@@ -1,0 +1,190 @@
+/*
+	----------------
+	- Carousel
+	----------------
+*/
+
+.ipsCarousel{
+	--i-carousel--show: 1;
+	--i-column-gap: 1em;
+	--i-carousel--pa: 0;
+	/* --i-carousel--scroll: 1; */
+	/* --i-carousel--autoplay: 1000; */
+	display: flex;
+	gap: var(--i-column-gap);
+	overflow-x: scroll;
+	overscroll-behavior-x: contain;
+	scroll-behavior: smooth;
+	scroll-snap-type: x mandatory;
+	padding: var(--i-carousel--pa);
+	scroll-padding-inline: var(--i-carousel--pa);
+	scrollbar-width: none;
+	scrollbar-color: color-mix(in srgb, var(--i-co) 20%, transparent) transparent;
+	position: relative; /* Required for scrollLeft as part of i-carousel-navigation */
+}
+
+/* Scroll-padding prevents entry.isIntersecting from working in RTL Safari. Without this fix, carousel arrow navigation can break. Last tested in 26.1 */
+@supports (-webkit-hyphens: auto){
+	[dir="rtl"] .ipsCarousel::after{
+		content: "";
+		flex: 0 0 max(var(--i-carousel--pa) - var(--i-column-gap), 1px);
+	}
+}
+
+:where(.ipsCarousel){
+	--i-basis: 0%; /* This is set to 0% which reduces the flex-basis of items to the --i-carousel-show amount */
+}
+
+/* Allow basis to control the item width */
+.ipsCarousel:where([class*=" i-basis_"], [class^="i-basis_"]){
+	--i-carousel--show: 99; /* 99 disables the maximum column amount */
+}
+
+/* Add padding to carousels if necessary */
+.ipsCarousel--padding{
+	--i-carousel--pa: 2em;
+}
+
+.ipsCarousel--1{ --i-carousel--show: 1 }
+.ipsCarousel--2{ --i-carousel--show: 2 }
+.ipsCarousel--3{ --i-carousel--show: 3 }
+.ipsCarousel--4{ --i-carousel--show: 4 }
+.ipsCarousel--5{ --i-carousel--show: 5 }
+.ipsCarousel--6{ --i-carousel--show: 6 }
+
+.ipsCarousel::-webkit-scrollbar {
+	-webkit-appearance: none;
+	height: 0px;
+}
+
+/* Scrollbars */
+@media(hover: hover){
+	.ipsCarousel--scrollbar{
+		padding-bottom: 20px;
+		scrollbar-width: thin;
+	}
+	.ipsCarousel--scrollbar::-webkit-scrollbar {
+		height: 28px;
+	}
+	.ipsCarousel--scrollbar::-webkit-scrollbar-track {
+		background: transparent;
+		border-radius: 6px;
+	}
+	.ipsCarousel--scrollbar::-webkit-scrollbar-thumb {
+		border: 12px solid transparent;
+	    border-radius: 20px;
+	    background-color: color-mix(in srgb, var(--i-co) 0%, transparent);
+	    background-clip: content-box;
+	}
+		.ipsCarousel--scrollbar:hover::-webkit-scrollbar-thumb{
+	    	background-color: color-mix(in srgb, var(--i-co) 20%, transparent);
+		}
+		.ipsCarousel--scrollbar::-webkit-scrollbar-thumb:hover{
+	    	background-color: var(--i-co);
+	    	border-width: 10px;
+		}
+}
+
+/* Carousel items */
+.ipsCarousel > *{
+	flex: 0 0 auto;
+	flex-basis: min(
+		100%,
+		clamp(
+			var(--i-basis),
+			(100% - (var(--i-column-gap) * (var(--i-carousel--show) - 1))) / var(--i-carousel--show),
+			100%
+		)
+	);
+	scroll-snap-align: start;
+}
+
+.ipsCarousel > *:last-child{
+	scroll-snap-align: end;
+}
+
+	.ipsCarousel:has(:focus-visible):focus-within > *:not(:focus-within){
+		scroll-snap-align: none;
+	}
+
+
+/* Navigation buttons */
+.ipsCarouselNav{
+	display: flex;
+	justify-content: center;
+}
+
+	:is(.ipsBox__header, .ipsWidget__header) .ipsCarouselNav{
+		margin: -2em auto;
+		margin-inline-end: -0.8em;
+	}
+
+	/* Add space between carousel and controls, unless the carousel already has padding */
+	:where(.ipsCarousel:not(.ipsCarousel--padding, .ipsCarousel--images) + .ipsCarouselNav, .ipsCarouselNav + .ipsCarousel:not(.ipsCarousel--padding, .ipsCarousel--images)){
+		padding-top: 2em;
+	}
+
+	/* If the carousel needs padding, the bottom navigation probably needs a space too */
+	:where(.ipsCarousel--padding + .ipsCarouselNav){
+		padding-bottom: 1em;
+	}
+
+.ipsCarouselNav__button{
+	display: grid;
+	place-content: center;
+	min-height: max(34px,2em);
+	min-width: max(34px,2.5em);
+	border-radius: min(var(--i-design-radius), 6px);
+	touch-action: manipulation;
+}
+
+@media (any-hover:hover){
+	.ipsCarouselNav__button:hover{
+		background: color-mix(in srgb, currentColor 4%, transparent);
+	}
+}
+
+	[dir="ltr"] [data-carousel-arrow="prev"] .fa-ips::before,
+	[dir="rtl"] [data-carousel-arrow="next"] .fa-ips::before{
+		content: "\f104";
+	}
+
+	[dir="rtl"] [data-carousel-arrow="prev"] .fa-ips::before,
+	[dir="ltr"] [data-carousel-arrow="next"] .fa-ips::before{
+		content: "\f105";
+	}
+
+/*
+	----------------
+	- Thumbnail carousel: Used for images of different sizes such as Download screenshots
+	----------------
+*/
+
+.ipsCarousel--images{
+	--_height: 160px;
+	min-height: 1em;
+}
+
+.ipsCarousel--images > *{
+	flex: 0 0 auto;
+	max-width: 100%;
+}
+
+	/* Force image to be correct height */
+	.ipsCarousel--images .ipsThumb{
+		display: block;
+	}
+	
+	.ipsCarousel--images :is(.ipsThumb, .ipsFigure){
+		aspect-ratio: var(--i-ratio, auto);
+		height: var(--_height);
+		width: auto;
+	}
+
+	.ipsCarousel--images .ipsThumb img{
+		width: auto;
+	}
+
+	.ipsCarousel--images .ipsFigure:has(video){
+		aspect-ratio: 16/9;
+	}

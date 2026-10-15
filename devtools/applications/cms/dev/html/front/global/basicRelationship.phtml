@@ -1,0 +1,6 @@
+<ips:template parameters="$items" />
+<ul class='ipsList ipsList--csv'>
+	{{foreach $items as $id => $item}}
+		<li><a href="{$item->url( "getPrefComment" )}">{$item->_title}</a></li>
+	{{endforeach}}
+</ul>

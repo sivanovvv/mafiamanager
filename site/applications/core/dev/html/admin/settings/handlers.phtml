@@ -1,0 +1,21 @@
+<ips:template parameters="$handlers=array()" />
+
+<div class="i-margin_3" >
+    <h2 class="i-margin-bottom_2">{lang="datalayer_title"}</h2>
+    <div class="ipsType i-margin-bottom_3 i-padding-bottom_3">{lang="datalayer_desc"}</div>
+    <div>
+        {{if empty($handlers)}}
+        <p class="i-padding-block_3">
+            {lang="datalayer_custom_handler_none"}
+        </p>
+        <a href='{url="app=core&module=settings&controller=dataLayer&do=addHandler" location="admin"}' class="ipsButton ipsButton--primary">{lang="datalayer_custom_handler_create"}</a>
+        {{else}}
+        {{foreach $handlers as $handler}}
+        <div>
+            {{$dataLayerKey = \IPS\Member::loggedIn()->language()->addToStack('datalayer_custom_title_prefix') . ' ' . $handler->datalayer_key;}}
+            {template="row" group="trees" location="admin" app="core" params="$handler->url(), $handler->id, $handler->name, false, $handler->buttonHtml, $dataLayerKey, NULL, NULL, FALSE, $handler->enabled"}
+        </div>
+        {{endforeach}}
+        {{endif}}
+    </div>
+</div>

@@ -1,0 +1,311 @@
+<ips:template parameters="$invoice, $summary, $transactions" />
+
+<div class='ipsPhotoPanel ipsPhotoPanel_mini i-margin-block_3 ipsResponsive_showPhone'>
+	{template="userPhoto" group="global" app="core" location="front" params="$invoice->member, 'mini'"}
+	<div>
+		<h3 class='ipsTitle ipsTitle--h3'>
+			<strong>
+				{{if $invoice->member->member_id}}
+					<a class="i-link-color_inherit" href="{$invoice->member->acpUrl()}">{$invoice->member->cm_name}</a>
+				{{else}}
+					{$invoice->member->cm_name}
+				{{endif}}
+			</strong>
+		</h3>
+		{{if $invoice->member->email}}
+			<p class='i-font-weight_normal i-font-size_1 i-color_soft'>{$invoice->member->email}</p>
+		{{endif}}				
+	</div>
+</div>
+
+<div class='ipsSpanGrid'>
+	<div class='ipsSpanGrid__4'>
+		<div class='ipsBox i-padding_3 i-text-align_center i-margin-bottom_1 cInvoiceStatus'>
+			{{if $invoice->status == 'paid'}}
+				<i class='fa-solid fa-check-circle i-font-size_6' aria-hidden="true"></i>
+			{{elseif $invoice->status == 'pend'}}
+				<i class='fa-regular fa-clock i-font-size_6' aria-hidden="true"></i>
+			{{elseif $invoice->status == 'expd'}}
+				<i class='fa-solid fa-circle-exclamation i-font-size_6' aria-hidden="true"></i>
+			{{elseif $invoice->status == 'canc'}}
+				<i class='fa-solid fa-xmark-circle i-font-size_6' aria-hidden="true"></i>
+			{{endif}}
+			<br>
+			<p class='ipsTitle ipsTitle--h3'><strong>{lang="istatus_{$invoice->status}"}</strong></p>
+			<p class='i-font-size_1'>{lang="istatus_{$invoice->status}_desc"}</p>
+
+			{{if $invoice->status_extra and isset( $invoice->status_extra['type'] )}}
+				<p class='i-font-size_1 i-margin-top_1'>
+					{{if $invoice->status_extra['type'] === 'manual'}}
+						{lang="invoice_status_extra" sprintf="\IPS\Member::load( $invoice->status_extra['setByID'] )->name, \IPS\DateTime::ts( $invoice->status_extra['date'] )"}
+					{{elseif $invoice->status_extra['type'] === 'zero'}}
+						{lang="invoice_status_zero"}
+					{{endif}}
+				</p>
+			{{endif}}
+		</div>
+
+		<div class='ipsBox i-margin-bottom_1'>
+			<h2 class="ipsBox__header">{lang="invoice_notes"}</h2>
+			<div class='i-padding_3'>
+				<p>
+					{{if $invoice->notes}}
+						{$invoice->notes}
+					{{else}}
+						<span class='i-color_soft'>
+							{lang="no_invoice_notes"}
+						</span>
+					{{endif}}
+				</p>
+
+				<p class='i-font-size_1 i-margin-top_1'>
+					<a href="{$invoice->acpUrl()->setQueryString( array( 'do' => 'notes' ) )}" data-ipsDialog data-ipsDialog-title="{lang="invoice_notes"}" class='ipsButton ipsButton--inherit ipsButton--tiny'>{lang="edit"}</a>
+				</p>
+			</div>
+		</div>
+
+		{{if $transactions}}
+			<div class='i-margin-bottom_1 ipsBox'>
+				<h2 class="ipsBox__header">{lang="invoice_transactions"}</h2>
+				{$transactions|raw}
+			</div>
+		{{endif}}
+
+	</div>
+	<div class='ipsSpanGrid__8'>
+
+		<div class='ipsPhotoPanel ipsPhotoPanel_mini i-margin-bottom_1 ipsResponsive_hidePhone'>
+			{template="userPhoto" group="global" app="core" location="front" params="$invoice->member, 'mini'"}
+			<div>
+				<h3 class='ipsTitle ipsTitle--h3'>
+					<strong>
+						{{if $invoice->member->member_id}}
+							<a class="i-link-color_inherit" href="{$invoice->member->acpUrl()}">{$invoice->member->cm_name}</a>
+						{{else}}
+							{$invoice->member->cm_name}
+						{{endif}}
+					</strong>
+				</h3>
+				{{if $invoice->member->email}}
+					<p class='i-font-weight_normal i-font-size_1 i-color_soft'>{$invoice->member->email}</p>
+				{{endif}}				
+			</div>
+		</div>
+		
+		<div class='ipsBox'>
+			<h2 class='ipsBox__header'>{lang="invoice"}</h2>
+			<div class='i-padding_3'>
+				<div class='ipsSpanGrid i-margin-bottom_1'>
+					<div class='ipsSpanGrid__7'>
+						{{if $invoice->billaddress}}
+							<h3 class="i-font-weight_600 i-color_hard i-font-size_3">{lang="invoice_billedto"}</h3>
+							<p>
+								{$invoice->billaddress->toString('<br>')|raw}
+							</p>
+							{{if isset( $invoice->billaddress->vat ) and $invoice->billaddress->vat}}
+								<p class='i-margin-top_1'>
+									{lang="cm_checkout_vat_number"}: {template="vatNumber" group="global" params="$invoice->billaddress->vat"}
+								</p>
+							{{endif}}
+						{{endif}}
+					</div>
+					<div class='ipsSpanGrid__5'>
+						<h3 class="i-font-weight_600 i-color_hard i-font-size_3">{lang="invoice_date"}</h3>
+						<p class='i-margin-bottom_1'>
+							{$invoice->date}
+						</p>
+
+						<h3 class="i-font-weight_600 i-color_hard i-font-size_3">{lang="invoice_paiddate"}</h3>
+						<p class='i-margin-bottom_1'>
+							{$invoice->paid}
+						</p>
+
+						<h3 class="i-font-weight_600 i-color_hard i-font-size_3">{lang="invoice_po_number"}</h3>
+						<p class='i-margin-bottom_1'>
+							{{if $invoice->po}}
+								{$invoice->po}
+							{{else}}
+								<span class='i-color_soft'>{lang="none"}</span>
+							{{endif}}
+							&nbsp;&nbsp;
+							<a href="{$invoice->acpUrl()->setQueryString( array( 'do' => 'poNumber' ) )}" data-ipsDialog class='i-font-size_-1'>({lang="edit"})</a>
+						</p>
+					</div>
+				</div>
+
+				<div class='i-background_1'>
+					<table class="ipsTable ipsTable_zebra">
+						<thead>
+							<tr>
+								<th>{lang="invoice_item"}</th>
+								<th>{lang="invoice_unit_price"}</th>
+								<th>{lang="invoice_quantity"}</th>
+								<th>{lang="invoice_line_price"}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{foreach $summary['items'] as $k => $item}}
+								<tr>
+									<td class="ipsTable_wrap">
+										<span title="{lang="$item->_title"}" data-ipsTooltip><i class="fa-solid fa-{$item->_icon}" aria-hidden="true"></i></span> &nbsp; 
+										{{if $url = $item->acpUrl()}}
+											<a href="{$url}">{$item->name}</a>
+										{{else}}
+											{$item->name}
+										{{endif}}
+										{{if \count( $item->details )}}
+											<span class="i-color_soft">
+												{{foreach $item->details as $k => $v}}
+													{{if $displayValue = trim( \IPS\nexus\Package\CustomField::load( $k )->displayValue( $v, TRUE ) )}}
+														{lang="nexus_pfield_{$k}"}: {$displayValue|raw}<br>
+													{{endif}}
+												{{endforeach}}
+											</span>
+										{{endif}}
+									</td>
+									<td>{$item->price}</td>
+									<td>{$item->quantity}</td>
+									<td>
+										{{if $item->payTo}}
+											<a href="#" data-ipsDialog data-ipsDialog-content="#el_item{$k}_commission" data-ipsDialog-title="{$item->name}{{if $item->quantity > 1}} x{$item->quantity}{{endif}}">
+												{$item->linePrice()}
+											</a>
+											<div id="el_item{$k}_commission" class="ipsHide">
+												{{$recipientAmounts = $item->recipientAmounts();}}
+												<table class="ipsTable ipsTable_zebra">
+													<thead>
+														<tr>
+															<th></th>
+															<th>{lang="invoice_unit_price"}</th>
+															<th>{lang="invoice_line_price"}</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td></td>
+															<td>{$item->price}</td>
+															<td>{$item->linePrice()}</td>
+														</tr>
+														{{if $item->commission and $item->fee}}
+															<tr>
+																<td>{lang="invoice_site_commission" sprintf="$item->commission"}</td>
+																<td>{$recipientAmounts['site_commission_unit']}</td>
+																<td>{$recipientAmounts['site_commission_line']}</td>
+															</tr>
+															<tr>
+																<td colspan="2">{lang="invoice_site_fee"}</td>
+																<td>{$item->fee}</td>
+															</tr>
+															<tr>
+																<td colspan="2"><strong>{lang="invoice_site_total"}</strong></td>
+																<td><strong class="">{$recipientAmounts['site_total']}</strong></td>
+															</tr>
+															<tr>
+																<td colspan="2"><strong>{lang="invoice_amount_recipient" sprintf="$item->payTo->name"}</strong></td>
+																<td><strong class="">{$recipientAmounts['recipient_final']}</strong></td>
+															</tr>
+														{{elseif $item->commission}}
+															<tr>
+																<td>{lang="invoice_site_commission" sprintf="$item->commission"}</td>
+																<td>{$recipientAmounts['site_commission_unit']}</td>
+																<td>{$recipientAmounts['site_commission_line']}</td>
+															</tr>
+															<tr>
+																<td>{lang="invoice_amount_recipient" sprintf="$item->payTo->name"}</td>
+																<td>{$recipientAmounts['recipient_unit']}</td>
+																<td>{$recipientAmounts['recipient_line']}</td>
+															</tr>
+														{{elseif $item->fee}}
+															<tr>
+																<td colspan="2">{lang="invoice_site_fee"}</td>
+																<td>{$item->fee}</td>
+															</tr>
+															<tr>
+																<td colspan="2">{lang="invoice_amount_recipient" sprintf="$item->payTo->name"}</td>
+																<td>{$recipientAmounts['recipient_final']}</td>
+															</tr>
+														{{endif}}
+													</tbody>
+												</table>
+											</div>
+										{{else}}
+											{$item->linePrice()}
+										{{endif}}
+									</td>
+								</tr>
+							{{endforeach}}
+						</tbody>
+						<tfoot>
+							<tr class='cInvoice_subtotal'>
+								<td colspan="3"><strong>{lang="subtotal"}</strong></td>
+								<td><strong>{$summary['subtotal']}</strong></td>
+							</tr>
+							{{foreach $summary['tax'] as $taxId => $tax}}
+								<tr>
+									<td colspan="3">
+										{lang="nexus_tax_{$taxId}"}
+										{{if $tax['type'] !== 'single'}}
+											{{if $tax['type'] === 'eu' and $invoice->billaddress->business and $invoice->billaddress->vat}}
+												({lang="tax_rate_eu"}: {expression="$tax['rate']*100"}%)
+											{{elseif $invoice->billaddress->business}}
+												({lang="tax_rate_business"}: {expression="$tax['rate']*100"}%)
+											{{else}}
+												({lang="tax_rate_consumer"}: {expression="$tax['rate']*100"}%)
+											{{endif}}
+										{{else}}
+											({expression="$tax['rate']*100"}%)
+										{{endif}}
+									</td>
+									<td>{$tax['amount']}</td>
+								</tr>
+							{{endforeach}}
+							<tr class='cInvoice_subtotal'>
+								<td colspan="3"><strong class="i-font-size_2">{lang="total"}</strong></td>
+								<td><strong class="i-font-size_2">{$summary['total']}</strong></td>
+							</tr>
+                            {{$recipients = $invoice->payToRecipients();}}
+                            {{$commission = $invoice->commission( $invoice->total->amount->subtract( \IPS\Math\Number::sum( $recipients ) ) );}}
+							{{if $recipients or ( $commission AND settings.ref_on )}}
+								{{$totalForSite = $summary['total']->amount->subtract( \IPS\Math\Number::sum( $recipients ) );}}
+								{{foreach $recipients as $recipient => $amount}}
+									{{$customer = \IPS\nexus\Customer::load( $recipient );}}
+									<tr>
+										<td colspan="3">
+											<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+												<a href="{$customer->acpUrl()}"><img src='{$customer->photo}' class='ipsUserPhoto ipsUserPhoto--tiny' loading="lazy" alt=""></a>
+												<div>
+													<a href="{$customer->acpUrl()}" class="i-link-color_inherit"><strong>{lang="invoice_amount_recipient" sprintf="\IPS\Member::load( $recipient )->name"}</strong></a>
+												</div>
+											</div>
+										</td>
+										<td><strong>{money="$amount" currency="$invoice->currency"}</strong></td>
+									</tr>
+								{{endforeach}}
+
+								{{if isset( $commission ) and $commission['rule']}}
+									{{$totalForSite = $totalForSite->subtract( $commission['amount']->amount );}}
+									<tr>
+										<td colspan="3">
+											<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+												<a href="{$commission['referrer']->acpUrl()}"><img src='{$commission['referrer']->photo}' class='ipsUserPhoto ipsUserPhoto--tiny' loading='lazy' alt=''></a>
+												<div>
+													<a href="{$commission['referrer']->acpUrl()}"><strong>{lang="invoice_amount_commission" sprintf="$commission['referrer']->name"}</strong></a>
+													<br>{$commission['rule']->_title}
+												</div>
+											</div>
+										</td>
+										<td><strong>{$commission['amount']}</strong></td>
+									</tr>
+								{{endif}}
+								<tr class='cInvoice_subtotal'>
+									<td colspan="3"><strong class="">{lang="invoice_site_total"}</strong></td>
+									<td><strong class="">{money="$totalForSite" currency="$invoice->currency"}</strong></td>
+								</tr>
+							{{endif}}
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

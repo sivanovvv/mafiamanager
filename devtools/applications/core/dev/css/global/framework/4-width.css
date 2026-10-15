@@ -1,0 +1,9 @@
+/* Width */
+.ipsWidth{
+	max-width: min(100% - max(env(safe-area-inset-left), var(--i-layout-gutter)) * 2, var(--i-layout-width));
+	margin-left: auto;
+	margin-right: auto;
+}
+	.ipsLayout_minimal .ipsWidth--main-content{
+		--i-layout-width: 900px;
+	}

@@ -1,0 +1,17 @@
+{
+    "normal": {
+        "added": [
+            "calendar_event_lc",
+            "calendar_event_comment_lc",
+            "calendar_event_review_lc",
+            "emailtpl_notification_event_reminder"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

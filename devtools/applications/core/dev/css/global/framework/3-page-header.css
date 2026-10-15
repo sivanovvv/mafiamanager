@@ -1,0 +1,202 @@
+/*
+	----------------
+	- Page header
+	----------------
+*/
+
+.ipsPageHeader{
+	--_pa: clamp(1.3em, 3vw, 1.7em);
+	container-type: inline-size;
+	padding: var(--_pa);
+}
+
+/* This is a more simple way of supporting old browsers including iOS 13 which doesn't support the "selector" code */
+@supports selector(a:has(b)){
+	.ipsPageHeader{
+		padding: 0;
+	}
+}
+
+/* If a boxed header doesn't contain any rows (ie. just a title and description), add padding */
+.ipsPageHeader--padding{
+	padding: var(--_pa);
+}
+/* If a header has a title as an immediate child, also add padding */
+.ipsPageHeader.ipsBox:has(> .ipsPageHeader__title){
+	padding: var(--_pa);
+}
+
+/* Add a border to "featured" headers */
+.ipsPageHeader--hasFeatureColor {
+	border-inline-start: 6px solid var(--i-featured, currentColor);
+}
+
+/* Add bottom border if the page header is followed by content */
+.ipsBox .ipsPageHeader:not(:last-child){
+	border-bottom: 1px solid var(--i-background_4);
+}
+
+/* Convert rows into flex if they contain primary children */
+:where(.ipsPageHeader__row:has(.ipsPageHeader__primary)){
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1em;
+}
+
+:where(.ipsPageHeader__row--footer){
+	gap: .5em;
+}
+
+/* :has() fallback for above, ensuring children expand full width if they aren't primary */
+@supports not selector(a:has(b)){
+	.ipsPageHeader__row{
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1em;
+	}
+	.ipsPageHeader__row > :not(.ipsPageHeader__primary, .ipsPageHeader__primary + *){
+		flex: 1 1 100%;
+	}
+}
+
+:where(:is(.ipsBox.ipsPageHeader, .ipsBox .ipsPageHeader) .ipsPageHeader__row){
+	padding: var(--_pa);
+}
+
+:where(.ipsPageHeader__row ~ .ipsPageHeader__row){
+	border-top: 1px solid var(--i-background_4);
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+.ipsPageHeader__row--footer{
+	background-color: var(--i-background_2);
+}
+
+@media (min-width: 768px){
+	/* Add border-radius to the last row if the Page Header is a box, or is the last child in a box. This helps to contain the background-color from .ipsPageHeader__row--footer */
+	:where(:is(.ipsPageHeader.ipsBox, .ipsBox .ipsPageHeader:last-child) > .ipsPageHeader__row--footer:last-child){
+		border-bottom-left-radius: var(--i-box--bo-ra);
+		border-bottom-right-radius: var(--i-box--bo-ra);
+	}
+}
+
+/* Add margin above active users when the element is placed after a title/description in the page header */
+.ipsPageHeader__title ~ [data-controller="cloud.front.realtime.whosViewing"] .ipsLiveActivity{
+	margin-top: 2em;
+}
+
+/* Make children occupy full width... */
+:where(.ipsPageHeader__row > *){
+	flex: 1 1 auto;
+}
+
+	/* ..unless they are primary elements */
+	.ipsPageHeader__primary{
+		flex: 999 1 40%;
+	}
+
+/* Title */
+.ipsPageHeader__title{
+	font-weight: 600;
+	color: var(--i-color_hard);
+	font-size: clamp(1.5em, 4vw, 2em);
+	line-height: 1.1;
+	text-wrap: pretty;
+}
+
+	.ipsPageHeader__title a{
+		color: inherit;
+	}
+
+/* Align children inside .ipsPageHeader__title */
+:where(.ipsPageHeader__title > :is(h1, h2, h3, h4, h5):not(:only-child)){
+	display: inline;
+}
+
+:where(.ipsPageHeader__title > *){
+	margin-inline-end: .3em;
+}
+
+:where(.ipsPageHeader__title .ipsIndicator){
+	margin-inline-end: .7em;
+}
+
+/* Rename title */
+.ipsPageHeader__title [data-role="editableTitle"]:hover{
+	background: var(--i-background_selected);
+	color: var(--i-color_hard);
+}
+
+:where(.ipsPageHeader__title :is(.ipsBadges, .ipsBadge--prefix), .ipsPageHeader__title > .ipsBadge){
+	vertical-align: .15em;
+}
+
+.ipsPageHeader__title .ipsBadge{
+	font-size: max(0.5em, 14px);
+}
+
+.ipsPageHeader__title .ipsBadge--prefix{
+	display: inline;
+	padding-block: .3em;
+}
+
+.ipsPageHeader__rating{
+	margin-top: .6em;
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+
+/* Descriptions */
+.ipsPageHeader__desc{
+	color: var(--i-color_soft);
+	font-size: clamp(1em, 2vw, 1.1em);
+	margin-top: .6em;
+	flex: 1 1 100%;
+}
+
+/* Not all descriptions are surrounded by "if statements" */
+.ipsPageHeader__desc:empty{
+	display: none;
+}
+
+.ipsPageHeader__title + .ipsPhotoPanel{
+	margin-top: .6em;
+}
+
+/* Make buttons fill the entire row when wrapped */
+:where(.ipsPageHeader__row .ipsButtons:not(.ipsButtons--main)) .ipsButton{
+	flex-grow: 1;
+	font-size: calc(.8em + var(--i-range) * .1);
+}
+
+/* Tags */
+.ipsPageHeader .ipsTags{
+	margin-top: 1em;
+}
+
+/* Automatically contrast text based on page background color */
+.ipsPageHeader:not(.ipsBox, .ipsBox *),
+.ipsPageHeader__title:where(:not(.ipsBox *)){
+	color: var(--i-color_contrast, var(--i-color_dark));
+}
+.ipsPageHeader__desc:where(:not(.ipsBox *)){
+	color: color-mix(in srgb, var(--i-color_contrast, var(--i-color_soft)) 70%, transparent);
+}
+
+@container (max-width: 670px){
+	.ipsPageHeader__primary{
+		flex: 999 1 auto;
+	}
+}
+
+@supports not (container-name: x){
+	@media (max-width: 979px){
+		.ipsPageHeader__primary{
+			flex: 999 1 60%;
+		}
+	}
+}

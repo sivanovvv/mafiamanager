@@ -1,0 +1,41 @@
+<ips:template parameters="$guestPostBeforeRegister, $modQueued, $standalone=false" />
+{{if !member.member_id}}
+	{{if !$standalone}}
+		<div class='cGuestTeaser'>
+			<h2 class='ipsTitle ipsTitle--h3'>{lang="guest_post_header"}</h2>
+		{{endif}}
+			<p>
+				{{if $guestPostBeforeRegister}}
+					{lang="guest_post_pbr_blurb"}
+				{{else}}
+					{lang="guest_post_normal_blurb"}
+				{{endif}}
+				{lang="guest_post_sign_in"}
+				{{if $modQueued}}
+					<br><span class='i-color_warning'>{lang="guest_post_mod_approval"}</span>
+				{{endif}}
+			</p>
+	{{if !$standalone}}
+		</div>
+	{{endif}}
+{{elseif $modQueued}}
+	<div class="ipsMessage ipsMessage--withButtons ipsMessage--warning i-margin-bottom_2">
+		<div>
+			<h4 class='ipsMessage__title'>{lang="mod_queue_message"}</h4>
+			{{$warnings = member.warnings( 1, NULL, 'mq' );}}
+			{{if \count( $warnings ) and member.mod_posts > time()}}
+				<p class="i-color_soft">
+					{{if \count( $warnings )}}
+						{lang="this_will_be_moderated"}
+					{{endif}}
+					{lang="restriction_ends" sprintf="\IPS\DateTime::ts( \IPS\Member::loggedIn()->mod_posts )->relative()"}
+				</p>
+			{{endif}}
+		</div>
+		<div class='ipsButtons'>
+			{{foreach $warnings as $idx => $warning}}
+				<a href="{$warning->url()}" class='ipsButton' data-ipsDialog data-ipsDialog-size='narrow'>{lang="view_warning_details"}</a>
+			{{endforeach}}
+		</div>
+	</div>	
+{{endif}}

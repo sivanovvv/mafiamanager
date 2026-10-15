@@ -1,0 +1,62 @@
+<ips:template parameters="" />
+{{ /* }}<!--
+	- Only show the banner if it hasn't been dismissed (ie. if the 'pwaInstallBanner' cookie doesn't exist) and if optional cookies are enabled
+ -->{{ */ }}
+{{if (isset(\IPS\Request::i()->cookie['cookie_consent_optional']) || !\IPS\Request::i()->cookieConsentEnabled()) && !isset(\IPS\Request::i()->cookie['pwaInstallBanner']) }}
+	<i-pwa-install id="ipsPwaInstall">
+		{{$homeScreen = json_decode( \IPS\Settings::i()->icons_homescreen, TRUE ) ?? array();}}
+		{{foreach $homeScreen as $name => $image}}
+			{{if $name === "apple-touch-icon-180x180"}}
+				<img src="{file="$image['url']"}" alt="" width="180" height="180" class="iPwaInstall__icon">
+			{{endif}}
+		{{endforeach}}
+		<div class="iPwaInstall__content">
+			<div class="iPwaInstall__title">{lang="pwa_banner_title"}</div>
+			<p class="iPwaInstall__desc">{lang="pwa_banner_desc"}</p>
+		</div>
+		<button type="button" class="iPwaInstall__learnMore" popovertarget="iPwaInstall__learnPopover">{lang="pwa_banner_learn"}</button>
+		<button type="button" class="iPwaInstall__dismiss" id="iPwaInstall__dismiss"><span aria-hidden="true">&times;</span><span class="ipsInvisible">{lang="pwa_banner_dismiss"}</span></button>
+	</i-pwa-install>
+	
+	<i-card popover id="iPwaInstall__learnPopover">
+		<button class="iCardDismiss" type="button" tabindex="-1" popovertarget="iPwaInstall__learnPopover" popovertargetaction="hide">{lang="dropdown_close"}</button>
+		<div class="iCard">
+			<div class="iCard__content iPwaInstallPopover">
+				<div class="i-flex i-gap_2">
+					{{foreach $homeScreen as $name => $image}}
+						{{if $name === "apple-touch-icon-180x180"}}
+							<img src="{file="$image['url']"}" alt="" width="180" height="180" class="iPwaInstallPopover__icon">
+						{{endif}}
+					{{endforeach}}
+					<div class="i-flex_11 i-align-self_center">
+						<div class="i-font-weight_700 i-color_hard">{setting="board_name"}</div>
+						<p>{lang="pwa_popover_desc"}</p>
+					</div>
+				</div>
+
+				<div class="iPwaInstallPopover__ios">
+					<div class="iPwaInstallPopover__title">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+						<span>{lang="pwa_popover_ios_title"}</span>
+					</div>
+					<ol class="ipsList ipsList--bullets i-color_soft i-margin-top_2">
+						<li>{lang="pwa_popover_ios_1"}</li>
+						<li>{lang="pwa_popover_ios_2"}</li>
+						<li>{lang="pwa_popover_ios_3"}</li>
+					</ol>
+				</div>
+				<div class="iPwaInstallPopover__android">
+					<div class="iPwaInstallPopover__title">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M420.6 301.9a24 24 0 1 1 24-24 24 24 0 0 1 -24 24m-265.1 0a24 24 0 1 1 24-24 24 24 0 0 1 -24 24m273.7-144.5 47.9-83a10 10 0 1 0 -17.3-10h0l-48.5 84.1a301.3 301.3 0 0 0 -246.6 0L116.2 64.5a10 10 0 1 0 -17.3 10h0l47.9 83C64.5 202.2 8.2 285.6 0 384H576c-8.2-98.5-64.5-181.8-146.9-226.6"/></svg>
+						<span>{lang="pwa_popover_android_title"}</span>
+					</div>
+					<ol class="ipsList ipsList--bullets i-color_soft i-margin-top_2">
+						<li>{lang="pwa_popover_android_1"}</li>
+						<li>{lang="pwa_popover_android_2"}</li>
+						<li>{lang="pwa_popover_android_3"}</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</i-card>
+{{endif}}

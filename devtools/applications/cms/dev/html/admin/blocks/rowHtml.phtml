@@ -1,0 +1,14 @@
+<ips:template parameters="$block" />
+{{if $block->category}}
+    <span class="ipsBadge ipsBadge--new i-text-transform_none">{lang="cms_block_list_key" sprintf="$block->key"}</span>
+    {{if $pages = $block->getPages()}}
+        <div class="i-flex i-gap_1 i-flex-wrap_wrap i-margin-top_2 i-link-color_inherit">
+            <span class="i-color_soft">{lang="cms_block_list_pages"}</span>
+            <ul class="ipsList ipsList--csv">
+                {{foreach $pages as $page}}
+                    <li class="i-color_hard"><a href="{$page->url()}" target="_blank">{lang="cms_page_{$page->id}"}</a></li>
+                {{endforeach}}
+            </ul>
+        </div>
+    {{endif}}
+{{endif}}

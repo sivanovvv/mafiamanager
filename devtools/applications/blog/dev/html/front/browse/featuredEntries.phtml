@@ -1,0 +1,76 @@
+<ips:template parameters="$featured" />
+
+<section class='ipsBox ipsBox--featuredBlogEntries ipsPull'>
+	<header class='ipsBox__header'>
+		<h2>{lang="featured_entries"}</h2>
+		{template="carouselNavigation" group="global" app="core" params="'blogs-featured-entries'"}
+	</header>
+	<div class='ipsBox__content'>
+		<i-data>
+			<div class='ipsData ipsData--featured ipsData--carousel ipsData--blogs-featured-entries' id='blogs-featured-entries' tabindex="0">
+				{{foreach $featured as $entry}}
+					<article class='ipsData__item {$entry->ui( 'css' )} {{if $entry->hidden() OR $entry->status === 'draft'}}ipsModerated{{endif}}' {{if $entry->unread()}}data-ips-unread{{else}}data-ips-read{{endif}} {$entry->ui( 'dataAttributes' )}>
+						<a href='{$entry->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="read_more_about" sprintf="$entry->name"}</span></a>
+						<a href="{$entry->url()}" title='{lang="read_more_about" sprintf="$entry->name"}' class='ipsData__image' aria-hidden="true" tabindex="-1">
+							{{if $entry->cover_photo}}
+								<img src='{file="$entry->cover_photo" extension="blog_Entries"}' alt='' loading='lazy'>
+							{{else}}
+								{template="defaultThumb" app="core" location="front" group="global" params=""}
+							{{endif}}
+						</a>
+						<div class='ipsData__content'>
+							<div class='ipsData__main'>
+								{{if !\IPS\Request::i()->id}}
+									<div class='i-color_soft i-link-color_inherit i-font-weight_600'><a href="{$entry->container()->url()}">{$entry->container()->_title}</a></div>
+								{{elseif $entry->category_id}}
+									<div class="i-color_soft i-link-color_inherit i-font-weight_600"><a href="{$entry->category()->url()}">{$entry->category()->name}</a></div>
+								{{endif}}
+								<div class='ipsData__title'>
+									{{if $entry->prefix()}}
+										{template="prefix" group="global" app="core" params="$entry->prefix( TRUE ), $entry->prefix()"}
+									{{endif}}
+									<div class='ipsBadges'>
+										{{foreach $entry->badges() as $badge}}{$badge|raw}{{endforeach}}
+									</div>
+									{{if $entry->unread()}}
+										<a href='{$entry->url('getNewComment')}' class='ipsIndicator' data-ipsTooltip title="{lang="unread_blog"}"><span class="ipsInvisible">{lang="unread_blog"}</span></a>
+									{{endif}}
+									<h3>
+										<a href="{$entry->url()}" title="{lang="read_more_about" sprintf="$entry->name"}" data-role="newsTitle">{wordbreak="$entry->name"}</a>
+									</h3>
+								</div>
+								<section class='ipsData__desc'>{$entry->truncated(TRUE)|raw}</section>
+							</div>
+							<div class="ipsData__extra">
+								<ul class='ipsData__stats'>
+									{{foreach $entry->stats(TRUE) as $k => $v}}
+										<li data-stat-type="{$k}">
+											{{if $k === "comments"}}
+												<span><a href='{$entry->url()}#comments' title='{lang="view_comments"}'>{number="$v"} {lang="blog_{$k}" pluralize="$v"}</a></span>
+											{{else}}
+												<span>{number="$v"} {lang="blog_{$k}" pluralize="$v"}</span>
+											{{endif}}
+										</li>
+									{{endforeach}}
+								</ul>
+								<div class='ipsData__last'>
+									{template="userPhoto" app="core" params="$entry->author(), 'fluid'" group="global"}
+									<ul class='ipsData__last-text'>
+										<li class='ipsData__last-primary'>
+											{{if $entry->category_id}}
+												{lang="entry_name_with_cat" htmlsprintf="$entry->author()->link(),$entry->category()->link()"}
+											{{else}}
+												<a href="{$entry->author()->url()}">{$entry->author()->name}</a>
+											{{endif}}
+										</li>
+										<li class='ipsData__last-secondary'>{datetime="$entry->date"}</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</article>
+				{{endforeach}}
+			</div>
+		</i-data>
+	</div>
+</section>

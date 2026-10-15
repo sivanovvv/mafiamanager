@@ -1,0 +1,9 @@
+<ips:template parameters="$agreements" />
+<div class="ipsRichText">
+	<p>{lang="acp_notification_nexus_bacancelerror_desc"}</p>
+	<ul>
+		{{foreach $agreements as $agreement}}
+			<li>{$agreement}</li>
+		{{endforeach}}
+	</ul>
+</div>

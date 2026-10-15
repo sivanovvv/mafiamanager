@@ -1,0 +1,25 @@
+<ips:template parameters="$item" />
+
+<ul class='ipsList ipsList--inline i-margin-bottom_2'>
+	{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+		<li class='cFilePrice'>
+			{{if $item->isPaid()}}
+				{$item->priceToDisplay()|raw}
+			{{else}}
+				{lang="file_free"}
+			{{endif}}
+		</li>
+		{{if $renewalTerm = $item->renewalTerm()}}
+			<li class='i-color_soft'>
+				{lang="file_renewal_term_val" sprintf="$renewalTerm"}
+			</li>
+		{{endif}}
+	{{endif}}
+	{{if $item->isPaid() and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) )}}
+		<li {{if !$item->purchaseCount()}}class='i-color_soft'{{endif}} title="{lang="x_purchases" pluralize="$item->purchaseCount()"}"><i class='fa-solid fa-cart-shopping' aria-hidden="true"></i> {$item->purchaseCount()}</li>
+	{{endif}}
+	{{if !$item->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) )}}
+		<li {{if !$item->downloads}}class='i-color_soft'{{endif}} title="{lang="num_downloads" pluralize="$item->downloads"}"><i class='fa-solid fa-circle-arrow-down' aria-hidden="true"></i> {number="$item->downloads"}</li>
+	{{endif}}
+</ul>
+	

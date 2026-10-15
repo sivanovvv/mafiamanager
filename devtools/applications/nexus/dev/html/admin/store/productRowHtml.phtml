@@ -1,0 +1,49 @@
+<ips:template parameters="$package, $active, $expired, $canceled" />
+<div class="ipsTree_row_cells i-margin-top_1">
+	<span class="ipsTree_row_cell">
+		{{if $package->store or $package->reg}}
+			{{$stockLevel = $package->stockLevel();}}
+			{{if $stockLevel === NULL}}
+				<span class="i-color_positive"><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="product_purchasable"}</span>
+			{{elseif $stockLevel}}
+				<span class="i-color_positive"><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="x_in_stock" pluralize="$stockLevel"}</span>
+			{{else}}
+				<span class="i-color_issue"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="x_in_stock" pluralize="$stockLevel"}</span>
+			{{endif}}
+		{{else}}
+			<span class="i-color_negative"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="product_not_purchasable"}</span>
+		{{endif}}
+	</span>
+	{{if $package->show}}
+		<span class="ipsTree_row_cell">
+			{{if $package->allow_upgrading or $package->allow_downgrading}}
+				<span class="i-color_positive"><i class="fa-solid fa-check" aria-hidden="true"></i> {{if !$package->allow_upgrading and $package->allow_downgrading}}{lang="product_downgradeable"}{{else}}{lang="product_upgradeable"}{{endif}}</span>
+			{{else}}
+				<span class="i-color_negative"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="product_not_upgradeable"}</span>
+			{{endif}}
+		</span>
+	{{endif}}
+	<span class="ipsTree_row_cell i-color_soft">
+		<a href="{url="app=nexus&module=store&controller=packages&do=viewPurchases&id={$package->_id}&filter=purchase_tab_active"}">
+			{{if $expired or $package->renew_options}}
+				{lang="product_count_active" pluralize="$active"}
+			{{else}}
+				{lang="product_count_purchases" pluralize="$active"}
+			{{endif}}
+		</a>
+	</span>
+	{{if $expired or $package->renew_options}}
+		<span class="ipsTree_row_cell i-color_soft">
+			<a href="{url="app=nexus&module=store&controller=packages&do=viewPurchases&id={$package->_id}&filter=purchase_tab_expired"}">
+				{lang="product_count_expired" pluralize="$expired"}
+			</a>
+		</span>
+	{{endif}}
+	{{if $canceled}}
+		<span class="ipsTree_row_cell i-color_soft">
+			<a href="{url="app=nexus&module=store&controller=packages&do=viewPurchases&id={$package->_id}&filter=purchase_tab_canceled"}">
+				{lang="product_count_canceled" pluralize="$canceled"}
+			</a>
+		</span>
+	{{endif}}
+</div>

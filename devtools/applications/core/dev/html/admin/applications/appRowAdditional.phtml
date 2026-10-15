@@ -1,0 +1,11 @@
+<ips:template parameters="$app" />
+
+<div class="ipsTree_row_cells">
+	<span class="ipsTree_row_cell">
+		{{if \in_array( $app->directory, \IPS\IPS::$ipsApps )}}
+			<span class="i-color_positive"><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="invision"}</span>
+		{{else}}
+			<span class="i-color_issue"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {lang="custom"}</span>
+		{{endif}}
+	</span>
+</div>

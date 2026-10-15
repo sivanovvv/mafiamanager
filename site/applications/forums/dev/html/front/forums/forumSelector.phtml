@@ -1,0 +1,5 @@
+<ips:template parameters="$form" />
+
+<div data-ips-template='forumSelector' {{if !\IPS\Request::i()->isAjax()}}class='ipsBox ipsBox--forumSelector'{{endif}}>
+	{$form|raw}
+</div>

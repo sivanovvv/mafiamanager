@@ -1,0 +1,15 @@
+<ips:template parameters="$item, $classes = ''" />
+{{if $assignment = $item->assignment and !$assignment->closed}}
+    {{$assignedTo = $assignment->assignedTo();}}
+    {{if $item->isAssignedToMember()}}
+        <span class="ipsBadge ipsBadge--soft ipsBadge--assigned {$classes}" {{if $assignedTo instanceof \IPS\Member\Team}}title='{lang="assigned_to_you_team" sprintf="$assignedTo->name"}'{{else}}title='{lang="assigned_to_you"}'{{endif}} data-ipsTooltip>
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            <span>{expression="$assignedTo->name"}</span>
+        </span>
+    {{elseif $item->canAssign()}}
+        <span class="ipsBadge ipsBadge--soft ipsBadge--assigned {$classes}" {{if $assignedTo instanceof \IPS\Member\Team}}title='{lang="assigned_to_other_team" sprintf="$assignedTo->name"}'{{else}}title='{lang="assigned_to_other" sprintf="$assignedTo->name"}'{{endif}} data-ipsTooltip>
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            <span>{expression="$assignedTo->name"}</span>
+        </span>
+    {{endif}}
+{{endif}}

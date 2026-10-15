@@ -1,0 +1,72 @@
+<ips:template parameters="$event, $attendees" />
+{{if \IPS\Member::loggedIn()->member_id }}
+	<div class="ipsWidget ipsWidget--rsvpControls">
+		{{if (!$event->hasPassed() OR !\IPS\Settings::i()->calendar_block_past_changes) AND $event->can('rsvp')}}
+			<h3 class="ipsWidget__header">{lang="rsvp"}</h3>
+			<div class="i-padding_2">
+				<button type="button" id="elChangeRSVP" popovertarget="elChangeRSVP_menu" class='ipsButton ipsButton--wide {{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}ipsButton--positive{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}ipsButton--negative{{elseif isset( $attendees[2][ \IPS\Member::loggedIn()->member_id ] )}}ipsButton--inherit{{else}}ipsButton--primary{{endif}}'>
+					<span>
+						{{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}
+							<i class="fa-solid fa-thumbs-up i-margin-end_icon" aria-hidden="true"></i> {{if $event->hasPassed()}}{lang="rsvp_attended_past_event"}{{else}}{lang="rsvp_attend_event"}{{endif}}
+						{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}
+							<i class="fa-solid fa-thumbs-down i-margin-end_icon" aria-hidden="true"></i> {{if $event->hasPassed()}}{lang="rsvp_notattended_past_event"}{{else}}{lang="rsvp_notgoing_event"}{{endif}}
+						{{elseif isset( $attendees[2][ \IPS\Member::loggedIn()->member_id ] )}}
+							<i class="fa-solid fa-circle-question i-margin-end_icon" aria-hidden="true"></i> {lang="rsvp_maybe_event"}
+						{{else}}
+							{lang="confirm_attendance"}
+						{{endif}}
+					</span>
+					<i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+				</button>
+			</div>
+			<i-dropdown popover id="elChangeRSVP_menu">
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						<li>
+							<a href='{$event->url('rsvp')->setQueryString( 'action', 'yes' )->csrf()}' {{if $event->rsvp_limit > 0 AND \count($attendees[1]) >= $event->rsvp_limit AND !isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}data-disabled{{endif}} {{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}aria-selected="true"{{endif}}>
+								<i class="fa-solid fa-thumbs-up" aria-hidden="true"></i> {{if $event->hasPassed()}}{lang="rsvp_attended_past_event"}{{else}}{lang="rsvp_attend_event"}{{endif}}
+								{{if $event->rsvp_limit > 0 AND \count($attendees[1]) >= $event->rsvp_limit AND !isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}
+									({lang="rsvp_limit_reached"})
+								{{endif}}
+							</a>
+						</li>
+						{{if $event->rsvp_limit == -1 AND !$event->hasPassed()}}
+							<li>
+								<a href='{$event->url('rsvp')->setQueryString( 'action', 'maybe' )->csrf()}' {{if isset( $attendees[2][ \IPS\Member::loggedIn()->member_id ] )}}aria-selected="true"{{endif}}><i class="fa-solid fa-circle-question" aria-hidden="true"></i> {lang="rsvp_maybe_event"}</a>
+							</li>
+						{{endif}}
+						<li>
+							<a href='{$event->url('rsvp')->setQueryString( 'action', 'no' )->csrf()}' {{if isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}aria-selected="true"{{endif}}><i class="fa-solid fa-thumbs-down" aria-hidden="true"></i> {{if $event->hasPassed()}}{lang="rsvp_notattended_past_event"}{{else}}{lang="rsvp_notgoing_event"}{{endif}}</a>
+						</li>
+						{{if isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] ) OR isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] ) OR isset( $attendees[2][ \IPS\Member::loggedIn()->member_id ] )}}
+							<li><hr></li>
+							<li>
+								<a href='{$event->url('rsvp')->setQueryString( 'action', 'leave' )->csrf()}'><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>{lang="rsvp_leave_event"}</a>
+							</li>
+						{{endif}}
+					</ul>
+				</div>
+			</i-dropdown>
+		{{else}}
+			<div class="ipsFluid i-gap_lines i-font-weight_600 i-text-align_center">
+				<div class='i-padding_2 {{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}i-color_positive{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}i-color_negative{{else}}i-color_hard{{endif}}'>
+					{{if isset( $attendees[1][ \IPS\Member::loggedIn()->member_id ] )}}
+						<i class='fa-solid fa-check-circle' aria-hidden="true"></i> {{if $event->hasPassed()}}{lang="you_were_going"}{{else}}{lang="you_are_going"}{{endif}}
+					{{elseif isset( $attendees[0][ \IPS\Member::loggedIn()->member_id ] )}}
+						{{if $event->hasPassed()}}{lang="you_werent_going"}{{else}}{lang="you_arent_going"}{{endif}}
+					{{else}}
+						{lang="no_rsvp_past_event"}
+					{{endif}}
+				</div>
+				
+				{{if $event->hasPassed() AND \IPS\Settings::i()->calendar_block_past_changes}}
+					<div class="i-padding_2">{lang="no_rsvp_past_event"}</div>
+				{{elseif $event->rsvp_limit > 0 AND \count($attendees[1]) >= $event->rsvp_limit}}
+					<div class="i-padding_2 i-color_warning">{lang="rsvp_limit_reached"}</div>
+				{{elseif $event->rsvp_limit > 0}}
+					<div class="i-padding_2">{lang="rsvp_limit_info" pluralize="\count($attendees[1])" sprintf="$event->rsvp_limit"}</div>
+				{{endif}}
+			</div>
+		{{endif}}
+	</div>
+{{endif}}

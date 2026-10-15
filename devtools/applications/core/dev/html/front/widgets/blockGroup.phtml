@@ -1,0 +1,48 @@
+<ips:template parameters="$group, $title='', $favorites=[], $isCustom=false, $isFavorites=false"/>
+<div
+    data-role="block_group"
+    {{if $isFavorites}}data-favorites{{endif}}
+    {{if empty($group) and !($isCustom and \IPS\Dispatcher::i()->checkAcpPermission( "block_manage", "cms", "pages", return: true ))}}hidden{{endif}}
+    {{if $isCustom}}data-show-when-empty{{endif}}
+>
+	<h3 class='ipsToolbox_sectionTitle'>
+        <span>{$title|raw}</span>
+    {{if $isCustom and \IPS\Dispatcher::i()->checkAcpPermission( "block_manage", "cms", "pages", return: true )}}
+        <span data-role="custom_block_info"><i class="fa-solid fa-info-circle" aria-hidden="true"></i><p data-role="custom_block_description">{expression="\IPS\Member::loggedIn()->language()->addToStack('block_Blocks_custom_link_desc')" raw="true"}</p></span>
+    {{endif}}</h3>
+	<ul>
+		{{foreach $group as $block}}
+		{{$customBlock = is_array( $block ) ? $block[1] : null;}}
+		{{$block = is_array($block) ? $block[0] : $block;}}
+		{{$blockid = ( isset( $customBlock ) ? $block->key . ":" . $customBlock->_title : $block->key );}}
+        {{\IPS\Member::loggedIn()->language()->parseOutputForDisplay( $blockid );}}
+		<li
+			data-blockID="app_{$block->app}_{$blockid}"
+			{{if isset($customBlock)}}data-blocktitle="{$customBlock->_title}" data-customblockid="{$customBlock->id}"{{endif}}
+			{{foreach $block->dataAttributes() as $k => $v}}{{if $k != 'blockID' and !(in_array( $k, ['blocktitle', 'searchterms'] ) && isset($customBlock))}} data-{$k}="{$v}"{{endif}}{{endforeach}}
+            {{if isset($customBlock)}}data-searchterms="{lang='cms_widget_custom_block'}"{{endif}}
+			class='i-cursor_move cSidebarManager_block'
+		>
+			<h4 data-role="blocktitle">{{if isset($customBlock)}}{$customBlock->_title}{{else}}{lang="block_{$block->key}"}{{endif}}<i data-role="favorite-indicator" {{if isset($favorites[$blockid])}}data-is-favorite{{endif}} class="fa-solid fa-star" aria-hidden="true"></i></h4>
+			<p>
+                {{if isset($customBlock)}}
+                    {{$lang = $customBlock->_description;}}
+                    {{\IPS\Member::loggedIn()->language()->parseOutputForDisplay( $lang );}}
+                    {expression="empty(trim($lang)) ? \IPS\Member::loggedIn()->language()->addToStack('block_Blocks_desc_default') : $lang"}
+
+                    {{if \IPS\Dispatcher::i()->checkAcpPermission("block_manage", "cms", "pages", return: true)}}
+                        &nbsp;<a href='{url="app=cms&module=pages&controller=blocks&subnode=1&do=form&id={$customBlock->id}" base="admin"}' target="_blank">{lang="edit"} <i class="fa-solid fa-external-link" aria-hidden="true"></i></a>
+                    {{endif}}
+                {{else}}
+                    {lang="block_{$block->key}_desc"}
+                    {{if $block->app === 'cms' and $block->key === 'Blocks' and \IPS\Dispatcher::i()->checkAcpPermission( "block_manage", "cms", "pages", return: true )}}
+            </p><p>
+                        <a href='{url="app=cms&module=pages&controller=blocks" base="admin"}' target="_blank">{lang="block_Blocks_custom_link"} <i class="fa-solid fa-external-link" aria-hidden="true"></i></a>
+                    {{endif}}
+                {{endif}}
+            </p>
+		</li>
+		{{endforeach}}
+	</ul>
+	<p class='i-color_soft i-text-align_center i-padding_3 ipsHide'><em>{lang="no_app_widgets"}</em></p>
+</div>

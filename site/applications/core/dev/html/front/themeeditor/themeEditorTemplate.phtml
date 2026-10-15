@@ -1,0 +1,321 @@
+<ips:template parameters="" />
+<!DOCTYPE html>
+<html lang="{expression="\IPS\Member::loggedIn()->language()->bcp47()"}" dir="{{if member.language()->isrtl}}rtl{{else}}ltr{{endif}}" {template="htmlDataAttributes" app="core" group="global" location="front" params=""}
+	data-ips-baseurl="{setting="base_url"}"
+	data-workspace-color="light"
+	data-workspace-size="large"
+>
+	<head>
+		<title>{lang="theme_editor_title"}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		{template="prefersColorSchemeLoad" app="core" group="global" location="front" params=""}
+		{template="includeCSS" app="core" group="global" location="global" params=""}
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		{template="favico" app="core" group="global" location="front" params=""}
+	</head>
+	<body data-controller="core.front.core.app">
+
+		<i-theme-editor>
+
+			<live-preview>
+				<iframe src='{setting="base_url"}' id='themeEditorIframe'></iframe>
+		 	</live-preview>
+
+			<form class='editor__form' action='{setting="base_url"}?app=core&module=system&controller=themeeditor&do=save' method='post' enctype='multipart/form-data' role="form">
+			<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+				<editor-buttons>
+
+					<div data-controller="core.front.core.colorScheme">
+						<button type="button" data-ips-prefers-color-scheme="light">
+							<span class='editor-buttons__tooltip'>{lang="edit_light_colors"}</span>
+							<i class="fa-regular fa-lightbulb" aria-hidden="true"></i>	
+						</button>
+						<button type="button" data-ips-prefers-color-scheme="dark">
+							<span class='editor-buttons__tooltip'>{lang="edit_dark_colors"}</span>
+							<i class="fa-regular fa-moon" aria-hidden="true"></i>	
+						</button>
+					</div>
+
+					<div data-workspace='size'>
+						<button value='small' type='button' data-on-click="changeWorkspace">
+							<span class='editor-buttons__tooltip'>{lang="theme_editor_size_small"}</span>
+							<i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+						</button>
+						<button value='medium' type='button' data-on-click="changeWorkspace">
+							<span class='editor-buttons__tooltip'>{lang="theme_editor_size_medium"}</span>
+							<i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i>
+						</button>
+						<button value='large' type='button' data-on-click="changeWorkspace" data-active>
+							<span class='editor-buttons__tooltip'>{lang="theme_editor_size_large"}</span>
+							<i class="fa-solid fa-display" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div>
+						<button type='button' aria-controls='dialog__customCSS' aria-expanded="false" data-ipscontrols>
+							<span class='editor-buttons__tooltip'>{lang="theme_editor_custom_css"}</span>
+							<i class="fa-solid fa-code" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="editor-buttons__save">
+						<a href='{url="app=core&module=system&controller=themeeditor&do=close" csrf="true"}' data-on-click="closeEditor">
+							<span class='editor-buttons__tooltip'>{lang="theme_editor_close"}</span>
+							<i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+							<span class="editor-buttons__text">{lang="theme_editor_exit"}</span>
+						</a>
+						<button type='submit' data-on-click="saveChanges">
+							<span class='editor-buttons__tooltip'>{lang="theme_editor_save"}</span>
+							<i class="fa-solid fa-save" aria-hidden="true"></i>
+							<span class="editor-buttons__text">{lang="save"}</span>
+						</button>
+					</div>
+				</editor-buttons>
+
+				<editor-panels>
+
+					<!-- Start panel -->
+					<editor-panel id='panel__start' aria-hidden='false'>
+						<div class='theme-editor__scroll'>
+							<header>
+								<h2 data-panel-name>{lang="theme_editor"}</h2>
+							</header>
+							<nav class='theme-editor__nav'>
+								<button type='button' aria-controls='dialog__customCSS' aria-expanded="false" data-ipscontrols><i class="fa-solid fa-code" aria-hidden="true"></i> {lang="theme_editor_custom_css"}</button>
+								<hr>
+								<button aria-controls='panel__scheme' data-panel-nav type='button' data-on-click="panelNavigation"><i class="fa-solid fa-palette" aria-hidden="true"></i> {lang="theme_editor_palette"}</button>
+								{{foreach \IPS\Theme\Editor\Category::themeEditorCategories() as $category}}
+								    {{if $category->hasContents()}}
+								    <button aria-controls='panel__{$category->key}' data-panel-nav type='button' data-on-click="panelNavigation"><i class='{$category->icon()}' aria-hidden="true"></i> {$category->_title}</button>
+								    {{endif}}
+								{{endforeach}}
+							</nav>
+						</div>
+					</editor-panel>
+
+					<!-- Color palette -->
+					<editor-panel id='panel__scheme' aria-hidden='true' inert>
+						<button type="button" data-panel-nav="back" data-on-click="panelNavigation">{lang="theme_editor_back"}</button>
+						<div class='theme-editor__scroll'>
+							<header>
+								<h2 data-panel-name>{lang="theme_editor_palette"}</h2>
+							</header>
+							<ul id='content__scheme__settings' class="theme-editor__settings">
+								<!-- These can stay hard-coded since they'll never change -->
+								<li class='theme-editor__palette'>
+									<input type='text' name='light__i-primary' value='{theme="var.light__i-primary"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='light__i-primary-relative-l' value='{theme="var.light__i-primary-relative-l"}' hidden data-on-change="settingHasBeenChanged">
+									<button type="button" aria-controls='panel__colorSelector' data-panel-nav data-color-tool='colorPicker' data-controls='light__i-primary' data-on-click="panelNavigation">{lang="theme_editor_primary"}</button>
+								
+									<input type='text' name='light__i-secondary' value='{theme="var.light__i-secondary"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='light__i-secondary-relative-l' value='{theme="var.light__i-secondary-relative-l"}' hidden data-on-change="settingHasBeenChanged">
+									<button type="button" aria-controls='panel__colorSelector' data-panel-nav data-color-tool='colorPicker' data-controls='light__i-secondary' data-on-click="panelNavigation">{lang="theme_editor_secondary"}</button>
+								
+									<input type='text' name='light__i-base' value='{theme="var.light__i-base"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='light__i-base-l' value='{theme="var.light__i-base-l"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='light__i-base-c' value='{theme="var.light__i-base-c"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='light__i-base-h' value='{theme="var.light__i-base-h"}' hidden data-on-change="settingHasBeenChanged">
+									<button type="button" aria-controls='panel__oklch' data-panel-nav data-color-tool='colorPicker' data-controls='light__i-base' data-on-click="panelNavigation">{lang="theme_editor_base"}</button>
+								
+									<input type='text' name='dark__i-primary' value='{theme="var.dark__i-primary"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='dark__i-primary-relative-l' value='{theme="var.dark__i-primary-relative-l"}' hidden data-on-change="settingHasBeenChanged">
+									<button type="button" aria-controls='panel__colorSelector' data-panel-nav data-color-tool='colorPicker' data-controls='dark__i-primary' data-on-click="panelNavigation">{lang="theme_editor_primary"}</button>
+								
+									<input type='text' name='dark__i-secondary' value='{theme="var.dark__i-secondary"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='dark__i-secondary-relative-l' value='{theme="var.dark__i-secondary-relative-l"}' hidden data-on-change="settingHasBeenChanged">
+									<button type="button" aria-controls='panel__colorSelector' data-panel-nav data-color-tool='colorPicker' data-controls='dark__i-secondary' data-on-click="panelNavigation">{lang="theme_editor_secondary"}</button>
+								
+									<input type='text' name='dark__i-base' value='{theme="var.dark__i-base"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='dark__i-base-l' value='{theme="var.dark__i-base-l"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='dark__i-base-c' value='{theme="var.dark__i-base-c"}' hidden data-on-change="settingHasBeenChanged">
+									<input type='text' name='dark__i-base-h' value='{theme="var.dark__i-base-h"}' hidden data-on-change="settingHasBeenChanged">
+									<button type="button" aria-controls='panel__oklch' data-panel-nav data-color-tool='colorPicker' data-controls='dark__i-base' data-on-click="panelNavigation">{lang="theme_editor_base"}</button>
+								</li>
+							</ul>
+						</div>
+					</editor-panel>
+
+					<!-- 
+						Swatch and color picker
+						This panel can stay hard-coded
+					-->
+					<editor-panel id='panel__colorSelector' data-show-tool aria-hidden='true' inert>
+						<button type="button" data-panel-nav="back" data-on-click="panelNavigation">{lang="theme_editor_back"}</button>
+						<div class='theme-editor__scroll'>
+							<header class='i-flex i-align-items_center i-gap_2'>
+								<div data-color-preview></div>
+								<div class='i-flex_11'>
+									<h2 data-panel-name>
+										<span data-active-name></span>
+									</h2>
+								</div>
+							</header>
+							<i-tabs class="ipsTabs ipsTabs--stretch" id="content__colorSelector" data-ipsTabBar data-ipsTabBar-contentarea="#content__colorSelector-content">
+								<div role='tablist'>
+									<button type="button" class="ipsTabs__tab" id="content__colorSelector__swatches" role="tab" aria-controls="content__colorSelector__swatches_panel" aria-selected="true"><i class="fa-solid fa-swatchbook" aria-hidden="true"></i>{lang="theme_editor_swatches"}</button>
+									<button type="button" class="ipsTabs__tab" id='content__colorSelector__colorPicker' role="tab" aria-controls="content__colorSelector__colorPicker_panel" aria-selected="false"><i class="fa-solid fa-eye-dropper" aria-hidden="true"></i>{lang="theme_editor_color_picker"}</button>
+								</div>
+							</i-tabs>
+							<div id='content__colorSelector-content'>
+								<editor-tab-content id='content__colorSelector__swatches_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby="content__colorSelector__swatches">
+									<div data-swatches>
+										<ul class='theme-editor__swatches' data-swatch-category='base'>
+											{{for $i=1; $i<=6; $i++}}
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-base_{$i})' style='--swatch:var(--i-base_{$i});' data-on-click="swatchClick">{lang="theme_editor_base"} #{$i}</button></li>
+											{{endfor}}
+										</ul>
+										<ul class='theme-editor__swatches' data-swatch-category='contrast'>
+											{{for $i=1; $i<=6; $i++}}
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-base-contrast_{$i})' style='--swatch:var(--i-base-contrast_{$i});' data-on-click="swatchClick">{lang="theme_editor_contrast"} #{$i}</button></li>
+											{{endfor}}
+										</ul>
+										<ul class='theme-editor__swatches' data-swatch-category='brand'>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-primary)' style='--swatch:var(--i-primary);' data-on-click="swatchClick">{lang="theme_editor_primary"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-primary-light)' style='--swatch:var(--i-primary-light);' data-on-click="swatchClick">{lang="theme_editor_primary_light"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-primary-dark)' style='--swatch:var(--i-primary-dark);' data-on-click="swatchClick">{lang="theme_editor_primary_dark"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-color_primary)' style='--swatch:var(--i-color_primary);' data-on-click="swatchClick">{lang="theme_editor_primary_text"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-primary-contrast)' style='--swatch:var(--i-primary-contrast);' data-on-click="swatchClick">{lang="theme_editor_primary_contrast"}</button></li>
+										</ul>
+										<ul class='theme-editor__swatches' data-swatch-category='brand'>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-secondary)' style='--swatch:var(--i-secondary);' data-on-click="swatchClick">{lang="theme_editor_secondary"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-secondary-light)' style='--swatch:var(--i-secondary-light);' data-on-click="swatchClick">{lang="theme_editor_secondary_light"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-secondary-dark)' style='--swatch:var(--i-secondary-dark);' data-on-click="swatchClick">{lang="theme_editor_secondary_dark"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-color_secondary)' style='--swatch:var(--i-color_secondary);' data-on-click="swatchClick">{lang="theme_editor_secondary_text"}</button></li>
+											<li><button class="theme-editor__swatch" type="button" data-swatch value='var(--i-secondary-contrast)' style='--swatch:var(--i-secondary-contrast);' data-on-click="swatchClick">{lang="theme_editor_secondary_contrast"}</button></li>
+										</ul>
+									</div>
+								</editor-tab-content>
+								<editor-tab-content id='content__colorSelector__colorPicker_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby="content__colorSelector__colorPicker" hidden>
+									<div data-color-picker>
+										<color-picker></color-picker>
+										<input type='text' id="color-picker-text" data-color-picker-text data-on-change="colorPickerTextBlur">
+									</div>
+								</editor-tab-content>
+							</div>
+						</div>				
+					</editor-panel>
+
+					<!-- 
+						OKLCH color picker
+					-->
+					<editor-panel id='panel__oklch' data-show-tool aria-hidden='true' inert>
+						<button type="button" data-panel-nav="back" data-on-click="panelNavigation">{lang="theme_editor_back"}</button>
+						<div class='theme-editor__scroll'>
+							<header class='i-flex i-align-items_center i-gap_2'>
+								<div data-color-preview style="background-color: oklch(var(--if-light, calc(var(--i-base-l) * 20% + 75%)) var(--if-dark, calc(var(--i-base-l) * 20% + 30%)) calc(var(--i-base-c) * 40%) var(--i-base-h))"></div>
+								<div class='i-flex_11'>
+									<h2 data-panel-name>
+										<span data-active-name></span>
+									</h2>
+								</div>
+							</header>
+							<editor-tab-content>
+
+								<theme-setting data-setting='light__i-base-h' data-type='number'>
+									<div class="theme-editor__align-setting">
+										<label for='light__i-base-h__num'>{lang="theme_editor_hue"}</label>
+										<input type='number' inputmode='numeric' data-range-output='light__i-base-h' id='light__i-base-h__num' value='{theme="var.light__i-base-h"}' min="0" max="360" data-on-change="syncInputsWithPseudo">
+									</div>
+									<input type='range' id='light__i-base-h' name='light__i-base-h' value='{theme="var.light__i-base-h"}' min="0" max="360" data-on-input="changingRangeInput" data-on-change="settingHasBeenChanged">
+								</theme-setting>
+								<theme-setting data-setting='light__i-base-c' data-type='number'>
+									<div class="theme-editor__align-setting">
+										<label for='light__i-base-c__num'>{lang="theme_editor_chroma"}</label>
+										<input type='number' inputmode='numeric' data-range-output='light__i-base-c' id='light__i-base-c__num' value='{theme="var.light__i-base-c"}' min="0" max="100" data-on-change="syncInputsWithPseudo">
+									</div>
+									<input type='range' id='light__i-base-c' name='light__i-base-c' value='{theme="var.light__i-base-c"}' min="0" max="100" data-on-input="changingRangeInput" data-on-change="settingHasBeenChanged">
+								</theme-setting>
+								<theme-setting data-setting='light__i-base-l' data-type='number'>
+									<div class="theme-editor__align-setting">
+										<label for='light__i-base-l__num'>{lang="theme_editor_lightness"}</label>
+										<input type='number' inputmode='numeric' data-range-output='light__i-base-l' id='light__i-base-l__num' value='{theme="var.light__i-base-l"}' min="0" max="100" data-on-change="syncInputsWithPseudo">
+									</div>
+									<input type='range' id='light__i-base-l' name='light__i-base-l' value='{theme="var.light__i-base-l"}' min="0" max="100" data-on-input="changingRangeInput" data-on-change="settingHasBeenChanged">
+								</theme-setting>
+
+								<theme-setting data-setting='dark__i-base-h' data-type='number'>
+									<div class="theme-editor__align-setting">
+										<label for='dark__i-base-h__num'>{lang="theme_editor_hue"}</label>
+										<input type='number' inputmode='numeric' data-range-output='dark__i-base-h' id='dark__i-base-h__num' value='{theme="var.dark__i-base-h"}' min="0" max="360" data-on-change="syncInputsWithPseudo">
+									</div>
+									<input type='range' id='dark__i-base-h' name='dark__i-base-h' value='{theme="var.dark__i-base-h"}' min="0" max="360" data-on-input="changingRangeInput" data-on-change="settingHasBeenChanged">
+								</theme-setting>
+								<theme-setting data-setting='dark__i-base-c' data-type='number'>
+									<div class="theme-editor__align-setting">
+										<label for='dark__i-base-c__num'>{lang="theme_editor_chroma"}</label>
+										<input type='number' inputmode='numeric' data-range-output='dark__i-base-c' id='dark__i-base-c__num' value='{theme="var.dark__i-base-c"}' min="0" max="100" data-on-change="syncInputsWithPseudo">
+									</div>
+									<input type='range' id='dark__i-base-c' name='dark__i-base-c' value='{theme="var.dark__i-base-c"}' min="0" max="100" data-on-input="changingRangeInput" data-on-change="settingHasBeenChanged">
+								</theme-setting>
+								<theme-setting data-setting='dark__i-base-l' data-type='number'>
+									<div class="theme-editor__align-setting">
+										<label for='dark__i-base-l__num'>{lang="theme_editor_lightness"}</label>
+										<input type='number' inputmode='numeric' data-range-output='dark__i-base-l' id='dark__i-base-l__num' value='{theme="var.dark__i-base-l"}' min="0" max="100" data-on-change="syncInputsWithPseudo">
+									</div>
+									<input type='range' id='dark__i-base-l' name='dark__i-base-l' value='{theme="var.dark__i-base-l"}' min="0" max="100" data-on-input="changingRangeInput" data-on-change="settingHasBeenChanged">
+								</theme-setting>
+
+							</editor-tab-content>
+						</div>				
+					</editor-panel>
+
+					<!-- Other panels are inserted here dynamically -->
+					{{foreach \IPS\Theme\Editor\Category::themeEditorCategories() as $category}}
+					{$category->editorHtml()|raw}
+					{{endforeach}}
+
+				</editor-panels>
+
+				<!-- Custom CSS -->
+				<dialog class="theme-editor__dialog" id='dialog__customCSS'>
+					<header>
+						<div>
+							<h4>{lang="theme_editor_custom_css"}</h4>
+						</div>
+						<button type='button' data-revert-custom-css hidden data-on-click="revertCustomCSS">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9L0 168c0 13.3 10.7 24 24 24l110.1 0c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24l0 104c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65 0-94.1c0-13.3-10.7-24-24-24z"/></svg>
+							<span>{lang="theme_editor_custom_css_revert"}</span>
+						</button>
+						<button type='button' aria-controls="dialog__customCSS" aria-expanded="false" data-ipscontrols>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+							<span>{lang="theme_editor_custom_css_done"}</span>
+						</button>
+					</header>
+                    <ips-code-editor>
+			    		<textarea id="customCSS-saved">{theme="custom_css"}</textarea>
+			    		<textarea data-ipscodebox data-ipscodebox-allowed-languages="[&quot;ipscss&quot;]" class='theme-editor__customCSS' wrap="off" placeholder='/* Enter custom CSS here */' name="set__customCSS" id="customCSS" spellcheck="false" autocorrect="off" autocapitalize="off" translate="no" aria-label="Custom CSS">{theme="custom_css_for_theme_editor_codebox"}</textarea>
+			    	</ips-code-editor>
+                    <div id="customCSS-warning" hidden>
+                        <i class="fa-solid fa-file-circle-exclamation" aria-hidden="true"></i>
+                        <div id="customCSS-warning-message" class='ipsBox ipsBox--themeEditorCustomCSSWarning'>
+                            {lang="theme_editor_custom_css_message"}
+                        </div>
+                    </div>
+                </dialog>
+
+				<!-- Close confirmation -->
+				<dialog class="theme-editor__dialog" id="closeConfirmationDialog" style='width:800px'>
+					<header>
+						<div>
+							<h4>{lang="theme_editor_unsaved"}</h4>
+							<p class="i-color_soft">{lang="theme_editor_unsaved_message"}</p>
+						</div>
+					</header>
+					<footer>
+						<div>
+							<a href='{url="app=core&module=system&controller=themeeditor&do=close" csrf="true"}' class="ipsButton ipsButton--negative"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> {lang="theme_editor_nosave"}</a>
+						</div>
+						<div>
+							<button type="button" class="ipsButton ipsButton--inherit" aria-controls="closeConfirmationDialog" aria-expanded="false" data-ipscontrols><i class="fa-solid fa-paint-roller" aria-hidden="true"></i> {lang="theme_editor_continue"}</button>
+						</div>
+					</footer>
+				</dialog>
+
+			</form>
+			
+		</i-theme-editor>
+
+		<button type="button" aria-controls="closeConfirmationDialog" aria-expanded="false" data-ipscontrols id="toggleCloseConfirmationDialog" hidden>Toggle confirmation window</button>	
+
+		{template="includeJS" app="core" group="global" location="global" params=""}
+	</body>
+</html>

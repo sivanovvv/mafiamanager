@@ -1,0 +1,6 @@
+<ips:template parameters="$page, $widgets" />
+{{foreach $widgets as $area => $areaWidgets}}
+<div>
+	{template="widgetContainer" group="pages" app="cms" params="$area, $widgets"}
+</div>
+{{endforeach}}

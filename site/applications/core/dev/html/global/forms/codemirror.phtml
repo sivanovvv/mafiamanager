@@ -1,0 +1,37 @@
+<ips:template parameters="$name, $value, $required, $maxlength=NULL, $disabled=FALSE, $class='', $placeholder='', $tags=array(), $mode='htmlmixed', $id=NULL, $height='300px', $preview=NULL, $tagLinks=array(), $tagSource=NULL" />
+{{if !empty( $tags ) OR $tagSource !== NULL}}
+<div class='ipsColumns ipsCodebox__outer-wrap' data-controller='core.global.editor.customtags' data-tagFieldType='codemirror' data-tagFieldID='elCodemirror_{{if $id}}{$id}{{else}}{$name}{{endif}}' {{if $tagSource}}data-tagSource='{$tagSource}'{{endif}}>
+	<div class='ipsColumns__primary'>
+{{endif}}
+<div class='i-background_3 i-padding_2 ipsCodebox__inner-wrap' data-role="editor" {{if $preview}}data-controller="core.global.editor.codePreview" data-name="{$name}" data-preview-url="{$preview}"{{endif}}>
+	<textarea
+	name="{$name}"
+	id='elCodemirror_{{if $id}}{$id}{{else}}{$name}{{endif}}'
+	value="{expression="htmlentities( $value === NULL ? '' : $value, ENT_DISALLOWED, 'UTF-8', TRUE )"}"
+	class="ipsInput ipsInput--text ipsInput--wide {$class}"
+	{{if $maxlength !== NULL}}maxlength="{$maxlength}"{{endif}}
+	{{if $required === TRUE}}aria-required='true'{{endif}}
+	{{if $disabled}}disabled aria-disabled='true'{{endif}}
+	{{if $placeholder}}placeholder="{$placeholder}"{{endif}}
+	data-control="codemirror"
+	data-mode="{$mode}"
+	{{if $height}}data-height="{$height}"{{endif}}
+>{{if $value}}{$value}{{endif}}</textarea>
+	{{if $preview}}
+		<button type="button" data-action="preview" data-ipsDialog data-ipsDialog-content="#{$name}_preview" class="ipsButton ipsButton--soft i-margin-top_3 ipsButton--small ipsJs_hide"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> {lang="preview"}</button>
+		<div id="{$name}_preview" class="ipsHide ipsDialog_loading"></div>
+	{{endif}}
+</div>
+
+{{if !empty( $tags ) OR $tagSource}}
+	</div>
+	<div class='ipsColumns__secondary ipsComposeArea_sidebar' data-codemirrorid='elCodemirror_{{if $id}}{$id}{{else}}{$name}{{endif}}'>
+		<h3 class='i-padding_2 ipsTitle ipsTitle--h5' data-role='tagsHeader'>{lang="editor_tags"}</h3>
+		<ul class='ipsScrollbar' data-role='tagsList'>
+		{{if !empty( $tags )}}
+			{template="editorTags" app="core" location="global" group="forms" params="$tags, $tagLinks"}
+		{{endif}}
+		</ul>
+	</div>
+</div>
+{{endif}}

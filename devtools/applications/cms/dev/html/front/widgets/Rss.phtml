@@ -1,0 +1,23 @@
+<ips:template parameters="$items, $title, $layout='table', $isCarousel=false" />
+{{if !empty( $items ) }}
+	<h3 class='ipsWidget__header'>{$title}</h3>
+		<div class='ipsWidget__content'>
+			<i-data>
+				<ul class='ipsData ipsData--{$layout} ipsData--widget-rss'>
+					{{foreach $items as $item}}
+						<li class='ipsData__item'>
+							<a href="{$item['link']}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1" target="_blank" rel="noopener"><span>{$item['title']}</span></a>
+							<div class="ipsData__content">
+								<div class='ipsData__main'>
+									<div class='ipsData__title'>
+										<h4><a href="{$item['link']}" target="_blank" rel="noopener">{$item['title']}</a></h4>
+									</div>
+									<div class='ipsData__meta'>{datetime="$item['date']"}</div>
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		</div>
+{{endif}}

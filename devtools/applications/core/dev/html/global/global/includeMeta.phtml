@@ -1,0 +1,82 @@
+<ips:template parameters="" />
+
+{{if !\IPS\Request::i()->isAjax()}}
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	
+	{{if !isset( \IPS\Output::i()->metaTags['og:image'] )}}
+		{{$shareLogos = \IPS\Settings::i()->icons_sharer_logo ? json_decode( \IPS\Settings::i()->icons_sharer_logo, true ) : array();}}
+		{{foreach $shareLogos as $logo}}
+			<meta property="og:image" content="{file="$logo" extension="core_Icons" scheme="full"}">
+		{{endforeach}}
+	{{endif}}
+	{{if !isset( \IPS\Output::i()->metaTags['og:image'] ) and !\count( $shareLogos ) }}
+		<meta name="twitter:card" content="summary">
+	{{else}}
+		<meta name="twitter:card" content="summary_large_image">
+	{{endif}}
+	{{if \IPS\Settings::i()->site_twitter_id}}
+		{{if mb_substr( \IPS\Settings::i()->site_twitter_id, 0, 1 ) === '@'}}
+			<meta name="twitter:site" content="{setting="site_twitter_id"}">
+		{{else}}
+			<meta name="twitter:site" content="@{setting="site_twitter_id"}">
+		{{endif}}
+	{{endif}}
+	{{foreach \IPS\Output::i()->metaTags as $name => $content}}
+		{{if $name == 'canonical'}}
+			<link rel="canonical" href="{$content}">
+		{{else}}
+			{{if $name != 'title'}}
+				{{if \is_array( $content ) }}
+					{{foreach $content as $_value }}
+						<meta {{if mb_substr( $name, 0, 3 ) === 'og:' or mb_substr( $name, 0, 3 ) === 'fb:'}}property{{else}}name{{endif}}="{$name}" content="{$_value}">
+					{{endforeach}}
+				{{elseif $content}}
+					<meta {{if mb_substr( $name, 0, 3 ) === 'og:' or mb_substr( $name, 0, 3 ) === 'fb:'}}property{{else}}name{{endif}}="{$name}" content="{$content}">
+				{{endif}}
+			{{endif}}
+		{{endif}}
+	{{endforeach}}
+	{{foreach \IPS\Output::i()->linkTags as $type => $value}}
+		{{if \is_array( $value )}}
+			<link {{foreach $value as $k => $v}}{$k}="{expression="$v"}" {{endforeach}}/>
+		{{elseif $type != 'canonical' OR !isset( \IPS\Output::i()->metaTags['canonical'] )}}
+			<link rel="{$type}" href="{expression="$value"}">
+		{{endif}}
+	{{endforeach}}
+	{{foreach \IPS\Output::i()->rssFeeds as $title => $url}}<link rel="alternate" type="application/rss+xml" title="{lang="$title"}" href="{$url}">{{endforeach}}
+	{{if \IPS\Output::i()->base}}
+		<base target="{expression="\IPS\Output::i()->base"}">
+	{{endif}}
+	{{$manifest = json_decode( \IPS\Settings::i()->manifest_details, TRUE );}}
+	{{$manifest['cache_key'] = isset($manifest['cache_key']) ? $manifest['cache_key'] : time();}}
+	<link rel="manifest" href="{url="app=core&module=system&controller=metatags&do=manifest" base="front" seoTemplate="manifest"}">
+	{{if isset( $manifest['theme_color'] )}}
+		<meta name="theme-color" content="{$manifest['theme_color']}">
+	{{endif}}
+	{{if \IPS\Settings::i()->icons_mask_icon AND \IPS\Settings::i()->icons_mask_color}}
+		<link rel="mask-icon" href="{file="\IPS\Settings::i()->icons_mask_icon" extension="core_Icons" cb="$manifest['cache_key']"}" color="{setting="icons_mask_color"}">
+	{{endif}}
+
+	{{$homeScreen = json_decode( \IPS\Settings::i()->icons_homescreen, TRUE ) ?? array();}}
+	{{foreach $homeScreen as $name => $image}}
+		{{if $name === 'apple-touch-icon-180x180'}}
+			<link rel="apple-touch-icon" href="{file="$image['url']" extension="core_Icons" cb="$manifest['cache_key']"}">
+		{{endif}}
+	{{endforeach}}
+
+	{{$apple = json_decode( \IPS\Settings::i()->icons_apple_startup, TRUE ) ?? array();}}
+	{{if \count( $apple )}}
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+		{{foreach $apple as $name => $image}}
+			{{if $name !== 'original'}}
+				{{ $deviceWidth = ($image['orientation'] === 'portrait') ? $image['width'] / $image['density'] : $image['height'] / $image['density'] ;}}
+				{{ $deviceHeight = ($image['orientation'] === 'portrait') ? $image['height'] / $image['density'] : $image['width'] / $image['density'] ;}}
+				<link rel="apple-touch-startup-image" media="screen and (device-width: {$deviceWidth}px) and (device-height: {$deviceHeight}px) and (-webkit-device-pixel-ratio: {$image['density']}) and (orientation: {$image['orientation']})" href="{file="$image['url']" extension="core_Icons" cb="$manifest['cache_key']"}">
+			{{endif}}
+		{{endforeach}}
+	{{endif}}
+
+{{endif}}

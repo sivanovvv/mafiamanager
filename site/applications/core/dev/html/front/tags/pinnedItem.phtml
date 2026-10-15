@@ -1,0 +1,115 @@
+<ips:template parameters="$row, $tag, $showUnfeatureButton=true" />
+{{$type = $row->type;}}
+{{$rowIds = array();}}
+{{$idField = $row::$databaseColumnId;}}
+{{$rowIds[] = $row->$idField;}}
+{{$idField = $row::$databaseColumnId;}}
+<li class="ipsData__item {{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Hideable' ) and $row->hidden()}}ipsModerated{{endif}} {$row->ui( 'css' )}" {{if $row->unread()}}data-ips-unread{{else}}data-ips-read{{endif}} {$row->ui( 'dataAttributes' )}>
+	{{if $row->mapped('title') or $row->mapped('title') == 0}}<a href='{$row->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row->mapped('title')}</span></a>{{endif}}
+	<div class="ipsData__image" aria-hidden="true">
+	    {{if $row->pinnedData['pinned_image']}}
+	        <img src='{file="$row->pinnedData['pinned_image']" extension="core_Tags"}' alt="{$row->mapped( 'title' )}" loading="lazy">
+	    {{elseif $image = $row->primaryImage()}}
+	        <img src='{$image->url}' alt="{$row->mapped( 'title' )}" loading="lazy">
+	    {{else}}
+	        {template="defaultThumb" app="core" location="front" group="global" params=""}
+	    {{endif}}
+
+		{{if $showUnfeatureButton and member.modPermission( 'can_pin_tagged' )}}
+			<a href="{$tag->url()->csrf()->setQueryString( array( 'do' => 'unpin', 'itemClass' => \get_class( $row ), 'itemId' => $row->$idField ) )}" data-confirm class="ipsBadge ipsBadge--negative"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="unpin_from_tag"}</a>
+		{{endif}}
+
+	</div>
+
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			<div class='ipsData__title'>
+				{{if $row->unread()}}
+					<a href='{$row->url( 'getNewComment' )}' data-ipsTooltip='{lang="first_unread_post"}' class='ipsIndicator {{if $row->containerWrapper() AND \IPS\IPS::classUsesTrait( $row->containerWrapper(), 'IPS\Node\Statistics' ) AND \in_array( $row->$idField, $row->containerWrapper()->contentPostedIn( null, $rowIds ) )}}ipsIndicator--participated{{endif}}'><span class="ipsInvisible">{lang="first_unread_post"}</span></a>
+				{{else}}
+					<span class='ipsIndicator ipsIndicator--read {{if $row->containerWrapper() AND \IPS\IPS::classUsesTrait( $row->containerWrapper(), 'IPS\Node\Statistics' ) AND \in_array( $row->$idField, $row->containerWrapper()->contentPostedIn( null, $rowIds ) )}}ipsIndicator--participated{{endif}}' aria-hidden='true'></span>
+				{{endif}}
+				<h4>
+					<a href='{$row->url()}' {{if $row->tableHoverUrl and $row->canView()}}data-ipsHover data-ipsHover-target='{$row->url()->setQueryString('preview', 1)}'data-ipsHover{{endif}} {{if $row->canEdit() AND $row->editableTitle === TRUE}}data-role="editableTitle" title="{lang="click_hold_edit"}"{{endif}}>
+						{{if $row->mapped('title') or $row->mapped('title') == 0}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}
+					</a>
+				</h4>
+				<div class="ipsBadges">
+					{{foreach $row->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</div>
+				{{if $row->commentPageCount() > 1}}
+					{$row->commentPagination( array(), 'miniPagination' )|raw}
+				{{endif}}
+			</div>
+			<div class="ipsData__desc">
+				{{if method_exists( $row, 'tableDescription' )}}
+					<div class='ipsTruncate_2'>{$row->tableDescription()|raw}</div>
+				{{else}}
+					{$row->truncated(TRUE)|raw}
+				{{endif}}
+			</div>
+
+			{{if $row instanceof \IPS\downloads\File}}
+				{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+					<ul class='ipsList ipsList--inline'>
+						<li class='cFilePrice'>
+							{{if $row->isPaid()}}
+								{$row->price()|raw}
+							{{else}}
+								{lang="file_free"}
+							{{endif}}
+						</li>
+						{{if $renewalTerm = $row->renewalTerm()}}
+							<li class='i-color_soft'>
+								{lang="file_renewal_term_val" sprintf="$renewalTerm"}
+							</li>
+						{{endif}}
+					</ul>
+				{{endif}}
+			{{endif}}
+
+			<div class='ipsData__meta'>
+				{{if \in_array( \IPS\Request::i()->controller, array( 'search' ) )}}
+					{lang="in"} <a href="{$row->container()->url()}">{$row->container()->_title}</a>
+				{{endif}}
+				{{if $row instanceof \IPS\downloads\File and $row->container()->version_numbers}}
+					&middot; {lang="version"} {$row->version}
+				{{endif}}
+			</div>
+			{{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Taggable' ) AND ( \count( $row->tags() ) OR $row->prefix() )}}
+				{template="tagsWithPrefix" group="global" app="core" params="$row->tags(), $row->prefix(), true, true"}
+			{{endif}}
+		</div>
+		<div class="ipsData__extra">
+			<ul class='ipsData__stats'>
+				{{if $row instanceof \IPS\downloads\File}}
+					{{if $row->container()->version_numbers OR ($row->isPaid() and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) )) OR (!$row->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) ))}}
+						{{if $row->isPaid() and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) ) and $row->purchaseCount()}}
+							<li>{lang="x_purchases" pluralize="$row->purchaseCount()"}</li>
+						{{endif}}
+						{{if !$row->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) ) and $row->downloads}}
+							<li>{lang="num_downloads" pluralize="$row->downloads"}</li>
+						{{endif}}
+					{{endif}}
+				{{endif}}
+				{{foreach $row->stats(TRUE) as $k => $v}}
+					<li {{if \in_array( $k, $row->hotStats )}}class="ipsData__stats-hot" data-text='{lang="hot_item"}' data-ipsTooltip title='{lang="hot_item_desc"}'{{endif}} data-stattype="{$k}">
+						<span class='ipsData__stats-icon' data-stat-value="{number='$v'}" aria-hidden="true" data-ipstooltip title='{number="$v"} {lang="$k" pluralize="$v"}'></span>
+						<span class='ipsData__stats-label'>{number="$v"} {lang="$k" pluralize="$v"}</span>
+					</li>
+				{{endforeach}}
+			</ul>
+			<div class="ipsData__last">
+				{template="userPhoto" app="core" group="global" params="$row->author(), 'tiny'"}
+				<div class="ipsData__last-text">
+					<div class="ipsData__last-primary">
+						{$row->author()->link()|raw}
+					</div>
+					<div class="ipsData__last-secondary">
+						{datetime="$row->mapped('date')"}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</li>

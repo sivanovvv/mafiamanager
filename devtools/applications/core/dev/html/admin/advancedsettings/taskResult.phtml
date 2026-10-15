@@ -1,0 +1,14 @@
+<ips:template parameters="$success, $message, $id" />
+{{if $success}}
+	<div class="i-background_2 i-padding_3">
+		{lang="task_manager_ran_log"}
+		<pre>{{if \is_string( $message )}}{$message}{{else}}{expression="var_export( $message, TRUE )"}{{endif}}</pre>
+	</div>
+{{else}}
+	<p class="ipsMessage ipsMessage--error">
+		{$message}
+	</p>
+{{endif}}
+<div class="i-background_3 i-padding_3 i-text-align_center">
+	<a href="{url="app=core&module=settings&controller=advanced&do=runTask&id={$id}" csrf="true"}" class="ipsButton ipsButton--primary">{lang="task_manager_run_again"}</a> {lang="or"} <a href="{url="app=core&module=settings&controller=advanced&do=tasks"}" class="ipsButton ipsButton--secondary">{lang="task_manager_return"}</a>
+</div>

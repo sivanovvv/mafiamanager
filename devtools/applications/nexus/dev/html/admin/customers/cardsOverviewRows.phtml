@@ -1,0 +1,10 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li>
+		<p class='ipsTruncate ipsTruncate_line'>
+			{{if $row['card_type'] == 'paypal' or $row['card_type'] == 'venmo'}}{$row['card_number']}{{elseif $row['card_type'] == 'american_express' OR $row['card_type'] == 'diners_club'}}XXXX-XXXXXX-X{$row['card_number']}{{else}}XXXX-XXXX-XXXX-{$row['card_number']}{{endif}}
+		</p>
+		<span class='i-font-size_1 i-color_soft ipsTruncate ipsTruncate_line'>{{if $row['card_type']}}{lang="card_type_{$row['card_type']}"}{{else}}{lang="card_type_generic"}{{endif}}{{if isset( $row['card_expires'] )}}, {lang="card_expires_lc"} {$row['card_expire']}{{endif}}</span>
+	</li>
+{{endforeach}}

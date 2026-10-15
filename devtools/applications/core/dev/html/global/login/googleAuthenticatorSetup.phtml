@@ -1,0 +1,102 @@
+<ips:template parameters="$qrCodeUrl, $secretKey, $showingMultipleForms" />
+<div id="elGoogleAuthenticator" data-controller="core.global.core.googleAuth">
+	<input type="hidden" name="secret" value="{$secretKey}">
+	<div data-role="barcode">
+		<div class='i-padding_3'>
+			{{if !$showingMultipleForms}}
+				<h1 class='i-text-align_center ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="mfa_popup_setup_title"}</h1>
+			{{endif}}
+			<div class="ipsRichText i-text-align_center c2FA_info">
+				{{if $showingMultipleForms}}
+					{lang="google_mfa_desc_multi"}
+				{{else}}
+					{lang="google_mfa_desc_single"}
+				{{endif}}
+			</div>
+		</div>
+		<div class='ipsSpanGrid'>
+			<div class='ipsSpanGrid__4 i-text-align_center'>
+				<img src="{$qrCodeUrl}" width="150" height="150">
+			</div>
+			<div class='ipsSpanGrid__8 i-text-align_center'>
+				{{$langCode = mb_substr( \IPS\Member::loggedIn()->language()->bcp47(), 0, 2 );}}
+				<div class="i-flex i-align-items_center i-justify-content_center i-flex-wrap_wrap i-gap_2">
+					<a href="{url="googleauth_ios" ips="true"}" target="_blank" rel="noopener"><img src="{resource="appstores/ios/{$langCode}.svg" app="core" location="global"}" alt=""></a>
+					<a href="{url="googleauth_android" ips="true"}" target="_blank" rel="noopener"><img src="{resource="appstores/android/{$langCode}.png" app="core" location="global"}" style="height: 60px" alt=""></a>
+				</div>
+		
+				<div>
+					<button type="button" class="i-cursor_pointer" data-action="showManual">{lang="google_mfa_help"}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div data-role="manual" class="ipsHide">
+		<div class="i-padding_3 ipsRichText i-text-align_center">
+			{{if !$showingMultipleForms}}
+				<h1 class='i-text-align_center ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="mfa_popup_setup_title"}</h1>
+			{{endif}}
+			<div class="ipsRichText i-text-align_center c2FA_info">
+				{{if $showingMultipleForms}}
+					{lang="google_mfa_desc_multi_manual"}
+				{{else}}
+					{lang="google_mfa_desc_single_manual"}
+				{{endif}}
+			</div>
+		</div>
+		<div class='ipsSpanGrid'>
+			<div class='ipsSpanGrid__5'>
+				<i-data>
+					<ul class="ipsData ipsData--table ipsData--google-auth">
+						<li class="ipsData__item">
+							<span class="">
+								<strong>{lang="google_mfa_account"}</strong><br>
+								<em>{lang="google_mfa_account_email"}</em>
+							</span>
+						</li>
+						<li class="ipsData__item">
+							<span>
+								<strong>{lang="google_mfa_key"}</strong><br>
+								<code>{$secretKey}</code>
+							</span>
+						</li>
+						<li class="ipsData__item">
+							<span>
+								<strong>{lang="google_mfa_timebased"}</strong><br>
+								{lang="yes"}
+							</span>
+						</li>
+					</ul>
+				</i-data>
+			</div>
+			<div class='ipsSpanGrid__7 i-text-align_center'>
+				{{$langCode = mb_substr( \IPS\Member::loggedIn()->language()->bcp47(), 0, 2 );}}
+				<div class="i-flex i-align-items_center i-justify-content_center i-flex-wrap_wrap i-gap_2">
+					<a href="{url="googleauth_ios" ips="true"}" target="_blank" rel="noopener"><img src="{resource="appstores/ios/{$langCode}.svg" app="core" location="global"}" alt=""></a>
+					<a href="{url="googleauth_android" ips="true"}" target="_blank" rel="noopener"><img src="{resource="appstores/android/{$langCode}.png" app="core" location="global"}" style="height: 60px" alt=""></a>
+				</div>
+		
+				<div class='i-text-align_center'>
+					<button type="button" class="i-cursor_pointer" data-action="showBarcode">{lang="google_mfa_help_reset"}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ul class="i-padding_3 i-background_3">
+		<li class="ipsFieldRow " id="google_authenticator_form_google_authenticator_setup_code">
+			<div class="ipsFieldRow__content">
+				<input type="text" name="google_authenticator_setup_code" value="" class="ipsInput ipsInput--text {{if request.google_authenticator_setup_code}}ipsField_error{{endif}}">
+				{{if request.google_authenticator_setup_code}}
+					<p class="i-color_warning">{lang="google_mfa_invalid_code"}</p>
+				{{endif}}
+			</div>
+		</li>
+		<li>
+			<button type='submit' class='ipsButton ipsButton--primary ipsButton--wide'>
+				<i class='fa-solid fa-lock' aria-hidden="true"></i> {lang="google_submit_code"}
+			</button>
+		</li>
+	</ul>
+    {template="mfaSetupOptOut" app="core" group="login" location="global"}
+</div>

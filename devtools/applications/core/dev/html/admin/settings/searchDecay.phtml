@@ -1,0 +1,13 @@
+<ips:template parameters="$days, $factor" />
+{lang="search_decay_1"}
+<input type="number" name="search_decay[0]" value="{$days}" class="ipsInput ipsField_short">
+{lang="search_decay_2"}
+<input type="number" name="search_decay[1]" value="{$factor}" step="0.1" class="ipsInput ipsField_short">
+{lang="search_decay_3"}
+<div class="ipsFieldRow_inlineCheckbox">
+	&nbsp;
+	{lang="or"}
+	&nbsp;
+	<input type="checkbox" class="ipsInput ipsInput--toggle" data-control="unlimited" name="search_decay[2]" id="search_decay-unlimitedCheck" value="0" {{if !$factor}}checked{{endif}} aria-labelledby="search_decay_label">
+	<label for="search_decay-unlimitedCheck" id="search_decay_label" class="ipsField_unlimited">{lang="search_decay_unlimited"}</label>
+</div>

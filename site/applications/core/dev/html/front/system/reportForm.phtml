@@ -1,0 +1,5 @@
+<ips:template parameters="$form" />
+{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack('report')"}
+<div class="ipsBox ipsBox--padding">
+	{$form|raw}
+</div>

@@ -1,0 +1,17 @@
+<ips:template parameters="$products" />
+<p class="i-font-size_1">{lang="cm_fields_modified"}</p>
+<div class="ipsTree_wrapper">
+	<div class="ipsTree_rows">
+		<ol class="ipsTree ipsTree_node">
+			{{foreach $products as $product}}
+				<li>
+					<div class="ipsTree_row ipsTree_noRoot">
+						<div class="ipsTree_rowData">
+							<h4 class="ipsTree_title"><a href="{url="app=nexus&module=store&controller=packages&subnode=1&do=form&id={$product->_id}"}" target="_blank" rel='noopener'>{$product->_title}</a></h4>
+						</div>
+					</div>
+				</li>	
+			{{endforeach}}
+		</ol>
+	</div>
+</div>

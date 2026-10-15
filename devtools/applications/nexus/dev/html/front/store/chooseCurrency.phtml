@@ -1,0 +1,21 @@
+<ips:template parameters="$baseUrl" />
+{{if \count( \IPS\nexus\Money::currencies() ) > 1}}
+	{{$memberCurrency = ( ( isset( \IPS\Request::i()->cookie['currency'] ) and \in_array( \IPS\Request::i()->cookie['currency'], \IPS\nexus\Money::currencies() ) ) ? \IPS\Request::i()->cookie['currency'] : \IPS\nexus\Customer::loggedIn()->defaultCurrency() );}}
+	<div class='i-text-align_center ipsBox i-padding_3 i-margin-top_2' {{if isset( $_SESSION['cart'] ) and \count( $_SESSION['cart'] )}}data-controller="nexus.front.store.currencySelect"{{endif}}>
+		<span>{lang="show_prices_in"}</span><br>
+        <form action="{$baseUrl}" method="post">
+        <input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+		<ul class='ipsButtons i-link-color_inherit i-margin-top_2'>
+			{{foreach \IPS\nexus\Money::currencies() as $currency}}
+				<li>
+					{{if $currency == $memberCurrency}}
+					    <button type="submit" name="currency" value="{$currency}" class='ipsButton ipsButton--primary ipsButton--small'><i class='fa fa-check' aria-hidden="true"></i> {$currency}</button>
+					{{else}}
+						<button type="submit" name="currency" value="{$currency}" class='ipsButton ipsButton--soft ipsButton--small' title='{lang="set_currency_to" sprintf="$currency"}'> {$currency}</button>
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ul>
+		</form>
+	</div>
+{{endif}}

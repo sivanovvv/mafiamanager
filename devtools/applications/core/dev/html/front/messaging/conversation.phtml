@@ -1,0 +1,120 @@
+<ips:template parameters="$conversation, $folders, $alert=NULL" />
+<div class='ipsMessenger__conversationHeader'>
+	<div class='i-flex i-flex-wrap_wrap-reverse i-gap_3'>
+		<h1 class='i-flex_91 i-basis_440 ipsTitle ipsTitle--h2'>{$conversation->title}</h1>
+		<ul class='i-flex_11 ipsButtons'>
+			<li><button type="button" data-action='filterBarSwitch' data-switchTo='filterBar' class='ipsButton ipsButton--secondary ipsButton-backToInbox'><i class='fa-solid fa-caret-left' aria-hidden="true"></i><span>{lang="messenger_list"}</span></button></li>
+			<li><button type="button" id="elConvoActions" popovertarget="elConvoActions_menu" class='ipsButton ipsButton--inherit i-margin-start_auto'><span>{lang="options"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button></li>
+		</ul>
+	</div>
+	<i-dropdown popover id="elConvoActions_menu">
+		<div class="iDropdown">
+			<ul class="iDropdown__items">
+				{{if \count( $folders ) > 1}}
+					<li class='iDropdown__title'>
+						{lang="move_message_to"}
+					</li>
+					{{foreach $folders as $id => $name}}
+						{{if isset( $conversation->map['map_folder_id'] ) AND (string) $id !== $conversation->map['map_folder_id']}}
+							<li><a href='{$conversation->url('move')->csrf()->setQueryString( 'to', $id )}' data-ipsMenuValue='{$id}'><i class="fa-regular fa-folder" aria-hidden="true"></i> {$name}</a></li>
+						{{endif}}
+					{{endforeach}}
+					<li><hr></li>
+				{{endif}}
+				{{if isset( $conversation->map['map_ignore_notification'] )}}
+					<li>
+						{{if $conversation->map['map_ignore_notification']}}
+							<a href='{$conversation->url('notifications')->csrf()->setQueryString( 'status', 1 )}' data-action="stopNotifications">
+								<i class='fa-solid fa-bell' aria-hidden="true"></i> {lang="messenger_notifications_on"}
+							</a>
+						{{else}}
+							<a href='{$conversation->url('notifications')->csrf()->setQueryString( 'status', 0 )}' data-action="stopNotifications">
+								<i class='fa-regular fa-bell-slash' aria-hidden="true"></i> {lang="messenger_notifications_off"}
+							</a>
+						{{endif}}
+					</li>
+				{{endif}}
+				<li>
+					<a href="{$conversation->url('leaveConversation')->csrf()}" data-action="deleteConversation">
+						<i class="fa-regular fa-trash-can" aria-hidden="true"></i> {{if $conversation->canDelete() AND isset( \IPS\Request::i()->_report )}}{lang="messenger_leave_moderator"}{{else}}{lang="messenger_leave"}{{endif}}
+					</a>
+				</li>
+				{{if $conversation->canDelete() AND isset( \IPS\Request::i()->_report )}}
+					<li>
+						<a href="{$conversation->url('moderate')->setQueryString( array( 'action' => 'delete', '_report' => \IPS\Request::i()->_report ) )->csrf()}" data-confirm>
+							<i class='fa-solid fa-trash' aria-hidden="true"></i> {lang="messenger_leave"}
+						</a>
+					</li>
+				{{endif}}
+			</ul>
+		</div>
+	</i-dropdown>
+
+	<div class='cMessage_members' id='elConvoMembers_{$conversation->id}'>
+		<div class='i-color_soft i-font-weight_500 i-margin-top_1'><i class='fa-solid fa-user i-margin-end_icon' aria-hidden="true"></i>{lang="members_in_convo" pluralize="$conversation->to_count"}</div>
+		<ol class='ipsList ipsList--inline i-gap_4 i-margin-top_3'>
+			{{$members = 0;}}
+			{{foreach $conversation->maps() as $map}}
+				{template="participant" group="messaging" params="$map, $conversation"}
+				{{$members++;}}
+			{{endforeach}}
+			{{if \IPS\Member::loggedIn()->group['g_max_mass_pm'] == -1 OR $members < \IPS\Member::loggedIn()->group['g_max_mass_pm'] }}
+			<li data-role='addUserItem' class='i-align-self_center'>
+				<button type="button" id="elInviteMember{$conversation->id}" popovertarget="elInviteMember{$conversation->id}_menu" data-action='inviteUsers' title='{lang="invite_a_member"}' data-ipsTooltip class='ipsButton ipsButton--small ipsButton--inherit'><i class="fa-solid fa-user-plus" aria-hidden="true"></i></button>
+				<i-dropdown popover id="elInviteMember{$conversation->id}_menu">
+					<div class="iDropdown">
+						<form accept-charset='utf-8' action="{$conversation->url('addParticipant')}" method="post" data-role='addUser' data-conversation="{$conversation->id}" class="ipsForm">
+							<div class="ipsFieldRow">
+								<div class="ipsFieldRow__label">{lang="messenger_invite_placeholder"}</div>
+								<input type='text' autofocus class='ipsInput ipsInput--text ipsInput--wide' placeholder='{lang="messenger_invite_placeholder"}' name="member_names" data-ipsAutocomplete data-ipsAutocomplete-unique data-ipsAutocomplete-dataSource="{url="app=core&module=system&controller=ajax&do=findMember"}" data-ipsAutocomplete-commaTrigger='false' data-ipsAutocomplete-queryParam='input' data-ipsAutocomplete-resultItemTemplate="core.autocomplete.memberItem">
+							</div>
+							<div class="ipsSubmitRow">
+								<button class='ipsButton ipsButton--primary ipsButton--wide'>{lang="invite"}</button>
+							</div>
+						</form>
+					</div>
+				</i-dropdown>
+			</li>
+			{{endif}}
+		</ol>
+	</div>
+</div>
+<div data-controller='core.front.core.commentFeed, core.front.core.ignoredComments' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-baseURL='{$conversation->url()}' {{if $conversation->isLastPage()}}data-lastPage{{endif}} data-feedID='{$conversation->feedId}'>
+	{{if $alert }}
+		<blockquote class="ipsQuote i-margin-bottom_3">
+			<div class="ipsQuote_contents ipsClearfix">
+				{$alert->content|raw}
+			</div>
+		</blockquote>
+	{{endif}}
+	<div class="ipsButtonBar {{if $conversation->commentPageCount() <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+		<div class='ipsButtonBar__pagination'>
+			{template="pagination" group="global" location="global" params="$conversation->url(), $conversation->commentPageCount(), \IPS\Request::i()->page ? \intval( \IPS\Request::i()->page ) : 1, \IPS\core\Messenger\Conversation::getCommentsPerPage(), TRUE"}
+		</div>
+	</div>
+	<div data-role='commentFeed'>
+		{{foreach $conversation->comments() as $comment}}
+			{$comment->html()|raw}
+		{{endforeach}}
+	</div>
+	<div {{if $conversation->commentPageCount() <= 1}}class='ipsHide'{{endif}} data-role="tablePagination">
+		<div class='ipsButtonBar'>
+			<div class='ipsButtonBar__pagination'>
+				{template="pagination" group="global" location="global" params="$conversation->url(), $conversation->commentPageCount(), \IPS\Request::i()->page ? \intval( \IPS\Request::i()->page ) : 1, \IPS\core\Messenger\Conversation::getCommentsPerPage(), TRUE"}
+			</div>
+		</div>
+	</div>
+	<div data-role='replyArea' class='i-padding_2'>
+		{$conversation->commentForm()|raw}
+	</div>
+    {{if request.isAjax() and settings.core_datalayer_enabled}}
+    <script>
+		if ( IpsDataLayerConfig && !window.IpsDataLayerConfig && IpsDataLayerConfig._events.content_view.enabled ) {
+			$('body').trigger( 'ipsDataLayer', {
+				_key: 'content_view',
+				_properties: {expression="json_encode($conversation->getDataLayerProperties())" raw="true"}
+			});
+		}
+    </script>
+    {{endif}}
+</div>

@@ -1,0 +1,72 @@
+<ips:template parameters="$poll, $url, $layout='table', $isCarousel=false" />
+{{if !isset( \IPS\Request::i()->fetchPoll )}}
+<section data-controller='core.front.core.poll'>
+{{endif}}
+	{{if $poll->canVote() and request._poll != 'results' and ( !$poll->getVote() or request._poll == 'form') and $pollForm = $poll->buildForm()}}
+		<h3 class='ipsWidget__header'>
+			<span>{$poll->poll_question}</span>
+			<span class='ipsWidget__header-secondary i-color_soft' data-ipsTooltip title='{lang="poll_num_votes" pluralize="$poll->votes"}'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {$poll->votes}</span>
+		</h3>
+		<div class='ipsWidget__content' data-role='pollContents'>
+			{$pollForm->customTemplate( array( \IPS\Theme::i()->getTemplate( 'widgets', 'forums', 'front' ), 'pollFormWidget' ), $url )|raw}
+		</div>
+	{{elseif ( $poll->canViewResults() and !$poll->canVote() ) or $poll->getVote() or ( request._poll == 'results' and settings.allow_result_view )}}
+		<h3 class='ipsWidget__header'>
+			<span>{$poll->poll_question}</span>
+			<span class='ipsWidget__header-secondary i-color_soft' data-ipsTooltip title='{lang="poll_num_votes" pluralize="$poll->votes"}'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {$poll->votes}</span>
+		</h3>
+		<div class='ipsWidget__content' data-role='pollContents'>
+			<i-data>
+				<ol class='ipsPollList ipsData'>
+					{{$i = 0;}}
+					{{foreach $poll->choices as $questionId => $question}}
+						{{$i++;}}
+						<li class='ipsData__item'>
+							<div>
+								<h3 class='ipsTitle ipsTitle--h6'>{$i}. {$question['question']}</h3>
+								<ul class='ipsPollList_choices i-grid i-gap_2 i-margin-top_3'>
+									{{foreach $question['choice'] as $k => $choice}}
+										<li>
+											{{$progressId = 'ipsProgress-' . mt_rand();}}
+											<div id="{$progressId}" class='i-font-weight_500 i-margin-bottom_1'>{$choice|raw}<span class="ipsInvisible">: {{if array_sum( $question['votes'] ) > 0 }}{expression="\intval( ( $question['votes'][ $k ] / array_sum( $question['votes'] ) ) * 100 )"}{{else}}0{{endif}}%</span></div>
+											<progress aria-labelledby="{$progressId}" class='ipsProgress' max="100" value='{{if array_sum( $question['votes'] ) > 0 }}{expression="\intval( ( $question['votes'][ $k ] / array_sum( $question['votes'] ) ) * 100 )"}{{else}}0{{endif}}' title='{{if array_sum( $question['votes'] ) > 0 }}{expression="\intval( ( $question['votes'][ $k ] / array_sum( $question['votes'] ) ) * 100 )"}{{else}}0{{endif}}%' data-ipstooltip></progress>
+										</li>
+									{{endforeach}}
+								</ul>
+							</div>
+						</li>
+					{{endforeach}}
+				</ol>
+			</i-data>
+			<div class='ipsSubmitRow'>
+				<ul class='ipsButtons ipsButtons--fill'>
+					{{if $poll->canVote()}}
+						<li>
+							<a href="{$url->setQueryString('do', 'widgetPoll')->setQueryString( '_poll', 'form' )}" title='{lang="show_vote_options"}' class='ipsButton ipsButton--inherit' data-action='viewResults'><i class='fa-solid fa-caret-left' aria-hidden="true"></i><span>{lang="show_vote_options"}</span></a>
+						</li>
+					{{endif}}
+					<li>
+						<a class='ipsButton ipsButton--inherit' href="{$url}">{lang="poll_view_topic"}</a>
+					</li>
+				</ul>
+				{{if !member.member_id}}
+					<div class='i-margin-top_2 i-text-align_center'>
+						{lang="poll_guest" sprintf="\IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ), \IPS\Http\Url::internal( 'app=core&module=system&controller=register', 'front', 'register' )"}
+					</div>
+				{{endif}}
+			</div>
+		</div>
+	{{else}}
+		<h3 class='ipsWidget__header'>
+			<span>
+				{$poll->poll_question}
+			</span>
+			<span class='ipsWidget__header-secondary' data-ipsTooltip title='{lang="poll_num_votes" pluralize="$poll->votes"}'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {$poll->votes}</span>
+		</h3>
+		<div class='ipsWidget__padding ipsWidget__content' data-role='pollContents'>
+			{lang="no_permission_poll"}{{if !\IPS\Member::loggedIn()->member_id}} {lang="poll_guest" sprintf="\IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ), \IPS\Http\Url::internal( 'app=core&module=system&controller=register', 'front', 'register' )"}{{endif}}
+		</div>
+	{{endif}}
+{{if !isset( \IPS\Request::i()->fetchPoll )}}
+</section>
+{{endif}}

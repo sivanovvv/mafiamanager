@@ -1,0 +1,14 @@
+<ips:template parameters="$file" />
+
+<li data-ips-hook="downloadButton">
+	{{if !$file->canDownload() AND !( !$file->container()->can( 'download' ) AND $file->container()->message('npd') )}}
+		{{if !\IPS\Member::loggedIn()->member_id}}
+			<button class="ipsButton ipsButton--inherit ipsResponsive_hidePhone" disabled type='button'><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>{lang="download_no_permission_guest"}</span></button>
+			<a href='{url="app=core&module=system&controller=login" seoTemplate="login"}' class='ipsButton ipsButton--soft ipsButton--wide i-margin-top_3'>{lang="sign_in_short"}</a>
+		{{else}}
+			<button class="ipsButton ipsButton--inherit ipsResponsive_hidePhone" disabled type='button'><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>{lang="download_no_permission"}</span></button>
+		{{endif}}
+	{{else}}
+		<a href='{{if settings.idm_antileech AND !$file->showDownloadDialog()}}{$file->url('download')->csrf()}{{else}}{$file->url('download')}{{endif}}' class='ipsButton ipsButton--primary ipsButton--large i-width_100p' {{if $file->showDownloadDialog()}}data-ipsDialog{{endif}} data-datalayer-postfetch ><i class="fa-solid fa-download" aria-hidden="true"></i><span>{lang="download_now"}</span></a>
+	{{endif}}
+</li>

@@ -1,0 +1,128 @@
+i-pwa-install{
+	background: hsl(0 0% 5%);
+	color: hsl(0 0% 100%);
+	align-items: start;
+	padding: 1em;
+	gap: 1em;
+	position: relative;
+	/* Use system font since others may not fit as neatly */
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	/* Hide by default, and only show in certain browsers/devices */
+	display: none;
+}
+
+/* Display in browsers on touch devices */
+@media (display-mode: browser) and (hover: none) and (pointer: coarse){
+	i-pwa-install{
+		display: flex;
+	}
+}
+/* Hide the banner in Firefox since it doesn't support PWAs */
+@supports (-moz-appearance: none) {
+	i-pwa-install{
+		display: none;
+	}
+}
+
+.iPwaInstall__icon{
+	width: 40px;
+	flex: 0 0 auto;
+	border-radius: 22%;
+	background: #fff;
+}
+
+.iPwaInstall__content{
+	flex: 1 1 auto;
+}
+
+.iPwaInstall__title{
+	font-weight: 600;
+}
+
+.iPwaInstall__desc{
+	color: hsl(0 0% 80%);
+	font-size: .9em;
+}
+
+.iPwaInstall__desc strong{
+	font-weight: 500;
+	color: hsl(0 0% 100%);
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+.iPwaInstall__learnMore{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+}
+
+.iPwaInstall__dismiss{
+	width: 45px;
+	margin: -1em;
+	margin-inline-start: 0;
+	flex: 0 0 auto;
+	align-self: stretch;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+	.iPwaInstall__dismiss span{
+		font-size: 1.7em;
+	}
+
+/*
+	----------------
+	- Popover with instructions
+	----------------
+*/
+.iPwaInstallPopover{
+	display: grid;
+	gap: 3em;
+	padding: 1.5em;
+}
+
+.iPwaInstallPopover__icon{
+	width: 50px;
+	align-self: start;
+	flex: 0 0 auto;
+	border-radius: 22%;
+	background-color: #fff;
+	box-shadow: hsl(0 0% 0% / .15) 0px 5px 20px, hsl(0 0% 0% / .08) 0px 1px 2px;
+}
+
+.iPwaInstallPopover__title{
+	font-size: 1.2em;
+	font-weight: 600;
+	color: var(--i-color_hard);
+	display: flex;
+	align-items: center;
+	gap: .7em;
+}
+
+.iPwaInstallPopover svg{
+	height: 1em;
+	width: auto;
+	fill: currentColor;
+	display: inline-block;
+	overflow: visible;
+	vertical-align: -0.05em;
+}
+
+/* Hide iOS instructions on Androids */
+@supports not (-webkit-hyphens: auto){
+	.iPwaInstallPopover__ios{
+		display: none;
+	}
+}
+
+/* Hide Android instructions on iOS */
+@supports (-webkit-hyphens: auto){
+	.iPwaInstallPopover__android{
+		display: none;
+	}
+}

@@ -1,0 +1,13 @@
+<ips:template parameters="$app" />
+
+<div>
+{$app->description|raw}
+</div>
+<hr>
+<div class=''>
+		   {lang="app_desc_confirm"}
+		   {{$linkbit = \IPS\Developer::getApplicationsLanguageFilePath( $app );}}
+		   {{if $linkbit }}
+		   <a href="{$linkbit|raw}">{lang="open_in_ide"}</a>
+		   {{endif}}
+</div>

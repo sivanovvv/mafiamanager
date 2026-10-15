@@ -1,0 +1,148 @@
+<ips:template parameters="$entry, $previous, $next" />
+
+{{if $club = $entry->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $entry->container()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+{template="contentItemMessages" group="global" app="core" params="$entry->getMessages(), $entry"}
+
+{template="contentHiddenMessage" group="global" app="core" params="$entry"}
+
+<article class='ipsBox ipsBox--blogEntry ipsPull' data-ips-hook="entry__blog">
+	<header class='ipsPageHeader'>
+		{{if $entry->coverPhoto()}}
+		    {$entry->coverPhoto()|raw}
+		{{endif}}
+		<div class='ipsPageHeader__row'>
+			<div class='ipsPageHeader__primary' data-ips-hook='header'>
+				<div class='ipsPageHeader__title' data-ips-hook="contentTitle__blog">
+					<div class='ipsBadges' data-ips-hook='badges'>
+						{{foreach $entry->badges() as $badge}}{$badge|raw}{{endforeach}}
+					</div>
+					<h1>
+						{{if $entry->canEdit()}}
+							<span data-controller="core.front.core.moderation" data-ips-hook='titleEditable'>
+								{{if $entry->locked()}}<i class='fa-solid fa-lock' aria-hidden="true"></i> {{endif}}<span data-role="editableTitle" title='{lang="click_hold_edit"}'>
+									{$entry->name}
+								</span>
+							</span>
+						{{else}}
+							<span data-ips-hook='title'>{{if $entry->locked()}}<i class='fa-solid fa-lock' aria-hidden="true"></i> {{endif}}
+								{$entry->name}
+							</span>
+						{{endif}}
+					</h1>
+				</div>
+				{{if \IPS\Settings::i()->blog_enable_rating}}
+					<div class="ipsPageHeader__rating">{$entry->rating()|raw} <span class='i-color_soft'>({lang="num_reviews" pluralize="$entry->reviews"})</span></div>
+				{{endif}}
+				{{if \count( $entry->tags() ) OR $entry->prefix() OR ( $entry->canEdit() AND $entry::canTag() )}}
+					{template="tagsWithPrefix" group="global" app="core" params="$entry->tags(), $entry->prefix(), FALSE, FALSE, ( $entry->canEdit() and $entry::canTag() ) ? $entry->url() : NULL"}
+				{{endif}}
+			</div>
+			<div class='ipsButtons' data-ips-hook='headerButtons'>
+				{{if \count( $entry->shareLinks() )}}
+					{template="shareButton" app="core" group="sharelinks" params="$entry"}
+				{{endif}}
+				{{if \IPS\Application::appIsEnabled('cloud')}}
+					{template="spam" app="cloud" group="spam" params="$entry"}
+				{{endif}}
+				{template="follow" app="core" group="global" params="'blog', 'entry', $entry->id, $entry->followersCount()"}
+			</div>
+		</div>
+		<div class='ipsPageHeader__row ipsPageHeader__row--footer'>
+			<div class='ipsPageHeader__primary'>
+				<div class="ipsPhotoPanel ipsPhotoPanel--inline">
+					{template="userPhoto" app="core" params="$entry->author(), 'fluid'" group="global"}
+					<div class='ipsPhotoPanel__text' data-ips-hook='entryHeaderMetaData'>
+						<p class="ipsPhotoPanel__primary">
+							{{if $entry->category_id}}
+								{{if $entry->date > time()}}
+									{lang="entry_future_posted_with_cat" htmlsprintf="$entry->author()->link(),$entry->category()->link()"}
+								{{else}}
+									{lang="entry_posted_with_cat" htmlsprintf="$entry->author()->link(),$entry->category()->link()"}
+								{{endif}}
+							{{else}}
+								{{if $entry->date > time()}}
+									{lang="entry_future_posted" htmlsprintf="$entry->author()->link()"}
+								{{else}}
+									{lang="entry_posted" htmlsprintf="$entry->author()->link()"}
+								{{endif}}
+							{{endif}}
+						</p>
+						<p class="ipsPhotoPanel__secondary">{datetime="$entry->date"} &middot; {lang="num_views_with_number" pluralize="$entry->views"}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+	<section class='i-padding_3'>
+		{{if $poll = $entry->getPoll()}}
+			<div class='ipsInnerBox ipsInnerBox--inherit i-margin-bottom_3' data-ips-hook='entryPoll'>
+				{$poll|raw}
+			</div>
+		{{endif}}
+
+        {template="contentWrapper" app="core" group="global" params="$entry, 'entry'"}
+		
+		{{if $entry->_album}}
+			<hr class="ipsHr i-margin-block_3">
+			<h3 class='ipsTitle ipsTitle--h5 i-margin-bottom_2'>{lang="entry_images"}</h3>
+			{$entry->_album|raw}
+		{{endif}}
+		{{if $entry->editLine()}}
+			{$entry->editLine()|raw}
+		{{endif}}
+	</section>
+	<div class='ipsEntry__footer'>
+		<menu class='ipsEntry__controls' data-ips-hook='entryMainButtons'>
+			<li>{$entry->menu()|raw}</li>
+		</menu>
+		{{if \IPS\IPS::classUsesTrait( $entry, 'IPS\Content\Reactable' ) AND settings.reputation_enabled}}
+			{template="reputation" app="core" group="global" params="$entry"}
+		{{endif}}
+	</div>
+</article>
+
+<div class='ipsBox ipsBox--padding ipsPull ipsResponsive_showPhone'>
+	<div class='ipsPageActions'>
+		{{if \count( $entry->shareLinks() )}}
+			{template="shareButton" app="core" group="sharelinks" params="$entry"}
+		{{endif}}
+		{{if \IPS\Application::appIsEnabled('cloud')}}
+        	{template="spam" app="cloud" group="spam" params="$entry"}
+        {{endif}}
+		{template="follow" app="core" group="global" params="'blog', 'entry', $entry->id, $entry->followersCount()"}
+	</div>
+</div>
+
+{{if $previous or $next}}
+	<nav class="ipsPager">
+		<div class="ipsPager_prev">
+			{{if $previous}}
+				<a href="{$previous->url()}" title="{lang="prev_entry"}">
+					<span class="ipsPager_type">{lang="prev_entry"}</span>
+					<span class="ipsPager_title ipsTruncate_1">{$previous->name}</span>
+				</a>
+			{{endif}}
+		</div>
+		{{if $next}}
+			<div class="ipsPager_next">
+				<a href="{$next->url()}" title="{lang="next_entry"}">
+					<span class="ipsPager_type">{lang="next_entry"}</span>
+					<span class="ipsPager_title ipsTruncate_1">{$next->name}</span>
+				</a>
+			</div>
+		{{endif}}
+	</nav>
+{{endif}}
+
+{template="comments" app="blog" group="view" params="$entry"}
+
+{{if $entry->container()->club()}}
+	</div>
+{{endif}}

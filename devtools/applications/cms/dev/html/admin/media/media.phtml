@@ -1,0 +1,103 @@
+<ips:template parameters="$tree" />
+
+{{$rootButtons = \call_user_func( $tree->getRootButtons );}}
+
+<div data-controller='cms.admin.media.main' class='cMedia_manager ipsBox'>
+	<div class='ipsColumns ipsColumns--lines'>
+		<div class='ipsColumns__secondary i-basis_360 i-background_1'>
+			<div class='cMedia__managerToolbar'>
+				{{if $rootButtons['add_folder']}}
+					<a href='{$rootButtons['add_folder']['link']}' data-ipsDialog data-ipsDialog-title='{lang="cms_add_media_folder"}' class='ipsButton ipsButton--secondary ipsButton--small ipsButton--wide' data-role='folderButton'><i class="fa-solid fa-folder-plus" aria-hidden="true"></i> {lang="cms_add_media_folder"}</a>
+				{{endif}}
+			</div>
+			<i-tabs class="ipsTabs ipsTabs--stretch acpFormTabBar" id="ipsTabs_mediaSidebar" data-ipsTabBar data-ipsTabBar-contentarea="#elMedia_sidebar" data-ipstabbar-updateurl="false">
+				<div role='tablist'>
+					<button type="button" class="ipsTabs__tab" id="ipsTabs_mediaSidebar_folders" role="tab" aria-controls="ipsTabs_mediaSidebar_folders_panel" aria-selected="true" data-type="templates">{lang="media_folders"}</button>
+					<button type="button" class="ipsTabs__tab" id='ipsTabs_mediaSidebar_overview' role="tab" aria-controls="ipsTabs_mediaSidebar_overview_panel" aria-selected="false" data-type="css">{lang="media_file_overview"}</button>
+				</div>
+				{template="tabScrollers" app="core" group="global" location="global"}
+			</i-tabs>
+			<div id='elMedia_sidebar' class='i-background_1 ipsScrollbar'>
+				<div id='ipsTabs_mediaSidebar_folders_panel' class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_mediaSidebar_folders">
+					{{$roots = \call_user_func( $tree->getRoots );}}
+					<ul class='ipsTreeList' data-role='folderList'>
+						<li class='ipsTreeList_activeBranch ipsTreeList_activeNode' data-role="mediaFolder" data-folderID='0' data-loaded='true'>
+							<a href='{$tree->url->setQueryString( array('root' => 0 ) )}'>{lang="media_root_folder"}</a>
+							<ul>
+								{{foreach $roots as $id => $row}}
+									{template="folderRow" group="media" app="cms" params="$tree->url, $row"}
+								{{endforeach}}
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div id='ipsTabs_mediaSidebar_overview_panel' class='ipsTabs__panel i-padding_3' data-role='mediaSidebar' role="tabpanel" aria-labelledby="ipsTabs_mediaSidebar_overview" hidden>
+					<div data-role='itemInformation'>
+						<div class='cMedia_preview i-margin-bottom_3' data-role='itemPreview'></div>
+						<div class=''>
+							<strong class='ipsMinorTitle'>{lang="media_tag_title"}</strong>
+							<input type='text' class='ipsInput ipsInput--text ipsInput--fullWidth' value='' data-role='itemTag'>
+							<p class='i-font-size_-1 i-color_soft'>{lang="media_tag_desc"}</p>
+						</div>
+						
+						<hr class='ipsHr'>
+
+						<ul class='i-margin-top_2'>
+							<li class='i-margin-bottom_1'>
+								<h3 class='ipsMinorTitle'>{lang="media_filename"}</h3>
+								<p class='i-font-size_1' data-role='itemFilename'></p>
+							</li>
+                            <li class='i-margin-bottom_1'>
+                                <h3 class='ipsMinorTitle'>{lang='media_url'}</h3>
+                                <p class='i-font-size_1' data-role='itemUrl'></p>
+                                <p class='i-font-size_-1 i-color_soft'>{lang='media_url_desc'}</p>
+                            </li>
+							<li class='i-margin-bottom_1'>
+								<h3 class='ipsMinorTitle'>{lang="media_uploaded"}</h3>
+								<p class='i-font-size_1' data-role='itemUploaded'></p>
+							</li>
+							<li class='i-margin-bottom_1'>
+								<h3 class='ipsMinorTitle'>{lang="media_size"}</h3>
+								<p class='i-font-size_1' data-role='itemFilesize'></p>
+							</li>
+							<li class='i-margin-bottom_1' data-role='itemDimensionsRow'>
+								<h3 class='ipsMinorTitle'>{lang="media_dims"}</h3>
+								<p class='i-font-size_1' data-role='itemDimensions'></p>
+							</li>
+						</ul>
+
+						<hr class='ipsHr'>
+
+						<div class='i-margin-top_2'>
+							<a href='#' class='i-font-size_1' data-role='replaceFile' data-baseUrl="{url="app=cms&module=pages&controller=media&do=replace&id="}">{lang="replace_media_file"}</a>
+						</div>
+					</div>
+					<div data-role='multipleItems'>
+						<div class='i-padding_3 i-font-size_2 i-color_soft i-text-align_center i-margin-top_4' data-role='multipleItemsMessage'></div>
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div class='ipsColumns__primary'>
+			<div class='cMedia__managerToolbar'>
+				<ul class='ipsButtons ipsButtons--start ipsButtons--media i-flex_11'>
+					{{if $rootButtons['add_page']}}
+						<li><a href='{url="app=cms&module=pages&controller=media&do=upload"}' data-ipsDialog data-ipsDialog-forceReload data-ipsDialog-remoteSubmit data-ipsDialog-title='{lang="cms_add_media"}' class='ipsButton ipsButton--primary ipsButton--small' data-role='uploadButton'><i class='fa-solid fa-cloud-arrow-up' aria-hidden="true"></i> {lang="cms_add_media"}</a></li>
+					{{endif}}
+					<li class='ipsHide' data-action='deleteFolder'><a href='{url="app=cms&module=pages&controller=media&do=delete"}' data-ipsDialog data-ipsDialog-forceReload data-ipsDialog-remoteVerify="false" data-ipsDialog-title='{lang="delete"}' class='ipsButton ipsButton--negative ipsButton--small'><i class='fa-solid fa-xmark' aria-hidden="true"></i> {lang="cms_delete_folder_media"}</a></li>
+					<li class='ipsHide' data-action='deleteSelected'><a href='#' class='ipsButton ipsButton--negative ipsButton--small'><i class='fa-solid fa-xmark' aria-hidden="true"></i> {lang="cms_delete_selected_media"}</a></li>
+					<li class='ipsResponsive_showPhone'><hr class='ipsHr'></li>
+				</ul>
+				<input type='search' class='ipsInput ipsInput--text' data-role='mediaSearch' id='elMedia_searchField' placeholder='{lang="cms_search_media"}'>
+			</div>
+			<div class='i-padding_3 i-background_2 ipsScrollbar' data-role="fileListing" id='elMedia_fileList' data-showing='root'>
+				<ul class='ipsGrid ipsGrid--pages-media'>
+					{{foreach $roots as $id => $data}}
+						{template="fileListing" group="media" app="cms" params="$tree->url, $data"}
+					{{endforeach}}
+				</ul>
+			</div>
+			<div class='i-padding_3 i-background_2 ipsScrollbar ipsHide' data-role="searchResults" id='elMedia_searchResults'></div>
+		</div>
+	</div>
+</div>

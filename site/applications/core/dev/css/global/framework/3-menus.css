@@ -1,0 +1,597 @@
+/* Menus: various kinds of menu used in the interface */
+/* ======================================================== */
+/* BASIC MENU */
+.ipsMenu {
+	--i-co: var(--i-dropdown--co);
+	background: var(--i-dropdown--ba-co);
+	color: var(--i-co);
+	box-shadow: var(--i-dropdown--bo-sh);
+	border-radius: var(--i-dropdown--bo-ra);
+	z-index: var(--ips-js-zindex-top, 5050);
+	/* We need this fixed at the top corner of the page before JS positions it. The reason is that, if it overflows the view box, it causes the entire html doc to resize for a split second which slows things down and breaks the JS position */
+	position: fixed;
+	left:0;
+	top:0;
+	max-width: 100vw;
+	padding: 5px;
+}
+	
+	.ipsJS_none .ipsMenu:target {
+		display: block !important;
+	}
+
+	.ipsMenu_innerContent {
+		max-height: 350px;
+		overflow: auto;
+		scrollbar-width: thin;
+		scrollbar-color: var(--i-color_soft) var(--i-background_3);
+	}
+
+	/* Remove scrolling on certain "Edit Widget" menus, such as selecting a product in "Featured Products" */
+	.ipsMenu_innerContent:has(.ipsSelectTree_nodes){
+		overflow: visible;
+		max-height: none;
+	}
+		
+	.ipsMenu.ipsLoading {
+		min-height: 100px;
+	}
+
+	/* Remove padding if the menu contains a form: Eg. Edit topic tags, or is a larger menu like notifications/inbox */
+	.ipsMenu:has(.ipsForm, .ipsMenu_headerBar){
+		padding: 0;
+	}
+
+	.ipsMenu--padding{
+		padding: 1.8em;
+	}
+
+/* ======================================================== */
+/* WIDTHS */
+.ipsMenu_auto {
+	min-width: 200px;
+	max-width: min(500px, 100vw);
+	white-space: nowrap; /* Prevents collapsing of menu items (such as the Theme Settings dropdown) */
+}
+
+.ipsMenu_veryNarrow {
+	width: 140px;
+}
+
+.ipsMenu_narrow {
+	width: 200px;
+}
+
+.ipsMenu_normal {
+	width: 300px;
+}
+
+.ipsMenu_wide {
+	width: min(90vw, 450px);
+}
+
+/* Allow form content (descriptions, etc) to wrap */
+:where(.ipsMenu_auto .ipsForm){
+	white-space: normal;
+	font-weight: normal;
+}
+
+/* ======================================================== */
+/* MENU STEMS (the arrow that points to the target */
+.ipsMenu::before {
+	content: "";
+	position: absolute;
+	width: 0;
+	height: 0;
+	border: 1em solid transparent;
+	font-size: 8px;
+	pointer-events: none;
+}
+
+.ipsMenu[class*="ipsMenu_top"]{
+	margin-top: -10px;
+}
+
+	.ipsMenu[class*="ipsMenu_top"]::before{
+		border-top-color: var(--i-dropdown--ba-co);
+		filter: drop-shadow(var(--i-dropdown-arrow--bo-co) 0px 1px 0px);
+		top: 100%;
+	}
+
+	:is(.ipsMenu_topLeft, .ipsMenu_bottomLeft)::before{
+		left: 10px;
+	}
+
+	:is(.ipsMenu_topRight, .ipsMenu_bottomRight)::before{
+		right: 10px;
+	}
+
+	:is(.ipsMenu_topCenter, .ipsMenu_bottomCenter)::before{
+		left: 50%;
+		margin-inline-start: -1em;
+	}
+
+.ipsMenu[class*="ipsMenu_bottom"]{
+	margin-top: 10px;
+}
+
+	.ipsMenu[class*="ipsMenu_bottom"]::before{
+		border-bottom-color: var(--i-dropdown--ba-co);
+		filter: drop-shadow(var(--i-dropdown-arrow--bo-co) 0px -1px 0px);
+		bottom: 100%;
+	}
+
+/* ======================================================== */
+/* MENU ITEMS */
+.ipsMenu_item {
+	text-align: start;
+	font-weight: 500;
+}
+
+	.ipsMenu_item > :where(a, span, button) {
+		display: block; /* Flex can't be used here since it breaks ellipsis overflow */
+		padding: .6em 1.4em;
+		color: inherit;
+    	width: 100%;
+		border-radius: 5px;
+		text-decoration: none !important; /* This prevents .ipsData__item links from adding underlines to menus */
+		/* Used to prevent .ipsMenu_auto items from becoming too wide */
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+		.ipsMenu_item > :where(a, span, button) > :is(.fa-solid, .fa-regular, .fa-brands):first-child{
+			opacity: .5;
+			width: 1.2em;
+			margin-inline-end: .7em;
+			text-align: center;
+		}
+
+	.ipsMenu_itemDisabled {
+		opacity: .7;
+		font-style: italic;
+		cursor: default;
+		pointer-events: none;
+	}
+
+/* The soft color is used in Activity Stream filter menus */
+.ipsMenu_item .i-color_soft{
+	color: inherit;
+	opacity: .6;
+}
+
+/* Hover styles - Only apply :hover to certain devices */
+.ipsMenu_item[data-selected] :is(a, span),
+.ipsMenu_item.ipsMenu_hover {
+	background: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+
+@media (any-hover:hover){
+	.ipsMenu_item:not(.ipsMenu_itemClicked, .ipsMenu_itemDisabled) a:hover,
+	.ipsMenu_item > button:hover {
+		background: var(--i-primary);
+		color: var(--i-primary-contrast);
+	}
+}
+
+.ipsMenu_item.i-color_negative a {
+	color: var(--i-color_negative);
+}
+
+.ipsMenu_sep hr { 
+	border-top: 1px solid color-mix(in srgb, var(--i-co) 15%, transparent);
+	margin: 6px;
+}
+
+.ipsMenu_subItems > :is(a,span,button){
+	position: relative;
+	padding-inline-end: 1.8em;
+}
+
+	.ipsMenu_subItems > :is(a,span,button)::after {
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		position: absolute;
+		top: .65em;
+		inset-inline-end: .65em;
+		content: "\f0da";
+	}
+	[dir="rtl"] .ipsMenu_subItems > :is(a,span)::after{
+		transform: scale(-1);
+	}
+
+	.ipsMenu_subItems .ipsMenu {
+		position: absolute;
+	}
+	
+
+
+/* ======================================================== */
+/* OTHER MENU */
+.ipsMenu_title {
+	padding: 1em 1.5em;
+	font-size: .9em;
+	font-weight: 600;
+	text-transform: uppercase;
+	color: var(--i-color_hard);
+}
+
+	.ipsMenu_item + .ipsMenu_title{
+		margin-top: 2em;
+	}
+
+.ipsMenu_headerBar, .ipsMenu_footerBar {
+	padding: 1em 1.3em;
+}
+
+	.ipsMenu_headerBar {
+		border-bottom: 1px solid var(--i-background_3);
+		border-radius: var(--i-popup--bo-ra) var(--i-popup--bo-ra) 0px 0px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.ipsMenu_footerBar {
+		border-top: 1px solid var(--i-background_3);
+		border-radius: 0px 0px var(--i-popup--bo-ra) var(--i-popup--bo-ra);
+		background-color: var(--i-background_2);
+	}
+
+.ipsMenu_footerBarLink{
+	--i-co: var(--i-color_soft);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .5em;
+	padding: 1em;
+	margin: -1em -1.3em;
+	font-weight: 600;
+	color: var(--i-co);
+	border-radius: inherit;
+}
+
+	.ipsMenu_footerBarLink:hover{
+		background-color: color-mix(in srgb, var(--i-co) 8%, transparent);
+	}
+
+	.ipsMenu_footerBarLink .fa-arrow-right-long{
+		transition: transform .2s linear;
+		opacity: .6;
+	}
+
+	.ipsMenu_footerBarLink:hover .fa-arrow-right-long{
+		transform: translateX(calc(.4em * var(--i-lang-dir)));
+	}
+
+/* Counts for menu items */
+.ipsMenu_item > a:has(.ipsMenu_itemCount){
+	display: flex;
+	align-items: center;
+}
+
+.ipsMenu_itemCount,
+.ipsSideMenu_itemCount {
+	padding: 0 .6em;
+	background: color-mix(in srgb, var(--i-co) 20%, transparent);
+	font-weight: 600;
+	font-size: max(11px,0.8em);
+	border-radius: 3px;
+}
+
+:is(.ipsMenu_itemCount, .ipsSideMenu_itemCount):last-child{
+	margin-inline-start: auto;
+}
+
+/* With this enabled, the message count in inbox "Change folder" dropdown is poor */
+/* .ipsMenu_itemCount:last-child{
+	margin-inline-end: -1em;
+} */
+
+/* Notifications in menus, eg: Account Settings */
+[data-ips-scheme="dark"] .ipsMenu .ipsData__item{
+	border-color: var(--i-background_5);
+}
+
+.ipsMenu_item .ipsNotification{
+	position: static;
+	margin-inline-start: auto;
+}
+
+/* Selectable items for menus */
+.ipsMenu_selectable .ipsMenu_item :is(a, button),
+.ipsMenu_selectable .ipsMenu_item > span{
+	padding-inline-start: 35px;
+}
+
+	.ipsMenu_selectable .ipsMenu_item :is(a, button)::before,
+	.ipsMenu_selectable .ipsMenu_item > span::before {
+		content: "\f10c";
+		font-size: 13px;
+		position: absolute;
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 400;
+		opacity: .25;
+		inset-inline-start: 0;
+		padding-inline-start: 17px;
+	}
+
+	.ipsMenu_selectable .ipsMenu_itemChecked :is(a, button),
+	.ipsMenu_selectable .ipsMenu_itemChecked > span {
+		font-weight: bold;
+	}
+
+		.ipsMenu_selectable .ipsMenu_itemChecked :is(a, button)::before,
+		.ipsMenu_selectable .ipsMenu_itemChecked > span::before {
+			content: "\f00c";
+			opacity: 1;
+			font-weight: 900;
+		}
+
+	.ipsMenu_selectable button {
+		width: 100%;
+	}
+
+	.ipsMenu_selectable button:not( .ipsButton--wide ) {
+		text-align: start;
+	}
+
+	.ipsMenu_selectable .ipsMenu_item:not( [data-noselect] ) :is(input[type="radio"],input[type="checkbox"]) {
+		display: none;
+	}
+
+/* Selectable check all/check none */
+.ipsMenu_selectable .ipsMenu_item a[data-role="selectAll"] {
+	margin-inline-end: 15px;
+}
+
+/* ======================================================== */
+/* SIDE MENUS */
+
+.ipsSideMenu + .ipsSideMenu{
+	margin-top: 1.7em;
+}
+
+.ipsWidget .ipsSideMenu{
+	padding: 5px;
+}
+
+.ipsSideMenu__list{
+	color: var(--i-color_soft);
+}
+
+.ipsSideMenu__list[data-ipssidemenu-type="check"] > li{
+	margin-bottom: 2px;
+}
+
+.ipsSideMenu__title,
+.ipsSideMenu__subTitle {
+	font-weight: 600;
+	font-size: 1.2em;
+	color: var(--i-color_hard);
+	margin-bottom: .6em;
+}
+
+.ipsSideMenu__subTitle {
+	font-size: 1.1em;
+}
+	.ipsSideMenu__subTitle:not(:first-child) {
+		margin-top: 2em;
+	}
+
+	.ipsSideMenu_item {
+		color: inherit;
+		display: flex;
+		align-items: center;
+		gap: 0 .8em;
+		padding: .6em 1.4em;
+		position: relative;
+		cursor: pointer;
+		font-weight: 500;
+		border-radius: min(var(--i-design-radius), .45em);
+		width: 100%; /* <button> */
+	}
+
+	.ipsSideMenu_item:where(:hover) {
+		background-color: color-mix(in hsl, currentColor 10%, transparent);
+	}
+
+	.ipsSideMenu_itemActive,
+	.ipsSideMenu_item[aria-selected="true"] {
+		color: var(--i-primary-contrast);
+		background: var(--i-primary);
+	}
+
+	.ipsSideMenu_item:has(:checked) {
+		background: var(--i-primary);
+		color: var(--i-primary-contrast);
+	}
+
+	.ipsSideMenu_itemDisabled {
+		/* We use opacity since we can't use color-mix(currentColor) since it crashes Safari 16.4 + 16.5 */
+		opacity: .3;
+		pointer-events: none;
+		font-style: italic;
+	}
+	
+		/* Icons: Used on Settings page */
+		.ipsSideMenu_item > :is(.fa-solid, .fa-regular, .fa-brands):first-child {
+			width: 2.14em;
+			flex: 0 0 auto;
+			text-align: center;
+			opacity: .5;
+		}
+
+			.ipsSideMenu_itemActive > :is(.fa-solid, .fa-regular, .fa-brands):first-child {
+				opacity: 1;
+			}
+
+		.ipsSideMenu__text{
+			flex: 1 1 auto;
+		}
+
+		.ipsCategoriesMenu .ipsSideMenu__list{
+			color: var(--i-color_hard);
+		}
+
+		.ipsCategoriesMenu .ipsSideMenu__text{
+			font-weight: 500;
+		}
+
+			.ipsSideMenu--truncate .ipsSideMenu__text{
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.ipsSideMenu_item .ipsBadge--soft{
+				background: color-mix(in srgb, currentColor 10%, transparent);
+				color: currentColor;
+			}
+
+			.ipsSideMenu__count{
+				flex: 0 0 auto;
+				color: var(--i-color_soft);
+			}
+
+		.ipsSideMenu__toggle{
+			-webkit-appearance: none;
+			appearance: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			width: 1.2em;
+			height: 1.2em;
+			flex: 0 0 auto;
+
+			pointer-events: none; /* This is needed since we use JS to toggle these inputs (and clicking these makes the JS out of sync). This can be removed once the .ipsSideMenu_item elements are updated to <label> instead of <a> */
+		}
+
+			/* [type] is necessary to prevent pseudo elements from always having these styles */
+			:is(.ipsSideMenu--pseudoRadios, .ipsSideMenu--pseudoChecks) .ipsSideMenu_item:not(.ipsSideMenu_itemActive) .ipsSideMenu__toggle::before,
+			.ipsSideMenu__toggle[type]:not(:checked)::before{
+				content: "";
+				opacity: .3;
+				width: 80%;
+				height: 80%;
+				border: 2px solid currentColor;
+				border-radius: 3px;
+			}
+
+			.ipsSideMenu--pseudoRadios .ipsSideMenu_item:not(.ipsSideMenu_itemActive) .ipsSideMenu__toggle::before,
+			.ipsSideMenu__toggle[type="radio"]:not(:checked)::before{
+				border-radius: 50%;
+			}
+
+			:is(.ipsSideMenu--pseudoRadios, .ipsSideMenu--pseudoChecks) .ipsSideMenu_itemActive .ipsSideMenu__toggle::before,
+			.ipsSideMenu__toggle:checked::before{
+				content: "\f00c";
+				font-family: var(--i-font-awesome);
+				font-weight: 900;
+				-webkit-font-smoothing: antialiased;
+				font-variant: normal;
+				line-height: 1;
+				text-rendering: auto;
+			}
+
+
+/* We need to use ~ instead of + since there can sometimes be a dropdown menu between the list and the title */
+.ipsSideMenu__list ~ .ipsSideMenu__title {
+	margin-top: 1.4em;
+	padding-top: 1.8em;
+	border-top: 1px solid var(--i-background_4);
+}
+
+/* Sub lists */
+.ipsSideMenu__list .ipsSideMenu__list {
+	margin-bottom: 1em;
+	color: var(--i-color_root);
+}
+
+	.ipsSideMenu__list .ipsSideMenu__list .ipsSideMenu_item{
+		padding-inline-start: 3em;
+	}
+
+	/* Hide sublist if empty */
+	.ipsSideMenu_item + .ipsSideMenu__list:not(:has(*)){ display: none }
+	@supports not selector(a:has(b)){
+		.ipsSideMenu_item + .ipsSideMenu__list:-moz-only-whitespace{ display: none }
+	}
+
+	.ipsSideMenu_item + .ipsSideMenu__list .ipsSideMenu_item {
+		font-size: .95em;
+	}
+
+
+
+
+
+
+
+
+
+/* Collapse menus into dropdown menus on smaller screens */
+.ipsSideMenu__view{
+	position: sticky;
+	top: calc(var(--i-sticky-offset) + 0px);
+	z-index: 1;
+	scroll-margin-top: 1em;
+}
+
+.ipsSideMenu__view a {
+	color: var(--i-color_hard);
+	background: var(--i-background_3);
+	border-radius: min(var(--i-design-radius), .45em);
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 1em;
+	padding: 1em;
+}
+
+	.ipsSideMenu__view a::after{
+		content: "\2b";
+		flex: 0 0 auto;
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		margin-inline-start: auto;
+	}
+
+/* :is(.ipsSideMenu_open, .ipsSideMenu:target) .ipsSideMenu__view a{
+	background: var(--i-background_dark);
+	color: #fff;
+} */
+
+	:is(.ipsSideMenu_open, .ipsSideMenu:target) .ipsSideMenu__view a::after{
+		content: "\f068";
+	}
+
+@media screen and (min-width: 768px){
+	.ipsSideMenu__view {
+		display: none;
+	}
+}
+@media screen and (max-width: 767px) {
+	/* Hide menu, and show when the _open class is toggled */
+	.ipsSideMenu:not(.ipsSideMenu_open, :target) .ipsSideMenu__menu{
+		display: none;
+	}
+	.ipsSideMenu__menu{
+		margin-top: 1em;
+	}
+}
+
+/* Landscape-specific phone styles for menus */
+@media screen and (max-height: 450px) {
+	.ipsMenu_innerContent {
+		max-height: 210px;
+	}
+}

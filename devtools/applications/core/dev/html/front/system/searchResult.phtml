@@ -1,0 +1,174 @@
+<ips:template parameters="$indexData, $summaryLanguage, $authorData, $itemData, $unread, $objectUrl, $itemUrl, $containerUrl, $containerTitle, $repCount, $showRepUrl, $snippet, $iPostedIn, $view, $canIgnoreComments=FALSE, $reactions=array(), $extraClass=''" />
+
+<li class="ipsStreamItem ipsStreamItem_contentBlock ipsStreamItem_{$view} {$extraClass} {{if $indexData['index_hidden']}}ipsModerated{{endif}}" {{if $unread}}data-ips-unread{{else}}data-ips-read{{endif}} data-role='activityItem' data-timestamp="{$indexData['index_date_created']}">
+	{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+		{{$itemClass = $indexData['index_class']::$itemClass;}}
+		<a href="{$objectUrl}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</span></a>
+		<div class='ipsStreamItem__iconCell' data-ips-hook='icon'>
+			{template="userPhotoFromData" group="global" app="core" params="$authorData['member_id'], $authorData['name'], $authorData['members_seo_name'], \IPS\Member::photoUrl( $authorData ), 'fluid'"}					
+		</div>
+		<div class='ipsStreamItem__mainCell'>
+			<div class='ipsStreamItem__header' data-ips-hook='commentHeader'>
+				<div class='ipsStreamItem__title'>
+					{{if $unread or $iPostedIn}}
+						<a href="{{if member.member_id}}{$objectUrl->stripQueryString( array( 'comment' => 'comment', 'review' => 'review' ) )->setQueryString( 'do', 'getNewComment' )}{{else}}{$objectUrl->stripQueryString( array( 'comment' => 'comment', 'review' => 'review', 'do' => 'do' ) )}{{endif}}" data-linkType="star" class="ipsIndicator {{if $iPostedIn}}ipsIndicator--participated{{endif}}" data-ipsTooltip='{lang="first_unread_post"}'><span class="ipsInvisible">{lang="first_unread_post"}</span></a>
+					{{endif}}
+					<h3 data-ips-hook='commentTitle'>
+						{{if isset( $indexData['index_prefix'] )}}
+							{template="prefix" group="global" app="core" params="rawurlencode($indexData['index_prefix']), $indexData['index_prefix']"}
+						{{endif}}
+						<a href="{{if member.member_id}}{$objectUrl->stripQueryString( array( 'comment' => 'comment', 'review' => 'review' ) )->setQueryString( 'do', 'getNewComment' )}{{else}}{$objectUrl->stripQueryString( array( 'comment' => 'comment', 'review' => 'review', 'do' => 'do' ) )}{{endif}}" data-linkType="link" data-searchable>{$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</a>
+					</h3>
+					<div class='ipsBadges' data-ips-hook='commentBadges'>
+						{{if ! empty( $itemData['extra']['solved'] ) }}
+							<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="this_is_solved"}'><i class='fa-solid fa-check' aria-hidden="true"></i></span>
+						{{endif}}
+						{{if $indexData['index_hidden']}}
+							{{if $indexData['index_hidden'] === -1}}
+								<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="hidden"}'><i class='fa-solid fa-eye-slash' aria-hidden="true"></i></span>
+							{{elseif $indexData['index_hidden'] === 1}}
+								<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i></span>
+							{{endif}}
+						{{endif}}
+					</div>
+				</div>
+				<div class='ipsStreamItem__summary'>
+					{{if $indexData['index_title']}}
+						<span data-ipsTooltip title='{lang="$itemClass::$title"}'><i class='fa-solid fa-{$itemClass::$icon}' aria-hidden="true"></i></span>
+					{{else}}				
+						<span data-ipsTooltip title='{lang="$indexData['index_class']::$title"}'><i class='fa-solid fa-{$indexData['index_class']::$icon}' aria-hidden="true"></i></span>
+					{{endif}}
+					{$summaryLanguage} <a href='{$containerUrl}'>{$containerTitle|raw}</a>
+				</div>
+			</div>
+			<div class='ipsStreamItem__content' data-ips-hook='commentSnippet'>
+				{{if $canIgnoreComments and isset( $itemData['author'] ) and \IPS\Member::loggedIn()->member_id and isset( $authorData['member_id'] ) and isset ( $authorData['member_group_id'] ) and \IPS\Member::loggedIn()->isIgnoring( $authorData, 'topics' ) and $view != 'condensed'}}
+					<div class='ipsEntry ipsEntry--ignored' id='elIgnoreComment_{$indexData['index_object_id']}' data-ignoreCommentID='elComment_{$indexData['index_object_id']}' data-ignoreUserID='{$authorData['member_id']}'>
+						{lang="ignoring_content" sprintf="$authorData['name']"} <button type="button" id="elIgnoreComment_{$indexData['index_object_id']}" popovertarget="elIgnoreComment_{$indexData['index_object_id']}_menu" data-action="ignoreOptions" title='{lang="see_post_ignore_options"}'>{lang="options"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+						<i-dropdown popover id="elIgnoreComment_{$indexData['index_object_id']}_menu">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									<li><button type="button" data-ipsMenuValue='showPost'>{lang="show_this_post"}</button></li>
+									<li><hr></li>
+									<li><a href='{url="app=core&module=system&controller=ignore&do=remove&id={$authorData['member_id']}" seoTemplate="ignore" csrf="true" }' data-ipsMenuValue='stopIgnoring'>{lang="stop_ignoring_posts_by" sprintf="$authorData['name']"}</a></li>
+									<li><a href='{url="app=core&module=system&controller=ignore" seoTemplate="ignore"}'>{lang="change_ignore_preferences"}</a></li>
+								</ul>
+							</div>
+						</i-dropdown>
+					</div>
+					<div id='elComment_{$indexData['index_object_id']}' class="ipsHide">
+						{$snippet|raw}
+					</div>
+				{{else}}
+				 	{$snippet|raw}
+				{{endif}}
+			</div>
+			<ul class='ipsStreamItem__stats' data-ips-hook='commentStats'>
+				<li>
+					<a rel="nofollow" href='{{if $indexData['index_title']}}{$objectUrl}{{else}}{{if \in_array( 'IPS\Content\Review', class_parents( $indexData['index_class'] ) )}}{$objectUrl->setQueryString( array( 'do' => 'findReview', 'review' => $indexData['index_object_id'] ) )}{{else}}{$objectUrl->setQueryString( array( 'do' => 'findComment', 'comment' => $indexData['index_object_id'] ) )}{{endif}}{{endif}}'><i class='fa-regular fa-clock' aria-hidden="true"></i> {datetime="$indexData['index_date_created']"}</a>
+				</li>
+				{{if isset( $itemClass::$databaseColumnMap['num_comments'] ) and isset( $itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ] ) and $itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ] > ( $itemClass::$firstCommentRequired ? 1 : 0 )}}
+					<li>
+						{{if $itemClass::$firstCommentRequired}}
+							<i class="fa-regular fa-comments" aria-hidden="true"></i> {lang="num_replies" pluralize="$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ] - 1"}
+						{{else}}
+							<i class="fa-regular fa-comments" aria-hidden="true"></i> {lang="num_comments" pluralize="$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_comments'] ]"}
+						{{endif}}
+					</li>
+				{{endif}}
+				{{if isset( $itemClass::$databaseColumnMap['num_reviews'] ) and isset( $itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_reviews'] ] ) and $itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_reviews'] ]}}
+					<li>
+						<a href='{$itemUrl}#reviews'><i class='fa-regular fa-star' aria-hidden="true"></i> {lang="num_reviews" pluralize="$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['num_reviews'] ]"}</a>
+					</li>
+				{{endif}}
+				{{if $view != 'condensed'}}
+					{{if \IPS\IPS::classUsesTrait( $indexData['index_class'], 'IPS\Content\Reactable' ) and settings.reputation_enabled and \count( $reactions )}}
+						{{if \in_array( 'IPS\Content\Review', class_parents( $indexData['index_class'] ) )}}
+							<li>{template="searchReaction" group="search" app="core" params="$reactions, $itemUrl->setQueryString('do', 'showReactionsReview')->setQueryString('review', $indexData['index_object_id']), $repCount"}</li>
+						{{else}}
+							<li>{template="searchReaction" group="search" app="core" params="$reactions, $itemUrl->setQueryString('do', 'showReactionsComment')->setQueryString('comment', $indexData['index_object_id']), $repCount"}</li>
+						{{endif}}
+					{{endif}}
+					{{if isset( $indexData['index_tags'] )}}
+						<li>{template="tags" group="global" app="core" params="explode( ',', $indexData['index_tags'] ), true"}</li>
+					{{endif}}
+				{{endif}}
+			</ul>
+		</div>
+	{{else}}
+		{{$itemClass = $indexData['index_class'];}}
+		<a href="{{if member.member_id}}{$objectUrl->setQueryString( 'do', 'getNewComment' )}{{else}}{$objectUrl}{{endif}}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$indexData['index_title']}</span></a>
+		<div class='ipsStreamItem__iconCell'>
+			{{if isset( $itemClass::$databaseColumnMap['author'] )}}
+				{template="userPhotoFromData" group="global" app="core" params="$authorData['member_id'], $authorData['name'], $authorData['members_seo_name'], \IPS\Member::photoUrl( $authorData ), 'fluid'"}
+	        {{else}}
+	            <span></span>
+			{{endif}}
+		</div>
+		<div class='ipsStreamItem__mainCell'>
+			<div class='ipsStreamItem__header' data-ips-hook='itemHeader'>
+				<div class='ipsStreamItem__title'>
+					{{if $unread}}
+						<a href='{{if member.member_id}}{$objectUrl->setQueryString( 'do', 'getNewComment' )}{{else}}{$objectUrl}{{endif}}' title='{lang="first_unread_post"}' data-linkType="star" {{if $iPostedIn}}data-iPostedIn{{endif}} data-ipsTooltip class='ipsIndicator {{if $iPostedIn}}ipsIndicator--participated{{endif}}'></a>
+					{{elseif $iPostedIn}}
+						<span class='ipsIndicator ipsIndicator--read ipsIndicator--participated'></span>
+					{{endif}}
+					<h3 data-ips-hook='itemTitle'>
+						{{if isset( $indexData['index_prefix'] )}}
+							{template="prefix" group="global" app="core" params="rawurlencode($indexData['index_prefix']), $indexData['index_prefix']"}
+						{{endif}}
+						<a href='{$itemUrl}' data-linkType="link" data-searchable>{$indexData['index_title']}</a>
+					</h3>
+					<div class='ipsBadges' data-ips-hook='itemBadges'>
+						{{if ! empty( $itemData['extra']['solved'] ) }}<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="this_is_solved"}'><i class='fa-solid fa-check' aria-hidden="true"></i></span>{{endif}}
+						 {{if $indexData['index_hidden']}}
+							<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="hidden"}'><i class='fa-solid fa-eye-slash' aria-hidden="true"></i></span>
+						{{endif}}
+					</div>
+				</div>
+				{{if $containerTitle}}
+					<div class='ipsStreamItem__summary'>
+						{{if isset( $itemClass::$databaseColumnMap['author'] )}}
+							<span data-ipsTooltip title='{lang="$indexData['index_class']::$title" ucfirst="true"}'><i class='fa-solid fa-{$indexData['index_class']::$icon}' aria-hidden="true"></i></span>
+						{{else}}
+							<i class='fa-solid fa-{$indexData['index_class']::$icon}' aria-hidden="true"></i>
+						{{endif}}
+						{$summaryLanguage} <a href='{$containerUrl}'>{$containerTitle|raw}</a>
+					</div>
+				{{endif}}
+			</div>
+			<div class='ipsStreamItem__content' data-ips-hook='itemSnippet'>
+				{$snippet|raw}
+			</div>				
+			<ul class='ipsStreamItem__stats' data-ips-hook='itemStats'>
+				{{if isset( $indexData['index_class']::$databaseColumnMap['date'] )}}
+					<li>
+						<a href='{$objectUrl}' rel="nofollow"><i class='fa-regular fa-clock' aria-hidden="true"></i> {datetime="$indexData['index_date_created']"}</a>
+					</li>
+				{{endif}}
+				{{if isset( $indexData['index_class']::$databaseColumnMap['num_comments'] ) and isset( $itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_comments'] ] ) and $itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_comments'] ] > ( $indexData['index_class']::$firstCommentRequired ? 1 : 0 )}}
+					<li>
+						{{if $indexData['index_class']::$firstCommentRequired}}
+							<i class="fa-regular fa-comments" aria-hidden="true"></i> {lang="num_replies" pluralize="$itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_comments'] ] - 1"}
+						{{else}}
+							<i class="fa-regular fa-comments" aria-hidden="true"></i> {lang="num_comments" pluralize="$itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_comments'] ]"}
+						{{endif}}
+					</li>
+				{{endif}}
+				{{if isset( $indexData['index_class']::$databaseColumnMap['num_reviews'] ) and isset( $itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_reviews'] ] ) and $itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_reviews'] ]}}
+					<li>
+						<a href='{$itemUrl}#reviews'><i class='fa-regular fa-star' aria-hidden="true"></i> {lang="num_reviews" pluralize="$itemData[ $indexData['index_class']::$databasePrefix . $indexData['index_class']::$databaseColumnMap['num_reviews'] ]"}</a>
+					</li>
+				{{endif}}
+				{{if $view != 'condensed'}}
+					{{if \IPS\IPS::classUsesTrait( $indexData['index_class'], 'IPS\Content\Reactable' ) and settings.reputation_enabled and \count( $reactions )}}
+						<li>{template="searchReaction" group="search" app="core" params="$reactions, $itemUrl->setQueryString('do', 'showReactions'), $repCount"}</li>
+					{{endif}}
+					{{if isset( $indexData['index_tags'] )}}
+						<li>{template="tags" group="global" app="core" params="explode( ',', $indexData['index_tags'] ), true"}</li>
+					{{endif}}
+				{{endif}}
+			</ul>
+		</div>
+	{{endif}}
+</li>

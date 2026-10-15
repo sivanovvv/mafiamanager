@@ -1,0 +1,19 @@
+<ips:template parameters="$calendar, $calendars, $thisCalendar, $jump, $date, $downloadLinks" />
+
+{{if !$thisCalendar or !$thisCalendar->club()}}
+{template="header" group="overview" app="calendar" params="$date, $thisCalendar"}
+{{endif}}
+{template="calendarHeader" group="browse" app="calendar" params="$calendars, $thisCalendar, $jump, $downloadLinks"}
+{{if $thisCalendar and $club = $thisCalendar->club()}}
+{template="header" group="overview" app="calendar" params="$date, $thisCalendar, null, false"}
+{{endif}}
+
+<div data-controller='calendar.front.browse.main' class='ipsBox ipsBox--calendarMain ipsPull'>
+	{$calendar|raw}
+</div>
+
+{{if $thisCalendar}}
+	<div class="ipsBox ipsBox--calendarWrapper ipsBox--padding ipsPull ipsResponsive_showPhone">
+		{template="follow" app="core" group="global" params="'calendar', 'calendar', $thisCalendar->id, \IPS\calendar\Event::containerFollowerCount( $thisCalendar )"}
+	</div>
+{{endif}}

@@ -1,0 +1,52 @@
+<ips:template parameters="$baseUrl, $pages, $activePage=1, $perPage=25, $ajax=TRUE, $pageParam='page', $simple=false" />
+{{$firstPage = $baseUrl->setPage( $pageParam );}}
+{{if $activePage > 1 || $pages > 1}}
+	{{$uniqId = mt_rand();}}
+	<ul class='ipsPagination {{if $pages > 5}}ipsPagination--numerous{{endif}}' id='elPagination_{expression="md5($baseUrl)"}_{$uniqId}' data-ipsPagination-seoPagination='{{if $firstPage->seoPagination}}true{{else}}false{{endif}}' data-pages='{$pages}' {{if $ajax and ( settings.ajax_pagination or \IPS\Request::i()->isAjax())}}data-ipsPagination {{if $pageParam != 'page'}}data-ipsPagination-pageParam='{$pageParam}'{{endif}} data-ipsPagination-pages="{$pages}" data-ipsPagination-perPage='{$perPage}'{{endif}}>
+		{{if $simple}}
+			{{if $activePage > 1}}
+				<li class='ipsPagination__prev'><a href='{$baseUrl->setPage( $pageParam, $activePage - 1 )}' rel="prev" data-page='{expression="$activePage - 1"}'>{lang="prev"}</a></li>
+			{{endif}}
+			{{if $activePage < $pages}}
+				<li class='ipsPagination__next'><a href='{$baseUrl->setPage( $pageParam, $activePage + 1 )}' rel="next" data-page='{expression="$activePage + 1"}'>{lang="next"}</a></li>
+			{{endif}}
+		{{else}}
+			{{if $activePage != 1}}
+				<li class='ipsPagination__first'><a href='{$firstPage}' rel="first" data-page='1' data-ipsTooltip='{lang="first_page"}'><i class='fa-solid fa-angles-left' aria-hidden="true"></i><span class="ipsInvisible">{lang="first_page"}</span></a></li>
+				<li class='ipsPagination__prev'><a href='{$baseUrl->setPage( $pageParam, $activePage - 1 )}' rel="prev" data-page='{expression="$activePage - 1"}'>{lang="prev"}</a></li>
+				{{foreach range( ( ( $activePage - 5 ) > 0 ) ? ( $activePage - 5 ) : 1, $activePage - 1 ) as $idx => $i}}
+					<li class='ipsPagination__page'><a href='{$baseUrl->setPage( $pageParam, $i )}' data-page='{$i}'>{$i}</a></li>
+				{{endforeach}}
+			{{else}}
+				<li class='ipsPagination__first ipsPagination__inactive'><a href='{$firstPage}' rel="first" data-page='1' data-ipsTooltip title='{lang="first_page"}'><i class='fa-solid fa-angles-left' aria-hidden="true"></i></a></li>
+				<li class='ipsPagination__prev ipsPagination__inactive'><a href='{$baseUrl->setPage( $pageParam, $activePage - 1 )}' rel="prev" data-page='{expression="$activePage - 1"}'>{lang="prev"}</a></li>
+			{{endif}}
+			<li class='ipsPagination__page ipsPagination__active'><a href='{$baseUrl->setPage( $pageParam, $activePage )}' data-page='{$activePage}'>{$activePage}</a></li>
+			{{if $activePage != $pages}}
+				{{foreach range( $activePage + 1, ( ( $activePage + 5 ) > $pages ) ? $pages : ( $activePage + 5 ) ) as $idx => $i}}
+					<li class='ipsPagination__page'><a href='{$baseUrl->setPage( $pageParam, $i )}' data-page='{$i}'>{$i}</a></li>
+				{{endforeach}}
+				<li class='ipsPagination__next'><a href='{$baseUrl->setPage( $pageParam, $activePage + 1 )}' rel="next" data-page='{expression="$activePage + 1"}'>{lang="next"}</a></li>
+				<li class='ipsPagination__last'><a href='{$baseUrl->setPage( $pageParam, $pages )}' rel="last" data-page='{$pages}' data-ipsTooltip='{lang="last_page"}'><i class='fa-solid fa-angles-right' aria-hidden="true"></i><span class="ipsInvisible">{lang="last_page"}</span></a></li>
+			{{else}}
+				<li class='ipsPagination__next ipsPagination__inactive'><a href='{$baseUrl->setPage( $pageParam, ( $activePage + 1 > $pages ) ? $pages : $activePage + 1 )}' rel="next" data-page='{expression="( $activePage + 1 > $pages ) ? $pages : $activePage + 1"}'>{lang="next"}</a></li>
+				<li class='ipsPagination__last ipsPagination__inactive'><a href='{$baseUrl->setPage( $pageParam, $pages )}' rel="last" data-page='{$pages}' data-ipsTooltip title='{lang="last_page"}'><i class='fa-solid fa-angles-right' aria-hidden="true"></i></a></li>
+			{{endif}}
+			{{if $pages > 1}}
+				<li class='ipsPagination__pageJump'>
+					<button type="button" id="elPagination_{expression='md5($baseUrl)'}_{$uniqId}_jump" popovertarget="elPagination_{expression='md5($baseUrl)'}_{$uniqId}_jump_menu">{lang="pagination" sprintf="$activePage, $pages"} <i class='fa-solid fa-caret-down i-margin-start_icon' aria-hidden="true"></i></button>
+					<i-dropdown popover id="elPagination_{expression='md5($baseUrl)'}_{$uniqId}_jump_menu">
+						<div class="iDropdown">
+							<form accept-charset='utf-8' method='post' action='{$baseUrl->setPage( 'page', NULL )}' data-role="pageJump" data-baseUrl='{$baseUrl}' data-bypassValidation='true'>
+								<ul class='i-flex i-gap_1 i-padding_2'>
+									<input type='number' min='1' max='{$pages}' placeholder='{lang="page_number"}: 1 - {$pages}' class='ipsInput i-flex_11' name='{$pageParam}' inputmode="numeric" autofocus>
+									<button type='submit' class='ipsButton ipsButton--primary'>{lang="go"}</button>
+								</ul>
+							</form>
+						</div>
+					</i-dropdown>
+				</li>
+			{{endif}}
+		{{endif}}
+	</ul>
+{{endif}}

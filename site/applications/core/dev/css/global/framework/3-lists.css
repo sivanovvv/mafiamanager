@@ -1,0 +1,187 @@
+.ipsList{
+	--i-column-gap: initial;
+	--i-row-gap: initial;
+	--i-list--pa: 1em;
+	display: grid;
+	gap: var(--i-row-gap, .7em) var(--i-column-gap, 3em);
+}
+
+/* Inline elements */
+.ipsList--inline,
+.ipsList--stacked,
+.ipsList--sep{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+/* Fill */
+.ipsList--fill > li{
+	flex-grow: 1;
+}
+
+/* Bullets/numbers */
+.ipsList--bullets{
+	padding-inline-start: 2em;
+	list-style: revert;
+}
+
+/* Separators: This adds a middot between inline list items */
+.ipsList--sep{
+	row-gap: var(--i-row-gap, .4em);
+	column-gap: 0 !important; /* Allows .i-gap_ to set gap */
+}
+
+	.ipsList--sep > *:not(:last-child)::after{
+		content: "\00B7";
+		margin: 0 calc(var(--i-column-gap, 1.6em) / 2);
+	}
+
+/* Border: Adds a bottom border to stacked lists */
+.ipsList--border{
+	gap: 1px;
+	overflow: hidden;	
+}
+
+	.ipsList--border > li{
+		padding: var(--i-list--pa, 1em);
+		outline: 1px solid var(--i-background_4);
+	}
+
+/* Icons */
+:is(.ipsList--icons, .ipsList--stacked) > li > i:first-child{
+	opacity: 0.6;
+	color: var(--i-color_soft);
+	line-height: inherit;
+}
+
+/* Label */
+.ipsList__label{
+	font-weight: 600;
+	color: var(--i-color_hard);
+}
+
+/* Value */
+.ipsList__value{
+	color: var(--i-color_soft);
+}
+
+/* List with icons */
+.ipsList--icons{
+	--i-list-icon--wi: 2.4em;
+}
+.ipsList--icons:not(.ipsList--stacked) > li{
+	padding-inline-start: var(--i-list-icon--wi);
+}
+.ipsList--icons:not(.ipsList--stacked) > li > i:first-child{
+	line-height: inherit;
+	position: absolute;
+	margin-inline-start: calc(var(--i-list-icon--wi) * -1);
+	width: var(--i-list-icon--wi);
+	padding-inline-end: .5em;
+	text-align: center;
+}
+
+
+.ipsList--label-value > li{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 1em;
+}
+/* Move values to end of row */
+.ipsList--label-value:not(.ipsList--inline) .ipsList__value{
+	margin-inline-start: auto;
+	text-align: end;
+}
+
+/* Stacked list items, with larger icon on top */
+.ipsList--stacked{
+	--i-row-gap: 2em;
+	--i-column-gap: 4em;
+}
+.ipsList--stacked > li{
+	display: grid;
+	place-content: center;
+	text-align: center;
+}
+
+	.ipsList--stacked > li > i:first-child{
+		font-size: 1.6em;
+		line-height: 1;
+		margin-bottom: .5em;
+	}
+
+/* Reposition labels and values for stats, so the large number appears on top in a hard color */
+.ipsList--stats.ipsList--stacked .ipsList__label{
+	color: var(--i-color_soft);
+	font-weight: 500;
+	order: 1;
+}
+
+.ipsList--stats.ipsList--stacked .ipsList__value{
+	font-size: 1.5em;
+	font-weight: 500;
+	color: var(--i-color_hard);
+}
+
+/* Comma separated */
+.ipsList--csv{
+	display: block;
+}
+
+	.ipsList--csv > li{
+		display: inline;
+	}
+
+	.ipsList--csv > li:not(:last-child)::after{
+		content: ', ';
+	}
+
+/* Link lists */
+.ipsLinkList a{
+	display: flex;
+	align-items: center;
+	gap: 0 .9em;
+	padding: .7em 1.2em;
+	font-weight: 500;
+	border-radius: 6px;
+}
+
+.ipsLinkList a:hover{
+	background-color: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.ipsLinkList .fa-solid,
+.ipsLinkList .fa-regular{
+	flex: 0 0 1.2em;
+	text-align: center;
+}
+
+.ipsLinkList a::after{
+	content: "\f054";
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-style: normal;
+	font-weight: var(--icon--fo-we, 900);
+	margin-inline-start: auto;
+	flex: 0 0 auto;
+	font-size: .8em;
+}
+
+:where([dir="rtl"]) .ipsLinkList a::after{
+	content: "\f053";
+}
+
+/* Contextual icons */
+/* .ipsLinkList a[target="_blank"]::after{
+	content: "\f08e";
+}
+
+.ipsLinkList a[data-ipsdialog]::after{
+	content: "\f2d2";
+} */
+
+.ipsLinkList a:not(:hover) :is(.fa-solid, .fa-regular),
+.ipsLinkList a:not(:hover)::after{
+	opacity: .5;
+}

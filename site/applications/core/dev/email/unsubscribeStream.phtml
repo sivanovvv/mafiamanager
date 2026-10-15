@@ -1,0 +1,8 @@
+<ips:template parameters="$streamId, $streamTitle, $key, $member, $email" />
+<tr>
+	<td dir='{dir}' valign='middle' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 12px; line-height: 18px;">
+		{$email->language->addToStack("unsubscribe_blurb_stream", FALSE, array( 'sprintf' => array( $streamTitle )))}<br>
+		{$email->language->addToStack("unsubscribe_blurb", FALSE)} <a href="{url="app=core&module=discover&controller=streams&do=unsubscribeFromEmail&id={$streamId}&gkey={$key}" base="front"}" style='color: #000; text-decoration: underline; font-weight: 600; display: inline-block' class="text-link">{$email->language->addToStack( 'unsubscribe', FALSE )}</a>.
+		<br>
+	</td>
+</tr>

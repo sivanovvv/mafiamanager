@@ -1,0 +1,15 @@
+<ips:template parameters="$comment" />
+
+<!-- Moderator warning -->
+<div class="ipsModerated i-padding_2 i-margin-bottom_2 i-border-radius_box">
+	<div class="ipsPhotoPanel ipsPhotoPanel--start">
+		{template="userPhoto" group="global" app="core" params="\IPS\Member::load( $comment->warning->moderator ), 'fluid'"}
+		<div class="ipsPhotoPanel__text">
+			<strong>{lang="member_given_post_warning" sprintf="\IPS\Member::load( $comment->warning->moderator )->name, \IPS\Member::load( $comment->warning->member )->name"}</strong>
+			<br>
+			<span class='i-color_soft'>
+				<strong class='i-font-weight_500'>{lang="warn_reason_message"}</strong> {lang="core_warn_reason_{$comment->warning->reason}"} &middot; <strong class='i-font-weight_500'>{lang="warn_points_message"}</strong> {$comment->warning->points} &middot; <a href="{url="app=core&module=system&controller=warnings&do=view&id={$comment->warning->member}&w={$comment->warning->id}" seoTemplate="warn_view" seoTitle="$comment->author()->members_seo_name"}" title='{lang="view_warning_details_title"}' class="i-text-decoration_underline" data-ipsDialog data-ipsDialog-size='narrow'>{lang="view_warning_details"}</a>
+			</span>
+		</div>
+	</div>
+</div>

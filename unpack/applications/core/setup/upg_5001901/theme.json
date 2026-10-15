@@ -1,0 +1,28 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/global\/globalTemplate",
+            "front\/global\/guestTermsBar",
+            "global\/global\/includeCSS",
+            "global\/global\/includeJS",
+            "front\/popular\/memberRow",
+            "front\/popular\/popularRows",
+            "front\/popular\/popularWrapper",
+            "front\/popular\/topMembersResults"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "front\/core.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

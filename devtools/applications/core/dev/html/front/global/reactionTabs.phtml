@@ -1,0 +1,28 @@
+<ips:template parameters="$tabs, $activeId, $defaultContent, $url, $tabParam='tab', $parseNames=TRUE, $contained=FALSE" />
+{{if !\IPS\Request::i()->isAjax()}}<div class='ipsBox ipsBox--reactionTabs'>{{endif}}
+<i-tabs class='ipsTabs cReactionTabs' id='ipsTabs_{expression="md5( $url )"}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{expression="md5( $url )"}_content' {{if \IPS\Request::i()->isAjax()}}data-ipsTabBar-updateURL='false'{{endif}}>
+	<div role='tablist'>
+		{{foreach $tabs as $i => $tab}}
+			<a href='{$url->setQueryString( $tabParam, $i )}' id='ipsTabs_{expression="md5( $url )"}_{$i}' class="ipsTabs__tab {{if isset( $tab['count'] ) && $tab['count'] == 0}}ipsTabs__tab--disabled{{endif}}" title='{{if $parseNames}}{striptags="\IPS\Member::loggedIn()->language()->get( $tab['title'] )"}{{else}}{striptags="$tab['title']"}{{endif}}' role="tab" aria-controls='ipsTabs_{expression="md5( $url )"}_{$i}_panel' aria-selected="{{if $i == $activeId}}true{{else}}false{{endif}}">
+				{{if isset( $tab['icon'] )}}
+					<img src='{$tab["icon"]->url}' width='20' height='20' alt="{lang="reaction_title_{$i}"}" data-ipsTooltip title="{lang="reaction_title_{$i}"}" loading="lazy">
+				{{endif}}
+				{{if $parseNames}}{lang="$tab['title']"}{{else}}{$tab['title']|raw}{{endif}}
+				{{if isset( $tab['count'] )}}
+					<span class='i-opacity_8'>({$tab['count']})</span>
+				{{endif}}
+			</a>
+		{{endforeach}}
+	</div>
+	{template="tabScrollers" app="core" group="global" location="global"}
+</i-tabs>
+<section id='ipsTabs_{expression="md5( $url )"}_content' class='ipsTabs__panels {{if $contained}}ipsTabs__panels--padded{{endif}}'>
+	{{foreach $tabs as $i => $tab}}
+		{{if $i == $activeId}}
+			<div id='ipsTabs_{expression="md5( $url )"}_{$i}_panel' class="ipsTabs__panel" aria-labelledby="ipsTabs_{expression="md5( $url )"}_{$i}">
+				{$defaultContent|raw}
+			</div>
+		{{endif}}
+	{{endforeach}}
+</section>
+{{if !\IPS\Request::i()->isAjax()}}</div>{{endif}}

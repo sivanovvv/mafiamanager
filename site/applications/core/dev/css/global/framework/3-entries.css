@@ -1,0 +1,728 @@
+/*
+	----------------
+	- Entries: User submitted content. Comments, posts, etc
+	----------------
+*/
+
+.ipsEntry{
+	--i-post--pa-in: clamp(1em, 2vw, 1.5em);
+	--i-post--pa-bl: clamp(1em, 2vw, 1.5em);
+	--i-entry-color: initial;
+	position: relative;
+	margin-bottom: 1em;
+}
+
+/* Add an outline to certain entries */
+.ipsEntry--popular, .ipsEntry--solved, .ipsEntry--selected, .ipsEntry--highlighted{
+	outline: 4px solid color-mix(in srgb, var(--i-entry-color, transparent) 20%, transparent);
+	border-color: var(--i-entry-color, var(--i-color_positive));
+}
+
+/* This is split from the above so it doesn't break the above selector in browsers which don't support :has() */
+.ipsEntry:has([data-role="moderation"]:checked){
+	outline: 4px solid color-mix(in srgb, var(--i-entry-color, transparent) 20%, transparent);
+	border-color: var(--i-entry-color, var(--i-color_positive));
+}
+
+.ipsEntry--highlighted{
+	--i-entry-color: var(--i-primary);
+}
+
+.ipsModerated{
+	--i-entry-color: var(--i-color_moderated);
+}
+
+.ipsEntry--popular {
+	--i-entry-color: var(--i-color_positive);
+}
+
+.ipsEntry--solved{
+	--i-entry-color: var(--i-color_positive);
+}
+
+.ipsEntry--selected{
+	--i-entry-color: var(--i-primary);
+	background-color: var(--i-background_selected) !important;
+}
+
+	.ipsEntry:has([data-role="moderation"]:checked){
+		--i-entry-color: var(--i-primary);
+		background-color: var(--i-background_selected) !important;
+	}
+
+	/* Remove box styles from entries if they're inside .ipsBox */
+	:where(.ipsBox, .ipsWidget, .ipsDialog) .ipsEntry{
+		box-shadow: none;
+		background: none;
+		border-width: 0;
+		border-radius: 0;
+		margin: 0;
+		outline-width: 0 !important; /* Remove outlines (from moderated, solved, featured states, etc) */
+	}
+
+	@media (max-width: 767px){
+		.ipsPull .ipsEntry{
+			border-left-width: 0;
+			border-right-width: 0;
+			border-radius: 0;
+		}
+		.ipsEntry--highlighted{
+			outline-offset: -5px;
+		}
+	}
+
+/* Post header */
+.ipsEntry__header{
+	--_padding: calc(var(--i-rem) * 1.3);
+	color: var(--i-co);
+	padding: var(--_padding);
+	padding-bottom: 0;
+}
+
+/* Reduce gap between mini-profile-toggle and browser */
+@media (max-width: 550px){
+	.ipsEntry__topButton--profile{
+		margin-inline-end: -12px;
+	}
+}
+
+	.ipsEntry__header a{
+		color: inherit;
+	}
+
+	.ipsEntry__header-align{
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.ipsEntry__header .ipsPhotoPanel{
+		flex: 999 1 10%; /* 10% is needed to prevent unintended wrapping on small screens */
+	}
+
+	.ipsEntry__header .ipsPhotoPanel__secondary{
+		font-size: .9em;
+	}
+
+	.ipsEntry__header .ipsEntry__group{
+		font-size: max(.8em, 11px);
+		font-weight: 500;
+		color: var(--i-color_soft);
+		margin-inline-start: 1.5em;
+	}
+
+	.ipsEntry__header-align .ipsInput{
+		margin-inline-end: .8em;
+	}
+
+/* Solo post date */
+.ipsEntry__header .ipsEntry__date{
+	display: none;
+	opacity: .6;
+	font-size: .9em;
+	flex-grow: 9999;
+}
+
+	.ipsEntry__date a{
+		color: inherit;
+	}
+
+.ipsEntry__profile-row{
+	flex: 1 1 100%;
+}
+
+.ipsEntry__profile{
+	font-size: max(.8em, 12px);
+	padding-top: 1.5em;
+}
+
+.ipsEntry__profile-row:has(.ipsEntry__profile){
+	margin: 0 calc(var(--_padding) * -1);
+}
+
+.ipsEntry__profile-row > .ipsControls__fail-message {
+	margin-top: 1.5em;
+}
+
+.ipsEntry__username{
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	color: var(--i-color_hard);
+}
+
+	:where(.ipsEntry__username) a{
+		color: inherit;
+	}
+
+/* Tools */
+.ipsEntry__topButton{
+	color: var(--i-color_soft);
+	display: grid;
+	place-content: center;
+	border-radius: min(var(--i-design-radius), 5px);
+	flex: 0 0 32px;
+	align-self: stretch;
+}
+@media (any-hover:hover){
+	.ipsEntry__topButton:hover{
+		color: var(--i-color_hard);
+		background: var(--i-background_2);
+	}
+}
+
+/* This hides the "comment_xxx" text from the top right of posts */
+.ipsEntry__topButton .ipsMenuLabel{
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.ipsEntry__topButton--profile i{
+	transition: transform .2s linear;
+}
+
+	.ipsEntry__topButton--profile[aria-expanded="true"] i{
+		transform: rotateX(180deg);
+	}
+
+/* Author stats: Post count, solution count, etc */
+.ipsEntry__authorStats{
+	--i-co: var(--i-color_soft);
+	color: var(--i-co);
+	font-weight: 500;
+	font-size: max(.9em, 12px);
+	display: flex;
+	flex-wrap: wrap;
+}
+
+	.ipsEntry__authorStats > li > *{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: .5em;
+		color: inherit;
+		padding: .7em 1em;
+		line-height: 1; /* Windows fix? */
+	}
+
+	.ipsEntry__authorStats i{
+		opacity: .6;
+	}
+
+	.ipsEntry__authorStats img{
+		height: 1em;
+	}
+
+.ipsEntry__authorStats--mini-profile{
+	overflow: hidden;
+	border: 0 solid var(--i-background_3);
+	border-width: 1px 0;
+	gap: 1px;
+}
+
+	.ipsEntry__authorStats--mini-profile > li {
+		outline: 1px solid var(--i-background_3);
+		flex: 1 1 auto;
+	}
+	
+	.ipsEntry__authorStats--mini-profile > li > *{
+		padding: 1em;
+	}
+
+	.ipsEntry__authorStats--mini-profile a:hover{
+		background-color: var(--i-background_2);
+	}
+
+	.ipsEntry__authorStats--mini-profile [data-i-el="group-icon"]{
+		display: grid;
+		place-content: center;
+		padding: 0 1em;
+	}
+
+		.ipsEntry__authorStats--mini-profile [data-i-el="group-icon"] img{
+			max-height: 1.5em;
+			padding: 0;
+			width: auto;
+		}
+
+
+/* Minimal stats UI */
+.ipsEntry__authorStats--minimal{
+	justify-content: center;
+	margin-left: calc(var(--i-post--pa-in) * -.8);
+	margin-right: calc(var(--i-post--pa-in) * -.8);
+	text-align: center;
+}
+
+	.ipsEntry__authorStats--minimal > li > *{
+		border-radius: 5px;
+	}
+
+	.ipsEntry__authorStats--minimal [data-i-el="label"]{
+		clip-path: inset(50%);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	.ipsEntry__authorStats--minimal a:hover{
+		background: var(--i-background_3);
+	}
+
+/* Custom fields */
+.ipsEntry__authorFields{
+	text-align: start;
+	color: var(--i-color_soft);
+	font-size: max(.9em, 12px);
+	display: grid;
+	gap: .8em;
+}
+
+	.ipsEntry__authorFields [data-i-el="title"]{
+		font-weight: 600;
+		color: var(--i-color_hard);
+		display: block;
+	}
+
+	/* Hide custom fields if they're empty */
+	.ipsEntry__authorFields:not(:has(*)){ display: none }
+	@supports not selector(a:has(b)){
+		.ipsEntry__authorFields:-moz-only-whitespace{ display: none }
+	}
+
+	.ipsEntry__profile .ipsEntry__authorFields{
+		padding: 1.3em;
+		border-bottom: 1px solid var(--i-background_3);
+	}
+
+.ipsEntry__content{
+	position: relative; /* Required for quote tooltip */
+}
+
+@media (min-width: 601px){
+	.ipsEntry__header .ipsBadges{
+		margin-inline-end: 1.2em;
+	}
+}
+
+@media (max-width: 600px){
+	.ipsEntry__header .ipsBadges{
+		flex: 1 1 100%;
+		margin-top: 1.5em;
+		order: 10;
+	}
+}
+
+	/* This helps with vertical alignment */
+	:where(.ipsEntry--simple, .ipsEntry--post) .ipsEntry__post > .ipsBadges > li{
+		display: contents;
+	}
+
+.ipsEntry--simple .ipsEntry__post, .ipsEntry--post .ipsEntry__post{
+	padding: var(--i-post--pa-bl) var(--i-post--pa-in);
+	flex-grow: 1;
+}
+
+	/* Increase font-size unless the content is being edited */
+	:where(.ipsRichText--user:not(:has(.ipsEditor))){
+		font-size: calc(var(--set__i-user-content-font-size, 100) * .01em);
+		line-height: 1.8;
+	}
+
+/* Signature */
+.ipsEntry__signature{
+	margin-top: 1em;
+	border-top: 1px solid;
+	border-color: color-mix(in srgb, currentColor 15%, transparent);
+	padding: 1em 0;
+}
+
+/* Controls */
+.ipsEntry__footer{
+	padding: .6em;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap-reverse; /* Make sure reactions sit on top of buttons when they wrap */
+	gap: .6em;
+	font-size: .9em;
+}
+	
+	/* Hide the footer if it only contains an empty/invisible reaction component */
+	.ipsEntry__footer:has(> .ipsReact:only-child):not(:has(.ipsReact_types)):has(.ipsReact_blurb.ipsHide){
+		display: none;
+	}
+
+	.ipsEntry__controls{
+		color: var(--i-color_primary);
+		display: flex;
+		gap: 1px;
+		flex-wrap: wrap;
+		align-items: center;
+		font-weight: 600;
+	}
+
+	.ipsEntry__controls > li{
+		border-radius: 5px;
+		height: 2.5em;
+		/* Needed for helpful */
+		display: flex;
+		position: relative;
+	}
+
+	@media (any-hover:hover){
+		.ipsEntry__controls > li:not(:has(p)):hover{
+			background-color: color-mix(in srgb, currentColor 10%, transparent);
+		}
+	}
+
+		.ipsEntry__controls > li > :where(a, button, p){
+			display: flex;
+			align-items: center;
+			gap: .5em;
+			padding: 0 1em;			
+			color: inherit;
+			border-radius: inherit;
+		}
+
+		.ipsEntry__controls [data-active="helpful"]{
+			color: var(--i-color_positive);
+		}
+
+			.ipsEntry__controls p{
+				color: var(--i-color_soft);
+			}
+
+/* Split buttons, such as helpful */
+.ipsEntry__controls-badge{
+	margin-inline-start: -.4em;
+    position: relative ;
+    padding: 0 .8em;
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+}
+
+.ipsEntry__controls-badge:hover{
+	background-color: color-mix(in srgb, currentColor 5%, transparent);
+}
+	.ipsEntry__controls-badge::before{
+		content: '';
+		position: absolute;
+		inset-inline-start: 0;
+		top: .5em;
+		bottom: .5em;
+		border-left: 1px solid currentcolor;
+		opacity: .15;
+	}
+
+.ipsEntry__footer .ipsReact{
+	margin-inline-start: auto;
+}
+
+
+/*
+	----------------
+	- Simple entries (used in widgets or inside ipsBox)
+	----------------
+*/
+
+/* Add a border to the top of posts */
+:where(.ipsBox, .ipsWidget, .ipsDialog) .ipsEntry--simple{
+	border-top: 6px solid var(--i-entry-color, var(--i-background_4));
+}
+
+/* Remove the top border on the first post in the minimal topic view */
+.ipsEntry--first-simple{
+	border-top-width: 0;
+}
+
+	:where(.ipsEntry--first-simple .ipsEntry__post .ipsRichText--user){
+		font-size: max(var(--set__i-user-content-font-size, 100) * .01em, 1.12em, 16px);
+	}
+
+/* Hide side column and meta row */
+.ipsEntry--simple .ipsEntry__author-column,
+.ipsEntry--simple .ipsEntry__meta{
+	display: none;
+}
+
+/* v5 todo: This overwrites :where(.ipsEntry--simple, .ipsEntry--post) .ipsEntry__post in this same file. What do we need? */
+.ipsEntry--simple .ipsEntry__post{
+	--i-post--pa-bl: 1.5em;
+	--i-post--pa-in: 1.5em;
+}
+
+/* Add a margin to badges in simple comments (ie. Featured CMS comments) */
+.ipsEntry--simple .ipsEntry__post .ipsBadges{
+	margin-bottom: .6em;
+}
+
+
+/*
+	----------------
+	- Posts
+	----------------
+*/
+
+.ipsEntry--post{
+	display: grid;
+}
+
+/* Author column */
+.ipsEntry__author-column{
+	display: grid;
+	align-content: start;
+	gap: 1.2em;
+	text-align: center;
+	padding: var(--i-post--pa-bl) var(--i-post--pa-in);
+	border-inline-end: 1px solid var(--i-background_3);
+	position: relative;
+}
+
+	.ipsEntry__author-online{
+		display: none;
+		position: absolute;
+		top: -1px;
+		inset-inline-start: -1px;
+		border: .6em solid var(--i-background_positive);
+		border-bottom-color: transparent;
+		border-inline-end-color: transparent;
+		border-start-start-radius: var(--i-box--bo-ra);
+	}
+
+	.ipsEntry__author-column .ipsEntry__username{
+		font-size: 1.1em;
+		font-weight: 700;
+		justify-content: center;
+		gap: .5em;
+	}
+
+	.ipsEntry__author-column .ipsEntry__author-moderator-badge{
+		--i-badge: hsl(var(--if-light, 117 56% 80%) var(--if-dark, 150 62% 25%));
+		font-size: .8em;
+	}
+
+	.ipsEntry__author-column .ipsAvatarStack{
+		width: 50%;
+		justify-self: center;
+	}
+
+	.ipsEntry__author-column .ipsEntry__group{
+		margin-top: -1em;
+		color: var(--i-color_soft);
+		font-size: .9em;
+	}
+
+	.ipsEntry__group a{
+		color: inherit;
+	}
+
+	.ipsEntry__moderatorBadge{
+		font-weight: 500;
+	}
+
+	.ipsEntry__moderatorBadge::before{
+		content: "\f3ed";
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		margin-inline-end: .2em;
+		opacity: .6;
+		display: inline-block;
+		width: 1em; /* Layout shift */
+	}
+
+
+/* Hide badges by default */
+.ipsEntry__authorStats [data-i-el="badges"]{
+	display: none;
+}
+
+/* Date: Shown on desktops in Posts */
+.ipsEntry__meta{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0 1em;
+	margin-bottom: var(--i-post--pa-bl);
+}
+
+	.ipsEntry__meta .ipsEntry__date{
+		--i-co: var(--i-color_soft);
+		color: var(--i-co);
+		font-size: var(--i-font-size_-1);
+		white-space: nowrap; /* Necessary to stop the date from weirdly wrapping in some situations */
+		margin-inline-end: auto;
+	}
+
+	/* Increase height of top buttons slightly (ellipsis) */
+	.ipsEntry__meta .ipsEntry__topButton{
+		min-height: 2em;
+		margin-block: -0.4em;
+	}
+
+/* Post content */
+.ipsEntry--post .ipsEntry__content{
+	display: flex;
+	flex-direction: column;
+}
+
+/* Editing a post: */
+/* Pull out edit form so it touches the sides. Margins are em's, so we adjust them based on the user font-size value */
+.ipsEntry__post .ipsRichText--user .ipsForm--edit{
+	margin-inline: calc(100 / var(--set__i-user-content-font-size, 100) * var(--i-post--pa-in) * -1);
+}
+/* Remove top padding */
+.ipsEntry__post .ipsForm--edit .ipsFieldRow:first-of-type{
+	padding-top: 0;
+}
+/* Remove bottom padding to remove excess gap */
+.ipsEntry__post:has(.ipsForm--edit){
+	padding-bottom: 0;
+}
+/* Remove Required label */
+.ipsEntry__post .ipsForm--edit .ipsFieldRow__label[for="comment_value"]{
+	display: none;
+}
+/* Remove border-radius */
+.ipsEntry__post .ipsForm--edit .ipsSubmitRow{
+	border-radius: 0;
+}
+/* Hide footer (Post controls and reactions) when edit form is active */
+.ipsEntry:has(.ipsForm--edit) .ipsEntry__footer{
+	display: none;
+}
+
+/*
+	----------------
+	- Other components
+	----------------
+*/
+
+/* Ignored */
+.ipsEntry--ignored{
+	font-weight: 500;
+	color: var(--i-color_soft);
+	padding: 1em;
+	font-size: max(.9em, 11px);
+}
+
+	.ipsEntry--simple ~ .ipsEntry--ignored,
+	:is(.ipsEntries--topic, .ipsEntries--comments, .ipsEntries--reviews) .ipsEntry--ignored{
+		text-align: center;
+		background-color: var(--i-background_2);
+		border-top: 1px solid var(--i-background_5);
+	}
+
+/* Hidden message */
+.ipsEntry__hiddenMessage{
+	background-color: color-mix(in srgb, var(--i-co) 10%, transparent);
+	padding: .8em 1em;
+	border-radius: 5px;
+	margin-bottom: 1em;
+	font-weight: 500;
+	font-size: .95em;
+}
+
+.ipsUnreadBar {
+	color: var(--i-color_primary);
+	margin: 1em;
+	display: flex;
+	align-items: center;
+	gap: 0 1.2em;
+	font-weight: 600;
+	font-size: .9em;
+	text-align: center;
+}
+
+	.ipsUnreadBar::before,
+	.ipsUnreadBar::after {
+		content: '';
+		height: 3px;
+		border-radius: 3px;
+		flex: 1 1 auto;
+		background: currentColor;
+	}
+
+.ipsBox .ipsUnreadBar:not(hr){
+	display: block;
+	color: var(--i-primary-contrast);
+	background: var(--i-primary);
+	padding: .4em;
+	margin: 5px;
+	border-radius: 5px;
+}
+
+.ipsBox .ipsUnreadBar::before,
+.ipsBox .ipsUnreadBar::after{
+	content: none;
+}
+
+hr.ipsUnreadBar{
+	display: block;
+	padding: 0;
+	background-color: currentColor;
+	border-radius: 4px;
+	height: 6px;
+}
+
+/* Recommended note */
+.ipsEntry__recommendedNote{
+	background: var(--i-background_2);
+	border-radius: 6px;
+	margin-top: 1em;
+	padding: 1em;
+}
+
+/* Truncate posts if using the compact style and are viewing pages beyond 1 */
+.ipsEntry__truncate:not([data-truncate-expanded]){
+	max-height: 30em;
+}
+	html .ipsEntry__truncate ~ .ipsTruncate_more{
+		background: var(--i-secondary);
+		color: var(--i-secondary-contrast);
+		margin-left: auto;
+		margin-right: auto;
+		width: fit-content;
+		padding: 0 1em;
+		border-radius: 5px;
+	}
+
+/* 
+	Container queries don't work well here at the moment. They have layout containment, so "Edit post" dropdown menus are overlaid by sidebars.
+	These menus are located inside the post area due to data-ipsMenu-appendTo which is necessary for editing posts
+*/
+@media (min-width: 768px) {
+	
+	.ipsEntry--post{
+		grid-template-columns: var(--post-column--fl-ba, 230px) 1fr;
+	}
+
+	/* Column styles */
+	.ipsEntry--post .ipsEntry__header,
+	.ipsEntry--post .ipsEntry__post > .ipsBadges{
+		display: none;
+	}
+
+}
+
+@media (max-width: 767px){
+	.ipsEntry--post .ipsEntry__author-column,
+	.ipsEntry--post .ipsEntry__meta{
+		display: none;
+	}
+}
+
+[data-ips-comments-loading]{
+	opacity: .5;
+	pointer-events: none;
+}

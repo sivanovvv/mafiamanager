@@ -1,0 +1,97 @@
+<ips:template parameters="$login, $error, $blurb=NULL" />
+<form accept-charset='utf-8' method='post' action='{$login->url}'>
+	<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+	<input type="hidden" name="mergeAccount" value="1">
+	{{$usernamePasswordMethods = $login->usernamePasswordMethods();}}
+	{{$buttonMethods = $login->buttonMethods();}}
+	{{if $blurb}}
+		<p class='i-padding_3'>
+			{lang="$blurb"}
+		</p>
+	{{endif}}
+	{{if $error}}
+		<div class="ipsMessage ipsMessage--error i-margin_2">{lang="$error"}</div>
+	{{endif}}
+	{{if $usernamePasswordMethods and $buttonMethods}}
+		<div class='ipsColumns ipsColumns--lines'>
+			<div class='ipsColumns__primary'>
+				<ul class='ipsForm'>
+					<li class="ipsFieldRow ipsFieldRow--fullWidth">
+						<label class='ipsFieldRow__label' for="password">
+							{{if $blurb}}
+								{lang="reauthenticate_password_blurb2"}
+							{{else}}
+								{lang="reauthenticate_password_blurb"}
+							{{endif}}
+						</label>
+						<div class="ipsFieldRow__content">
+							<input type="password" class='ipsInput ipsInput--text' placeholder="{lang="password"}" name="password" id="password" {{if isset( \IPS\Request::i()->password )}}value="{request="password"}"{{endif}} autocomplete="current-password">
+						</div>
+					</li>
+					<li class="ipsSubmitRow">
+						{{if settings.allow_forgot_password != 'disabled'}}
+							{{if settings.allow_forgot_password == 'redirect'}}
+								<a href='{expression="\IPS\Settings::i()->allow_forgot_password_target"}' target="_blank" rel="noopener" class="ipsButton ipsButton--inherit">{lang="forgotten_password"}</a>
+							{{else}}
+								<a href='{url="app=core&module=system&controller=lostpass" seoTemplate="lostpassword"}' class="ipsButton ipsButton--inherit" {{if \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-title='{lang="forgotten_password"}'{{endif}}>{lang="forgotten_password"}</a>
+							{{endif}}
+						{{endif}}
+						<button type="submit" name="_processLogin" value="usernamepassword" class="ipsButton ipsButton--primary">{lang="reauthenticate"}</button>
+					</li>
+				</ul>
+			</div>
+			<div class='ipsColumns__secondary i-basis_360 i-padding_3'>
+				<p class="ipsFieldRow__label i-margin-bottom_2">{lang='reauthenticate_alt_blurb'}</p>
+				<div class='i-flex i-gap_1 i-flex-wrap_wrap'>
+					{{foreach $buttonMethods as $method}}
+						<div>
+							{$method->button()|raw}
+						</div>
+					{{endforeach}}
+				</div>
+			</div>
+		</div>
+	{{elseif $usernamePasswordMethods}}
+		<ul class='ipsForm'>
+			<li class="ipsFieldRow">
+				<label class='ipsFieldRow__label' for="password">
+					{{if $blurb}}
+						{lang="reauthenticate_password_blurb2"}
+					{{else}}
+						{lang="reauthenticate_password_blurb"}
+					{{endif}}
+				</label>
+				<div class="ipsFieldRow__content">
+					<input type="password" class='ipsInput ipsInput--text' placeholder="{lang="password"}" name="password" id="password" {{if isset( \IPS\Request::i()->password )}}value="{request="password"}"{{endif}}>
+				</div>
+			</li>
+			<li class="ipsSubmitRow">
+				{{if settings.allow_forgot_password != 'disabled'}}
+					{{if settings.allow_forgot_password == 'redirect'}}
+						<a href='{expression="\IPS\Settings::i()->allow_forgot_password_target"}' target="_blank" rel="noopener" class="ipsButton ipsButton--inherit">
+					{{else}}
+						<a href='{url="app=core&module=system&controller=lostpass" seoTemplate="lostpassword"}' data-ipsDialog data-ipsDialog-title='{lang="forgotten_password"}' class="ipsButton ipsButton--inherit">
+					{{endif}}
+					{lang="forgotten_password"}</a>
+				{{endif}}
+				<button type="submit" name="_processLogin" value="usernamepassword" class="ipsButton ipsButton--primary">{lang="reauthenticate"}</button>
+			</li>
+		</ul>
+	{{elseif $buttonMethods}}
+		<div class="i-padding_3">
+			{{if !$blurb}}
+				<p class='i-margin-bottom_2'>
+					{lang="reauthenticate_button_blurb"}
+				</p>
+			{{endif}}
+			<div class='i-flex i-gap_1 i-flex-wrap_wrap'>
+				{{foreach $buttonMethods as $method}}
+					<div>
+						{$method->button()|raw}
+					</div>
+				{{endforeach}}
+			</div>
+		</div>
+	{{endif}}
+	
+</form>

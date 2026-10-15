@@ -1,0 +1,11 @@
+<ips:template parameters="$lang, $hasBeenCustomized" />
+
+<div class="ipsTree_row_cells">
+	<span class="ipsTree_row_cell">
+		{{if $hasBeenCustomized}}
+			<span class="i-color_soft"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {lang="theme_has_been_customized"}</span>
+		{{elseif $lang->author_name == 'Invision Power Services, Inc.' or $lang->id == 1}}
+			<span class="i-color_positive"><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="invision"}</span>
+		{{endif}}
+	</span>
+</div>

@@ -1,0 +1,181 @@
+<ips:template parameters="$blocks, $chart, $guidesForm, $featuredGuides=array(), $bulletins=array()" />
+<div class='ipsColumns' data-controller='core.admin.support.dashboard'>
+	<div class='ipsColumns__primary'>
+		<div class='ipsMessage i-margin-bottom_block'>
+			{lang="health_intro"}
+		</div>
+		<div class="ipsBox i-margin-bottom_block">
+			<div class='ipsHide' data-role="summary">
+				<div class="ipsBox__header">
+					<h2 data-role="summaryText" class="i-flex_11"></h2>
+					<button class='ipsButton ipsButton--inherit ipsButton--small' data-role="checkAgain"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> {lang="health_check_again_button"}</button>
+				</div>
+			</div>
+			<div data-role="tableRows">
+				<div class='ipsGrid i-basis_340 ipsGrid--lines ipsGrid--system-health'>
+					{{foreach $blocks as $key => $block}}
+						<div class="i-padding_3" data-role='patchworkItem' data-blockid='{$key}'>
+							<div class='elBlockTitle i-margin-bottom_2 i-flex i-align-items_center i-justify-content_space-between'>
+								<div>
+									<h2 class='i-font-size_2 i-font-weight_600 i-color_hard'>
+										{$block['title']}
+									</h2>
+									{{if !empty( $block['details'] )}}
+										<p class='i-font-weight_500 i-color_soft i-font-size_-1'>
+											{$block['details']}
+										</p>
+									{{endif}}
+								</div>
+								<div>
+									<span class='i-color_warning ipsHide' data-iconType="critical"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>
+									<span class='i-color_issue ipsHide' data-iconType="recommended"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></span>
+								</div>
+							</div>
+							<div class='ipsLoading' data-role="supportBlock"></div>
+						</div>
+					{{endforeach}}
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsBox i-margin-bottom_block'>
+			<h2 class='ipsBox__header'>
+				{lang="health__known_issues"}
+			</h2>
+			<div class='i-padding_3'>
+				<div class='i-font-size_1'>
+					{{if \count( $bulletins )}}
+						{{foreach $bulletins as $bulletin}}
+							<div class="ipsMessage ipsMessage--{$bulletin['style']}">
+								<h3 class='ipsMessage__title'>{$bulletin['title']}</h3>
+								{$bulletin['body']|raw}
+							</div>
+						{{endforeach}}
+					{{else}}
+						{lang="health__no_known_issues"}
+					{{endif}}
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsBox i-margin-bottom_block'>
+			<div class='elHealthChart'>
+				<div class='ipsGrid ipsGrid--lines ipsGrid--max-3'>
+					<div class="i-flex i-gap_3 i-padding_3 ipsLinkPanelWrap">
+						<a class='ipsLinkPanel' href='{url="app=core&module=support&controller=systemLogs"}' aria-hidden="true" tabindex="-1"><span>{lang="health_system_log_title"}</span></a>
+						<div class="i-font-size_6 i-color_soft i-opacity_7 i-flex_00"><i class="fa-solid fa-server" aria-hidden="true"></i></div>
+						<div class="i-flex_11 i-flex i-flex-direction_column i-align-items_start">
+							<h3 class="ipsTitle ipsTitle--h4">{lang="health_system_log_title"}</h3>
+							<p class="i-color_soft i-margin-bottom_3">{lang="health_system_log_desc"}</p>
+							<a class='ipsButton ipsButton--secondary ipsButton--small i-margin-top_auto' href='{url="app=core&module=support&controller=systemLogs"}'>{lang="health_system_log_title"}</a>
+						</div>
+					</div>
+					<div class="i-flex i-gap_3 i-padding_3 ipsLinkPanelWrap">
+						<a class='ipsLinkPanel' href='{url="app=core&module=support&controller=errorLogs"}' aria-hidden="true" tabindex="-1"><span>{lang="health_error_log_title"}</span></a>
+						<div class="i-font-size_6 i-color_soft i-opacity_7 i-flex_00"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+						<div class="i-flex_11 i-flex i-flex-direction_column i-align-items_start">
+							<h3 class="ipsTitle ipsTitle--h4">{lang="health_error_log_title"}</h3>
+							<p class="i-color_soft i-margin-bottom_3">{lang="health_error_log_desc"}</p>
+							<a class='ipsButton ipsButton--secondary ipsButton--small i-margin-top_auto' href='{url="app=core&module=support&controller=errorLogs"}'>{lang="health_error_log_title"}</a>
+						</div>
+					</div>
+					<div class="i-flex i-gap_3 i-padding_3 ipsLinkPanelWrap">
+						<a class='ipsLinkPanel' href='{url="app=core&module=settings&controller=email&do=errorLog"}' aria-hidden="true" tabindex="-1"><span>{lang="health_email_error_log_title"}</span></a>
+						<div class="i-font-size_6 i-color_soft i-opacity_7 i-flex_00"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i></div>
+						<div class="i-flex_11 i-flex i-flex-direction_column i-align-items_start">
+							<h3 class="ipsTitle ipsTitle--h4">{lang="health_email_error_log_title"}</h3>
+							<p class="i-color_soft i-margin-bottom_3">{lang="health_email_error_log_desc"}</p>
+							<a class='ipsButton ipsButton--secondary ipsButton--small i-margin-top_auto' href='{url="app=core&module=settings&controller=email&do=errorLog"}'>{lang="health_email_error_log_title"}</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="ipsBox">
+			{$chart|raw}
+			<p class='i-font-size_1 i-color_soft i-padding_2'>
+				{lang="health_system_log_intro"}
+			</p>
+		</div>
+	</div>
+
+	<div class='ipsColumns__secondary i-basis_360'>
+		<div class='ipsBox i-margin-bottom_block'>
+			<h2 class='ipsBox__header'>
+				<i class="fa-solid fa-book i-color_soft" aria-hidden="true"></i> {lang="health__search_title"}
+				<a href='{url="docs" ips="true"}' class='ipsBox__header-secondary' target='_blank' rel='noopener'>{lang="health__guides_link"}</a>
+			</h2>
+			<div class='i-padding_3'>
+				<p class='i-margin-bottom_2'>
+					{lang="health__guides_intro"}
+				</p>
+				<div id='guidesForm'>
+					{$guidesForm->customTemplate( array( \IPS\Theme::i()->getTemplate( 'support', 'core', 'admin' ), 'guideSearchForm' ) )|raw}
+				</div>
+				<div class='i-margin-top_3' id='featuredGuides'>
+					<p class='i-font-weight_bold'>{lang="health__guides_featured"}</p>
+					<ul class='ipsList_guides'>
+						{{if \count( $featuredGuides )}}
+							{{foreach $featuredGuides as $guide}}
+								<li><a href="{$guide['link']}" target='_blank' rel='noopener'>{$guide['title']}</a></li>
+							{{endforeach}}
+						{{else}}
+							<li><em class='i-font-size_-1'>{lang="health__no_featured"}</em></li>
+						{{endif}}
+					</ul>
+				</div>
+				<div class='i-margin-top_3 ipsHide ipsLoading' id='guideSearchResults'>
+					<ul class='ipsList_guides'></ul>
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsBox i-margin-bottom_block'>
+			<h2 class='ipsBox__header'>
+				<i class="fa-solid fa-screwdriver-wrench i-color_soft" aria-hidden="true"></i> {lang="health__tools_title"}
+			</h2>
+			<div class=''>
+				<p class='i-font-size_1 i-padding_3 i-padding-bottom_1'>
+					{lang="health_tools_intro"}
+				</p>
+
+				<div class="ipsLinkList i-padding_2">
+					<a href="{url="app=core&module=support&controller=support&do=clearCaches" csrf="true"}" data-role="clearCaches"><i class="fa-regular fa-trash-can" aria-hidden="true"></i> {lang="health_clear_caches_button"}</a>
+					{{if \IPS\Settings::i()->search_method == 'elastic'}}
+						<a href="{url="app=core&module=support&controller=support&do=rebuildSearchIndexItem"}" data-ipsDialog data-ipsDialog-size="narrow" data-ipsDialog-title='{lang="health_rebuild_search_index_item"}'><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> {lang="health_rebuild_search_index_item"}</a>
+					{{endif}}
+					<a href="{url="app=core&module=support&controller=support&do=thirdparty" csrf="true"}" data-ipsDialog><i class="fa-solid fa-paint-roller" aria-hidden="true"></i> {lang="health_customizations_overview"}</a>
+					<a href='{url="app=core&module=support&controller=support&do=debug"}' data-ipsDialog data-ipsDialog-title='{lang="health_debug_log_settings"}'><i class="fa-regular fa-file-code" aria-hidden="true"></i> {lang="health_debug_log_settings"}</a>
+					{{if !\IPS\CIC}}
+						<a href='{url="app=core&module=support&controller=phpinfo"}' target='_blank'><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {lang="health_phpinfo"}</a>
+					{{endif}}
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsBox i-margin-bottom_block'>
+			<h2 class='ipsBox__header'>
+				<i class="fa-solid fa-life-ring i-color_soft" aria-hidden="true"></i> {lang="health__support_title"}
+				<a href='{url="client_area" ips="true"}' class='ipsBox__header-secondary' target='_blank' rel='noopener'>{lang="health__client_area_link"}</a>
+			</h2>
+			<div class='i-padding_3'>
+				<div class="ipsRichText i-font-size_1">
+					<p>
+						{lang="health_support_intro1"}
+					</p>
+					<p>
+						{lang="health_support_intro2"}
+					</p>
+					{{if \IPS\Login\Handler::findMethod( 'IPS\Login\Handler\Standard' )}}
+						<p>
+							{lang="health_support_intro3"}
+						</p>
+					{{endif}}
+				</div>
+				<a href='{url="community_support" ips="true"}' class='ipsButton ipsButton--secondary ipsButton--wide i-margin-top_3' target='_blank'>{lang="health__support_button"} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+			</div>
+		</div>
+		<div id='thirdPartyDialog'></div>
+	</div>
+</div>

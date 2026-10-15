@@ -1,0 +1,39 @@
+<ips:template parameters="$category, $subcategories, $packages, $pagination, $packagesWithCustomFields, $totalCount" />
+
+<header class="ipsPageHeader ipsBox">
+	<h1 class="ipsPageHeader__title">{$category->_title}</h1>
+	{{if $category->description}}
+		<div class="ipsPageHeader__desc">{template="richText" group="global" app="core" location="global" params="$category->description, array('')"}</div>
+	{{endif}}		
+</header>
+
+{{if \count( $subcategories )}}
+	<section class='ipsBox ipsBox--commerceSubcategories ipsPull'>
+		<i-data>
+			<ul class='ipsData ipsData--wallpaper ipsData--carousel ipsData--commerceCategories'>
+				{{foreach $subcategories as $group}}
+					<li class="ipsData__item">
+						<a href='{$group->url()}' class='ipsLinkPanel' aria-hidden="true" tabindex="-1"><span>{$group->_title}</span></a>
+						<div class="ipsData__image" aria-hidden="true">
+							{{if $group->image}}
+								<img src='{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $group->image )"}' alt='' loading='lazy'>
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+						</div>
+						<div class="ipsData__content">
+							<div class="ipsData__main">
+								<h3 class="ipsData__title">{$group->_title}</h3>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</section>
+	<br>
+{{endif}}
+
+<div data-role="packageListContainer">
+	{template="categoryContents" group="store" params="$category, $subcategories, $packages, $pagination, $packagesWithCustomFields, $totalCount"}
+</div>

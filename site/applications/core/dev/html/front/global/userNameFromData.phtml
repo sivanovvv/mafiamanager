@@ -1,0 +1,2 @@
+<ips:template parameters="$name, $groupIdForFormatting=NULL, $groupFormatting=NULL, $anonymous=FALSE" />
+{{if $anonymous}}{lang="post_anonymously_placename"}{{else}}{{if $groupIdForFormatting AND ( $groupFormatting === TRUE OR ( $groupFormatting === NULL AND \IPS\Settings::i()->group_formatting == 'global' ) )}}{expression="\IPS\Member\Group::load( $groupIdForFormatting )->formatName( $name )" raw="true"}{{else}}{$name}{{endif}}{{endif}}

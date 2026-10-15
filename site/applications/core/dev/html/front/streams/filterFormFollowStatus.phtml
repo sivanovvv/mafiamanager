@@ -1,0 +1,18 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL, $showTitle=TRUE" />
+{{if isset( $elements['']['stream_follow'] )}}
+	<i-dropdown popover id="elMenu_followOptions_menu">
+		<div class="iDropdown">
+			<ul class='ipsSideMenu__list ipsSideMenu--pseudoChecks cStreamForm_list' data-ipsSideMenu data-ipsSideMenu-type='check' data-ipsSideMenu-responsive='false' data-filterType='followed'>
+				{{foreach $elements['']['stream_followed_types']->options['options'] as $type => $lang}}
+					<li>
+						<a href='#' class='ipsSideMenu_item {{if $elements['']['stream_followed_types']->value !== 0 && \in_array( $type, $elements['']['stream_followed_types']->value ) !== FALSE}}ipsSideMenu_itemActive{{endif}}' data-ipsMenuValue='{$type}'>
+							<input type='checkbox' class="ipsSideMenu__toggle" name='stream_followed_types[{$type}]' value='1' {{if $elements['']['stream_followed_types']->value !== 0 && \in_array( $type, $elements['']['stream_followed_types']->value ) !== FALSE}}checked{{endif}}> 
+							{lang="$lang"}
+						</a>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	</i-dropdown>
+{{endif}}
+			

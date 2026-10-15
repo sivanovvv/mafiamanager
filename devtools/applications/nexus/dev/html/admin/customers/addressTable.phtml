@@ -1,0 +1,11 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+{template="buttons" params="$table->rootButtons, ''" group="global" app="core" if="isset( $headers['_buttons'] )"}
+
+<div class='cCustomerAddresses'>
+	{{if \count( $rows )}}
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+	{{else}}
+		<p class='ipsEmptyMessage'>{lang="no_addresses"}</p>
+	{{endif}}
+</div>

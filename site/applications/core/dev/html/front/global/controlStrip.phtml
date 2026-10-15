@@ -1,0 +1,69 @@
+<ips:template parameters="$buttons" />
+<ul class='ipsControlStrip' data-ipsControlStrip>
+	{{$idx = 0;}}
+	{{$menuID = 'elControlStrip_' . mt_rand();}}
+	{{foreach $buttons as $k => $button}}
+		{{$idx++;}}
+		<li class='ipsControlStrip_button {{if isset( $button['hidden'] ) and $button['hidden']}}ipsJS_hide{{endif}}' {{if isset( $button['id'] )}}id="{$button['id']}"{{endif}}>
+			<a
+				{{if isset( $button['link'] ) and $button['link'] !== NULL}}href='{$button['link']}'{{endif}}
+				title='{{if isset( $button['tooltip'] )}}{$button['tooltip']}{{else}}{lang="$button['title']"}{{endif}}'
+				data-ipsTooltip
+				aria-label="{{if isset( $button['tooltip'] )}}{$button['tooltip']}{{else}}{lang="$button['title']"}{{endif}}"
+				data-controlStrip-action="{$k}"
+				
+				{{if isset( $button['class'] )}}class='{$button['class']}'{{endif}}
+				{{if isset( $button['data'] )}}
+					{{foreach $button['data'] as $k => $v}}
+						data-{$k}="{$v}"
+					{{endforeach}}
+				{{endif}}
+				{{if isset( $button['hotkey'] )}}
+					data-keyAction='{$button['hotkey']}'
+				{{endif}}
+				{{if isset( $button['target'] )}}
+					target="{$button['target']}"
+					{{if $button['target'] == '_blank'}} rel="noopener"{{endif}}
+				{{endif}}
+			>
+				<i class='ipsControlStrip_icon {{if ! stristr( $button['icon'], 'regular' )}}fa-solid {{endif}}{{if mb_substr( $button['icon'], 0, 3 ) !== 'fa-'}}fa-{{endif}}{$button['icon']}' aria-hidden="true"></i>
+				<span class='ipsControlStrip_item'>{lang="$button['title']"}</span>
+			</a>
+		</li>
+	{{endforeach}}
+	<li class="ipsControlStrip_button ipsControlStrip_button--more">
+		<button type="button" id="{$menuID}" popovertarget="{$menuID}_menu"><span class="ipsInvisible">More</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+		<i-dropdown popover id="{$menuID}_menu">
+			<div class="iDropdown">
+				<ul class="iDropdown__items">
+					{{foreach $buttons as $k => $button}}
+						{{$idx++;}}
+						<li class='{{if isset( $button['hidden'] ) and $button['hidden']}}ipsJS_hide{{endif}}' {{if isset( $button['id'] )}}id="{$button['id']}"{{endif}}>
+							<a
+								{{if isset( $button['link'] ) and $button['link'] !== NULL}}href='{$button['link']}'{{endif}}
+								data-controlStrip-action="{$k}"
+								
+								{{if isset( $button['class'] )}}class='{$button['class']}'{{endif}}
+								{{if isset( $button['data'] )}}
+									{{foreach $button['data'] as $k => $v}}
+										data-{$k}="{$v}"
+									{{endforeach}}
+								{{endif}}
+								{{if isset( $button['hotkey'] )}}
+									data-keyAction='{$button['hotkey']}'
+								{{endif}}
+								{{if isset( $button['target'] )}}
+									target="{$button['target']}"
+									{{if $button['target'] == '_blank'}} rel="noopener"{{endif}}
+								{{endif}}
+							>
+								<i class='{{if ! stristr( $button['icon'], 'regular' )}}fa-solid {{endif}}{{if mb_substr( $button['icon'], 0, 3 ) !== 'fa-'}}fa-{{endif}}{$button['icon']}' aria-hidden="true"></i>
+								<span>{lang="$button['title']"}</span>
+							</a>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		</i-dropdown>
+	</li>
+</ul>

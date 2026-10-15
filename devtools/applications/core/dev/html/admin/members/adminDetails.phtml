@@ -1,0 +1,47 @@
+<ips:template parameters="$details" />
+
+<div class='ipsColumns i-padding_3'>
+	<div class='ipsColumns__secondary i-basis_120 ipsResponsive_hidePhone'>
+		<div class='i-padding_3 i-text-align_center'>
+			{template="userPhoto" app="core" group="global" params="\IPS\Member::loggedIn(), 'medium'"}
+		</div>
+	</div>
+	<div class='ipsColumns__primary'>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--admin-details">
+				<li class='ipsData__item '>
+					<div class='ipsData__main'>
+						<strong class='ipsData__title'>{lang="username"}</strong>
+						<p>
+							{$details['username']}
+						</p>
+					</div>
+				</li>
+				<li class='ipsData__item '>
+					<div class='ipsData__main'>
+						<strong class='ipsData__title'>{lang="email_address"}</strong>
+						<p>
+							{$details['email_address']}
+						</p>
+					</div>
+					<p class='i-basis_100'>
+						<a href='{url="app=core&module=members&controller=members&do=adminEmail"}' title='{lang="change_email_button"}' class='ipsButton ipsButton--small ipsButton--secondary' data-ipsDialog data-ipsDialog-title='{lang="change_email_button"}'>{lang="change"}</a>
+					</p>
+				</li>
+				{{if isset( $details['password'] )}}
+					<li class='ipsData__item '>
+						<div class='ipsData__main'>
+							<strong class='ipsData__title'>{lang="password"}</strong>
+							<p>
+								<span class='i-color_soft'>{$details['password']}</span>
+							</p>
+						</div>
+						<p class='i-basis_100'>
+							<a href='{url="app=core&module=members&controller=members&do=adminPassword"}' title='{lang="change_password"}' class='ipsButton ipsButton--small ipsButton--secondary' data-ipsDialog data-ipsDialog-title='{lang="change_password"}'>{lang="change"}</a>
+						</p>
+					</li>
+				{{endif}}
+			</ul>
+		</i-data>
+	</div>
+</div>

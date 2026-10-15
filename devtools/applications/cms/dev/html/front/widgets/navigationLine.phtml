@@ -1,0 +1,10 @@
+<ips:template parameters="$container, $title=null, $currentContainer=null" />
+<details {{if $currentContainer !== null and \in_array( $container->_id, $currentContainer )}}open{{endif}} data-container="{$container->_id}">
+	<summary>{{if $title}}{$title}{{else}}{$container->_title}{{endif}}</summary>
+	{{if $container->hasChildren( 'view', null, false )}}
+		{{foreach $container->children( 'view', null, false ) as $child}}
+			{template="navigationLine" app="cms" group="widgets" params="$child, null, $currentContainer"}
+		{{endforeach}}
+	{{endif}}
+	<div data-role='containerItems'></div>
+</details>

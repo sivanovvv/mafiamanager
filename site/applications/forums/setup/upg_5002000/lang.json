@@ -1,0 +1,15 @@
+{
+    "normal": {
+        "added": [
+            "forum_enable_title_suggestions",
+            "forum_enable_title_suggestions_desc"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

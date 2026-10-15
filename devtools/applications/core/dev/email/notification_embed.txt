@@ -1,0 +1,7 @@
+<ips:template parameters="$comment, $email" />
+
+{{$item = $comment instanceof \IPS\Content\Item ? $comment : $comment->item();}}{$email->language->addToStack("email_embedded_your_content_plain", FALSE, array( 'htmlsprintf' => array( $comment->author()->name, $item->indefiniteArticle( $email->language ) ) ) )}
+
+{$comment->emailContent( $email, 'plaintext' )|raw}
+
+-- {setting="board_name"}

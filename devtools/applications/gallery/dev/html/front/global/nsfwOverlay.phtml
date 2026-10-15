@@ -1,0 +1,9 @@
+<ips:template parameters="$image, $showButton=TRUE" />
+{{if settings.gallery_nsfw and !isset( cookie.nsfwImageOptIn ) and $image and $image->nsfw}}
+<div class='ipsNsfwOverlay {{if !$showButton}}ipsNsfwOverlay--no-content{{endif}}'>
+    {{if $showButton}}
+        <div>{lang="gallery_image_is_nsfw"}</div>
+        <button type='button'>{lang="gallery_nsfw_view_anyway"}</button>
+    {{endif}}
+</div>
+{{endif}}

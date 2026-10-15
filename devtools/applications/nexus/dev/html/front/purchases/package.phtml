@@ -1,0 +1,31 @@
+<ips:template parameters="$package, $customFieldsForm, $reactivateUrl, $upgradeDowngradeUrl, $upgradeDowngradeLang, $associatedFiles" />
+
+<hr class='ipsHr i-margin-top_3'>
+{{if $reactivateUrl or $upgradeDowngradeUrl or \IPS\nexus\Package\Item::load( $package->id )->canReview()}}
+	<ul class='ipsList ipsList--inline'>
+		{{if $reactivateUrl}}
+			<li><a href="{$reactivateUrl}" class=''>{lang="reactivate_package"}</a></li>
+		{{endif}}
+		{{if $upgradeDowngradeUrl}}
+			<li><a href="{$upgradeDowngradeUrl}" class=''>{lang="$upgradeDowngradeLang"}</a></li>
+		{{endif}}
+		{{if \IPS\nexus\Package\Item::load( $package->id )->canReview()}}
+			<li><a href="{$package->url()}" class=''>{lang="write_package_review"}</a></li>
+		{{endif}}
+	</ul>
+	<hr class='ipsHr i-margin-bottom_4'>
+{{endif}}
+
+{{if \count( $associatedFiles )}}
+	<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="package_downloads"}</h2>
+	<i-data>
+	    <ul class='ipsData ipsData--associatedFiles ipsData--grid ipsData--carousel i-basis_200' id='commerce-package-downloads' tabindex="0">
+		    {{foreach $associatedFiles as $idx => $file}}
+			    {template="indexBlock" app="downloads" group="browse" params="$file"}
+		    {{endforeach}}
+	    </ul>
+	</i-data>
+	{template="carouselNavigation" group="global" app="core" params="'commerce-package-downloads'"}
+{{endif}}
+
+{$customFieldsForm|raw}

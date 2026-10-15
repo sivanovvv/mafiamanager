@@ -1,0 +1,24 @@
+<ips:template parameters="$title, $member, $form, $choice = FALSE"/>
+<div class='ipsBox i-padding_3'>
+    <p class='i-text-align_center'>
+        <i class='ipsLargeIcon fa-solid fa-envelope' aria-hidden="true"></i>
+    </p>
+
+    <h1 class='i-font-size_6 i-text-align_center'>{$title}</h1>
+
+    <div class='i-font-size_2 i-text-align_center'>
+        {{if $choice == 'single'}}
+        <div class="ipsMessage ipsMessage--info">{lang="stream_guest_unfollowed_thing" sprintf="$title"}</div>
+        {{elseif $choice == 'all'}}
+        <div class="ipsMessage ipsMessage--info">{lang="stream_guest_unfollowed_all"}</div>
+        {{endif}}
+    </div>
+    <div class='i-padding_3'>
+        {$form|raw}
+    </div>
+</div>
+<p class='i-text-align_center'>
+    <a href='{url="/"}' class='ipsButton ipsButton--text ipsButton--small'>{lang='go_community_home'}</a>
+</p>
+
+

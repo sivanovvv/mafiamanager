@@ -1,0 +1,23 @@
+<ips:template parameters="$fileObject, $files, $waitingOn, $waitingFor" />
+<div class='i-padding_3'>
+	<h1 class='ipsTitle ipsTitle--h3'>{lang="download_your_files"}</h1>
+	<p class='i-color_soft'>{lang="download_file_count" pluralize="\count( $files )"}</p>
+	<hr class='ipsHr'>
+	<i-data>
+		<ul class='ipsData ipsData--table ipsData--multiple-files'>
+			{{foreach $files as $k => $file}}
+				{{$data = $files->data();}}
+				<li class='ipsData__item'>
+					<div class='ipsData__main'>
+						<h4 {{if $fileObject->canEdit()}}data-controller="core.front.core.moderation"{{endif}} class='ipsData__title'><span {{if $fileObject->canEdit()}}data-role="editableTitle" data-params='{"do":"ajaxEditLinkRecordRealName","record_id":{$data['record_id']}}' title='{lang="click_hold_edit"}'{{endif}} class=''>{{if $data['record_realname']}}{$data['record_realname']}{{else}}{{$pathBits = array_filter( explode( '/', \IPS\Http\Url::external( $data['record_location'] )->data[ \IPS\Http\Url::COMPONENT_PATH ] ) );}}{expression="\count( $pathBits ) ? array_pop( $pathBits ) : $data['record_location']"}{{endif}}</span></h4>
+						{{if $data['record_size']}}<p class='ipsData__meta'>{filesize="$data['record_size']"}</p>{{endif}}
+					</div>
+					<div>
+						<span class="ipsHide" data-role="downloadCounterContainer">{lang="download_begins_in"} <span data-role="downloadCounter"></span> {lang="seconds"}</span>
+						<a href='{$fileObject->url('download')->setQueryString( array( 'r' => $k, 'confirm' => 1, 't' => 1, 'version' => isset( \IPS\Request::i()->version ) ? \IPS\Request::i()->version : NULL ) )->csrf()}' class='ipsButton ipsButton--primary ipsButton--small' data-action="download" {{if member.group['idm_wait_period']}}data-wait='true'{{endif}}>{lang="download"}</a>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+</div>

@@ -1,0 +1,18 @@
+/*
+	----------------
+	- Opacity
+	----------------
+*/
+
+.i-opacity_0{ opacity: 0; }
+.i-opacity_1{ opacity: .1; }
+.i-opacity_2{ opacity: .2; }
+.i-opacity_3{ opacity: .3; }
+.i-opacity_4{ opacity: .4; }
+.i-opacity_5{ opacity: .5; }
+.i-opacity_6{ opacity: .6; }
+.i-opacity_7{ opacity: .7; }
+.i-opacity_8{ opacity: .8; }
+.i-opacity_9{ opacity: .9; }
+.i-opacity_10,
+.i-hover-opacity_10:hover{ opacity: 1; }

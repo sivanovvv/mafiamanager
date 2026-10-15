@@ -1,0 +1,12 @@
+<ips:template parameters="$errors" />
+<div class="i-padding_3">
+	<h5 class="ipsTitle ipsTitle--h5">{lang="import_member_errors"}</h5>
+	<ul>
+		{{foreach $errors as $error}}
+			<li>{$error}</li>
+		{{endforeach}}
+	</ul>
+</div>
+<div class="ipsSubmitRow">
+	<a class="ipsButton ipsButton--primary" href="{url="app=core&module=members&controller=members"}">{lang="step_finish"}</a>
+</div>

@@ -1,0 +1,4 @@
+<ips:template parameters="$badgeType, $name, $size='', $icon=null, $additionalClasses=array()" />
+<div class='ipsBadge {{if $size}}ipsBadge--{$size}{{endif}} {$badgeType} {{foreach $additionalClasses as $class}}{$class} {{endforeach}}' title='{$name}' data-ipsTooltip>
+    {{if $icon}}<i class="fa {$icon}" aria-hidden="true"></i> {{endif}}{$name}
+</div>

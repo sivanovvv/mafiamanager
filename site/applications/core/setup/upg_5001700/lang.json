@@ -1,0 +1,39 @@
+{
+    "normal": {
+        "added": [
+            "pending_approval_desc",
+            "pending_approval_author",
+            "acp_version_number_raw_supported_versions",
+            "applications",
+            "applications_modules",
+            "requirements_extension_advice_future",
+            "requirements_extension_intl",
+            "theme_editor_settings",
+            "devscan__strings_webhooks",
+            "devscan__strings_tasks",
+            "api_webhooks"
+        ],
+        "edited": [
+            "requirements_php_version_fail",
+            "requirements_php_version_fail_no_recommended",
+            "requirements_php_version_advice",
+            "strength_1",
+            "strength_3",
+            "strength_5"
+        ],
+        "removed": []
+    },
+    "js": {
+        "added": [
+            "password_strength"
+        ],
+        "edited": [
+            "strength_1",
+            "strength_2",
+            "strength_3",
+            "strength_4",
+            "strength_5"
+        ],
+        "removed": []
+    }
+}

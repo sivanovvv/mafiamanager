@@ -1,0 +1,21 @@
+<ips:template parameters="$file, $reactivateUrl=NULL" />
+{{if $file->desc}}
+<div class='i-margin_2' data-ipsTruncate data-ipsTruncate-size='5 lines' data-ipsTruncate-type='remove'>
+{$file->desc|raw}
+</div>
+{{endif}}
+<ul class='ipsList ipsList--inline'>
+    {{if $reactivateUrl}}
+        <li><a href="{$reactivateUrl}" class='ipsButton ipsButton--soft'>{lang="reactivate_package"}</a></li>
+    {{endif}}
+
+    {{if $file->canDownload()}}
+        <li><a {{if $file->canView()}}href='{{if settings.idm_antileech AND !$file->requiresDownloadConfirmation()}}{$file->url('download')->csrf()}{{else}}{$file->url('download')}{{endif}}'{{endif}} class='ipsButton {{if $file->canView()}}ipsButton--primary{{else}}ipsButton--disabled{{endif}}' {{if $file->requiresDownloadConfirmation()}}data-ipsDialog{{endif}}>{lang="download_now"}</a></li>
+    {{endif}}
+    {{if $file->container()->can( 'view' )}}
+        <li><a {{if $file->canView() }}href='{$file->url( "getPrefComment" )}'{{endif}} class='ipsButton {{if $file->canView()}}ipsButton--secondary{{else}}ipsButton--disabled{{endif}}'>{lang="file_view_details"}</a></li>
+    {{endif}}
+</ul>
+{{if !$file->canView()}}
+<p class='i-color_soft'>{lang="nexus_file_no_longer_available"}</p>
+{{endif}}

@@ -1,0 +1,14 @@
+<ips:template parameters="$file, $downloadTerms, $confirmUrl, $multipleFiles" />
+<div class='i-padding_3'>
+	<h1 class='ipsTitle ipsTitle--h3'>{lang="download_terms"}</h1>
+	<strong>{lang="download_terms_desc"}</strong>
+
+	<hr class='ipsHr'>
+	{template="richText" group="global" app="core" location="global" params="$downloadTerms, array('ipsRichText--download-terms')"}
+</div>
+<div class='i-background_3 i-text-align_end i-padding_3'>
+	<ul class='ipsList ipsList--inline'>
+		<li><a href='{$file->url()}' class='ipsButton ipsButton--text' data-action='dialogClose' title='{lang="cancel_downloading"}'>{lang="cancel"}</a></li>
+		<li><a href='{$confirmUrl}' class='ipsButton ipsButton--primary' data-action='{{if $multipleFiles or member.group['idm_wait_period']}}selectFile{{else}}download{{endif}}' title='{lang="agree_and_download_full"}'>{lang="agree_and_download"}</a></li>
+	</ul>
+</div>

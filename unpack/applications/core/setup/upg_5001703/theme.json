@@ -1,0 +1,22 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "global\/login\/loginButton"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "global\/framework\/3-entries.css",
+            "global\/framework\/4-search-dialog.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

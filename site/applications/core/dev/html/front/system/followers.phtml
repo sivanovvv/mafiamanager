@@ -1,0 +1,27 @@
+<ips:template parameters="$url, $pagination, $followers, $anonymous, $removeAllUrl" />
+<div data-ipsInfScroll data-ipsInfScroll-scrollScope="#elFollowerList" data-ipsInfScroll-container="#elFollowerListContainer" data-ipsInfScroll-url="{$url}" data-ipsInfScroll-pageParam="followerPage" data-ipsInfScroll-pageBreakTpl="">
+	<div class="ipsJS_hide">{$pagination|raw}</div>
+	{{if !\IPS\Request::i()->isAjax()}}<div class='ipsBox ipsBox--followerList'>{{endif}}
+		<div class='ipsFollowerList i-padding_2 ipsScrollbar' id="elFollowerList">
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--compact ipsData--followers" id='elFollowerListContainer'>
+					{template="followersRows" group="system" params="$followers"}
+				</ul>
+			</i-data>
+			{{if $anonymous}}
+				{{if $followers !== NULL and \count( $followers )}}
+					<div class="i-padding_2 i-text-align_center i-color_soft">{lang="and_x_others" pluralize="$anonymous"}</div>
+				{{else}}
+					<div class="i-padding_2 i-text-align_center i-color_soft">{lang="x_anonymous_members" pluralize="$anonymous"}</div>
+				{{endif}}
+			{{endif}}
+		</div>
+		{{if \IPS\Member::loggedIn()->modPermission('can_remove_followers')}}
+			<ul class="ipsSubmitRow ipsButtons">
+				<li>
+					<a href="{$removeAllUrl}" data-confirm data-confirmmessage='{lang="remove_followers_confirm"}' class="ipsButton ipsButton--negative">{lang="remove_followers"}</a>
+				</li>
+			</ul>
+		{{endif}}
+	{{if !\IPS\Request::i()->isAjax()}}</div>{{endif}}
+</div>

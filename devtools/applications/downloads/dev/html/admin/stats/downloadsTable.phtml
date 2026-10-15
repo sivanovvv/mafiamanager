@@ -1,0 +1,27 @@
+<ips:template parameters="$select, $pagination, $members, $total" />
+<div class="ipsBox" data-ips-template="downloadsTable">
+	<h1 class="ipsBox__header">{lang="downloads_stats_downloader_count" pluralize="$total"}</h1>
+	{{if trim( $pagination )}}
+		{$pagination|raw}
+	{{endif}}
+	<table class="ipsTable ipsTable_zebra">
+		<thead>
+			<tr>
+				<th width="60"></th>
+				<th>{lang="member"}</th>
+				<th>{lang="downloads"}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $select as $row}}
+				{{$member = \IPS\Member::constructFromData( $members[ $row['dmid'] ] );}}
+				<tr>
+					<td>{template="userPhoto" app="core" group="global" params="$member"}</td>
+					<td>{$member->name}</td>
+					<td><a href='{url="app=downloads&module=stats&controller=member&do=downloads&id={$member->member_id}&tab=downloads&&type%5Bd74394%5D=Table"}'>{$row['downloads']}</a></td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+	</table>
+	{$pagination|raw}
+</div>

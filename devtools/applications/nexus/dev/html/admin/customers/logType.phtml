@@ -1,0 +1,32 @@
+<ips:template parameters="$type" />
+{{if $type === 'invoice'}}
+	<i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+{{elseif $type === 'purchase'}}
+	<i class="fa-solid fa-box-archive" aria-hidden="true"></i>
+{{elseif $type === 'transaction'}}
+	<i class="fa-solid fa-money-bill" aria-hidden="true"></i>
+{{elseif $type === 'comission' or $type === 'payout'}}
+	<i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+{{elseif $type === 'giftvoucher'}}
+	<i class="fa-solid fa-gift" aria-hidden="true"></i>
+{{elseif $type === 'info'}}
+	<i class="fa-solid fa-user" aria-hidden="true"></i>
+{{elseif $type === 'address'}}
+	<i class="fa-solid fa-house" aria-hidden="true"></i>
+{{elseif $type === 'card'}}
+	<i class="fa-solid fa-credit-card" aria-hidden="true"></i>
+{{elseif $type === 'alternative'}}
+	<i class="fa-solid fa-users" aria-hidden="true"></i>
+{{elseif $type === 'lkey'}}
+	<i class="fa-solid fa-key" aria-hidden="true"></i>
+{{elseif $type === 'download'}}
+	<i class="fa-solid fa-download" aria-hidden="true"></i>
+{{elseif $type === 'billingagreement'}}
+	<i class="fa-brands fa-paypal" aria-hidden="true"></i>
+{{elseif $type === 'note'}}
+	<i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+{{elseif $type === 'custom'}}
+	<i class="fa-solid fa-star" aria-hidden="true"></i>
+{{else}}
+	{$type}
+{{endif}}

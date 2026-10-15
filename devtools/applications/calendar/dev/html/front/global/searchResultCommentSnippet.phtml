@@ -1,0 +1,34 @@
+<ips:template parameters="$indexData, $nextOccurance, $startDate, $endDate, $allDay, $reviewRating, $condensed" />
+
+<div class='ipsStreamItem__content-thumb ipsStreamItem__content-thumb--events'>
+	<time datetime='{$nextOccurance->mysqlDatetime()}' class='ipsCalendarDate'>
+		<span class='ipsCalendarDate__month'>{$nextOccurance->monthNameShort}</span>
+		<span class='ipsCalendarDate__date'>{$nextOccurance->mday}</span>
+	</time>
+</div>
+{{if !$condensed}}
+	<div class='ipsStreamItem__content-content ipsStreamItem__content-thumb--events'>
+		{{if $reviewRating !== NULL}}
+			{template="rating" app="core" params="'medium', $reviewRating" group="global"}
+		{{endif}}
+		<div class='ipsStream__comment'>
+			<p class="i-font-size_2 i-font-weight_600">
+				<time datetime='{expression="$startDate->format( 'Y-m-d' )"}'>
+					{$startDate->dayName} {$startDate->mday} {$startDate->monthName} {$startDate->year}{{if !$allDay}}, {$startDate->localeTime( FALSE )}{{endif}}
+				</time>
+				{{if $endDate}}
+					{lang="until_lc"}
+					{{$sameDay = !( ($startDate->mday != $endDate->mday) or ($startDate->mon != $endDate->mon) or ($startDate->year != $endDate->year) );}}
+					<time datetime='{expression="$endDate->format( 'Y-m-d' )"}'>
+					{{if !$sameDay}}{$endDate->dayName} {$endDate->mday} {$endDate->monthName} {$endDate->year}{{endif}}{{if !$allDay}}{{if !$sameDay}}, {{endif}}{$endDate->localeTime( FALSE )}{{endif}}
+					</time>
+				{{endif}}
+			</p>			
+			{{if trim( $indexData['index_content'] ) !== ''}}
+				<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+					{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+{{endif}}

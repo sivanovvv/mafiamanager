@@ -1,0 +1,45 @@
+<ips:template parameters="$item, $review, $url, $image=NULL" />
+
+{{$useImage = NULL;}}
+<div class='ipsRichEmbed ipsRichEmbed--review'>
+	{template="embedHeader" group="embed" app="core" params="$review, $item->mapped('title'), $review->mapped('date'), $url"}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_originalItem'>
+			<div>
+				{{if $image}}
+					{{$useImage = $image;}}
+				{{elseif $contentImage = $item->contentImages(1)}}
+					{{$attachType = key( $contentImage[0] );}}
+					{{$useImage = \IPS\File::get( $attachType, $contentImage[0][ $attachType ] );}}
+				{{endif}}
+
+				{{if $useImage}}
+					<a href='{$url}' class='ipsRichEmbed_masthead'>
+						<img src='{$useImage->url}' alt='' loading='lazy'>
+					</a>
+				{{endif}}
+
+				<div class='i-padding_3'>
+					{template="embedOriginalItem" group="embed" app="core" params="$item"}
+				</div>
+			</div>
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $review->mapped('rating')" group="global"} 
+		{{if $review->mapped('votes_total')}}
+			<p>{$review->helpfulLine()|raw}</p>
+		{{endif}}
+		<hr class='ipsHr'>
+		<div class='ipsRichEmbed__snippet'>
+			{$review->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $review, 'IPS\Content\Reactable' ) and \count( $review->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$review, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

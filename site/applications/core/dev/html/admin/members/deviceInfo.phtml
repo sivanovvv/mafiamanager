@@ -1,0 +1,61 @@
+<ips:template parameters="$device, $apps, $oauthClients" />
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--device-info">
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="device_table_user_agent"}</strong></span>
+			<span>
+				{$device->userAgent()}<br>
+				<code class="i-font-size_-1">{$device->user_agent}</code>
+			</span>
+		</li>
+		{{foreach $apps as $accessToken}}
+			<li class="ipsData__item">
+				<span class="i-basis_160"><strong>{$oauthClients[ $accessToken['client_id'] ]->_title}</strong></span>
+				<span>
+					{{if $accessToken['issue_user_agent']}}
+						<div class="i-margin-bottom_1">
+							<code class="i-font-size_-1">{$accessToken['issue_user_agent']}</code>
+						</div>
+					{{endif}}
+					{template="oauthStatus" group="api" params="$accessToken, $oauthClients[ $accessToken['client_id'] ]->use_refresh_tokens"}
+					<span class="i-font-size_-1 i-color_soft">
+						&nbsp;&nbsp;&nbsp;
+						{lang="oauth_authorization_issued"}: {datetime="$accessToken['issued']"}
+						{{if $accessToken['access_token_expires']}}
+							&middot;
+							{lang="oauth_authorization_access_token_expires"}: {datetime="$accessToken['access_token_expires']"}
+						{{endif}}
+						{{if $accessToken['refresh_token_expires']}}
+							&middot;
+							{lang="oauth_refresh_token_expires"}: {datetime="$accessToken['refresh_token_expires']"}
+						{{endif}}
+					</span>
+					{{if $accessToken['scope']}}
+						<div class="i-margin-top_1">
+							{lang="oauth_authorization_scope"}: {expression="implode( ', ', json_decode( $accessToken['scope'] ) )"}
+						</div>
+					{{endif}}
+				</span>
+			</li>
+		{{endforeach}}
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="device_table_login_key"}</strong></span>
+			<span>
+				{template="deviceAuthorization" group="members" params="(bool) $device->login_key, TRUE, $device->anonymous"}<br>
+				<span class="i-font-size_-1 i-color_soft">{lang="device_table_login_key_info"}</span>
+			</span>
+		</li>
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="device_table_login_handler"}</strong></span>
+			<span>
+				{template="deviceHandler" group="members" params="$device->login_handler"}
+			</span>
+		</li>
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="device_table_last_seen"}</strong></span>
+			<span>
+				{datetime="$device->last_seen"}
+			</span>
+		</li>
+	</ul>
+</i-data>

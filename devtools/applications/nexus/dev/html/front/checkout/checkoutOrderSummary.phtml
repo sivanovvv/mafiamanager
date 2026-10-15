@@ -1,0 +1,55 @@
+<ips:template parameters="$summary" />
+
+{{$totalItems = 0;}}
+{{$itemTotal = new \IPS\Math\Number('0');}}
+{{foreach $summary['items'] as $item}}
+	{{if !( $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount )}}
+		{{$itemTotal = $itemTotal->add( $item->linePrice()->amount );}}
+		{{$totalItems += $item->quantity;}}
+	{{endif}}
+{{endforeach}}
+<div>
+	<h2 class='ipsTitle ipsTitle--h3 ipsTitle--padding'>{lang="order_review"}</h2>
+	<i-data>
+		<ul class="ipsData ipsData--table i-margin-top_3">
+			<li class='ipsData__item'>
+				<div class='ipsData__main'>
+					<span>{lang="summary_items" pluralize="$totalItems"}</span>
+				</div>
+				<div class='i-basis_100 i-text-align_end'>
+					<span class='cNexusPrice'>{money="$itemTotal"}</span>
+				</div>
+			</li>
+			{{foreach $summary['items'] as $item}}
+				{{if $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount}}
+					<li class='ipsData__item cNexusCheckout_coupon'>
+						<div class='ipsData__main i-text-align_end'>
+							<strong>{lang="coupon"}</strong>
+						</div>
+						<div class='i-basis_100 i-text-align_end cNexusPrice'>
+							{$item->linePrice()}
+						</div>
+					</li>
+				{{endif}}
+			{{endforeach}}
+			<li class='ipsData__item cNexusCheckout_subtotal'>
+				<div class='ipsData__main i-text-align_end'>
+					<strong>{lang="subtotal"}</strong>
+				</div>
+				<div class='i-basis_100 i-text-align_end cNexusPrice'>
+					{$summary['subtotal']}
+				</div>
+			</li>
+			{{foreach $summary['tax'] as $taxId => $tax}}
+				<li class='ipsData__item'>
+					<div class='ipsData__main i-text-align_end'>
+						<strong>{lang="nexus_tax_{$taxId}"} ({expression="$tax['rate']*100"}%)</strong>
+					</div>
+					<div class='i-basis_100 i-text-align_end cNexusPrice'>
+						{$tax['amount']}
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+</div>

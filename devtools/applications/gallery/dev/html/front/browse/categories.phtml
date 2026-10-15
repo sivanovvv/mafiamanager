@@ -1,0 +1,44 @@
+<ips:template parameters="" />
+<header class="ipsPageHeader ipsBox ipsBox--galleryCategoryHeader ipsPull">
+    <div class="ipsPageHeader__row">
+        <div class="ipsPageHeader__primary">
+           <h1 class="ipsPageHeader__title">{lang="gallery_title"}</h1>
+        </div>
+        {{if \IPS\gallery\Category::canOnAny('add')}}
+            <ul class="ipsButtons ipsButtons--main">
+                {template="categoryButtons" group="browse" params="\IPS\gallery\Category::canOnAny('add'), NULL, NULL"}
+            </ul>
+        {{endif}}
+    </div>
+</header>
+
+{{if settings.gallery_overview_show_categories}}
+    {{$clubNodes = (settings.clubs and settings.club_nodes_in_apps) ? \IPS\gallery\Category::clubNodes() : array();}}
+    {{if $rootCategories = \IPS\gallery\Category::roots()}}
+        <div class="ipsBox ipsBox--galleryCategories ipsPull">
+            <h2 class='ipsBox__header'>
+                <span>{{if $clubNodes}}{lang="community_image_categories"}{{else}}{lang="gallery_categories"}{{endif}}</span>
+            </h2>
+            <div class="ipsBox__content">
+                <i-data>
+                    <ul class='ipsData ipsData--wallpaper ipsData--gallery-categories'>
+                        {template="categoryRow" group="browse" params="NULL, NULL, $rootCategories"}
+                    </ul>
+                </i-data>
+            </div>
+        </div>
+    {{endif}}
+
+    {{if settings.clubs and settings.club_nodes_in_apps and $clubNodes = \IPS\gallery\Category::clubNodes()}}
+        <div class="ipsBox ipsBox--galleryClubCategories ipsPull">
+            {{if $rootCategories}}<h2 class="ipsBox__header">{lang="club_node_gallery"}</h2>{{endif}}
+            <div class="ipsBox__content">
+                <i-data>
+                    <ul class='ipsData ipsData--wallpaper ipsData--gallery-club-categories'>
+                        {template="categoryRow" group="browse" params="NULL, NULL, $clubNodes"}
+                    </ul>
+                </i-data>
+            </div>
+        </div>
+    {{endif}}
+{{endif}}

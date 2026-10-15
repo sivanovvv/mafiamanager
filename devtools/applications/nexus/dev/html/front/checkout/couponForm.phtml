@@ -1,0 +1,40 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+<form accept-charset='utf-8' class="ipsForm {$class} ipsForm--coupon" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm data-role='couponForm'>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+
+	<div class='i-padding_2 i-border-top_3'>
+		{{if $form->error}}
+			<div class="ipsMessage ipsMessage--error">
+				{$form->error}
+			</div>
+		{{endif}}	
+		<h2 class='ipsMinorTitle'>{lang="do_you_have_coupon"}</h2>
+		<div class='i-flex i-gap_1 i-margin-top_2'>
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $inputName => $input}}
+					<div class='i-flex_11'>
+						{$input->html()|raw}
+						{{if $input->error}}
+							<p class="i-margin-top_2 i-font-size_-2 i-color_warning">{lang="$input->error"}</p>
+						{{endif}}
+					</div>
+				{{endforeach}}
+			{{endforeach}}
+			<button type='submit' class='i-flex_00 ipsButton ipsButton--inherit'>{lang="apply_coupon"}</button>
+		</div>
+	</div>
+</form>

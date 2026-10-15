@@ -1,0 +1,110 @@
+<ips:template parameters="$stream, $html, $form, $rssLink=NULL, $canCopy=FALSE" />
+<section class='ipsBox ipsBox--activity-stream ipsPull' data-controller='core.front.streams.main, core.front.core.ignoredComments' data-streamID='{{if isset( \IPS\Request::i()->id )}}{expression="\IPS\Request::i()->id"}{{else}}all{{endif}}'>
+	<header class="ipsPageHeader">
+		<div class="ipsPageHeader__row">
+			<div data-ips-hook="header" class="ipsPageHeader__primary">
+				<h1 data-ips-hook="title" class="ipsPageHeader__title i-flex_11 i-align-self_center"><span data-role='streamTitle'>{$stream->_title}</span></h1>
+				{{if $form}}
+					<p data-ips-hook="blurb" class='ipsPageHeader__desc' data-role='streamOverview'>
+						<span data-role='streamBlurb'>{$stream->blurb()}</span>
+					</p>
+				{{endif}}
+			</div>
+			{{if \IPS\Member::loggedIn()->member_id}}
+				<div class="ipsButtons">
+					<button popovertarget="elStreamOptions_menu" class='ipsButton ipsButton--inherit' id='elStreamOptions'><span>{lang="stream_options"}</span><i class="ipsMenuCaret" aria-hidden="true"></i></button>
+					<i-dropdown id="elStreamOptions_menu" popover>
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								<li {{if \IPS\Member::loggedIn()->defaultStream === $stream->_id}}hidden{{endif}} data-role="toggleDefaultTrue">
+									<a data-action="toggleStreamDefault" data-change="1" href="{$stream->url()->csrf()->setQueryString('default', 1)}"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> {lang="stream_this_isnt_default"}</a>
+								</li>
+								<li {{if \IPS\Member::loggedIn()->defaultStream !== $stream->_id}}hidden{{endif}} data-role="toggleDefaultFalse">
+									<a data-action="toggleStreamDefault" data-change="0" href="{$stream->url()->csrf()->setQueryString('default', 0)}"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> {lang="stream_this_is_default"}</a>
+								</li>
+								<li><hr></li>
+								{{if $stream->member AND $stream->member === \IPS\Member::loggedIn()->member_id}}
+									<li>
+										<a href='{$stream->url()->setQueryString( 'do', 'edit' )->csrf()}' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="stream_edit_title"}' data-action='editStream'><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {lang="stream_edit_title"}</a>
+									</li>
+									<li>
+										<a href='{$stream->url()->setQueryString( 'do', 'delete' )->csrf()}' data-action='removeStream'><i class="fa-regular fa-trash-can" aria-hidden="true"></i> {lang="stream_remove"}</a>
+									</li>
+									<li><hr></li>
+								{{endif}}
+								{{if $stream->canSubscribe()}}
+									<li>
+										<a href="{$stream->url()->setQueryString('do','subscribe')}" data-action='subscribe' data-ipsDialog data-ipsDialog-flashMessage='subscribed' data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="stream_subscribe_s" sprintf="$stream->_title"}'>
+											<i class="fa-regular fa-envelope" aria-hidden="true"></i>
+											<span>{lang='stream_subscribe'}<span class="iDropdown__minor">{lang="stream_subscribe_desc"}</span></span>											
+										</a>
+									</li>
+								{{elseif $stream->canUnsubscribe()}}
+									<li>
+										<a href="{$stream->url()->setQueryString('do','unsubscribe')->csrf()}" data-confirm data-confirmMessage="{lang="confirm_stream_unsubscribe"}" data-confirmSubMessage="{lang="stream_unsubscribe_confirm"}"><i class="fa-regular fa-envelope" aria-hidden="true"></i> {lang='stream_unsubscribe'}</a>
+									</li>
+								{{endif}}
+								{{if $rssLink}}
+									<li><a href="{$rssLink}"><i class="fa-solid fa-rss" aria-hidden="true"></i> {lang="stream_rss"}</a></li>
+								{{endif}}
+							</ul>
+						</div>
+					</i-dropdown>
+					<button type="button" aria-controls="elStreamFilterForm" aria-expanded="false" data-ipscontrols class="ipsButton ipsButton--primary"><i class="fa-solid fa-filter" aria-hidden="true"></i><span>{lang="stream_filters"}</span><i class='ipsMenuCaret' aria-hidden="true"></i></button>
+				</div>
+			{{endif}}
+		</div>
+		{{if $canCopy}}
+			<div class="ipsPageHeader__row ipsPageHeader__row--footer">
+				{{$owner = \IPS\Member::load( $stream->member );}}
+					<div class="ipsPhotoPanel ipsPageHeader__primary">
+						{template="userPhoto" group="global" app="core" params="$owner, 'mini'"}
+						<div class="ipsPhotoPanel__text">
+							<div class="ipsPhotoPanel__primary">{lang="stream_copy_title" sprintf="$owner->name"}</div>
+							<div class="ipsPhotoPanel__secondary">{lang="stream_copy_desc"}</div>
+						</div>
+					</div>
+					<a href="{$stream->url()->setQueryString('do', 'copy')->csrf()}" class='ipsButton ipsButton--secondary'><i class='fa-solid fa-plus' aria-hidden="true"></i><span>{lang="stream_copy_feed"}</span></a>
+				</div>
+			</div>
+		{{endif}}
+	</header>
+
+	{{if \IPS\Content\Search\Query::isRebuildRunning()}}
+		<div class="ipsMessage ipsMessage--info">{lang="stream_rebuild_is_running"}</div>
+	{{endif}}
+
+	<div class=''>
+		{{if $form}}
+			{$form|raw}
+		{{endif}}
+		<div data-role='streamBody'>
+			{$html|raw}
+		</div>
+	</div>
+
+</section>
+{{if $rssLink || ( $stream->member && $stream->member == \IPS\Member::loggedIn()->member_id )}}
+	<ul class="ipsButtons i-color_contrast i-margin-top_3">
+		{{if $rssLink}}	
+			<li><a href="{$rssLink}" class="ipsButton ipsButton--inherit"><i class="fa-solid fa-rss" aria-hidden="true"></i><span>{lang="rss"}</span></a></li>
+		{{endif}}
+		{{if $stream->member && $stream->member == \IPS\Member::loggedIn()->member_id}}
+			<li>
+				<button type="button" id="elStreamShare" popovertarget="elStreamShare_menu" class="ipsButton ipsButton--inherit" title='{lang="stream_share_desc"}' data-ipsTooltip><i class='fa-solid fa-share-nodes' aria-hidden="true"></i><span>{lang="stream_share"}</span></button>
+			</li>
+		{{endif}}
+	</ul>
+	{{if $stream->member && $stream->member == \IPS\Member::loggedIn()->member_id}}
+		<i-dropdown popover id="elStreamShare_menu">
+			<div class="iDropdown">
+				<div class='i-padding_2'>
+					<h3 class='ipsTitle ipsTitle--h4'>{lang="share_stream_title"}</h3>
+					<hr class='ipsHr'>
+					<p class='i-color_soft'>{lang="share_stream_info"}</p>
+					<input type='text' value='{$stream->url()}' class='ipsInput ipsInput--text ipsInput--wide i-margin-top_2' />
+				</div>
+			</div>
+		</i-dropdown>
+	{{endif}}
+{{endif}}

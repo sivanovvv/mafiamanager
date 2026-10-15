@@ -1,0 +1,118 @@
+<ips:template parameters="$poll, $url" />
+{{if !isset( \IPS\Request::i()->fetchPoll )}}
+<section data-ips-hook="poll" data-controller='core.front.core.poll'>
+{{endif}}
+	{{if $poll->canVote() and request._poll != 'results' and ( !$poll->getVote() or request._poll == 'form') and $pollForm = $poll->buildForm()}}
+		<h2 data-ips-hook="question" class='ipsBox__header'>
+			{$poll->poll_question}
+			{{if $poll->votes}}<span class='ipsBox__header-secondary'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {lang="poll_num_votes" pluralize="$poll->votes"}</span>{{endif}}
+		</h2>
+		<div data-ips-hook="contents" class='' data-role='pollContents'>
+			{$pollForm->customTemplate( array( \IPS\Theme::i()->getTemplate( 'global', 'core', 'global' ), 'pollForm' ), $url, $poll )|raw}
+		</div>
+	{{elseif ( $poll->canViewResults() and ( !$poll->canVote() or $poll->getVote() ) ) or ( request._poll == 'results' and $poll->canViewResults() )}}
+		<h2 data-ips-hook="questionNoVote" class='ipsBox__header'>
+			{$poll->poll_question}
+			{{if $poll->votes}}<span class='ipsBox__header-secondary'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {lang="poll_num_votes" pluralize="$poll->votes"}</span>{{endif}}
+		</h2>
+		<div class='' data-role='pollContents'>
+			<ol data-ips-hook="list" class='ipsPollList ipsBox__padding i-grid i-gap_4'>
+				{{$i = 0;}}
+				{{foreach $poll->choices as $questionId => $question}}
+					{{$i++;}}
+					<li>
+						<h3 class='ipsTitle ipsTitle--h5 ipsTitle--margin'>{$i}. {$question['question']}</h3>
+						<ul class='ipsPollList_choices i-grid i-gap_2 i-margin-top_2'>
+							{{foreach $question['choice'] as $k => $choice}}
+								{{$progressId = 'ipsProgress-' . mt_rand();}}
+								<li class='i-flex i-flex-wrap_wrap i-align-items_center i-gap_1'>
+									<div class='i-flex_11 i-basis_340'>
+										{$choice|raw}
+									</div>
+									<div class='i-flex_91 i-basis_400 i-flex i-align-items_center i-gap_2'>
+										<div class='i-flex_11'>
+											<span id="{$progressId}">{{if array_sum( $question['votes'] ) > 0 }}{expression="\intval( ( $question['votes'][ $k ] / array_sum( $question['votes'] ) ) * 100 )"}{{else}}0{{endif}}%</span>
+											<progress aria-labelledby="{$progressId}" class='ipsProgress' max="100" value='{{if array_sum( $question['votes'] ) > 0 }}{expression="\intval( ( $question['votes'][ $k ] / array_sum( $question['votes'] ) ) * 100 )"}{{else}}0{{endif}}' title='{{if array_sum( $question['votes'] ) > 0 }}{expression="\intval( ( $question['votes'][ $k ] / array_sum( $question['votes'] ) ) * 100 )"}{{else}}0{{endif}}%' data-ipstooltip></progress>
+										</div>
+										<div style="flex: 0 0 4em" class='i-font-size_-1 i-flex i-align-items_center'>
+											{{if $poll->canSeeVoters() && $question['votes'][ $k ] > 0}}
+												<a href='{url="app=core&module=system&controller=poll&do=voters&id={$poll->pid}&question={$questionId}&option={$k}"}' title='{lang="view_voters"}' class='i-color_soft' data-ipsTooltip data-ipsDialog data-ipsDialog-size="narrow" data-ipsDialog-title="{$choice}">
+													<i class='fa-solid fa-user i-margin-end_icon i-opacity_5' aria-hidden="true"></i>{$question['votes'][ $k ]}
+												</a>
+											{{else}}
+												<i class='fa-solid fa-user i-margin-end_icon i-opacity_5' aria-hidden="true"></i>{$question['votes'][ $k ]}
+											{{endif}}
+										</div>
+									</div>
+								</li>
+							{{endforeach}}
+						</ul>
+					</li>
+				{{endforeach}}
+			</ol>
+			{{if $poll->canVote() || !member.member_id || $poll->canClose() || ( ( $poll->poll_close_date instanceof \IPS\DateTime ) and !$poll->poll_closed ) || ( ( $poll->poll_close_date instanceof \IPS\DateTime ) and $poll->poll_closed )}}
+				
+				{{if $poll->poll_closed or ( $poll->poll_close_date instanceof \IPS\DateTime )}}
+					<div data-ips-hook="closed" class='i-border-top_2 i-padding_2 i-font-weight_600 i-color_soft'>
+						{{if $poll->poll_closed}}
+							<p><i class='fa-solid fa-lock' aria-hidden="true"></i> {lang="poll_closed_for_votes"}</p>
+						{{endif}}
+						{{if ( $poll->poll_close_date instanceof \IPS\DateTime ) and !$poll->poll_closed}}
+							<p>{lang="poll_auto_closes_on" sprintf="$poll->poll_close_date->localeDate(), $poll->poll_close_date->localeTime( FALSE )"}</p>
+						{{elseif ( $poll->poll_close_date instanceof \IPS\DateTime ) and $poll->poll_closed}}
+							<p>{lang="poll_auto_closed_on" sprintf="$poll->poll_close_date->localeDate(), $poll->poll_close_date->localeTime( FALSE )"}</p>
+						{{endif}}
+					</div>
+				{{endif}}
+
+				{{if !member.member_id}}
+				    <p class='i-border-top_2 i-padding_2 i-color_soft'>{lang="poll_guest" sprintf="\IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ), \IPS\Http\Url::internal( 'app=core&module=system&controller=register', 'front', 'register' )"}</p>
+				{{endif}}
+
+				<ul data-ips-hook="vote" class='ipsSubmitRow ipsSubmitRow--poll ipsButtons'>
+					{{if $poll->canVote()}}
+						<li>
+							<a href="{$url->setQueryString( '_poll', 'form' )}" title='{lang="show_vote_options"}' class='ipsButton ipsButton--inherit i-margin-end_auto' data-action='viewResults'><i class='fa-solid fa-caret-left' aria-hidden="true"></i><span>{lang="show_vote_options"}</span></a>
+						</li>
+					{{endif}}
+					{{if $poll->canClose()}}
+						{{if ! $poll->poll_closed}}
+							<li><a class='ipsButton ipsButton--inherit' href='{$url->setQueryString( array( 'do' => 'pollStatus', 'value' => 0 ) )->csrf()}'><i class="fa-solid fa-lock" aria-hidden="true"></i><span>{lang="poll_close"}</span></a></li>
+						{{else}}
+							<li><a class='ipsButton ipsButton--inherit' href='{$url->setQueryString( array( 'do' => 'pollStatus', 'value' => 1 ) )->csrf()}'><i class="fa-solid fa-unlock" aria-hidden="true"></i><span>{lang="poll_open"}</span></a></li>
+						{{endif}}
+					{{endif}}
+				</ul>
+			{{endif}}
+		</div>
+	{{else}}
+		<h2 class='ipsBox__header'>
+			{$poll->poll_question}
+			{{if $poll->votes}}<span class='ipsBox__header-secondary'><i class='fa-regular fa-check-square' aria-hidden="true"></i> {lang="poll_num_votes" pluralize="$poll->votes"}</span>{{endif}}
+		</h2>
+		<div class='i-padding_3' data-role='pollContents'>
+			{lang="no_permission_poll"}{{if !\IPS\Member::loggedIn()->member_id}} {lang="poll_guest" sprintf="\IPS\Http\Url::internal( 'app=core&module=system&controller=login', 'front', 'login' ), \IPS\Http\Url::internal( 'app=core&module=system&controller=register', 'front', 'register' )"}{{endif}}
+
+            {{if $poll->canClose() || ( ( $poll->poll_close_date instanceof \IPS\DateTime ) and !$poll->poll_closed ) || ( ( $poll->poll_close_date instanceof \IPS\DateTime ) and $poll->poll_closed )}}
+            <hr class='ipsHr'>
+            <ul class='ipsButtons cPollButtons'>
+                {{if $poll->canClose()}}
+                    {{if !$poll->poll_closed}}
+                        <li><a class='ipsButton ipsButton--inherit ipsButton--small' href='{$url->setQueryString( array( 'do' => 'pollStatus', 'value' => 0 ) )->csrf()}'><i class="fa-solid fa-lock" aria-hidden="true"></i> {lang="poll_close"}</a></li>
+                    {{else}}
+                        <li><a class='ipsButton ipsButton--inherit ipsButton--small' href='{$url->setQueryString( array( 'do' => 'pollStatus', 'value' => 1 ) )->csrf()}'><i class="fa-solid fa-unlock" aria-hidden="true"></i> {lang="poll_open"}</a></li>
+                    {{endif}}
+                {{endif}}
+
+                {{if ( $poll->poll_close_date instanceof \IPS\DateTime ) and !$poll->poll_closed}}
+                    <li class='cPollCloseDate'>{lang="poll_auto_closes_on" sprintf="$poll->poll_close_date->localeDate(), $poll->poll_close_date->localeTime( FALSE )"}</li>
+                {{elseif ( $poll->poll_close_date instanceof \IPS\DateTime ) and $poll->poll_closed}}
+                    <li class='cPollCloseDate'>{lang="poll_auto_closed_on" sprintf="$poll->poll_close_date->localeDate(), $poll->poll_close_date->localeTime( FALSE )"}</li>
+                {{endif}}
+            </ul>
+            {{endif}}
+        </div>
+	{{endif}}
+{{if !isset( \IPS\Request::i()->fetchPoll )}}
+</section>
+{{endif}}

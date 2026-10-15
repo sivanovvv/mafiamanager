@@ -1,0 +1,10 @@
+<ips:template parameters="$database, $row, $page" />
+<div class="i-flex">
+	<strong>{$database->_title}</strong>
+	{{if $page}}
+		<a class="i-margin-start_2 ipsBadge ipsBadge--style1" href="{$page->url()}" target="_blank" rel="noopener">{lang="cms_db_used_on_page" sprintf="$page->_title"}</a>
+	{{else}}
+	    <span class="i-margin-start_2 ipsBadge ipsBadge--negative"><i class='fas fa-warning' aria-hidden="true"></i> {lang="database_no_page"}</span>
+	{{endif}}
+</div>
+<p class='i-color_soft'>{$database->_description}</p>

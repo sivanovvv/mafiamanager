@@ -1,0 +1,6 @@
+<ips:template parameters="$goal, $email" />
+{$email->language->addToStack( "notification__donation_goal_reached_amount", FALSE, array( 'sprintf' => array( new \IPS\nexus\Money( $goal->goal, $goal->currency ), $email->language->addToStack( "nexus_donategoal_" . $goal->id ) ) ) )}
+
+{$email->language->addToStack( "notification__donation_goal_thanks", FALSE, array() )}
+
+-- {setting="board_name"}

@@ -1,0 +1,42 @@
+<ips:template parameters="$report, $ref='list', $showIcon=TRUE" />
+{{$hasAuthorNotifications = (int) count( $report::getAuthorNotifications() );}}
+{{if $showIcon}}
+<button type="button" id="elReportItem{$report->id}" popovertarget="elReportItem{$report->id}_menu" data-action="changeStatus">
+	<span class="i-font-size_3"><i class='{{if $report->status == 4}}fa-archive{{elseif $report->status == 1}}fa-solid fa-flag{{elseif $report->status == 2}}fa-solid fa-triangle-exclamation{{else}}fa-solid fa-check-circle{{endif}}' data-role="ipsMenu_selectedIcon" aria-hidden="true"></i></span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+</button>
+{{endif}}
+<i-dropdown popover id="elReportItem{$report->id}_menu" data-reportId="{$report->id}" data-i-dropdown-selectable="radio">
+	<div class="iDropdown">
+		<ul class="iDropdown__items">
+			<li class='iDropdown__title'>{lang="mark_as"}</li>
+			<li>
+				<a href='{url="app=core&module=modcp&tab=reports&id={$report->id}&action=view&setStatus=3&ref={$ref}" csrf="true" seoTemplate="modcp_report"}' data-action='_ipsMenu_ping' data-hasNotifications='{$hasAuthorNotifications}' data-showconfirm {{if $report->status == 3}}aria-selected="true"{{endif}} data-ipsMenuValue='3'>
+					<i class='fa-solid fa-check-circle' data-role="ipsMenu_selectedIcon" aria-hidden="true"></i><span data-role="ipsMenu_selectedText">{lang="menu_report_status_3"}</span>
+				</a>
+			</li>
+			<li>
+				<a href='{url="app=core&module=modcp&tab=reports&id={$report->id}&action=view&setStatus=4&ref={$ref}" csrf="true" seoTemplate="modcp_report"}' data-action='_ipsMenu_ping' data-hasNotifications='{$hasAuthorNotifications}' data-showconfirm {{if $report->status == 4}}aria-selected="true"{{endif}} data-ipsMenuValue='4'>
+					<i class='fa-solid fa-archive' data-role="ipsMenu_selectedIcon" aria-hidden="true"></i><span data-role="ipsMenu_selectedText">{lang="menu_report_status_4"}</span>
+				</a>
+			</li>
+			<li>
+				<a href='{url="app=core&module=modcp&tab=reports&id={$report->id}&action=view&setStatus=2&ref={$ref}" csrf="true" seoTemplate="modcp_report"}' data-action='_ipsMenu_ping' {{if $report->status == 2}}aria-selected="true"{{endif}} data-ipsMenuValue='2'>
+					<i class='fa-solid fa-triangle-exclamation' data-role="ipsMenu_selectedIcon" aria-hidden="true"></i><span data-role="ipsMenu_selectedText">{lang="menu_report_status_2"}</span>
+				</a>
+			</li>
+			<li>
+				<a href='{url="app=core&module=modcp&tab=reports&id={$report->id}&action=view&setStatus=1&ref={$ref}" csrf="true" seoTemplate="modcp_report"}' data-action='_ipsMenu_ping' {{if $report->status == 1}}aria-selected="true"{{endif}} data-ipsMenuValue='1'>
+					<i class='fa-solid fa-flag' data-role="ipsMenu_selectedIcon" aria-hidden="true"></i><span data-role="ipsMenu_selectedText">{lang="menu_report_status_1"}</span>
+				</a>
+			</li>
+			{{if !$showIcon and $report->canDelete( \IPS\Member::loggedIn() )}}
+				<li><hr></li>
+				<li>
+					<a href='{$report->url()->csrf()->setQueryString('_action', 'delete')}' data-action='ipsMenu_ping'>
+						<i class='fa-solid fa-xmark' aria-hidden="true"></i><span>{lang="delete"}</span>
+					</a>
+				</li>
+			{{endif}}
+		</ul>
+	</div>
+</i-dropdown>

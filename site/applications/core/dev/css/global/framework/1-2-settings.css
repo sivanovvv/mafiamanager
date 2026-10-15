@@ -1,0 +1,306 @@
+:root{
+
+	/*
+		----------------
+		- Color palette
+		----------------
+	*/
+
+	--light__i-primary: hsl(220 85% 50%);
+	--light__i-primary-relative-l: 33;
+	--light__i-secondary: hsl(220 49% 13%);
+	--light__i-secondary-relative-l: 10;
+	--light__i-base: oklch(calc(var(--light__i-base-l) * 1%) calc(var(--light__i-base-c) * 1%) var(--light__i-base-h));
+	
+	--light__i-base-l: 100;
+	--light__i-base-c: 30;
+	--light__i-base-h: 260;
+
+	--dark__i-primary: hsl(215 85% 50%);
+	--dark__i-primary-relative-l: 37;
+	--dark__i-secondary: hsl(215 18% 26%);
+	--dark__i-secondary-relative-l: 24;
+
+	--dark__i-base: oklch(calc(var(--dark__i-base-l) * 1%) calc(var(--dark__i-base-c) * 1%) var(--dark__i-base-h));
+	--dark__i-base-l: 30;
+	--dark__i-base-c: 20;
+	--dark__i-base-h: 260;
+
+
+	/*
+		----------------
+		- Theme settings
+		----------------
+	*/
+
+	/* Light/dark mode */
+	--set__i-default-scheme: system;
+	--set__i-change-scheme: 1;
+
+	/* Text Logo */
+	--set__i-logo--fo-fa: var(--i-font-family);
+	--set__i-logo--fo-we: 500;
+	--set__i-desktop-logo--fo-si: 18;
+	--set__i-sidebar-ui-logo--fo-si: 20;
+	--set__i-mobile-logo--fo-si: 18;
+
+	/* Image logo (desktop) */
+	--set__logo-light: ;
+	--set__logo-dark: ;
+	--set__i-logo--he: 70;
+	--set__i-sidebar-ui-logo--he: 70;
+
+	/* Image logo (mobile) */
+	--set__mobile-logo-light: ;
+	--set__mobile-logo-dark: ;
+	--set__i-mobile-logo--he: 70;
+
+	/* Typography */
+	--set__i-font-family: var(--i-font-family_system-ui);
+	--set__i-font-size: 14;
+	--set__i-user-content-font-size: 110;
+
+	/* Desktop header */
+	--set__i-position-logo: 4;
+	--set__i-position-navigation: 5;
+	--set__i-position-user: 6;
+	--set__i-position-breadcrumb: 7;
+	--set__i-position-search: 9;
+	--set__i-header-top--he: 50;
+	--set__i-header-primary--he: 100;
+	--set__i-header-secondary--he: 50;
+	--set__i-nav-bar-icons: 0;
+
+	/* Mobile header */
+	--set__i-mobile-header--he: 60;
+	
+	/* Navigation panel */
+	--set__i-sidebar-ui-header--he: 65;
+
+	/* Sidebar */
+	--set__i-sidebar-width: 350;
+	--set__i-flip-sidebar: 0;
+	--set__i-sticky-sidebar: 1;
+
+	/* Body */
+	--set__i-layout-width: 1500;
+	--set__i-avatar-radius: 1;
+
+	/* Content boxes */
+	--set__i-design-border: 1;
+	--set__i-design-radius: 8;
+	--set__i-design-shadow: 2;
+	--set__i-link-panels: 1;
+
+	/* Mobile navigation */
+	--set__i-mobile-icons-location: footer;
+	--set__i-mobile-footer-labels: 1;
+
+
+	/*
+		----------------
+		- Colors
+		----------------
+	*/
+
+
+	/* Typography */
+	--light__i-color_root: var(--i-base-contrast_3);
+	--dark__i-color_root: var(--i-base-contrast_4);
+
+	--light__i-color_soft: var(--i-base-contrast_1);
+	--dark__i-color_soft: var(--i-base-contrast_2);
+
+	--light__i-color_hard: var(--i-base-contrast_6);
+	--dark__i-color_hard: var(--i-base-contrast_6);
+
+	--light__i-link--co: var(--i-base-contrast_6);
+	--dark__i-link--co: var(--i-base-contrast_6);
+
+	--light__i-link-hover--co: var(--i-color_primary);
+	--dark__i-link-hover--co: var(--i-color_primary);
+
+
+	/* Desktop header */
+	--light__i-headerTop--ba-co: var(--i-base-contrast_5);
+	--dark__i-headerTop--ba-co: var(--i-base_3);
+
+	--light__i-headerTop--co: var(--i-base_1);
+	--dark__i-headerTop--co: var(--i-base-contrast_6);
+
+	--light__i-headerPrimary--ba-co: var(--i-base-contrast_4);
+	--dark__i-headerPrimary--ba-co: var(--i-base_3);
+
+	--light__i-headerPrimary--co: var(--i-base_1);
+	--dark__i-headerPrimary--co: var(--i-base-contrast_6);
+
+	--light__i-headerSecondary--ba-co: var(--i-base-contrast_5);
+	--dark__i-headerSecondary--ba-co: var(--i-base_4);
+
+	--light__i-headerSecondary--co: var(--i-base_1);
+	--dark__i-headerSecondary--co: var(--i-base-contrast_5);
+
+
+	/* Mobile header */
+	--light__i-headerMobile--ba-co: var(--i-base_1);
+	--dark__i-headerMobile--ba-co: var(--i-base_2);
+
+	--light__i-headerMobile--co: var(--i-base-contrast_5);
+	--dark__i-headerMobile--co: var(--i-base-contrast_5);
+
+
+	/* Side panel */
+	--light__i-navPanel--ba-co: var(--i-base-contrast_5);
+	--dark__i-navPanel--ba-co: var(--i-base_2);
+
+	--light__i-navPanel--co: var(--i-base_2);
+	--dark__i-navPanel--co: var(--i-base-contrast_3);
+
+	--light__i-navPanelLinkHover--co: var(--i-base_1);
+	--dark__i-navPanelLinkHover--co: var(--i-color_primary);
+
+	--light__i-navPanelLinkActive--ba-co: var(--i-primary);
+	--dark__i-navPanelLinkActive--ba-co: var(--i-primary);
+
+	--light__i-navPanelLinkActive--co: var(--i-primary-contrast);
+	--dark__i-navPanelLinkActive--co: var(--i-primary-contrast);
+
+
+	/* Body */
+	--light__i-body--ba-co: var(--i-base_3);
+	--dark__i-body--ba-co: var(--i-base_1);
+
+
+	/* Content boxes */
+	--light__i-box--ba-co: var(--i-base_1);
+	--dark__i-box--ba-co: var(--i-base_2);
+
+	--light__i-box--bo-co: var(--i-base_4);
+	--dark__i-box--bo-co: var(--i-base_3);
+
+	--light__i-boxHeader--ba-co: var(--i-base_1);
+	--dark__i-boxHeader--ba-co: var(--i-base_2);
+
+	--light__i-boxHeader--co: var(--i-base-contrast_6);
+	--dark__i-boxHeader--co: var(--i-base-contrast_6);
+
+	--light__i-widget-header--ba-co: var(--i-base_1);
+	--dark__i-widget-header--ba-co: var(--i-base_2);
+
+	--light__i-widget-header--co: var(--i-base-contrast_6);
+	--dark__i-widget-header--co: var(--i-base-contrast_6);
+	
+	
+	/* Footer */
+	--light__i-footer--co: var(--i-base_4);
+	--dark__i-footer--co: var(--i-base-contrast_4);
+
+	--light__i-footer--ba-co: var(--i-base-contrast_4);
+	--dark__i-footer--ba-co: var(--i-base_2);
+
+
+	/* Mobile navigation */
+	--light__i-mobileFooter--ba-co: var(--i-base_1);
+	--dark__i-mobileFooter--ba-co: var(--i-base_3);
+
+	--light__i-mobileFooter--co: var(--i-base-contrast_4);
+	--dark__i-mobileFooter--co: var(--i-base-contrast_4);
+
+	--light__i-mobileFooter-active--co: var(--i-primary-contrast);
+	--dark__i-mobileFooter-active--co: var(--i-primary-contrast);
+
+	--light__i-mobileFooter-active--ba-co: var(--i-primary);
+	--dark__i-mobileFooter-active--ba-co: var(--i-primary);
+
+	/* Buttons */
+	--i-button--bo-ra: 8;
+	--i-button--te-tr: normal;
+	--light__i-primary-button--ba-co: var(--i-primary);
+	--dark__i-primary-button--ba-co: var(--i-primary);
+
+	--light__i-primary-button--co: var(--i-primary-contrast);
+	--dark__i-primary-button--co: var(--i-primary-contrast);
+
+	--light__i-secondary-button--ba-co: var(--i-secondary);
+	--dark__i-secondary-button--ba-co: var(--i-secondary);
+
+	--light__i-secondary-button--co: var(--i-secondary-contrast);
+	--dark__i-secondary-button--co: var(--i-secondary-contrast);
+
+}
+
+[data-ips-scheme="light"]{
+	--i-color_root: var(--light__i-color_root);
+	--i-color_soft: var(--light__i-color_soft);
+	--i-color_hard: var(--light__i-color_hard);
+	--i-link--co: var(--light__i-link--co);
+	--i-link-hover--co: var(--light__i-link-hover--co);
+	--i-headerTop--ba-co: var(--light__i-headerTop--ba-co);
+	--i-headerTop--co: var(--light__i-headerTop--co);
+	--i-headerPrimary--ba-co: var(--light__i-headerPrimary--ba-co);
+	--i-headerPrimary--co: var(--light__i-headerPrimary--co);
+	--i-headerSecondary--ba-co: var(--light__i-headerSecondary--ba-co);
+	--i-headerSecondary--co: var(--light__i-headerSecondary--co);
+	--i-headerMobile--ba-co: var(--light__i-headerMobile--ba-co);
+	--i-headerMobile--co: var(--light__i-headerMobile--co);
+	--i-navPanel--ba-co: var(--light__i-navPanel--ba-co);
+	--i-navPanel--co: var(--light__i-navPanel--co);
+	--i-navPanelLinkHover--co: var(--light__i-navPanelLinkHover--co);
+	--i-navPanelLinkActive--ba-co: var(--light__i-navPanelLinkActive--ba-co);
+	--i-navPanelLinkActive--co: var(--light__i-navPanelLinkActive--co);
+	--i-body--ba-co: var(--light__i-body--ba-co);
+	--i-box--ba-co: var(--light__i-box--ba-co);
+	--i-box--bo-co: var(--light__i-box--bo-co);
+	--i-boxHeader--ba-co: var(--light__i-boxHeader--ba-co);
+	--i-boxHeader--co: var(--light__i-boxHeader--co);
+	--i-widget-header--ba-co: var(--light__i-widget-header--ba-co);
+	--i-widget-header--co: var(--light__i-widget-header--co);
+	--i-footer--co: var(--light__i-footer--co);
+	--i-footer--ba-co: var(--light__i-footer--ba-co);
+	--i-mobileFooter--ba-co: var(--light__i-mobileFooter--ba-co);
+	--i-mobileFooter--co: var(--light__i-mobileFooter--co);
+	--i-mobileFooter-active--co: var(--light__i-mobileFooter-active--co);
+	--i-mobileFooter-active--ba-co: var(--light__i-mobileFooter-active--ba-co);
+	--i-primary-button--ba-co: var(--light__i-primary-button--ba-co);
+	--i-primary-button--co: var(--light__i-primary-button--co);
+	--i-secondary-button--ba-co: var(--light__i-secondary-button--ba-co);
+	--i-secondary-button--co: var(--light__i-secondary-button--co);
+}
+
+[data-ips-scheme="dark"]{
+	--i-color_root: var(--dark__i-color_root);
+	--i-color_soft: var(--dark__i-color_soft);
+	--i-color_hard: var(--dark__i-color_hard);
+	--i-link--co: var(--dark__i-link--co);
+	--i-link-hover--co: var(--dark__i-link-hover--co);
+	--i-headerTop--ba-co: var(--dark__i-headerTop--ba-co);
+	--i-headerTop--co: var(--dark__i-headerTop--co);
+	--i-headerPrimary--ba-co: var(--dark__i-headerPrimary--ba-co);
+	--i-headerPrimary--co: var(--dark__i-headerPrimary--co);
+	--i-headerSecondary--ba-co: var(--dark__i-headerSecondary--ba-co);
+	--i-headerSecondary--co: var(--dark__i-headerSecondary--co);
+	--i-headerMobile--ba-co: var(--dark__i-headerMobile--ba-co);
+	--i-headerMobile--co: var(--dark__i-headerMobile--co);
+	--i-navPanel--ba-co: var(--dark__i-navPanel--ba-co);
+	--i-navPanel--co: var(--dark__i-navPanel--co);
+	--i-navPanelLinkHover--co: var(--dark__i-navPanelLinkHover--co);
+	--i-navPanelLinkActive--ba-co: var(--dark__i-navPanelLinkActive--ba-co);
+	--i-navPanelLinkActive--co: var(--dark__i-navPanelLinkActive--co);
+	--i-body--ba-co: var(--dark__i-body--ba-co);
+	--i-box--ba-co: var(--dark__i-box--ba-co);
+	--i-box--bo-co: var(--dark__i-box--bo-co);
+	--i-boxHeader--ba-co: var(--dark__i-boxHeader--ba-co);
+	--i-boxHeader--co: var(--dark__i-boxHeader--co);
+	--i-widget-header--ba-co: var(--dark__i-widget-header--ba-co);
+	--i-widget-header--co: var(--dark__i-widget-header--co);
+	--i-footer--co: var(--dark__i-footer--co);
+	--i-footer--ba-co: var(--dark__i-footer--ba-co);
+	--i-mobileFooter--ba-co: var(--dark__i-mobileFooter--ba-co);
+	--i-mobileFooter--co: var(--dark__i-mobileFooter--co);
+	--i-mobileFooter-active--co: var(--dark__i-mobileFooter-active--co);
+	--i-mobileFooter-active--ba-co: var(--dark__i-mobileFooter-active--ba-co);
+	--i-primary-button--ba-co: var(--dark__i-primary-button--ba-co);
+	--i-primary-button--co: var(--dark__i-primary-button--co);
+	--i-secondary-button--ba-co: var(--dark__i-secondary-button--ba-co);
+	--i-secondary-button--co: var(--dark__i-secondary-button--co);
+}

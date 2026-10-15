@@ -1,0 +1,53 @@
+<ips:template parameters="" />
+<div class="i-padding_3">
+	<ul class="cNexusInvoiceExplain">
+		{{if settings.cm_invoice_warning}}
+			<li>
+				<p class="time">
+					{{if \IPS\Settings::i()->cm_invoice_warning % 24 == 0}}
+						{lang="invoice_timeline_warning_time" pluralize="\IPS\Settings::i()->cm_invoice_warning / 24"}
+					{{else}}
+						{lang="invoice_timeline_warning_time_h" pluralize="\IPS\Settings::i()->cm_invoice_warning"}
+					{{endif}}
+				</p>
+				<p class="event">{lang="invoice_timeline_credit"}</p>
+			</li>
+		{{endif}}
+		<li>
+			<p class="time">
+				{{if \IPS\Settings::i()->cm_invoice_generate % 24 == 0}}
+					{lang="invoice_timeline_generate_time" pluralize="\IPS\Settings::i()->cm_invoice_generate / 24"}
+				{{else}}
+					{lang="invoice_timeline_generate_time_h" pluralize="\IPS\Settings::i()->cm_invoice_generate"}
+				{{endif}}
+			</p>
+			<p class="event">{lang="invoice_timeline_generate_event"}</p>
+		</li>
+		{{if settings.cm_invoice_warning and \count( \IPS\nexus\Gateway::billingAgreementGateways() )}}
+			<li>
+				<p class="time">
+					{{if \IPS\Settings::i()->cm_invoice_warning % 24 == 0}}
+						{lang="invoice_timeline_generate_time" pluralize="\IPS\Settings::i()->cm_invoice_warning / 24"}
+					{{else}}
+						{lang="invoice_timeline_generate_time_h" pluralize="\IPS\Settings::i()->cm_invoice_warning"}
+					{{endif}}
+				</p>
+				<p class="event">{lang="invoice_timeline_ba_warn_event"}</p>
+			</li>
+		{{endif}}
+		<li>
+			<p class="time">{lang="invoice_timeline_grace_time"}</p>
+			<p class="event">{lang="invoice_timeline_grace_event"}</p>
+		</li>
+		<li>
+			<p class="time">{lang="invoice_timeline_expire_time"}</p>
+			<p class="event">{lang="invoice_timeline_expire_event"}</p>
+		</li>
+		{{if settings.cm_invoice_expireafter}}
+			<li>
+				<p class="time">{lang="invoice_timeline_invoice_exp_time" pluralize="\IPS\Settings::i()->cm_invoice_expireafter"}</p>
+				<p class="event">{lang="invoice_timeline_invoice_exp_event"}</p>
+			</li>
+		{{endif}}
+	</ul>
+</div>

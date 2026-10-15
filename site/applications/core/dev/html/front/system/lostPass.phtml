@@ -1,0 +1,9 @@
+<ips:template parameters="$form" />
+{{if !request.isAjax()}}
+	{template="pageHeader" group="global" params="\IPS\Member::loggedIn()->language()->addToStack('lost_password')"}
+	<div class='ipsBox ipsBox--lostPass'>
+{{endif}}
+	{$form|raw}
+{{if !request.isAjax()}}
+	</div>
+{{endif}}

@@ -1,0 +1,51 @@
+<ips:template parameters="$endPoints, $tree, $selected, $content" />
+{{if !request.isSecure()}}
+	<div class="ipsMessage ipsMessage--warning i-margin_2">{lang="api_https_warning"}</div>
+{{endif}}
+<div class="ipsColumns ipsColumns--lines cApiReference" data-controller='core.admin.system.api'>
+	<div class="ipsColumns__secondary i-basis_360">
+		<h2 class='ipsTitle ipsMinorTitle i-padding-top_2 i-padding-inline_3'>{lang="api_endpoints"}</h2>
+			<div class="i-padding_2">
+				<ul class="cApiTree i-margin-block_1">
+					{{foreach $tree as $app => $controllers}}
+						<li>
+							<details open>
+								<summary>{lang="__app_{$app}"}</summary>
+								<i-details-content>
+									<ul>
+										{{foreach $controllers as $controller => $endpoints}}
+											{{if \count( $endpoints ) > 1}}
+												<li>
+													<details>
+														<summary>{lang="__api_{$app}_{$controller}"}</summary>
+														<i-details-content>
+															<ul>
+																{{foreach $endpoints as $key => $endpoint}}
+																	<li><a href='{url="app=core&module=applications&controller=api&tab=apiReference&endpoint={$key}"}' data-action='showEndpoint'><code>{expression="\IPS\Api\Controller::parseEndpointForDisplay( $endpoint['title'] )" raw="true"}</code></a></li>
+																{{endforeach}}
+															</ul>
+														</i-details-content>
+													</details>
+												</li>
+											{{else}}
+												<li>
+													{{foreach $endpoints as $key => $endpoint}}
+														<a href='{url="app=core&module=applications&controller=api&tab=apiReference&endpoint={$key}"}' data-action='showEndpoint'><code>{expression="\IPS\Api\Controller::parseEndpointForDisplay( $endpoint['title'] )" raw="true"}</code></a>
+													{{endforeach}}
+												</li>
+											{{endif}}
+										{{endforeach}}
+									</ul>
+								</i-details-content>
+							</details>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+	</div>
+	<div class="ipsColumns__primary" data-role="referenceContainer">
+		{{if $content}}
+			{$content|raw}
+		{{endif}}
+	</div>
+</div>

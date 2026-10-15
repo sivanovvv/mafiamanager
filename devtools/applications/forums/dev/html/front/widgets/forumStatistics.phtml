@@ -1,0 +1,14 @@
+<ips:template parameters="$stats, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_forumStatistics"}</h3>
+<div class="ipsWidget__content">
+	<ul class='ipsList ipsList--stats ipsList--stacked ipsList--border ipsList--fill'>
+		<li>
+			<strong class='ipsList__label'>{lang="total_topics"}</strong>
+			<span class='ipsList__value'>{number="$stats['total_topics']" format="short"}</span>
+		</li>
+		<li>
+			<strong class='ipsList__label'>{lang="total_posts"}</strong>
+			<span class='ipsList__value'>{number="$stats['total_posts']" format="short"}</span>
+		</li>
+	</ul>
+</div>

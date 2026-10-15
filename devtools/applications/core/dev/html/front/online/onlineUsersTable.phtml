@@ -1,0 +1,45 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div data-baseurl='{$table->baseUrl}' data-resort='{$table->resortKey}' data-controller='core.global.core.table{{if $table->canModerate()}},core.front.core.moderation{{endif}}'>
+	<div class="ipsButtonBar ipsButtonBar--top">
+		{{if $table->pages > 1}}
+			<div class='ipsButtonBar__pagination' data-role="tablePagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+			</div>
+		{{endif}}
+		{{if !empty( $table->filters )}}
+			<div class='ipsButtonBar__end'>
+				<ul class="ipsDataFilters">
+					<li>
+						<button type="button" id="elFilterByMenu_{$table->uniqueId}" popovertarget="elFilterByMenu_{$table->uniqueId}_menu" class='ipsDataFilters__button' data-role='tableFilterMenu'><span>{lang="filter_by"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						<i-dropdown popover id="elFilterByMenu_{$table->uniqueId}_menu" data-i-dropdown-selectable="radio">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									<li>
+										<a href='{$table->baseUrl->setQueryString( array( 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection, 'filter' => '', 'group' => \IPS\Request::i()->group ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='' {{if !$table->filter}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="all"}</a>
+									</li>
+									{{foreach $table->filters as $k => $q}}
+										<li>
+											<a href='{$table->baseUrl->setQueryString( array( 'filter' => $k, 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection, 'group' => \IPS\Request::i()->group ) )->setPage( 'page', 1 )}' data-action="tableFilter" data-ipsMenuValue='{$k}' {{if $k === $table->filter}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="{$table->langPrefix}{$k}"}</a>
+										</li>
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				</ul>
+			</div>
+		{{endif}}
+	</div>
+
+	<ol class='ipsGrid ipsGrid--lines ipsGrid--online-users i-basis_260'>
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+	</ol>
+
+	{{if $table->pages > 1}}
+		<div class='ipsButtonBar ipsButtonBar--bottom'>
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+			</div>
+		</div>
+	{{endif}}
+</div>

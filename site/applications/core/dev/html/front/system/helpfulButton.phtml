@@ -1,0 +1,25 @@
+<ips:template parameters="$comment, $item" />
+{{if $comment->canMarkHelpful()}}
+<li class='ipsEntry__controls__helpful {{if $comment->markedHelpful()}} i-color_positive{{endif}}'>
+	{{if !$comment->markedHelpful()}}
+		<a href='{$item->url()->csrf()->setQueryString( array( 'do' => 'toggleHelpful', 'answer' => $comment->pid ) )}' data-action='helpful'>
+			<i class="fa-regular fa-thumbs-up" aria-hidden="true"></i><span>{lang="mark_helpful"}{{if !\IPS\Member::loggedIn()->group['gbw_view_helpful'] && $comment->helpfulCount() != 0}}: {$comment->helpfulCount()}{{endif}}</span>
+		</a>
+	{{else}}
+		<a href='{$item->url()->csrf()->setQueryString( array( 'do' => 'toggleHelpful', 'answer' => $comment->pid ) )}' data-action='helpful'>
+			<i class="fa-solid fa-thumbs-up" aria-hidden="true"></i><span>{lang="unmark_helpful"}{{if !\IPS\Member::loggedIn()->group['gbw_view_helpful'] && $comment->helpfulCount() != 0}}: {$comment->helpfulCount()}{{endif}}</span>
+		</a>
+	{{endif}}
+	{{if \IPS\Member::loggedIn()->group['gbw_view_helpful'] && $comment->helpfulCount() != 0}}
+		<a href="{$item->url()->csrf()->setQueryString( array( 'do' => 'showHelpful', 'answer' => $comment->pid ) )}" class='ipsEntry__controls-badge' data-ipsDialog data-ipsDialog-title="{lang="helpful_users_found_helpful"}">{$comment->helpfulCount()}</a>
+	{{endif}}
+</li>
+{{elseif $comment->helpfulCount() != 0 }}
+<li>
+	{{if \IPS\Member::loggedIn()->group['gbw_view_helpful']}}
+		<a href="{$item->url()->csrf()->setQueryString( array( 'do' => 'showHelpful', 'answer' => $comment->pid ) )}" data-ipsDialog data-ipsDialog-title="{lang="helpful_users_found_helpful"}"><i class="fa-solid fa-list-ul" aria-hidden="true"></i><span>{lang="mark_helpful"}: {$comment->helpfulCount()}</span></a>
+	{{else}}
+		<p><span>{lang="mark_helpful"}: {$comment->helpfulCount()}</span></p>
+	{{endif}}
+</li>
+{{endif}}

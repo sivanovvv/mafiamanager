@@ -1,0 +1,21 @@
+{
+  "name": "iro",
+  "version": "1.0.0",
+  "description": "The ips implementation of IRO color picker",
+  "main": "index.js",
+  "author": "Matt Finger (Invision Power Services, Inc.)",
+  "license": "Private",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@jaames/iro": "^5.5.2",
+    "colorjs.io": "^0.5.2",
+    "vite": "^5.4.7"
+  },
+  "scripts": {
+    "dev": "vite",
+    "watch": "vite",
+    "build": "node beforeBuild.js && vite build && node afterBuild.js",
+    "preview": "vite preview"
+  }
+}

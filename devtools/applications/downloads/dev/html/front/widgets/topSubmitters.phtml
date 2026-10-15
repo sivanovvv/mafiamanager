@@ -1,0 +1,59 @@
+<ips:template parameters="$week, $month, $year, $all, $layout='table', $isCarousel=false" />
+<header class='ipsWidget__header'>
+	<h3>{lang="block_topSubmitters"}</h3>
+	{{$carouselID = 'widget-top-file-submitters_' . mt_rand();}}
+	{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+</header>
+<div class='ipsWidget__content'>
+	<div class="ipsCarousel i-basis_300 ipsCarousel--widget-top-file-submitters" id='{$carouselID}' tabindex="0">
+		<div class="i-padding_3 i-flex_10">
+			<h4 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{lang="week"}</h4>
+			{{if \count( $week )}}
+				<div class="i-grid i-gap_2">
+					{{foreach $week as $idx => $data}}
+						{template="topSubmitterRow" group="widgets" app="downloads" params="$idx, $data"}
+					{{endforeach}}
+				</div>
+			{{else}}
+				<p class='i-color_soft'>{lang="top_submitters_empty__week"}</p>
+			{{endif}}
+		</div>
+		<div class="i-padding_3 i-flex_10">
+			<h4 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{lang="month"}</h4>
+
+			{{if \count( $month )}}
+				<div class="i-grid i-gap_2">
+					{{foreach $month as $idx => $data}}
+						{template="topSubmitterRow" group="widgets" app="downloads" params="$idx, $data"}
+					{{endforeach}}
+				</div>
+			{{else}}
+				<p class='i-color_soft'>{lang="top_submitters_empty__month"}</p>
+			{{endif}}
+		</div>
+		<div class="i-padding_3 i-flex_10">
+			<h4 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{lang="year"}</h4>
+			{{if \count( $year )}}
+				<div class="i-grid i-gap_2">
+					{{foreach $year as $idx => $data}}
+						{template="topSubmitterRow" group="widgets" app="downloads" params="$idx, $data"}
+					{{endforeach}}
+				</div>
+			{{else}}
+				<p class='i-color_soft'>{lang="top_submitters_empty__year"}</p>
+			{{endif}}
+		</div>
+		<div class="i-padding_3 i-flex_10">
+			<h4 class='ipsTitle ipsTitle--h4 i-margin-bottom_3'>{lang="alltime"}</h4>
+			{{if \count( $all )}}
+				<div class="i-grid i-gap_2">
+					{{foreach $all as $idx => $data}}
+						{template="topSubmitterRow" group="widgets" app="downloads" params="$idx, $data"}
+					{{endforeach}}
+				</div>
+			{{else}}
+				<p class='i-color_soft'>{lang="top_submitters_empty__all"}</p>
+			{{endif}}
+		</div>
+	</div>
+</div>

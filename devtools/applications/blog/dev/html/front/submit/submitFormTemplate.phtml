@@ -1,0 +1,49 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class=''" />
+<section class='ipsBox ipsBox--submitBlog ipsPull'>
+	<form accept-charset='utf-8' class="ipsForm ipsForm--blog-submit {$class}" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} data-ipsForm data-ipsFormSubmit>
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endforeach}}
+		{{if $uploadField}}
+			<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+			<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+		{{endif}}
+		{{if \count( $elements ) > 1}}
+			<h2 class='ipsBox__header'>{lang="entry_information"}</h2>
+			<i-tabs class='ipsTabs' id='ipsTabs_{$id}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{$id}_content'>
+				<div role='tablist'>
+					{{foreach $elements as $name => $content}}
+						<button type="button" id='ipsTabs_{$id}_{$name}' class="ipsTabs__tab" role="tab" aria-controls='ipsTabs_{$id}_{$name}_panel' aria-selected="{{if $name == 'blog_entry_mainTab'}}true{{else}}false{{endif}}">{lang="$name"}</button>
+					{{endforeach}}
+					</div>
+				{template="tabScrollers" app="core" group="global" location="global"}
+			</i-tabs>
+			<div id='ipsTabs_{$id}_content' class='ipsTabs__panels'>
+				{{foreach $elements as $name => $contents}}
+					<div id='ipsTabs_{$id}_{$name}_panel' class="ipsTabs__panel ipsTabs__panel--{$name}" role="tabpanel" aria-labelledby="ipsTabs_{$id}_{$name}" {{if $name != 'blog_entry_mainTab'}}hidden{{endif}}>
+						<ul class='ipsForm ipsForm--blog-submit-content ipsForm--vertical'>
+							{{foreach $contents as $inputName => $input}}
+								{$input|raw}
+							{{endforeach}}
+							<li class='ipsSubmitRow'>
+								<button type='submit' class='ipsButton ipsButton--primary'>{lang="entry_submit"}</button>
+							</li>
+						</ul>
+					</div>
+				{{endforeach}}
+			</div>		
+		{{else}}
+			<ul class='ipsForm ipsForm--blog-submit-content ipsForm--vertical'>
+				{{foreach $elements as $collection}}
+					{{foreach $collection as $inputName => $input}}
+						{$input|raw}
+					{{endforeach}}
+				{{endforeach}}
+				<li class='ipsSubmitRow'>
+					<button type='submit' class='ipsButton ipsButton--primary'>{lang="entry_submit"}</button>
+				</li>
+			</ul>
+		{{endif}}
+	</form>
+</section>

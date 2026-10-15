@@ -1,0 +1,17 @@
+<ips:template parameters="$ref, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_newsletter_title"}</h3>
+<div class='ipsWidget__content ipsWidget__padding'>
+	<div class='i-flex i-gap_3'>
+		<div class='i-flex_00 i-font-size_6 i-color_soft i-opacity_5'><i class="fa-regular fa-envelope" aria-hidden="true"></i></div>
+		<div class='i-flex_11'>
+			<div class='i-font-weight_500 i-margin-bottom_3'>{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('block_newsletter_signup')"}</div>
+			<div class='ipsButtons ipsButtons--fill'>
+				{{if \IPS\Member::loggedIn()->member_id}}
+					<a class="ipsButton ipsButton--inherit" href="{url="app=core&module=system&controller=settings&do=newsletterSubscribe&ref={$ref}" seoTemplate="settings" csrf="true" ref="$ref"}"><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>{lang="block_newsletter_signup_button"}</span></a>
+				{{else}}
+					<a class="ipsButton ipsButton--inherit" href='{url="app=core&module=system&controller=register&newsletter=1" seoTemplate="register"}' {{if \IPS\Login::registrationType() == 'normal'}}data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="sign_up"}'{{endif}}><i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>{lang="block_newsletter_signup_button"}</span></a>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>

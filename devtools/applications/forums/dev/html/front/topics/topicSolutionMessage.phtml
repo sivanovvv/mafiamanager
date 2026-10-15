@@ -1,0 +1,12 @@
+<ips:template parameters="$topic" />
+{{if $solvedComment = $topic->getSolution() AND ( $solvedComment->hidden() == 0 OR ( \in_array( $solvedComment->hidden(), array( 1, -1 ) ) AND $solvedComment->canUnhide() ) )}}
+	<div class='ipsMessage ipsMessage--withButtons ipsMessage--success ipsPull i-margin-bottom_2'>
+		<div>
+			<h4 class='ipsMessage__title'>{lang="solved_byline" htmlsprintf="$solvedComment->author()->name"}</h4>
+			<div class='i-color_soft'>{datetime="$solvedComment->mapped('date')"}</div>
+		</div>
+		<div class="ipsButtons">
+			<a href="{$topic->url()->setQueryString( array( 'do' => 'findComment', 'comment' => $topic->topic_answered_pid ))}" rel="nofollow" class='ipsButton ipsButton--inherit'><span>{lang="solved_and_go"}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+		</div>
+	</div>
+{{endif}}

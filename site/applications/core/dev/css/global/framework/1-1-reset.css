@@ -1,0 +1,192 @@
+/*
+	----------------
+	- Reset styles
+	----------------
+*/
+
+/* Reset all elements to ideal format */
+*, ::before, ::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	min-width: 0;
+	min-height: 0;
+}
+
+html{
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	accent-color: var(--i-primary);
+}
+
+hr{
+	color: inherit;
+}
+
+hr,
+iframe,
+fieldset{
+	border-width: 0;
+}
+
+iframe:where([src*="youtube."], [src*="youtube-nocookie."], [src*="vimeo."], [src*="dailymotion."], [src^="https://embed.ted.com/"]){
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16/9;
+}
+
+img, svg{
+	border: 0;
+	display: inline-block;
+	max-width: 100%;
+	height: auto;
+	vertical-align: top;
+}
+
+/* Prevent alt text from overflowing image if URL fails to load */
+:where(img::before){
+	display: block;
+	overflow: hidden;
+	height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6{
+	font: inherit;
+}
+
+b, strong { font-weight: bolder; }
+
+menu, ol, ul, summary{
+	list-style-type: none;
+}
+blockquote, q { quotes: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+
+input, textarea, select, button{
+	background: none;
+	border: 0;
+	color: inherit;
+	font: inherit;
+	line-height: inherit;
+	text-align: inherit;
+	text-transform: inherit;
+}
+
+/*
+	Date inputs in iOS Safari stretch beyond 100% due to padding, even though box-sizing: border-box is used. Removing padding fixes the issue. Last tested in iOS 26.3.1
+	Eg. Search Events on Events landing page
+*/
+@supports(-webkit-touch-callout: none){
+	input[type="date"],
+	input[type="time"]{
+		padding-inline: 0;
+	}
+}
+
+textarea, select{
+	-webkit-appearance: none;
+	appearance: none;
+	box-shadow: none;
+}
+
+textarea{
+	display: block;
+	width: 100%;
+}
+
+select{
+	cursor: pointer;
+	font-weight: normal; /* Fix the serif font from appearing in Safari. Last tested in 18.3 */
+}
+
+[type="search"]{
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+[type="date"],
+[type="time"]{
+	accent-color: currentColor;
+}
+
+::placeholder{
+	color: inherit;
+	opacity: .5;
+}
+
+button, [type="submit"], summary{
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+button{
+	text-align: inherit;
+}
+
+details summary::-webkit-details-marker {
+	display:none;
+}
+
+:focus{
+	outline-color: transparent;
+}
+
+:focus-visible{
+	outline: var(--i-outline-width) var(--i-outline-style) var(--i-outline-color);
+	outline-offset: var(--i-outline-offset);
+}
+
+address{
+	font-style: inherit;
+}
+
+dialog{
+	border-width: 0;
+	margin: auto;
+}
+
+/* Ensure closed dialogs are always hidden */
+dialog:not([open]){
+	display: none !important;
+}
+
+.sr-only,
+.ipsInvisible {
+	border: 0 !important;
+	clip: rect(1px, 1px, 1px, 1px) !important;
+	clip-path: inset(50%) !important;
+	height: 1px !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	padding: 0 !important;
+	position: absolute !important;
+	white-space: nowrap !important;
+	width: 1px !important;
+}
+
+[hidden]{
+	display: none !important;
+}
+:where([popover]){
+	background: none;
+	border-width: 0;
+	/* Safari bug fix: popovers can fall under other elements during their closing transition without this */
+    z-index: 9999;
+}
+/* Ensure closed popovers are always hidden */
+[popover]:not(#x):not(:popover-open) {
+	display: none;
+}
+/* Polyfill */
+@supports not selector(:popover-open) {
+	:where([popover]){
+		display: block;
+	}
+	[popover]:not(#x):not(.\:popover-open) {
+		display: none;
+	}
+}

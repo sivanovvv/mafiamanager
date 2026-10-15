@@ -1,0 +1,25 @@
+<ips:template parameters="$clubsOnly=FALSE" />
+<header data-ips-hook="header" class="ipsPageHeader" id='elDownloadersHeader'>
+	<h1 class="ipsPageHeader__title">{lang="__app_downloads"}</h1>
+</header>
+{{ $layout = \IPS\Member::loggedIn()->getLayoutValue( 'downloads_categories' ); }}
+{{if !$clubsOnly}}
+	<div class='ipsBox ipsBox--downloadCategories ipsPull'>
+		<h2 class='ipsBox__header'>{lang="categories"}</h2>
+		<i-data>
+			<ol class="ipsData {{if $layout === 'grid'}}ipsData--grid{{else}}ipsData--table ipsData--category{{endif}} ipsData--download-category" data-ips-hook="categories">
+				{template="categoryRow" group="browse" params="NULL, NULL, \IPS\downloads\Category::roots(), $layout"}
+			</ol>
+		</i-data>
+	</div>
+{{endif}}
+{{if settings.clubs and settings.club_nodes_in_apps and $clubNodes = \IPS\downloads\Category::clubNodes()}}
+	<div class='ipsBox ipsBox--downloadClubs ipsPull'>
+		<h2 class='ipsBox__header'><a href="{url="app=downloads&module=downloads&controller=browse&id=clubs" seoTemplate="downloads_clubs"}">{lang="club_node_downloads"}</a></h2>
+		<i-data>
+			<ol class="ipsData {{if $layout === 'grid'}}ipsData--grid{{else}}ipsData--table ipsData--category{{endif}} ipsData--download-category" data-ips-hook="clubNodes">
+				{template="categoryRow" group="browse" params="NULL, NULL, $clubNodes, $layout"}
+			</ol>
+		</i-data>
+	</div>
+{{endif}}

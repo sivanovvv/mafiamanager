@@ -1,0 +1,462 @@
+/* ======================================================== */
+/* REGULAR ATTACHMENTS */
+/* ======================================================== */
+
+/* File attachments inside the editor */
+.ipsAttachLink:not(.ipsAttachLink_image){
+    display: inline-block;
+    background: var(--i-background_3);
+    padding: .5em 1.2em;
+    border-radius: min(var(--i-design-radius), 5px);
+    margin: 5px;
+    text-decoration: none !important;
+}
+
+.ipsAttachLink_block{
+	display: inline-block;
+}
+
+.ipsAttachLink_right{
+	margin-inline-start: 2em;
+}
+.ipsAttachLink_left {
+	margin-inline-end: 2em;
+}
+
+.ipsAttachLink_block:has(.ipsAttachLink_title){
+	color: var(--i-color_soft);
+	padding: .8em 1.2em;
+	max-width: 300px;
+	margin: 0;
+	margin-inline-end: 1em;
+	margin-bottom: 1em;
+	cursor: pointer;
+	font-size: .9em;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-flex;
+	align-items: center;
+	gap: 0 1em;
+}
+
+	.ipsAttachLink_block:has(.ipsAttachLink_title):hover{
+		background: var(--i-background_4);
+	}
+
+	.ipsAttachLink_block::before{
+		display: none;
+	}
+
+	.ipsAttachLink_block:has(.ipsAttachLink_title)::before {
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		color: var(--i-color_soft);
+		font-size: 2em;
+		opacity: .3;
+	}
+
+	.ipsAttachLink_block::before{
+		content: '\f0c6';
+	}
+	.ipsAttachLink_block:is([data-fileExt="zip"], [data-fileExt="rar"], [data-fileExt="7z"], [data-fileExt="gz"], [data-fileExt="tar"])::before {
+		content: '\f1c6';
+	}
+	.ipsAttachLink_block[data-fileExt="pdf"]::before {
+		content: '\f1c1';
+	}
+	.ipsAttachLink_block:is([data-fileExt="doc"], [data-fileExt="docx"])::before {
+		content: '\f1c2';
+	}
+	.ipsAttachLink_block:is([data-fileExt="txt"], [data-fileExt="rtf"])::before {
+		content: '\f0f6';
+	}
+	.ipsAttachLink_block:is([data-fileExt="xls"], [data-fileExt="xlsx"])::before {
+		content: '\f1c3';
+	}
+	.ipsAttachLink_block:is([data-fileExt="ppt"], [data-fileExt="pptx"], [data-fileExt="pps"])::before {
+		content: '\f1c4';
+	}
+	.ipsAttachLink_block:is([data-fileExt="html"], [data-fileExt="php"], [data-fileExt="js"], [data-fileExt="css"], [data-fileExt="xml"], [data-fileExt="csv"], [data-fileExt="sql"], [data-fileExt="py"])::before {
+		content: '\f1c9';
+	}
+	.ipsAttachLink_block:is([data-fileExt="mov"], [data-fileExt="mp4"])::before {
+		content: '\f1c8';
+	}
+	.ipsAttachLink_block[data-fileExt="svg"]::before {
+		content: '\f1c5';
+	}
+
+.ipsAttachLink_title {
+	color: var(--i-color_hard);
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+	overflow: hidden;
+}
+
+.ipsAttachLink_metaInfo {
+	display: block;
+	font-size: .8em;
+	color: var(--i-color_soft);
+}
+
+/* Prevent links which wrap attached images from stretching to 100% */
+.ipsAttachLink_image{
+	width: fit-content;
+}
+
+
+/* ======================================================== */
+/* EMBEDDABLES - Internal Embeds							*/
+/* These styles are used for the iframes when a user posts  */
+/* a link to another piece of content on the suite (for		*/
+/* example, a topic)										*/
+/* ======================================================== */
+
+iframe[data-embedContent] {
+	background: var(--i-background_1);
+	border: 2px solid var(--i-background_4);
+	margin: .8em 0;
+	border-radius: min(var(--i-design-radius), 8px);
+	display: block;
+	max-width: var(--i-richEmbed--wi, 600px);
+	width: 100%;
+}
+
+/* Set an initial height to reduce page jumping */
+[data-ipsembed-contentapp="blog"]:not([style*="height"]){
+	height: 490px;
+}
+[data-ipsembed-contentapp="gallery"]:not([style*="height"]){
+	height: 600px;
+}
+[data-ipsembed-contentapp="downloads"]:not([style*="height"]){
+	height: 580px;
+}
+[data-ipsembed-contentapp="cms"]:not([style*="height"]){
+	height: 220px;
+}
+[data-ipsembed-contentapp="forums"]:not([style*="height"]){
+	height: 500px;
+}
+[data-ipsembed-contentapp="nexus"]:not([style*="height"]){
+	height: 580px;
+}
+[data-ipsembed-contentapp="calendar"]:not([style*="height"]){
+	height: 570px;
+}
+
+.ipsRichEmbed{
+	max-width: var(--i-richEmbed--wi, 600px);
+}
+
+.ipsRichEmbed_masthead{
+	display: block;
+	background: var(--i-background_dark);
+	border-radius: min(var(--i-design-radius), 6px);
+	overflow: hidden;
+	aspect-ratio: 16/9;
+	margin: .5em;
+	width: calc(100% - 1em);
+	max-height: 180px;
+}
+
+	.ipsRichEmbed_masthead--small{
+		aspect-ratio: 4;
+	}
+
+	.ipsRichEmbed_masthead--map{
+		aspect-ratio: auto;
+	}
+
+	.ipsRichEmbed_masthead img{
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+.ipsRichEmbed .ipsFigure{
+	margin: .5em;
+}
+
+.ipsRichEmbed__content{
+	padding: 1.4em;
+	display: grid;
+	gap: 1em;
+	margin-top: -.5em;
+}
+
+.ipsRichEmbed .ipsImage	{
+	max-height: 350px;
+}
+
+.ipsRichEmbed_header {
+	padding: 1em;
+	background: var(--i-background_2);
+	display: flex;
+	align-items: center;
+	gap: 1em;
+	margin: .5em;
+	border-radius: 6px;
+}
+
+	.ipsRichEmbed_header > :first-child{
+		flex-grow: 1;
+	}
+	
+.ipsRichEmbed_openItem {
+	flex: 0 0 auto;
+	font-size: 1.8em;
+	color: var(--i-color_soft);
+	transition: opacity 0.2s ease-in-out;
+}
+
+	.ipsRichEmbed_openItem:not(:hover) {
+		opacity: .2;
+	}
+
+.ipsRichEmbed_moreInfo {
+	background: var(--i-background_2);
+	padding: 1em;
+	border-radius: min(var(--i-design-radius), 6px);
+	margin: .5em;
+}
+
+	.ipsRichEmbed_moreInfo li {
+		position: relative;
+	}
+
+	.ipsRichEmbed_moreInfo .ipsNotification {
+		top: 0;
+		inset-inline-end: 0;
+	}
+
+.ipsRichEmbed__snippet {
+	max-height: 3lh;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 1.6;
+}
+
+.ipsRichEmbed_stats{
+	display: flex;
+	flex-wrap: wrap;
+	gap: .6em 2em;
+	color: var(--i-color_soft);
+	font-weight: 500;
+}
+  
+	.ipsRichEmbed_stats a{
+		color: inherit;
+	}
+
+	.ipsRichEmbed_stats i{
+		margin-inline-end: .5em;
+	}
+
+.ipsRichEmbed_originalItem {
+	background: var(--i-background_2);
+	padding: 1em;
+	border-radius: min(var(--i-design-radius), 5px);
+	border-inline-start: 5px solid var(--i-background_3);
+	margin-inline-start: 1em;
+	color: var(--i-color_soft);
+}
+
+.ipsRichEmbed_itemTitle {
+	color: var(--i-color_hard);
+	font-weight: 600;
+	margin-bottom: .3em;
+}
+
+/* ======================================================== */
+/* EMBEDDABLES - oEmbed Videos								*/
+/* These styles are used for embedded links to oEmbed		*/
+/* services that identify themselves as videos (for example	*/
+/* YouTube, Vimeo and Hulu)									*/
+/* ======================================================== */
+
+.ipsEmbeddedVideo {
+	float: none;
+	clear: both;
+}
+
+.ipsEmbeddedVideo iframe {
+	display: block; /* This removes the empty gap caused by inline elements */
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 16/9;
+}
+
+.ipsEmbeddedVideo, .ipsEmbeddedPhoto, .ipsEmbeddedBrightcove {
+	--i-media-width: 100%;
+	max-width: var(--i-embed-media-max-width, 100%);
+	width: var(--i-media-width);
+}
+/* Portrait videos shouldn't be taller than the viewport */
+.ipsEmbeddedVideo:where([data-og-user_text*="youtube.com/shorts/"]){
+	max-height: min(100vh - 60px, 900px);
+	max-height: min(100svh - 60px, 900px);
+	aspect-ratio: 9/16;
+	max-width: none; /* Without this, the aspect-ratio fails */
+}
+	.ipsEmbeddedVideo:where([data-og-user_text*="youtube.com/shorts/"]) iframe{
+		aspect-ratio: inherit;
+	}
+/* Allow aspect-ratio to handle the width if it's set to the default 100% value */
+.ipsEmbeddedVideo:where([data-og-user_text*="youtube.com/shorts/"][style="--i-media-width: 100%;"]){
+	width: auto;
+}
+
+/* Add space between consecutive videos */
+.ipsEmbeddedVideo + .ipsEmbeddedVideo{
+	margin-top: 2em;
+}
+
+/* ======================================================== */
+/* EMBEDDABLES - oEmbed Misc								*/
+/* These styles are used for embedded links to oEmbed		*/
+/* services that are not videos or photos (for example		*/
+/* Twitter and Instagram)									*/
+/* ======================================================== */
+
+/* :where is used to prevent overwrites with community-embedded content */
+:where(.ipsEmbeddedOther iframe) {
+	float: none;
+	clear: both;
+	width: var(--i-embed-max-width);
+	max-width: 100%;
+	position: relative;
+}
+
+/* Set an initial height of iframes before the JS assigns a more accurate one */
+:where(.ipsEmbeddedOther iframe[data-controller="core.front.core.autosizeiframe"]){
+	height: 400px;
+}
+
+.ipsEmbeddedBrightcove {
+    position: relative;
+    display: block;
+    width: 640px;
+}
+
+.ipsEmbeddedBrightcove_inner {
+    padding-top: 56.25%;
+}
+
+.ipsEmbeddedBrightcove_frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ipsEmbedded_og:not(#x) {
+	width: var(--i-embed-default-width);
+	max-width: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin: 1em 0;
+	border: 2px solid var(--i-background_4);
+	border-radius: min(var(--i-design-radius), 8px);
+}
+
+:is(.ipsRichTextBox, .ipsQuote_contents) .ipsEmbedded_og:not(#x) {
+	margin-inline: 1.3em;
+	width: calc(var(--i-embed-default-width) - 2.6em);
+	max-width: calc(100% - 2.6em);
+}
+
+.ipsEmbedded_og__link{
+	text-decoration: none;
+}
+
+.ipsEmbedded_og__title{
+	margin: 0;
+	font-size: 1.2em;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.ipsEmbedded_og__link > .ipsEmbedded_og__title::after,
+.tiptap .ipsEmbedded_og__title::after {
+	content: "\f08e";
+	font-family: var(--i-font-awesome);
+	font-size: 0.7em;
+	margin-inline-start: 0.7em;
+	font-weight: 900;
+	color: var(--i-color_soft);
+}
+
+.ipsEmbedded_og__description{
+	margin-top: .5em;
+}
+
+.ipsEmbedded_og__description:empty{
+	display: none;
+}
+
+/* Sometimes, the image or title is the first element. In these cases,  */
+.ipsEmbedded_og > .ipsEmbedded_og__image:first-child {
+	margin-block-start: 0.7em;
+	padding-block-start: 0;
+	border-top-left-radius: min(var(--i-design-radius), 6px);
+	border-top-right-radius: min(var(--i-design-radius), 6px);
+}
+
+.ipsEmbedded_og__image {
+	width: calc(100% - 1em);
+	border-radius: min(var(--i-design-radius), 6px);
+}
+
+.ipsEmbedded_og figcaption {
+	text-align: start;
+	padding: 1.2em;
+	margin-top: 0;
+	font-weight: normal;
+	font-size: 1em;
+}
+
+.ipsEmbedded_og__site-name {
+	background-color: var(--i-background_2);
+	padding: 1em;
+	display: flex;
+	align-items: center;
+	gap: 0.7em;
+}
+
+.ipsEmbedded_og__favicon {
+	height: 1.2em;
+	flex-shrink: 0;
+	margin: 0 !important;
+}
+
+.ipsEmbedded_og__site-name > h5 {
+	font-size: 1em;
+	margin: 0;
+	color: var(--i-color_root);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+/* Embed Alignment */
+.ipsEmbedded__wrap {
+	width: 100%;
+	display: flex;
+}
+
+	.ipsEmbedded__wrap--center {
+		justify-content: center;
+	}
+
+	.ipsEmbedded__wrap--end {
+		justify-content: end;
+	}

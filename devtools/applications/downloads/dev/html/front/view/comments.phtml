@@ -1,0 +1,57 @@
+<ips:template parameters="$file" />
+<div data-controller='core.front.core.commentFeed, core.front.core.ignoredComments' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-commentsType='comments' data-baseURL='{$file->url()}' {{if $file->isLastPage()}}data-lastPage{{endif}} data-feedID='{$file->feedId}' id='comments' class='ipsEntries ipsEntries--comments ipsEntries--download-comments' data-follow-area-id="file-{$file->id}">
+	{template="featuredComments" group="global" app="core" params="$file->featuredComments(), $file->url()->setQueryString( 'tab', 'comments' )->setQueryString( 'recommended', 'comments' )"}
+
+	{{if $file->commentPageCount() > 1}}
+		<div class='ipsButtonBar'>
+			<div class='ipsButtonBar__pagination'>{$file->commentPagination( array('tab') )|raw}</div>
+			<div class='ipsButtonBar__end'>{template="commentMultimodHeader" app="core" group="global" params="$file, '#comments'"}</div>
+		</div>
+	{{endif}}
+	
+	<div data-role='commentFeed' data-controller='core.front.core.moderation'>
+		<form action="{$file->url()->csrf()->setQueryString( 'do', 'multimodComment' )->setPage('page',\IPS\Request::i()->page)}" method="post" data-ipsPageAction data-role='moderationTools'>
+		{{if \count( $file->comments( NULL, NULL, 'date', 'asc', NULL, NULL, NULL, NULL, FALSE, isset( \IPS\Request::i()->showDeleted ) ) )}}
+
+				{{$commentCount=0; $timeLastRead = $file->timeLastRead(); $lined = FALSE;}}
+				{{foreach $file->comments( NULL, NULL, 'date', 'asc', NULL, NULL, NULL, NULL, FALSE, isset( \IPS\Request::i()->showDeleted ) ) as $comment}}
+					{{if !$lined and $timeLastRead and $timeLastRead->getTimestamp() < $comment->mapped('date')}}
+						{{if $lined = TRUE and $commentCount}}
+							<hr class="ipsUnreadBar">
+						{{endif}}
+					{{endif}}
+					{{$commentCount++;}}
+					{$comment->html()|raw}
+				{{endforeach}}
+		{{else}}
+			<p class='ipsEmptyMessage' data-role='noComments'>{lang="no_comments"}</p>
+		{{endif}}
+		{template="commentMultimod" app="core" group="global" params="$file"}
+			</form>
+	</div>
+	{{if $file->commentPageCount() > 1}}
+		<div class='ipsButtonBar ipsButtonBar--bottom'>
+			<div class='ipsButtonBar__pagination'>{$file->commentPagination( array('tab') )|raw}</div>
+		</div>
+	{{endif}}
+	{{if $file->commentForm() || $file->locked() || \IPS\Member::loggedin()->restrict_post || \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings'] || !\IPS\Member::loggedIn()->checkPostsPerDay()}}
+		<div class='ipsComposeAreaWrapper' data-role='replyArea'>
+			{{if $file->commentForm()}}
+				{{if $file->locked()}}
+					<p class='ipsComposeArea_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="file_locked_can_comment"}</p>
+				{{endif}}
+				{$file->commentForm()|raw}
+			{{else}}
+				{{if $file->locked()}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'file_locked_cannot_comment'"}
+				{{elseif \IPS\Member::loggedin()->restrict_post}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment', \IPS\Member::loggedIn()->warnings(5,NULL,'rpa'), \IPS\Member::loggedIn()->restrict_post"}
+				{{elseif \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'unacknowledged_warning_cannot_post', \IPS\Member::loggedIn()->warnings( 1, FALSE )"}
+				{{elseif !\IPS\Member::loggedIn()->checkPostsPerDay()}}
+					{template="commentUnavailable" group="forms" location="front" app="core" params="'member_exceeded_posts_per_day'"}
+				{{endif}}
+			{{endif}}
+		</div>
+	{{endif}}
+</div>

@@ -1,0 +1,49 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if empty( $rows )}}
+	<li class='ipsEmptyMessage'>{lang="no_results"}</li>
+{{else}}
+	{{$currentDate = null;}}
+	{{$rowCounts = array();}}
+	{{foreach $rows as $r}}
+		{{$nextDate = md5( $r['leader_date']->dayAndMonth() . $r['leader_date']->format('Y') );}}
+		
+		{{if $currentDate !== $nextDate}}
+			{{if $currentDate }}</li>{{endif}}
+			<li class='cPastLeaders_row'>
+				<h2 class='cPastLeaders_title i-color_soft i-font-weight_600 i-link-color_inherit'>
+					<a href="{url="app=core&module=discover&controller=popular&tab=leaderboard&custom_date_start={$r['leader_date']->getTimeStamp()}&custom_date_end={$r['leader_date']->getTimeStamp()}" seoTemplate="leaderboard_leaderboard"}">{$r['leader_date']->dayAndMonth()} <span>{$r['leader_date']->format('Y')}</span></a>
+				</h2>
+		{{endif}}
+		{{if ! $r['leader_member_id']->member_id or ! $r['leader_rep_total']}}
+			<!-- <div class='cPastLeaders_cell'></div> -->
+		{{else}}
+			<div class='cPastLeaders_cell i-flex i-align-items_center i-gap_2' data-position='{lang="leader_position_{$r['leader_position']}_short"}'>
+				<div class='ipsPhotoPanel i-flex_11'>
+					{template="userPhoto" group="global" app="core" params="$r['leader_member_id'], 'fluid'"}
+					<div class='ipsPhotoPanel__text'>
+						<div class='ipsPhotoPanel__primary'>{$r['leader_member_id']->link()|raw}</div>
+						<div class='ipsPhotoPanel__secondary'>
+						    {{if \IPS\Settings::i()->reputation_leaderboard_type == 'points'}}
+						        {lang="received_x_points" pluralize="$r['leader_rep_total']"}
+							{{elseif \IPS\Content\Reaction::isLikeMode()}}
+								{lang="received_x_likes" pluralize="$r['leader_rep_total']"}
+							{{else}}
+								{lang="received_x_rep_points" pluralize="$r['leader_rep_total']"}
+							{{endif}}
+						</div>
+					</div>
+				</div>
+				<span class="i-flex_00 ipsLeaderboard_trophy ipsLeaderboard_trophy_{$r['leader_position']}" data-ipsTooltip title="{lang="leader_position_{$r['leader_position']}"}">
+					<i class="fa-solid fa-trophy" aria-hidden="true"></i>
+				</span>
+			</div>
+		{{endif}}
+		{{if !isset( $rowCounts[ $nextDate ] )}}
+			{{$rowCounts[ $nextDate ] = 1;}}
+		{{else}}
+			{{$rowCounts[ $nextDate ]++;}}
+		{{endif}}
+		{{$currentDate = $nextDate;}}
+	{{endforeach}}				
+	</li>
+{{endif}}

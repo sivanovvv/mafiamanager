@@ -1,0 +1,8 @@
+<ips:template parameters="$handler, $existingAccount, $login, $error" />
+<div class="i-margin-block_2">
+	<h1 class='i-font-size_6 i-text-align_center'>{lang='link_your_accounts'}</h1>
+	<p class='i-font-size_2 i-text-align_center i-color_soft'>{lang="link_your_accounts_blurb" sprintf="$handler->_title"}</p>
+</div>
+<div class='ipsBox i-padding_3'>
+	{template="reauthenticate" group="system" params="$login, $error"}
+</div>

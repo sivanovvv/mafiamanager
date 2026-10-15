@@ -1,0 +1,17 @@
+{
+    "normal": {
+        "added": [
+            "t_currency",
+            "i_billcountry",
+            "i_currency",
+            "sitemap_nexus_Subscriptions"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

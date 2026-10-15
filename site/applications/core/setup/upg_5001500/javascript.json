@@ -1,0 +1,61 @@
+{
+    "files": {
+        "added": [
+            "global\/framework\/common\/components\/announcementBanner.js",
+            "global\/framework\/common\/components\/carouselNavigation.js",
+            "global\/framework\/common\/components\/navigationMenu.js",
+            "global\/framework\/common\/components\/tooltip.js",
+            "global\/framework\/common\/ui\/ips.ui.fetch.js"
+        ],
+        "edited": [
+            "global\/library\/app.js",
+            "global\/library\/ipsMethods.js",
+            "global\/framework\/common\/components\/card.js",
+            "global\/framework\/common\/components\/dropdown.js",
+            "global\/framework\/common\/ui\/ips.ui.autocomplete.js",
+            "global\/framework\/common\/ui\/ips.ui.copy.js",
+            "global\/framework\/common\/ui\/ips.ui.form.js",
+            "global\/framework\/common\/ui\/ips.ui.rating.js",
+            "global\/framework\/common\/ui\/ips.ui.webcomponents.js",
+            "global\/framework\/common\/utils\/ips.utils.position.js",
+            "global\/admin\/controllers\/core\/ips.core.nav.js",
+            "core\/admin\/controllers\/core\/ips.core.notificationMenu.js",
+            "global\/front\/controllers\/core\/ips.core.comment.js",
+            "global\/front\/controllers\/core\/ips.core.commentFeed.js",
+            "global\/front\/controllers\/core\/ips.core.navigationPanel.js",
+            "global\/front\/controllers\/core\/ips.core.reaction.js",
+            "core\/front\/controllers\/core\/ips.core.tagEditor.js",
+            "global\/front\/controllers\/core\/ips.core.userbar.js",
+            "core\/global\/controllers\/core\/ips.core.coverPhoto.js",
+            "core\/admin\/controllers\/dashboard\/ips.dashboard.main.js",
+            "core\/admin\/controllers\/files\/ips.files.multimod.js",
+            "core\/front\/controllers\/messages\/ips.messages.list.js",
+            "core\/front\/controllers\/messages\/ips.messages.main.js",
+            "core\/front\/controllers\/modcp\/ips.modcp.report.js",
+            "core\/front\/controllers\/modcp\/ips.modcp.warnForm.js",
+            "core\/admin\/controllers\/support\/ips.support.dashboard.js",
+            "core\/front\/controllers\/widgets\/ips.widgets.carouselControls.js",
+            "core\/front\/controllers\/widgets\/ips.widgets.manager.js",
+            "global\/framework\/templates\/ips.core.templates.js",
+            "global\/admin\/ui\/ips.ui.tree.js"
+        ],
+        "removed": [
+            "global\/framework\/common\/ui\/ips.ui.carousel.js",
+            "global\/framework\/common\/ui\/ips.ui.details.js",
+            "global\/framework\/common\/ui\/ips.ui.drawer.js",
+            "global\/framework\/common\/ui\/ips.ui.offCanvasContent.js",
+            "global\/framework\/common\/ui\/ips.ui.tooltip.js",
+            "core\/front\/controllers\/core\/ips.core.announcementBanner.js",
+            "core\/front\/controllers\/core\/ips.core.notificationsMenu.js",
+            "core\/front\/controllers\/system\/ips.system.referrals.js",
+            "global\/library\/jquery\/jquery-migrate.js"
+        ]
+    },
+    "orders": {
+        "added": [],
+        "edited": [
+            "global\/\/dev\/js\/\/library\/\/jquery"
+        ],
+        "removed": []
+    }
+}

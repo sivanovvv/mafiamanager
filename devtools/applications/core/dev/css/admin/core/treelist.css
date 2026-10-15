@@ -1,0 +1,35 @@
+/* Used in Pages > Media */
+.ipsTreeList a {
+	color: inherit;
+	padding: .5em 0;
+	display: block;
+	position: relative;
+}
+
+.ipsTreeList li a { padding-inline-start: 1em;	}
+.ipsTreeList li li a { padding-inline-start: 2em; }
+.ipsTreeList li li li a { padding-inline-start: 3em; }
+.ipsTreeList li li li li a { padding-inline-start: 4em; }
+
+.ipsTreeList_inactiveBranch > ul {
+	display: none;
+}
+
+.ipsTreeList_inactiveBranch > a::before,
+.ipsTreeList_activeBranch > a::before {
+	content: '\f0da';
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-weight: 900;
+	margin-inline-end: .5em;
+}
+
+	.ipsTreeList_activeBranch > a::before {
+		content: '\f0d7';
+	}
+
+.ipsTreeList_activeNode > a {
+	background: var(--i-primary);
+	color: var(--i-primary-contrast);
+}

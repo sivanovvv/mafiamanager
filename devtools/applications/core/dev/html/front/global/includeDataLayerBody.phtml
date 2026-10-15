@@ -1,0 +1,7 @@
+<ips:template parameters="" />
+
+<!-- IPS Data Body Start -->
+{{$handlerInserts = \IPS\core\DataLayer\Handler::loadForTemplates();}}
+{$handlerInserts['bodyInserts']|raw}
+
+<!-- IPS Data Layer Body End -->

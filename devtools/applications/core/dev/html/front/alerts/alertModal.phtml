@@ -1,0 +1,46 @@
+<ips:template parameters="$alert" />
+
+{{$form = $alert->getNewConversationForm();}}
+<div id='elAlert' class="ipsModal {{if $form}}ipsAlert--with-form{{endif}}" data-ipsalertmessage {{if $alert->reply == 2 and !(( $alert->reply !== 2 or !$alert->author()->member_id ) or ( $alert->reply === 2 and ! member.canUseMessenger() ))}}data-alert-required{{endif}}>
+    <div class="ipsBox ipsBox--clubAlertModal">
+        <h4 class='ipsDialog_title'>{{if $alert->anonymous}}<i class="fa-solid fa-bullhorn" aria-hidden="true"></i>{{endif}} {$alert->title}</h4>
+
+        {{if $alert->author()->member_id and ! $alert->anonymous}}
+        <div class='ipsPhotoPanel i-padding_2 i-padding-bottom_0'>
+            {template="userPhoto" app="core" group="global" params="$alert->author(), 'tiny'"}
+            <div class='ipsPhotoPanel__text'>
+                <div class='ipsPhotoPanel__primary'>{lang="byline_nodate" htmlsprintf="$alert->author()->link()"}</div>
+            </div>
+        </div>
+        {{endif}}
+
+        <div class='i-padding_3 ipsRichText'>
+            {$alert->content|raw}
+        </div>
+
+        {{if $alert->reply === \IPS\core\Alerts\Alert::REPLY_REQUIRED and $alert->author()->member_id and ! $alert->anonymous and ! member.canUseMessenger()}}
+        <div data-role="reply-prompt" class="i-padding_2 i-color_soft i-font-size_-2">
+            <span class="ipsBadge ipsBadge--icon ipsBadge--negative"><i class="fa-solid fa-info" aria-hidden="true"></i></span> {lang="alert_must_reply_modal_but_no_messenger" sprintf="$alert->author()->name"}
+        </div>
+        {{elseif $alert->reply == \IPS\core\Alerts\Alert::REPLY_REQUIRED and $alert->author()->member_id and ! $alert->anonymous}}
+        <div data-role="reply-prompt" class="i-padding_2 i-color_soft i-font-size_-2">
+            <span class="ipsBadge ipsBadge--icon ipsBadge--negative"><i class="fa-solid fa-info" aria-hidden="true"></i></span> {lang="alert_must_reply_modal" sprintf="$alert->author()->name"}
+        </div>
+        {{endif}}
+
+        {{if $form}}
+            <hr class="ipsHr"/>
+            {$form|raw}
+        {{endif}}
+        <div class='ipsSubmitRow'>
+            <div class='i-flex i-align-items_center i-justify-content_end i-gap_2'>
+                {{if ( $alert->reply !== \IPS\core\Alerts\Alert::REPLY_REQUIRED or !$alert->author()->member_id ) or ( $alert->reply === \IPS\core\Alerts\Alert::REPLY_REQUIRED and ! member.canUseMessenger() ) }}
+                    <a class="ipsButton ipsButton--secondary ipsButton--small" href="{url="app=core&module=system&controller=alerts&do=dismiss&id={$alert->id}" seoTemplate="alert" csrf="true"}" data-role="dismiss">{lang="alert_dismiss"}</a>
+                {{endif}}
+                {{if !$alert->anonymous and $alert->reply and $alert->author()->member_id and member.canUseMessenger()}}
+                    <a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$alert->member_id}&title={$alert->title}&alert={$alert->id}" seoTemplate="messenger_compose"}' class='ipsButton ipsButton--primary ipsButton--small' disabled data-role="reply">{lang="reply"}</a>
+                {{endif}}
+            </div>
+        </div>
+	</div>
+</div>

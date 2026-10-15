@@ -1,0 +1,155 @@
+<ips:template parameters="$indexData, $articles, $authorData, $itemData, $unread, $objectUrl, $itemUrl, $containerUrl, $containerTitle, $repCount, $showRepUrl, $snippet, $iPostedIn, $view, $canIgnoreComments=FALSE" />
+<li class='ipsStreamItem ipsStreamItem_expanded ipsStreamItem_contentBlock'>
+	{{if !\IPS\Content\Reaction::isLikeMode()}}
+		{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+			{{$itemClass = $indexData['index_class']::$itemClass;}}
+			<a href="{$objectUrl}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</span></a>
+		{{else}}
+			<a href="{$objectUrl}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$indexData['index_title']}</span></a>
+		{{endif}}
+	{{else}}
+		{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+			{{$itemClass = $indexData['index_class']::$itemClass;}}
+			<a href="{$itemUrl}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</span></a>
+		{{else}}
+			<a href="{$objectUrl}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$indexData['index_title']}</span></a>
+		{{endif}}
+	{{endif}}
+	<div class='ipsStreamItem__iconCell'>
+		{template="userPhoto" group="global" app="core" params="\IPS\Member::load( $indexData['index_author'] ), 'fluid'"}
+	</div>
+	<div class='ipsStreamItem__mainCell'>
+		<div class='ipsStreamItem__header i-flex i-flex-wrap_wrap-reverse i-gap_1'>
+			<div class='i-flex_91'>
+				<h2 class='ipsStreamItem__title'>
+					{{if !\IPS\Content\Reaction::isLikeMode()}}
+						{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+							{{$itemClass = $indexData['index_class']::$itemClass;}}
+							<a href='{$objectUrl}'>{$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</a>
+						{{else}}
+							<a href='{$objectUrl}'>{$indexData['index_title']}</a>
+						{{endif}}
+					{{else}}
+						{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+							{{$itemClass = $indexData['index_class']::$itemClass;}}
+							<a href='{$itemUrl}'>{$itemData[ $itemClass::$databasePrefix . $itemClass::$databaseColumnMap['title'] ]}</a>
+						{{else}}
+							<a href='{$objectUrl}'>{$indexData['index_title']}</a>
+						{{endif}}
+					{{endif}}
+				</h2>
+				{{if member.group['gbw_view_reps']}}			
+					<p class="ipsStreamItem__summary">
+						{{$membersLiked = \IPS\Member::load( $indexData['rep_data']['member_id'] )->link();}}
+						{{if $indexData['rep_data']['total_rep'] == 2}}
+							{{if \in_array( 'IPS\Content\Review', class_parents( $indexData['index_class'] ) )}}
+								{{$membersLiked = \IPS\Member::loggedIn()->language()->addToStack( 'replog_member_and_one_other', FALSE, array( 'htmlsprintf' => array( $membersLiked, $objectUrl->setQueryString( array( 'do' => 'showReactionsReview', 'review' => $indexData['index_object_id'] ) ) ) ) );}}
+							{{elseif \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+								{{$membersLiked = \IPS\Member::loggedIn()->language()->addToStack( 'replog_member_and_one_other', FALSE, array( 'htmlsprintf' => array( $membersLiked, $objectUrl->setQueryString( array( 'do' => 'showReactionsComment', 'comment' => $indexData['index_object_id'] ) ) ) ) );}}
+							{{else}}
+								{{$membersLiked = \IPS\Member::loggedIn()->language()->addToStack( 'replog_member_and_one_other', FALSE, array( 'htmlsprintf' => array( $membersLiked, $objectUrl->setQueryString('do', 'showReactions') ) ) );}}
+							{{endif}}
+						{{elseif $indexData['rep_data']['total_rep'] > 2}}
+							{{if \in_array( 'IPS\Content\Review', class_parents( $indexData['index_class'] ) )}}
+								{{$membersLiked = \IPS\Member::loggedIn()->language()->addToStack( 'replog_member_and_x_other', FALSE, array( 'htmlsprintf' => array( \IPS\Member::load( $indexData['rep_data']['member_id'] )->link(), $objectUrl->setQueryString( array( 'do' => 'showReactionsReview', 'review' => $indexData['index_object_id'] ) ), $indexData['rep_data']['total_rep']-1 ) ) );}}
+							{{elseif \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+								{{$membersLiked = \IPS\Member::loggedIn()->language()->addToStack( 'replog_member_and_x_other', FALSE, array( 'htmlsprintf' => array( \IPS\Member::load( $indexData['rep_data']['member_id'] )->link(), $objectUrl->setQueryString( array( 'do' => 'showReactionsComment', 'comment' => $indexData['index_object_id'] ) ), $indexData['rep_data']['total_rep']-1 ) ) );}}
+							{{else}}
+								{{$membersLiked = \IPS\Member::loggedIn()->language()->addToStack( 'replog_member_and_x_other', FALSE, array( 'htmlsprintf' => array( $membersLiked, $objectUrl->setQueryString('do', 'showReactions'), $indexData['rep_data']['total_rep']-1 ) ) );}}
+							{{endif}}
+						{{endif}}
+						{{if !\IPS\Content\Reaction::isLikeMode()}}
+							{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+								{{$itemClass = $indexData['index_class']::$itemClass;}}
+								{{if $indexData['rep_data']['member_received']}}
+									{lang="replog_rate_item_gave_no_in" htmlsprintf="$membersLiked, \IPS\Member::load( $indexData['rep_data']['member_received'] )->link(), $indexData['index_class']::_indefiniteArticle()"}
+								{{else}}
+									{lang="replog_rate_item_gave_no_recipient_no_in" htmlsprintf="$membersLiked, $indexData['index_class']::_indefiniteArticle()"}
+								{{endif}}
+							{{else}}
+								{{if $indexData['rep_data']['member_received']}}
+									{lang="replog_rate_item_gave_no_in" htmlsprintf="$membersLiked, \IPS\Member::load( $indexData['rep_data']['member_received'] )->link(), $indexData['index_class']::_indefiniteArticle()"}
+								{{else}}
+									{lang="replog_rate_item_gave_no_recipient_no_in" htmlsprintf="$membersLiked, $indexData['index_class']::_indefiniteArticle()"}
+								{{endif}}
+							{{endif}}
+						{{else}}
+							{{if \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+								{{$itemClass = $indexData['index_class']::$itemClass;}}
+								{{if $indexData['rep_data']['member_received']}}
+									{lang="replog_like_comment_no_in" htmlsprintf="$membersLiked, $objectUrl, $indexData['index_class']::_indefiniteArticle(), \IPS\Member::load( $indexData['rep_data']['member_received'] )->link()"}
+								{{else}}
+									{lang="replog_like_comment_no_recipient_no_in" htmlsprintf="$membersLiked, $objectUrl, $indexData['index_class']::_indefiniteArticle()"}
+								{{endif}}
+							{{else}}
+								{{if $indexData['rep_data']['member_received']}}
+									{lang="replog_like_item_no_in" htmlsprintf="$membersLiked, $indexData['index_class']::_indefiniteArticle(), \IPS\Member::load( $indexData['rep_data']['member_received'] )->link()"}
+								{{else}}
+									{lang="replog_like_item_no_recipient_no_in" htmlsprintf="$membersLiked, $indexData['index_class']::_indefiniteArticle()"}
+								{{endif}}
+							{{endif}}
+						{{endif}}
+					</p>
+				{{endif}}
+			</div>
+			<div class='i-flex_11 i-color_soft i-font-weight_600'>
+				{{if \IPS\Content\Reaction::isLikeMode()}}
+					{{if member.group['gbw_view_reps']}}
+						{{if \in_array( 'IPS\Content\Review', class_parents( $indexData['index_class'] ) )}}
+							<a href='{$objectUrl->setQueryString( array( 'do' => 'showReactionsReview', 'review' => $indexData['index_object_id'] ) )}' data-ipsDialog data-ipsDialog-destructOnClose data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="like_log_title"}' title="{lang="see_who_liked"}" data-ipsToolTip><i class='fa-solid fa-heart i-margin-end_icon' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}</a>
+						{{elseif \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+							<a href='{$objectUrl->setQueryString( array( 'do' => 'showReactionsComment', 'comment' => $indexData['index_object_id'] ) )}' data-ipsDialog data-ipsDialog-destructOnClose data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="like_log_title"}' title="{lang="see_who_liked"}" data-ipsToolTip><i class='fa-solid fa-heart i-margin-end_icon' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}</a>
+						{{else}}
+							<a href='{$objectUrl->setQueryString( array( 'do' => 'showReactions' ) )}' data-ipsDialog data-ipsDialog-destructOnClose data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="like_log_title"}' title="{lang="see_who_liked"}" data-ipsToolTip><i class='fa-solid fa-heart i-margin-end_icon' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}</a>
+						{{endif}}
+					{{else}}
+						<i class='fa-solid fa-heart i-margin-end_icon' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}
+					{{endif}}
+					<span>{lang="like_blurb_pluralized" pluralize="$indexData['rep_data']['total_rep']"}</span>
+				{{else}}
+					{{if $indexData['rep_data']['rep_rating'] === 1}}
+						<i class='fa-solid fa-arrow-up i-margin-end_icon' aria-hidden="true"></i>
+					{{else}}
+						<i class='fa-solid fa-arrow-down i-margin-end_icon' aria-hidden="true"></i>
+					{{endif}} {$indexData['rep_data']['total_rep']}
+					<span>{lang="rep_level_points_pluralized" pluralize="$indexData['rep_data']['total_rep']"}</span>
+				{{endif}}
+			</div>
+		</div>
+		{{if $snippet}}
+			<div class='ipsStreamItem__content'>
+				{$snippet|raw}
+			</div>
+		{{endif}}
+
+		<ul class='ipsStreamItem__stats'>
+			<li>
+				<a href="{$objectUrl}"><i class="fa-regular fa-clock" aria-hidden="true"></i> {datetime="$indexData['index_date_updated']"}</a>
+			</li>
+		</ul>
+
+	</div>
+	<div class='ipsStreamItem__popular' hidden>
+		{{if \IPS\Content\Reaction::isLikeMode()}}
+			{{if member.group['gbw_view_reps']}}
+				{{if \in_array( 'IPS\Content\Review', class_parents( $indexData['index_class'] ) )}}
+					<a href='{$objectUrl->setQueryString( array( 'do' => 'showReactionsReview', 'review' => $indexData['index_object_id'] ) )}' data-ipsDialog data-ipsDialog-destructOnClose data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="like_log_title"}' title="{lang="see_who_liked"}" data-ipsToolTip><i class='fa-solid fa-heart' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}</a>
+				{{elseif \in_array( 'IPS\Content\Comment', class_parents( $indexData['index_class'] ) )}}
+					<a href='{$objectUrl->setQueryString( array( 'do' => 'showReactionsComment', 'comment' => $indexData['index_object_id'] ) )}' data-ipsDialog data-ipsDialog-destructOnClose data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="like_log_title"}' title="{lang="see_who_liked"}" data-ipsToolTip><i class='fa-solid fa-heart' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}</a>
+				{{else}}
+					<a href='{$objectUrl->setQueryString( array( 'do' => 'showReactions' ) )}' data-ipsDialog data-ipsDialog-destructOnClose data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="like_log_title"}' title="{lang="see_who_liked"}" data-ipsToolTip><i class='fa-solid fa-heart' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}</a>
+				{{endif}}
+			{{else}}
+				<i class='fa-solid fa-heart' aria-hidden="true"></i> {$indexData['rep_data']['total_rep']}
+			{{endif}}
+			<span>{lang="like_blurb_pluralized" pluralize="$indexData['rep_data']['total_rep']"}</span>
+		{{else}}
+			{{if $indexData['rep_data']['rep_rating'] === 1}}
+				<i class='fa-solid fa-arrow-up' aria-hidden="true"></i>
+			{{else}}
+				<i class='fa-solid fa-arrow-down' aria-hidden="true"></i>
+			{{endif}} {$indexData['rep_data']['total_rep']}
+			<span>{lang="rep_level_points_pluralized" pluralize="$indexData['rep_data']['total_rep']"}</span>
+		{{endif}}
+	</div>
+</li>

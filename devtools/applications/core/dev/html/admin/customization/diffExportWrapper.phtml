@@ -1,0 +1,228 @@
+<ips:template parameters="$html" />
+<!DOCTYPE html>
+<html lang="{expression="\IPS\Member::loggedIn()->language()->bcp47()"}" dir="{{if member.language()->isrtl}}rtl{{else}}ltr{{endif}}">
+	<head>
+		<meta charset="utf-8">
+		<title>Diff Export</title>
+		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+		<style type="text/css">
+		/* ACP */
+		html {
+			background: #f9f9f9;
+			/*background: #f7f7f7;*/
+			/*background: #f9f9f9;*/
+			min-height: 100%;
+			position: relative;
+		}
+		
+		body {
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			font-size: 13px;
+			line-height: 18px;
+			color: #404040;	
+			height: 100%;
+		}
+		
+		a {
+			color: #166693;
+			text-decoration: none;
+		}
+		
+			a:hover {
+				color: #cd3816;
+			}
+		
+		.i-background_dark {
+			background: #394248;
+		}
+		
+		/* BLOCKS */
+		.acpBlock_title {
+			padding: 15px;
+			margin: 0;
+			background: #f0f0f0;
+			color: #151515;
+			font-size: 16px;
+			font-weight: normal;
+		}
+		
+		/* Badges */
+		.ipsBadge {
+			height: 17px;
+			line-height: 17px;
+			padding: 0 8px;
+			border-radius: 10px;
+			font-size: 9px;
+			text-transform: uppercase;
+			font-weight: 500;
+			display: inline-block;
+			color: #fff;
+			vertical-align: bottom;
+			font-weight: bold;
+			text-shadow: none;
+		}
+		
+		.ipsBadge.ipsBadge--medium {
+			height: 18px;
+			line-height: 18px;
+			font-size: 11px;
+		} 
+		
+		.ipsBadge.ipsBadge--large {
+			height: 23px;
+			line-height: 23px;
+			padding: 0 10px;
+		}
+		
+		/* Styles */
+		.ipsBadge--new, .ipsBadge--style1 {
+			background: #323232;
+		}
+		
+		.ipsBadge--style2 {
+			background: #d42b39;
+		}
+		
+		.ipsBadge--warning, .ipsBadge--style3 {
+			background: #834250;
+		}
+		
+		.ipsBadge--positive, .ipsBadge--style4 {
+			background: #68a72f;
+		}
+		
+		.ipsBadge--negative, .ipsBadge--style5 {
+			background: #a72f35;
+		}
+		
+		.ipsBadge--neutral, .ipsBadge--style6 {
+			background: #b3b3b3;
+		}
+		
+		.ipsBadge--intermediary, .ipsBadge--style7 {
+			background: #cbb641;
+		}
+
+		/* Table */
+		.ipsTable {
+			width: 100%;
+			border-collapse: collapse;
+		}
+		
+		.ipsTable th {
+			text-align: start;
+			background: #f3f3f3;
+			padding: 15px 10px;
+			font-size: 13px;
+		}
+			
+			.ipsTable th a {
+				color: inherit;
+			}
+			
+		.ipsTable th, .ipsTable td {
+			vertical-align: middle;
+		}
+		
+		.ipsTable td {
+			padding: 7px;
+			border-bottom: 1px solid rgba(0,0,0,0.01);
+		}
+
+		/* Diff */
+		table.diff {
+			width: 100%;
+		}
+		
+		table.diff td, table.diff th {
+			width: 50%;
+			max-width: 500px;
+			overflow-x: auto;
+		}
+		
+		table.diff td {
+			padding: 10px;
+			vertical-align: top;
+			white-space: pre;
+			white-space: pre-wrap;
+			font-family: monospace;
+		}
+		
+		.diffDeleted {
+			background:rgb(255,224,224);
+		}
+		
+		.diffInserted {
+			background:rgb(224,255,224);
+		}
+		
+		/* Messages */
+		.ipsMessage {
+			padding: 15px;
+			padding-inline-start: 45px;
+			border-radius: 2px;
+			position: relative;
+			margin-bottom: 10px;
+			color: #fff;
+		}
+		
+			.ipsMessage:before {
+				font-family: var(--i-font-awesome);
+				-webkit-font-smoothing: antialiased;
+				text-rendering: auto;
+				font-weight: 900;
+				position: absolute;
+				top: 15px;
+				inset-inline-start: 15px;
+				font-size: 20px;
+			}
+		
+		.ipsMessage--error {
+			background: #b52b38;
+		}
+		
+			.ipsMessage--error:before {
+				content: '\\f06a';
+			}
+		
+		.ipsMessage--success {
+			background: #53902f;
+		}
+		
+			.ipsMessage--success:before {
+				content: '\\f00c';
+			}
+		
+		.ipsMessage--warning {
+			background: #c48712;
+		}
+		
+			.ipsMessage--warning:before {
+				content: '\\f071';
+			}
+		
+		.ipsMessage--info, .ipsMessage--information {
+			background: #447a9a;
+		}
+		
+			.ipsMessage--info:before, .ipsMessage--information:before {
+				content: '\\f05a';
+			}
+		
+		.ipsMessage_code {
+			padding: 7px;
+			display: inline-block;
+			background: rgba(0,0,0,0.2);
+			border-radius: 3px;
+			float: right;
+			margin-top: -7px;
+			margin-inline-end: -7px;
+			color: rgba(255,255,255,0.8);
+		}
+		</style>
+	</head>
+	<body>
+	{$html|raw}
+	</div>
+	</body>
+</html>

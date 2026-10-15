@@ -1,0 +1,62 @@
+<ips:template parameters="$billingAgreement, $purchases, $invoices, $invoicePagination" />
+
+<div class="ipsData__item i-margin-bottom_3">
+	<div class=''>
+		{{if $billingAgreement->status() === \IPS\nexus\Customer\BillingAgreement::STATUS_ACTIVE}}
+			<span class='ipsBadge ipsBadge--icon ipsBadge--positive' data-ipsTooltip title='{lang="billing_agreement_active"}'>
+				<i class='fa-solid fa-check i-font-size_2' aria-hidden="true"></i>
+			</span>
+		{{elseif $billingAgreement->status() === \IPS\nexus\Customer\BillingAgreement::STATUS_SUSPENDED}}
+			<span class='ipsBadge ipsBadge--icon ipsBadge--neutral'  data-ipsTooltip title='{lang="billing_agreement_suspended"}'>
+				<i class='fa-regular fa-clock i-font-size_2' aria-hidden="true"></i>
+			</span>
+		{{elseif $billingAgreement->status() === \IPS\nexus\Customer\BillingAgreement::STATUS_CANCELED}}
+			<span class='ipsBadge ipsBadge--icon ipsBadge--negative'  data-ipsTooltip title='{lang="billing_agreement_canceled"}'>
+				<i class='fa-solid fa-xmark i-font-size_2' aria-hidden="true"></i>
+			</span>
+		{{endif}}
+	</div>
+	<div class='ipsData__content'>
+		<div class="ipsData__main">
+			<h1 class='ipsData__title'>{lang="billing_agreement" sprintf="$billingAgreement->gw_id"}</h1>
+			<span class="cNexusPrice i-font-size_2">{$billingAgreement->term()}</span>
+		</div>
+		<div class="">
+			{{if $billingAgreement->status() === \IPS\nexus\Customer\BillingAgreement::STATUS_ACTIVE}}
+				<a href="{$billingAgreement->url()->setQueryString( array( 'do' => 'act', 'act' => 'suspend' ) )->csrf()}" class="ipsButton ipsButton--small ipsButton--soft" data-confirm data-confirmSubMessage="{lang="billing_agreement_suspend_confirm"}">{lang="billing_agreement_suspend"}</a>
+			{{endif}}
+			{{if $billingAgreement->status() === \IPS\nexus\Customer\BillingAgreement::STATUS_SUSPENDED}}
+				<a href="{$billingAgreement->url()->setQueryString( array( 'do' => 'act', 'act' => 'reactivate' ) )->csrf()}" class="ipsButton ipsButton--small ipsButton--soft" data-confirm>{lang="billing_agreement_reactivate"}</a>
+			{{endif}}
+			{{if $billingAgreement->status() !== \IPS\nexus\Customer\BillingAgreement::STATUS_CANCELED}}
+				<a href="{$billingAgreement->url()->setQueryString( array( 'do' => 'act', 'act' => 'cancel' ) )->csrf()}" class="ipsButton ipsButton--small ipsButton--soft" data-confirm>{lang="billing_agreement_cancel"}</a>
+			{{endif}}
+		</div>
+	</div>
+</div>
+{{if isset( $purchases[0] ) and \count( $purchases[0] )}}
+	<hr class="ipsHr">
+	<h2 class="ipsTitle ipsTitle--h3 i-margin-bottom_3">{lang="billing_agreement_purchases"}</h2>
+	<ul>
+		{template="purchaseList" group="clients" params="0, $purchases, FALSE, $billingAgreement"}
+	</ul>
+{{endif}}
+<hr class="ipsHr">
+<h2 class="ipsTitle ipsTitle--h3 i-margin-bottom_3">{lang="billing_agreement_payments"}</h2>
+{{if $invoicePagination}}
+	<div class="ipsBox i-padding_2 i-margin-bottom_3">
+		{$invoicePagination|raw}
+	</div>
+{{endif}}
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--category cNexusOrderList">
+			{{foreach $invoices as $invoice}}
+				{template="invoiceList" group="clients" params="$invoice, $billingAgreement"}
+			{{endforeach}}
+		</ul>
+	</i-data>
+{{if $invoicePagination}}
+	<div class="ipsBox i-padding_2 i-margin-top_3">
+		{$invoicePagination|raw}
+	</div>
+{{endif}}

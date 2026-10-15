@@ -1,0 +1,73 @@
+/*
+	----------------
+	- Rating
+	----------------
+*/
+
+.ipsRating {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0 1.5em;
+	color: var(--i-color_soft);
+}
+
+	.ipsRating > ul {
+		display: flex;
+	}
+
+	.ipsRating > ul > li{
+		width: 1.2em;
+		display: grid;
+		place-content: center;
+	}
+
+		.ipsRating > ul > li > i{
+			grid-area: 1/-1;
+		}
+
+	/* Sizes */
+	.ipsRating_small {
+		font-size: .7em;
+	}
+
+	.ipsRating_large {
+		font-size: 1.15em;
+	}
+
+	.ipsRating_veryLarge {
+		font-size: 1.25em;
+	}
+
+/* Hover stuff for own ratings */
+.ipsRating_rated .ipsRating_collective,
+.ipsRating_rated:hover .ipsRating_mine {
+	display: none;
+}
+
+	.ipsRating_rated:hover .ipsRating_collective {
+		display: flex;
+	}
+
+.ipsRating.ipsRating_loading {
+	opacity: 0.6;
+}
+
+/* COLORS */
+.ipsRating_on .fa-star,
+.ipsRating_half .fa-star-half:not(.fa-flip-horizontal) {
+	color: hsl(35 100% 50%);
+}
+
+	.ipsRating_mine .ipsRating_on .fa-star {
+		color: var(--i-primary);
+	}
+
+.ipsRating_half .fa-star-half.fa-flip-horizontal,
+.ipsRating_off :is(.fa-star-o,.fa-star) {
+	opacity: .4;
+}
+
+.ipsRating_hover .fa-star {
+	color: var(--i-primary);
+	transform: scale(1.2);
+}

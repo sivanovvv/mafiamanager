@@ -1,0 +1,244 @@
+.ipsNavPanel{
+	--i-co: var(--i-navPanel--co);
+	color: var(--i-co);
+	height: calc(100vh - var(--i-sticky-offset));
+	height: calc(100dvh - var(--i-sticky-offset));
+	background-color: var(--i-navPanel--ba-co);
+	background-clip: padding-box;
+	border-inline-end: 1px solid color-mix(in srgb, var(--i-navPanel--ba-co), currentColor 20%);
+	flex: 0 0 clamp(280px, 16vw, 340px);
+	position: sticky;
+	top: 0;
+	z-index: var(--i-z-index_offCanvas);
+	display: flex;
+	flex-direction: column;
+}
+
+@media (max-width: 979px){
+	.ipsNavPanel{
+		display: none;
+	}
+}
+
+/* Hide panel when the "Manage widgets" panel is open */
+@media (max-width: 2250px){
+	.cWidgetsManaging .ipsNavPanel{
+		display: none;
+	}
+}
+
+	.ipsNavPanel .ipsLogo{
+		--_image-size: var(--set__i-sidebar-ui-logo--he);
+		--_font-size: calc(var(--set__i-sidebar-ui-logo--fo-si) * 1px);
+		flex: 0 0 auto;
+		height: calc(var(--set__i-sidebar-ui-header--he) * 1px);
+		padding: 0 20px;
+		box-shadow: color-mix(in srgb, var(--i-co) 15%, transparent) 0px 1px 0px;
+		position: relative;
+		z-index: 2;
+		overflow: hidden;
+	}
+
+	.ipsNavPanel .ipsLogo__slogan{
+		opacity: .8;
+	}
+
+	.ipsNavPanel__scroll{
+		flex: 1 1 100%;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+		scrollbar-color: color-mix(in srgb, var(--i-co) 40%, transparent) transparent;
+	}
+
+	@supports selector(.x::-webkit-scrollbar){
+		@media(hover: hover){
+			.ipsNavPanel__scroll{
+				scrollbar-width: auto;
+			}
+			.ipsNavPanel__scroll::-webkit-scrollbar {
+				width: 14px;
+			}
+			.ipsNavPanel__scroll::-webkit-scrollbar-track {
+				background: transparent;
+			}
+			.ipsNavPanel__scroll::-webkit-scrollbar-thumb {
+				border: 4px solid transparent;
+				border-radius: 20px;
+				background-color: color-mix(in srgb, var(--i-co) 40%, transparent);
+				background-clip: content-box;
+			}
+				.ipsNavPanel__scroll::-webkit-scrollbar-thumb:hover{
+					background-color: color-mix(in srgb, var(--i-co) 60%, transparent);
+				}
+		}
+	}
+
+	.ipsNavPanel__nav{
+		--icon: "\f15c";
+		padding: 1em;
+	}
+
+	.ipsNavPanel__nav > li:has(> details):not(:first-child){
+		margin: clamp(0.8em, 3vh, 4em) 0;
+		transition-property: margin;
+		transition-duration: .25s;
+	}
+
+	/* Reduce margins on collapsed immediate siblings */
+	.ipsNavPanel__nav li:has(> details:not([open])) + li:has(> details:not([open])){
+		margin-top: 0;
+	}
+	.ipsNavPanel__nav li:has(> details:not([open])):has( + li > details:not([open])){
+		margin-bottom: 0;
+	}
+
+	/* Remove transitions during page load since they interfere with restoring the scroll position */
+	i-navigation-panel:not(:defined){
+		& ::details-content,
+		& .ipsNavPanel__nav > li:has(> details){
+			transition: none;
+		}
+	}
+	
+	.ipsNavPanel__icon{
+		flex: 0 0 1.3em;
+		text-align: center;
+		margin-inline-end: 0.8em;
+	}
+
+		.ipsNavPanel__icon [style*="--icon"]::before{
+			content: var(--icon);
+		}
+
+		/* FA icons and svg */
+		.ipsNavPanel__icon *{
+			opacity: .4;
+		}
+
+		.ipsNavPanel__icon svg{
+			fill: currentColor;
+			width: auto;
+			height: 1em;
+			display: block;
+		}
+		
+		.ipsNavPanel__nav [aria-current="page"] > a .ipsNavPanel__icon *{
+			opacity: 1;
+		}
+		@media (any-hover:hover){
+			a:hover .ipsNavPanel__icon *,
+			button:hover .ipsNavPanel__icon *,
+			summary:hover .ipsNavPanel__icon *{
+				opacity: 1;
+			}
+		}
+
+	.ipsNavPanel__nav summary{
+		font-weight: 600;
+		font-size: max(12px,.8em);
+	}
+
+		/* Remove icons from sidebar headers */
+		.ipsNavPanel__nav summary .ipsNavPanel__icon{
+			display: none;
+		}
+
+		/* Collapse icon */
+		.ipsNavPanel__toggle-list{
+			margin-inline-start: auto;
+			opacity: .75;
+			transition-property: rotate;
+			transition-duration: .25s;
+			font-size: 12px;
+			rotate: calc(-90deg * var(--i-lang-dir));
+		}
+
+			[open] > summary .ipsNavPanel__toggle-list{
+				rotate: 0deg;
+			}
+
+	:where(.ipsNavPanel__nav) :is(a, button, summary){
+		--i-co: var(--i-navPanel--co);
+		width: 100%;
+		display: flex;
+		align-items: center;
+		padding: .65em 1.3em;
+		color: var(--i-co);
+		font-weight: 500;
+		border-radius: min(var(--i-design-radius), 6px);
+	}
+
+	.ipsNavPanel__nav ul ul :is(a, button, summary){
+		padding-inline-start: 2.6em;
+	}
+
+	.ipsNavPanel__nav a.ipsButton{
+		margin: .4em 0;
+	}
+
+		@media (any-hover:hover){
+			.ipsNavPanel__nav :is(a, button, summary):hover{
+				--i-co: var(--i-navPanelLinkHover--co);
+				background: color-mix(in srgb, var(--i-navPanelLinkHover--co) 10%, var(--i-navPanel--ba-co));
+			}
+		}
+
+		.ipsNavPanel__nav [aria-current="page"] > a{
+			background: var(--i-navPanelLinkActive--ba-co);
+			color: var(--i-navPanelLinkActive--co);
+		}
+
+		.ipsNavPanel__search{
+			--icon: "\f002";
+			background: color-mix(in srgb, currentColor 10%, transparent);
+			margin-bottom: 2em;
+		}
+
+		@media (any-hover:hover){
+			.ipsNavPanel__nav .ipsNavPanel__search:hover{
+				background: color-mix(in srgb, currentColor 20%, transparent);
+			}
+		}
+
+	/* Menu separators (Eg. used above "Custom activity streams") */
+	.ipsNavPanel__nav hr{
+		display: none;
+	}
+
+	.ipsNavPanel__title{
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 1em;
+		padding: .8em 1.3em;
+		font-size: max(11px,.8em);
+		text-transform: uppercase;
+	}
+
+		.ipsNavPanel__title::before,
+		.ipsNavPanel__title::after{
+			content: '';
+			flex: 1 1 auto;
+			height: 1px;
+			background: currentColor;
+			opacity: .3;
+		}
+
+		.ipsNavPanel__title::before{
+			flex: 0 0 2em;
+		}
+
+		.ipsNavPanel__title:not(:first-child){
+			margin-top: 2em;
+		}
+
+/* Breadcrumbs */
+.ipsNavPanelBreadcrumbs{
+	color: var(--i-color_contrast, var(--i-color_root));
+}
+
+	.ipsNavPanelBreadcrumbs .ipsHeader__align{
+		padding: .5em 0;
+		border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+	}

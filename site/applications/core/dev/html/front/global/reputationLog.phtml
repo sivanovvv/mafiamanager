@@ -1,0 +1,12 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class='ipsPhotoPanel ipsPhotoPanel--mini'>
+		{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $row['member_id'] ), 'mini'"}
+		<div class="ipsPhotoPanel__text">
+			<h3 class="ipsPhotoPanel__primary">{template="userLink" app="core" group="global" params="\IPS\Member::load( $row['member_id'] )"}</h3>
+			<div class="ipsPhotoPanel__secondary">
+				{{if $row['rep_rating'] === '1' && settings.reputation_point_types != 'like'}}<i class='i-font-size_2 i-color_positive fa-solid fa-circle-arrow-up' aria-hidden="true"></i>{{elseif settings.reputation_point_types != 'like'}}<i class='i-font-size_2 i-color_negative fa-solid fa-circle-arrow-down' aria-hidden="true"></i>{{endif}} <span>{datetime="$row['rep_date']"}</span>
+			</div>
+		</div>
+	</li>
+{{endforeach}}

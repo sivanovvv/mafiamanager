@@ -1,0 +1,19 @@
+<ips:template parameters="$transaction" />
+{{if isset( $transaction->extra['verified'] )}}
+	<p>
+		{lang="paypal_payer_status" sprintf="$transaction->extra['verified']"}
+	</p>
+{{endif}}
+
+{{if isset( $transaction->extra['processor_response'] )}}
+{{$responseCode = $transaction->extra['processor_response']['response_code'];}}
+<p>
+    {lang="processor_response_avs"}: {$transaction->extra['processor_response']['avs_code']} <span class="i-color_soft">({lang="processor_response_avs__{$transaction->extra['processor_response']['avs_code']}"})</span>
+    <br>
+    {lang="processor_response_cvv"}: {$transaction->extra['processor_response']['cvv_code']} <span class="i-color_soft">({lang="processor_response_cvv__{$transaction->extra['processor_response']['cvv_code']}"})</span>
+    <br>
+    {lang="processor_response_code"}: {$responseCode} {{if \is_numeric( $responseCode )}}{{$responseCode = (int)$responseCode;}}{{endif}}
+    <br>
+    <span class="i-color_soft">{lang="processor_response_code__{$responseCode}"}</span>
+</p>
+{{endif}}

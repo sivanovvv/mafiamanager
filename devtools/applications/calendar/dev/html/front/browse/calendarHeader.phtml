@@ -1,0 +1,57 @@
+<ips:template parameters="$calendars, $thisCalendar, $jump, $downloadLinks" />
+
+{{if $thisCalendar and $club = $thisCalendar->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $thisCalendar"}
+	{{endif}}
+{{endif}}
+
+<div class="ipsPageHeader ipsBox ipsBox--calendarHeader ipsPull" id='elCalendarsHeader'>
+	<div class='ipsPageHeader__row'>
+		<div class="ipsPageHeader__primary">
+			<span class="ipsPageHeader__title">
+				{{if $thisCalendar and $club = $thisCalendar->club()}}
+					{$thisCalendar->_title}
+				{{else}}
+					<button id='elCalendars' popovertarget="elCalendars_menu">
+						{{if $thisCalendar}}{$thisCalendar->_title}{{else}}{lang="all_calendars"}{{endif}} <i class='fa-solid fa-angle-down' aria-hidden="true"></i>
+					</button>
+				{{endif}}
+			</span>
+		</div>
+		<div class='ipsButtons'>
+			{{if $thisCalendar and \IPS\Application::appIsEnabled('cloud')}}
+                {template="analyticsButton" app="cloud" group="analytics" params="$thisCalendar, $thisCalendar->id"}
+            {{endif}}
+			<button id='elCalendarSettings' popovertarget="elCalendarSettings_menu" class="ipsButton ipsButton--inherit">
+				<span>{lang="subscribe_button"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+			</button>
+			<button popovertarget="elCalendarJump" class="ipsButton ipsButton--inherit">
+				<span>{lang="jump_to"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+			</button>
+			{{if $thisCalendar}}
+				<div class='ipsResponsive_hidePhone'>
+					{template="follow" app="core" group="global" params="'calendar', 'calendar', $thisCalendar->id, \IPS\calendar\Event::containerFollowerCount( $thisCalendar )"}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+</div>
+
+{$jump->customTemplate( array( \IPS\Theme::i()->getTemplate( 'browse' ), 'dateJump' ) )|raw}
+
+<i-dropdown id="elCalendars_menu" popover>
+	<div class="iDropdown">
+		<ul class='iDropdown__items'>
+			<li><a href='{url="app=calendar&module=calendar&controller=view&view=month" seoTemplate="calendar"}'><span class='cCalendarIcon cEvents_style_blank'></span> {lang="all_calendars"}</a></li>
+			{{foreach $calendars as $calendar}}
+				{{if $club = $calendar->club()}}
+					<li><a href='{$calendar->url()}'><span class='cCalendarIcon cEvents_style_blank'></span> {lang="club_node" sprintf="$club->name, $calendar->_title"}</a></li>
+				{{else}}
+					<li><a href='{$calendar->url()}'><span class='cCalendarIcon cEvents_style{$calendar->id}'></span> {$calendar->_title}</a></li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+	</div>
+</i-dropdown>
+{template="subscribeMenu" app="calendar" group="global" params="$thisCalendar, $downloadLinks"}

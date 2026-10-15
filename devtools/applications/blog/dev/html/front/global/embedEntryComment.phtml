@@ -1,0 +1,37 @@
+<ips:template parameters="$comment, $entry, $blog, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--blog-comment'>
+	{template="embedHeader" group="embed" app="core" params="$comment, $entry->mapped('title'), $comment->mapped('date'), $url"}	
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_originalItem'>
+			<div>
+				{{if $entry->coverPhoto() && $entry->coverPhoto()->file}}
+					{{$photo = $entry->coverPhoto()->file;}}
+					<a href='{$entry->url( "getPrefComment" )}' title='{$entry->_title}' class='ipsRichEmbed_masthead'>
+						<img src='{$photo->url}' alt='{$entry->_title}' loading='lazy'>
+					</a>
+				{{elseif $blog->coverPhoto() && $blog->coverPhoto()->file}}
+					{{$photo = $blog->coverPhoto()->file;}}
+					<a href='{$blog->url()}' title='{$blog->_title}' class='ipsRichEmbed_masthead'>
+						<img src='{$photo->url}' alt='{$blog->_title}' class='ipsHide'>
+					</a>
+				{{endif}}
+				<div class='ipsRichEmbed__content'>
+					{template="embedOriginalItem" group="embed" app="core" params="$entry, TRUE, \IPS\Theme::i()->getTemplate( 'global', 'blog' )->embedEntryItemSnippet( $blog )"}
+				</div>
+			</div>
+		</div>
+
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled AND \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

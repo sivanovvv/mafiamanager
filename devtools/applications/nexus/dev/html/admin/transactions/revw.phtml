@@ -1,0 +1,20 @@
+<ips:template parameters="$transaction, $log" />
+
+<li class='cTransaction_intermediate'>
+	<div class='cTransaction_icon'>
+		<i class='fa-solid fa-flag' aria-hidden="true"></i>
+	</div>
+	<div class='cTransaction_info'>
+		<span class="i-font-size_2">{lang="tstatus_revw_set"}</span>
+		<br>
+		{{if isset( $log['on'] ) and $log['on']}}
+			{expression="\IPS\DateTime::ts( $log['on'] )"}
+			{{if isset( $log['by'] ) and $log['by']}}
+				<br>
+				<span class='i-font-size_1 i-color_soft'>
+					{lang="byline_nodate" sprintf="\IPS\Member::load( $log['by'] )->name"}
+				</span>
+			{{endif}}
+		{{endif}}
+	</div>
+</li>

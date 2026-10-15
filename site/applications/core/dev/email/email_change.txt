@@ -1,0 +1,10 @@
+<ips:template parameters="$member, $vid, $securityKey, $newEmail, $email" />
+{$email->language->addToStack("email_complete_email_plain", FALSE)}
+
+=====
+{$email->language->addToStack("email_new_email", FALSE)}: {$newEmail}
+{$email->language->addToStack("email_confirm_address", FALSE)}: {url="app=core&module=system&controller=register&do=validate&vid={$vid}&mid={$member->member_id}&security_key={$securityKey}" seoTemplate="register" base="front" plain="true"}
+=====
+
+
+-- {setting="board_name"}

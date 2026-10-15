@@ -1,0 +1,26 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li>
+		{{if $row['card_type'] == 'paypal' or $row['card_type'] === 'venmo'}}
+			<div class='cNexusCards_name'>{$row['card_number']}</div>
+		{{else}}
+			<span class='cNexusCards_number'>
+				{{if $row['card_type'] == 'american_express' OR $row['card_type'] == 'diners_club'}}
+					XXXX XXXXXX X{$row['card_number']}
+				{{else}}
+					XXXX XXXX XXXX {$row['card_number']}
+				{{endif}}
+			</span>
+		{{endif}}
+		{{if $row['card_type']}}
+			<span class='cNexusCards_type cPayment cPayment_{$row['card_type']}'>{lang="card_type_{$row['card_type']}"}</span>
+		{{endif}}
+		{{if $row['card_expire']}}
+			<span class='cNexusCards_expTitle'>{lang="cards_exp"}</span>
+			<span class='cNexusCards_exp'>{$row['card_expire']}</span>
+		{{endif}}
+
+		<a href="{url="app=nexus&module=customers&controller=view&do=deleteCard&id={$row['card_member']}&card_id={$row['id']}" csrf="true"}" class='cNexusCards_delete' data-confirm data-ipsTooltip title='{lang="delete_this_card"}'>&times;</a>
+	</li>
+{{endforeach}}

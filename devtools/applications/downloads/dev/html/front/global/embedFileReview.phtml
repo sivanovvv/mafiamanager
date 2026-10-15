@@ -1,0 +1,38 @@
+<ips:template parameters="$comment, $item, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--downloads-review'>
+	{template="embedHeader" group="embed" app="core" params="$comment, $item->mapped('title'), $comment->mapped('date'), $url"}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_originalItem'>
+			<div>
+				{{if $screenshot = $item->primary_screenshot_thumb}}
+					<a href='{$url}' title='{$item->mapped('title')}' class='ipsRichEmbed_masthead ipsRichEmbed_masthead--small'>
+						<img src='{$screenshot->url}' alt="{$item->mapped('title')}" loading="lazy">
+					</a>
+				{{else}}
+					<div class='ipsRichEmbed_masthead'></div>
+				{{endif}}
+				<div class='i-padding_3'>
+					{template="embedOriginalItem" group="embed" app="core" params="$item, FALSE, \IPS\Theme::i()->getTemplate( 'global', 'downloads' )->embedFileItemSnippet( $item ) "}
+				</div>
+			</div>
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $comment->mapped('rating')" group="global"} 
+		{{if $comment->mapped('votes_total')}}
+			<p>{$comment->helpfulLine()|raw}</p>
+		{{endif}}
+		<hr class='ipsHr'>
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

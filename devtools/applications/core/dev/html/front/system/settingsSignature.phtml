@@ -1,0 +1,23 @@
+<ips:template parameters="$form, $sigLimits" />
+{{if $sigLimits[1] != "" or $sigLimits[2] or $sigLimits[3] or $sigLimits[4] or $sigLimits[5]}}
+	<div class="i-padding_3">
+		<h2 class='ipsTitle ipsTitle--h3'>{lang="signature_restrictions"}</h2>
+		<p>{lang="ensure_signature_restrictions"}:</p>
+		<ul class='ipsList ipsList--inline ipsList--icons i-margin-top_2 i-color_soft'>
+			{{if $sigLimits[1] != ""}}
+				<li>{{if $sigLimits[1]}}<i class="fa-solid fa-images" aria-hidden="true"></i> {lang="sig_max_imagesr" pluralize="$sigLimits[1]"}{{else}}<i class='fa-solid fa-xmark' aria-hidden="true"></i> {lang="sig_max_imagesr_none"}{{endif}}</li>
+			{{endif}}
+			{{if $sigLimits[2] or $sigLimits[3]}}
+				<li><i class="fa-solid fa-expand" aria-hidden="true"></i> {lang="sig_max_imgsize" sprintf="$sigLimits[2], $sigLimits[3]"}</li>
+			{{endif}}
+			{{if $sigLimits[4]}}
+				<li><i class="fa-solid fa-link" aria-hidden="true"></i> {lang="sig_max_urls" pluralize="$sigLimits[4]"}</li>
+			{{endif}}
+			{{if $sigLimits[5]}}
+				<li><i class="fa-solid fa-grip-lines" aria-hidden="true"></i> {lang="sig_max_lines" pluralize="$sigLimits[5]"}</li>
+			{{endif}}
+		</ul>
+	</div>
+	<hr class='ipsHr'>
+{{endif}}
+{$form|raw}

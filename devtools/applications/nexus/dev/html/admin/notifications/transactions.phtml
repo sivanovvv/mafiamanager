@@ -1,0 +1,79 @@
+<ips:template parameters="$transactions" />
+
+<div class="ipsSpanGrid" data-controller="nexus.admin.notifications.pendingTransactions">
+	{{foreach $transactions as $transaction}}
+		<div class="ipsSpanGrid__3 ipsBox i-margin-bottom_1">
+			<h3 class="ipsBox__header">
+				<a href="{$transaction->acpUrl()}">{$transaction->invoice->title} <span class="i-font-size_-1">#{$transaction->id}</span></a>
+			</h3>
+			<div class="i-padding_2">
+				<div class='ipsSpanGrid i-padding_2'>
+					<div class="ipsSpanGrid__3 i-text-align_center">
+						<span class='i-font-size_2'>{$transaction->amount}</span>
+					</div>
+					<div class="ipsSpanGrid__7">
+						{{if $transaction->method}}
+							{{if \in_array( $transaction->status, array( \IPS\nexus\Transaction::STATUS_PENDING, \IPS\nexus\Transaction::STATUS_WAITING ) )}}
+								{lang="transaction_method_pending" sprintf="$transaction->method->_title"}
+							{{else}}
+								{lang="transaction_method" sprintf="$transaction->method->_title"}							
+							{{endif}}
+						{{else}}
+							{lang="payment_received"}
+						{{endif}}
+						<br>
+						<span class='i-font-size_-1'>
+							{$transaction->date}
+							{{if $transaction->gw_id}}
+								<br>
+								{lang="payment_reference"}: {{if $transaction->method and $url = $transaction->method->gatewayUrl( $transaction )}}<a href="{$url}" target="_blank" rel="noreferrer">{$transaction->gw_id}</a>{{else}}{$transaction->gw_id}{{endif}}<br>
+							{{endif}}
+						</span>
+					</div>
+				</div>
+				<hr class="ipsHr ipsHr_small">
+				<div class='ipsSpanGrid i-padding_2'>
+					<div class="ipsSpanGrid__3 i-text-align_center">
+						<a href="{$transaction->member->acpUrl()}"><img src='{$transaction->member->photo}' class='ipsUserPhoto ipsUserPhoto--tiny'></a>
+					</div>
+					<div class="ipsSpanGrid__7">
+						<a class="i-link-color_inherit" href="{$transaction->member->acpUrl()}">{$transaction->member->cm_name}</a><br>
+						<span class='i-font-size_-1'>
+							{$transaction->member->email}<br>
+							{lang="transaction_customer_since" sprintf="$transaction->member->joined->localeDate()"}<br>
+							{lang="transaction_spent" sprintf="$transaction->member->totalSpent()"}
+						</span>
+					</div>
+				</div>
+				{{if $transaction->fraud or $transaction->fraud_blocked}}
+					<hr class="ipsHr ipsHr_small">
+					<div class="i-text-align_center">
+						{{if $transaction->fraud}}
+							<div class="{{if ( $transaction->fraud->riskScore !== NULL and $transaction->fraud->riskScore > 80 ) or ( $transaction->fraud->riskScore === NULL and $transaction->fraud->score > 8 )}}i-color_warning{{endif}} i-margin-block_1">
+								{{if $transaction->fraud->riskScore !== NULL}}
+									{$transaction->fraud->riskScore}%
+								{{else}}
+									{expression="round( $transaction->fraud->score * 10 )"}%
+								{{endif}}
+								{lang="possibility_of_fraud"}
+							</div>
+						{{endif}}
+						{{if $transaction->fraud_blocked}}
+							{$transaction->fraud_blocked->name}
+						{{endif}}
+					</div>
+				{{endif}}
+				{{if $buttons = array_filter( $transaction->buttons('n'), function( $k ) { return \in_array( $k, array( 'approve', 'review', 'void', 'refund' ) ); }, ARRAY_FILTER_USE_KEY )}}
+					<hr class="ipsHr ipsHr_small">
+					<div class="i-text-align_center i-margin-top_1">
+						<ul class='ipsButton_split' data-role="buttons">
+							{{foreach $buttons as $k => $button}}
+								<li><a {{if !isset( $button['data']['ipsDialog'] )}}data-action="quickAction"{{else}}{{foreach $button['data'] as $_k => $v}}data-{$_k}="{$v}"{{endforeach}}{{endif}} title="{lang="$button['title']"}" data-ipsTooltip class="ipsButton ipsButton--small {{if $k === 'approve'}}ipsButton--positive{{elseif $k === 'review'}}ipsButton--primary{{else}}ipsButton--negative{{endif}}" href="{$button['link']->setQueryString( 'queueStatus', $transaction->status )}"><i class="fa-solid fa-{$button['icon']}" aria-hidden="true"></i></a></li>
+							{{endforeach}}
+						</ul>
+					</div>
+				{{endif}}
+			</div>
+		</div>
+	{{endforeach}}
+</div>

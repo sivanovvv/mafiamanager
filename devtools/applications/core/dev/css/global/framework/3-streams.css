@@ -1,0 +1,336 @@
+/*
+	----------------
+	- Streams
+	----------------
+*/
+
+.ipsStream{
+	--_padding-block: 1.6em;
+	--_padding-inline: 1.5em;
+	--_icon-width: 5em;
+}
+
+/* Time period */
+.ipsStream__time{
+	padding: 1em;
+	background: var(--i-box--ba-co);
+	position: sticky;
+	top: var(--i-sticky-offset, 0px);
+	z-index: var(--i-z-index_sticky);
+}
+
+.ipsStreamItem ~ .ipsStream__time{
+	margin-top: 2em;
+}
+
+/* Stream item */
+.ipsStreamItem {
+	display: flex;
+	position: relative;
+}
+
+/* v5 todo: Is this used? */
+.ipsStreamItem.ipsStreamItem_active {
+	background-color: var(--i-background_selected);
+}
+	
+/* Avatar with icon and stem */
+.ipsStreamItem__iconCell{
+	flex: 0 0 var(--_icon-width);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: .3em;
+}
+
+	.ipsStreamItem__iconCell::before,
+	.ipsStreamItem__iconCell::after{
+		content: '';
+		flex: 1 1 auto;
+		background: color-mix(in srgb, var(--i-color_soft) 20%, transparent);
+		width: 2px;
+	}
+
+	.ipsStreamItem:not(.ipsStreamItem_actionBlock) .ipsStreamItem__iconCell::before{
+		flex: 0 0 var(--_padding-block);
+	}
+
+	/* Action icon */
+	.ipsStreamItem__iconCell span:empty{
+		width: .6em;
+		height: .6em;
+		background: var(--i-background_6);
+		border-radius: 50%;
+	}
+
+	.ipsStreamItem__iconCell .ipsUserPhoto{
+		width: 50%;
+	}
+
+		.ipsStreamItem_actionBlock .ipsStreamItem__iconCell .ipsUserPhoto{
+			width: 30%;
+		}
+
+	/* Hide stem on first and last item, and on streams where there's no timeline */
+	:is(.ipsStreamItem:first-child, .ipsStream__time + .ipsStreamItem, .ipsStream:not(.ipsStream_withTimeline)) .ipsStreamItem__iconCell::before,
+	:is(.ipsStreamItem:last-child, .ipsStreamItem:has( + .ipsStream__time), .ipsStream:not(.ipsStream_withTimeline)) .ipsStreamItem__iconCell::after{
+		visibility: hidden;
+	}
+	/* Hide border on certain stream items */
+	:is(.ipsStreamItem:first-child, .ipsStream__time + .ipsStreamItem, .ipsStreamItem_actionBlock + .ipsStreamItem_actionBlock) .ipsStreamItem__mainCell{
+		border-top-width: 0;
+	}
+
+/* Main content */
+.ipsStreamItem__mainCell{
+	flex: 1 1 auto;
+	align-self: center;
+	padding: var(--_padding-block) 0;
+	padding-inline-end: var(--_padding-inline);
+	border-top: 1px solid color-mix(in srgb, var(--i-co) 10%, transparent);
+	display: flex;
+	flex-direction: column;
+	gap: .5em;
+}
+
+	/* Remove padding from member items */
+	.ipsStreamItem_member .ipsStreamItem__mainCell{
+		padding-inline-end: 0;
+	}
+
+/* Title */
+.ipsStreamItem__title {
+	font-size: 1.2em;
+	color: var(--i-color_hard);
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+	/* .ipsStreamItem__title is a wrapper for some block elements, such as <h2>. Make sure they're all inline */
+	:where(.ipsStreamItem__title > *){
+		display: inline;
+	}
+
+	:is(.ipsStreamItem--unread, [data-ips-unread]) .ipsStreamItem__title{
+		font-weight: bold;
+	}
+
+.ipsStreamItem__summary{
+	color: var(--i-color_soft);
+	margin-top: .3em;
+}
+
+	.ipsStreamItem__summary a{
+		font-weight: 550;
+	}
+
+	.ipsStreamItem__summary .fa-solid{
+		font-size: .85em;
+		opacity: .7;
+		margin-inline-end: .4em;
+	}
+
+.ipsStreamItem__stats{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: .3em 2em;
+	font-size: .9em;
+	color: var(--i-color_soft);
+}
+
+	.ipsStreamItem__stats a{
+		color: inherit;
+	}
+
+	.ipsStreamItem__stats :is(.fa-solid, .fa-regular){
+		opacity: .4;
+		margin-inline-end: .3em;
+	}
+
+.ipsStreamItem__content{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+	padding: 1em 0;
+}
+
+	/* This ensures ignored comments or unexpected content work correctly */
+	.ipsStreamItem__content > *{
+		flex: 1 1 100%;
+	}
+
+	/* Once ignored comments are shown, we need to remove their wrapper */
+	.ipsStreamItem__content > [id^="elComment_"]:not(.ipsHide){
+		display: contents;
+	}
+
+	.ipsStreamItem__content-thumb{
+		flex: 0 0 80px;
+	}
+	.ipsStreamItem__content-thumb--events{
+		flex-basis: 40px;
+	}
+
+	.ipsStreamItem__content-content{
+		flex: 1 1 50%;
+		align-self: center;
+		display: grid;
+		gap: 1em;
+	}
+
+	/* Truncate search results and activity stream */
+	.ipsStreamItem__content-content .ipsRichText{
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* Search results are also truncated by JS. Once they've been processed, they don't need CSS truncation (in some cases, the CSS truncation can clip the search term) */
+	[data-processed="true"] .ipsStreamItem__content-content .ipsRichText{
+		display: block;
+	}
+
+/* Hide content if it's empty */
+.ipsStreamItem__content:not(:has(*)){ display: none !important }
+@supports not selector(a:has(b)){
+	.ipsStreamItem__content:-moz-only-whitespace{ display: none !important }
+}
+
+.ipsStream__comment .ipsRating + .ipsRichText{
+	margin-top: .5em;
+}
+
+/* Popular rating */
+.ipsStreamItem__popular{
+	flex: 0 0 auto;
+	padding: 1em;
+	align-self: center;
+	text-align: center;
+}
+
+/* JS is used on search results to 'mark' terms. The entire post is displayed before being truncated. This assists with a FOUC */
+.ipsStreamItem:not([data-processed]) .ipsStreamItem__content [data-searchable] {
+	display: -webkit-box;
+	-webkit-line-clamp: var(--li-cl, 7);
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@media (min-width: 420px){ [data-searchable]{ --li-cl: 6 } }
+@media (min-width: 475px){ [data-searchable]{ --li-cl: 5 } }
+@media (min-width: 600px){ [data-searchable]{ --li-cl: 4 } }
+@media (min-width: 895px){ [data-searchable]{ --li-cl: 3 } }
+@media (min-width: 1260px){ [data-searchable]{ --li-cl: 2 } }
+
+/*
+	----------------
+	- Condensed view
+	----------------
+*/
+
+@media (min-width: 980px){
+	.ipsStreamItem_condensed .ipsStreamItem__mainCell{
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+	.ipsStreamItem_condensed .ipsStreamItem__header{
+		flex: 1 1 auto;
+	}
+	.ipsStreamItem_condensed .ipsStreamItem__stats{
+		flex: 0 0 auto;
+	}
+	.ipsStreamItem_condensed .ipsStreamItem__content{
+		order: 1;
+		flex: 1 1 100%;
+	}
+}
+
+/* Short times in condensed view */
+.ipsStreamItem_condensed .ipsTime__long{
+	display: none;
+}
+.ipsStreamItem_condensed .ipsTime__short{
+	display: revert;
+}
+
+
+/*
+	----------------
+	- Action block
+	----------------
+*/
+
+.ipsStreamItem_actionBlock{
+	--_padding-block: .8em;
+	color: var(--i-color_soft);
+}
+
+	.ipsStreamItem_actionBlock a{
+		font-weight: 550;
+	}
+
+	.ipsStreamItem_actionBlock .ipsStreamItem__mainCell{
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: .5em 2em;
+	}
+
+
+/*
+	----------------
+	- New content
+	----------------
+*/
+
+.ipsStreamItem_bar .ipsHr {
+	border-color: var(--i-color_primary);
+	border-top-width: 4px;
+	margin: 1em;
+	border-radius: 4px;
+}
+
+.ipsStream__loadMore button{
+	display: block;
+	width: 100%;
+	background: var(--i-background_4);
+	padding: 1em;
+	text-align: center;
+	font-weight: 600;
+	color: var(--i-color_primary);
+}
+
+
+/*
+	----------------
+	- Member results
+	----------------
+*/
+
+.ipsMembers .ipsCoverPhoto__container{
+	border-radius: var(--i-box--bo-ra);
+	margin: 0;
+	max-width: 100%;
+}
+
+/*
+	----------------
+	- Responsive
+	----------------
+*/
+
+@media (max-width: 767px){
+	.ipsStream {
+		--_padding-inline: .8em;
+		--_icon-width: 4em;
+	}
+}
+
+@media (max-width: 500px){
+	.ipsStreamItem__content-thumb{
+		flex-basis: 50%;
+	}
+}

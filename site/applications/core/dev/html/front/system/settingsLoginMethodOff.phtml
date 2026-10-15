@@ -1,0 +1,13 @@
+<ips:template parameters="$method, $login, $error, $blurb, $canDisassociate=FALSE" />
+
+<div class='i-flex i-align-items_center i-gap_2 i-padding_3 i-border-bottom_3'>
+	<h2 class='ipsTitle ipsTitle--h3'>{$method->_title}</h2>
+	{{if $canDisassociate}}
+		<a href="{url="app=core&module=system&controller=settings&area=login&service={$method->id}&disassociate=1" seoTemplate="settings_login" csrf="true"}" class="ipsButton ipsButton--text ipsButton--text--negative ipsButton--small i-margin-start_auto" data-confirm data-confirmSubMessage="{lang="profilesync_sign_out_confirm" sprintf="$method->_title"}">{lang="sign_out"}</a>
+	{{endif}}
+</div>
+
+<div class='i-padding_3'>
+	<p class="i-margin-bottom_4">{lang="$blurb" sprintf="$method->_title"}</p>
+	{template="settingsLoginConnect" group="system" params="$method, $login, $error, $blurb"}
+</div>

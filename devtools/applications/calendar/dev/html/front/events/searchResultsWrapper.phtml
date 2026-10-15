@@ -1,0 +1,43 @@
+<ips:template parameters="$results=array(), $mapMarkers=NULL" />
+
+<div class='ipsBox ipsBox--calendarSearchResults'>
+	<div class="ipsButtonBar ipsButtonBar--top">
+		<ul class='ipsDataFilters i-flex_01'>
+			<li>
+				<a href='{url="app=calendar"}' class='ipsDataFilters__button' data-action='backToOverview'><i class='fa-solid fa-angle-left' aria-hidden="true"></i> {lang="events_search_back_to_overview"}</a>
+			</li>
+		</ul>
+		<div class='ipsButtonBar__end'>
+			<ul class='ipsDataFilters'>
+				<li>
+					<button id="elSortMenu" popovertarget="elSortMenu_menu" class="ipsDataFilters__button">
+						<strong>{lang="events_search_sort_by"}</strong> <span data-role='searchOrder'>{lang="events_search_distance"}</span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+					</button>
+					<i-dropdown id="elSortMenu_menu" popover data-i-dropdown-selectable="radio">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								<li>
+									<button type="button" data-ipsMenuValue='nearest' aria-selected="true"><i class="iDropdown__input" aria-hidden="true"></i>{lang="events_search_distance"}</button>
+								</li>
+								<li>
+									<button type="button" data-ipsMenuValue='date'><i class="iDropdown__input" aria-hidden="true"></i>{lang="events_search_date"}</button>
+								</li>
+							</ul>
+						</div>
+					</i-dropdown>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class='cEvents__searchMap cEvents__searchMap--loading event' data-role='searchResultsMap' {{if $mapMarkers}}data-markers="{$mapMarkers}"{{endif}}></div>
+	<ul class='ipsEventList ipsData ipsData--grid ipsData--events-list {{if !\count( $results )}}ipsHide{{endif}}' data-role='searchResults'>
+		{template="searchResults" app="calendar" group="events" params="$results"}
+	</ul>
+	<div class='i-padding_2'>
+		<button class='ipsButton ipsButton--inherit ipsHide' data-action='loadMoreSearch'>{lang="events_search_show_more"}</button>
+		<p class='ipsEmptyMessage ipsHide' data-role='noMoreSearchResults'>{lang="events_search_no_events"}</p>
+	</div>
+	<p class='ipsEmptyMessage' {{if \count( $results )}}hidden{{endif}} data-role='noSearchResults'>
+		{lang="events_search_no_events_long"}
+	</p>
+</div>

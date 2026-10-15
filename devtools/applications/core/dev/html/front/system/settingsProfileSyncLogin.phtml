@@ -1,0 +1,5 @@
+<ips:template parameters="$method, $login, $error" />
+<div class="i-padding_3">
+	<div class="i-margin-bottom_3">{lang="profilesync_blurb" sprintf="$method->_title"}</div>
+	{template="settingsLoginConnect" group="system" params="$method, $login, $error"}
+</div>

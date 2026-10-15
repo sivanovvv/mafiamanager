@@ -1,0 +1,23 @@
+<ips:template parameters="$comment" />
+{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Shareable' )}}
+{{$idField = $comment::$databaseColumnId;}}
+{{$type = ( $comment instanceof \IPS\Content\Review ) ? 'review' : 'comment';}}
+
+<div class='i-padding_3 ipsHide cPostShareMenu' id='elShare{expression="\ucfirst( $type )"}_{$comment->$idField}_menu'>
+	<h5 class="i-font-weight_600 i-color_hard i-margin-bottom_2">{lang="link_to_$type"}</h5>
+	{{if $comment->isFirst() }}
+		{{$url = $comment->item()->url();}}
+	{{else}}
+		{{$url = $comment->shareableUrl( $type );}}
+	{{endif}}
+	{{if \IPS\Settings::i()->ref_on}}
+		{{$url = $url->setQueryString( array( '_rid' => \IPS\Member::loggedIn()->member_id  ) );}}
+	{{endif}}
+    <a href="{$url}" class="ipsPageActions__mainLink" data-role="shareButton" data-ipstooltip title='{lang="copy_share_link"}'><i class="fa-regular fa-copy" aria-hidden="true"></i> {$url}</a>
+
+	{{if (!$comment->item()->containerWrapper() OR !$comment->item()->container()->disable_sharelinks ) and \count( $comment->sharelinks() )}}
+		<h5 class="i-font-weight_600 i-color_hard i-margin-top_3 i-margin-bottom_2">{lang="share_externally"}</h5>
+		{template="sharelinks" group="global" app="core" params="$comment"}
+	{{endif}}
+</div>
+{{endif}}

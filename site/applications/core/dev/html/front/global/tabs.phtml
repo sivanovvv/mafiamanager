@@ -1,0 +1,20 @@
+<ips:template parameters="$tabNames, $activeId, $defaultContent, $url, $tabParam='tab', $parseNames=TRUE, $contained=FALSE, $extraClasses='', $forceURLUpdate=false" />
+<i-tabs class='ipsTabs{{if $extraClasses}} {$extraClasses}{{endif}}' id='ipsTabs_{expression="md5( $url )"}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{expression="md5( $url )"}_content' {{if request.isAjax() and !$forceURLUpdate}}data-ipsTabBar-updateURL='false'{{endif}}>
+	<div role='tablist'>
+		{{foreach $tabNames as $i => $name}}
+			<a href='{$url->setQueryString( $tabParam, $i )}' id='ipsTabs_{expression="md5( $url )"}_{$i}' class="ipsTabs__tab" title='{{if $parseNames}}{striptags="\IPS\Member::loggedIn()->language()->get( $name )"}{{else}}{striptags="$name"}{{endif}}' role="tab" aria-controls='ipsTabs_{expression="md5( $url )"}_{$i}_panel' aria-selected="{{if $i == $activeId}}true{{else}}false{{endif}}">
+				{{if $parseNames}}{lang="$name"}{{else}}{$name|raw}{{endif}}
+			</a>
+		{{endforeach}}
+	</div>
+	{template="tabScrollers" app="core" group="global" location="global"}
+</i-tabs>
+<section id='ipsTabs_{expression="md5( $url )"}_content' class='ipsTabs__panels {{if $contained}}ipsTabs__panels--padded{{endif}}'>
+	{{foreach $tabNames as $i => $name}}
+		{{if $i == $activeId}}
+			<div id='ipsTabs_{expression="md5( $url )"}_{$i}_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby='ipsTabs_{expression="md5( $url )"}_{$i}'>
+				{$defaultContent|raw}
+			</div>
+		{{endif}}
+	{{endforeach}}
+</section>

@@ -1,0 +1,4 @@
+<ips:template parameters="$item" />
+{{if \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+    <a class='ipsButton ipsButton--text' href="{$item->url()->setQueryString('do', 'analytics')}" data-ipsTooltip title="{lang="analytics_and_stats"}" data-ipsDialog data-ipsDialog-title='{lang="analytics_and_stats"}'><i class="fa-solid fa-line-chart" aria-hidden="true"></i></a>
+{{endif}}

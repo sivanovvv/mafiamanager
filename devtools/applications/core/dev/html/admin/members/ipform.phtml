@@ -1,0 +1,16 @@
+<ips:template parameters="$ip, $members" />
+
+<div class='ipsBox' data-ips-template="ipform">
+	<h1 class='ipsBox__header'>{lang="ipaddress_table_header"}</h1>
+	<div>
+		{$ip|raw}
+	</div>
+</div>
+<div class='i-margin-top_1' data-ips-template="form">
+	<div class='ipsBox'>
+		<h1 class='ipsBox__header'>{lang="memberip_table_header"}</h1>
+		<div>
+			{$members|raw}
+		</div>
+	</div>
+</div>

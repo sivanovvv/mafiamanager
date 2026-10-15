@@ -1,0 +1,7 @@
+<ips:template parameters="$table, $headers, $entries" />
+<!-- This template is used when viewing Profile > See my activity > Blog Entries -->
+{{foreach $entries as $idx => $entry}}
+	<li class='ipsData__item {{if $entry->hidden()}}ipsModerated{{endif}}'>
+		{template="blogViewMedium" group="view" app="blog" params="$entry, $table, FALSE"}
+	</li>
+{{endforeach}}

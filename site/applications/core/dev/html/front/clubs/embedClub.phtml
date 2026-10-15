@@ -1,0 +1,60 @@
+<ips:template parameters="$club" />
+
+<!-- v5 todo: I can potentially mimic the "browse clubs grid" UI here -->
+
+{{$coverPhoto = $club->coverPhoto( FALSE );}}
+<div class='ipsRichEmbed cClubEmbed'>
+	<div class='ipsRichEmbed_header'>
+		<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+			{template="userPhoto" app="core" group="global" params="$club->owner, 'tiny'"}
+			<div class='ipsPhotoPanel__text'>
+				<p class='ipsPhotoPanel__primary ipsTruncate_1'>
+					<a href='{$club->url()}'>{lang="club_embed_created_line" sprintf="$club->owner->name"}</a>
+				</p>
+				<p class='ipsPhotoPanel__secondary ipsTruncate_1'>
+					<a href='{$club->url()}'>{datetime="$club->created"}</a>
+				</p>
+			</div>
+		</div>
+		<a href='{$club->url()}' class='ipsRichEmbed_openItem'><i class='fa-solid fa-arrow-up-right-from-square' aria-hidden="true"></i></a>
+	</div>
+	<div class='cClubEmbedHeader{{if !$coverPhoto->file}} cClubEmbedHeaderNoPhoto{{endif}}'>
+		{{if $coverPhoto->file}}
+			<span style='background-image: url( "{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $coverPhoto->file->url )"}" )'>
+				{template="clubIcon" group="clubs" app="core" params="$club, 'medium'"}
+			</span>
+		{{else}}
+			<span>{template="clubIcon" group="clubs" app="core" params="$club, 'medium'"}</span>
+		{{endif}}
+	</div>
+	<div class='i-padding_2'>
+		<p class='ipsRichEmbed_itemTitle ipsTruncate_1 i-link-color_inherit'>
+			<a href='{$club->url()}'>{$club->name}</a>
+		</p>
+		<p class='i-color_soft'>
+			{lang="club_{$club->type}"}&nbsp;&middot;&nbsp;{lang="club_members_count" pluralize="$club->members"}{{if $club->last_activity}}&nbsp;&middot;&nbsp;{lang="club_last_activity"} {datetime="$club->last_activity"}{{endif}}
+		</p>
+		{{if $desc = $club->about}}
+			<div class='ipsRichEmbed__snippet'>
+				{$desc}
+			</div>
+		{{endif}}
+
+		{{if $club->type != $club::TYPE_PUBLIC}}
+			{{if $club->canJoin()}}
+				<hr class='ipsHr ipsHr--small'>
+				<a class="ipsButton ipsButton--small ipsButton--primary ipsButton--wide" href="{$club->url()->setQueryString('do', 'join')->csrf()}" {{if $club->isPaid() and $club->memberStatus( \IPS\Member::loggedIn() ) !== $club::STATUS_INVITED_BYPASSING_PAYMENT}}data-confirm data-confirmIcon="info" data-confirmMessage="{lang="club_membership_item"}" data-confirmSubmessage="{$club->memberFeeMessage()}"{{endif}}>{lang="club_join"}</a>
+			{{endif}}
+			{{if $club->canViewMembers() }}
+				<hr class='ipsHr ipsHr--small'>
+				<ul class='ipsCaterpillar'>
+					{{foreach $club->randomTenMembers() as $member}}
+						<li class='ipsCaterpillar__item'>
+							{template="userPhotoFromData" group="global" app="core" params="$member['core_members']['member_id'], $member['core_members']['name'], $member['core_members']['members_seo_name'], \IPS\Member::photoUrl( $member['core_members'] ), 'fluid'"}
+						</li>
+					{{endforeach}}
+				</ul>
+			{{endif}}
+		{{endif}}
+	</div>
+</div>

@@ -1,0 +1,14 @@
+<ips:template parameters="$notifications" />
+
+<div data-controller="core.global.core.notificationList" class="cNotificationList i-grid i-gap_1">
+	{{if isset( request.highlightedId ) and array_key_exists( request.highlightedId, $notifications )}}
+		{template="indexBlock" group="notifications" params="$notifications[ \IPS\Request::i()->highlightedId ], TRUE"}
+	{{endif}}
+	
+	{{foreach $notifications as $id => $notification}}
+		{{if !isset( request.highlightedId ) or $id != request.highlightedId}}
+			{template="indexBlock" group="notifications" params="$notification"}
+		{{endif}}
+	{{endforeach}}
+	<div class="i-padding_3 i-color_soft i-text-align_center {{if \count( $notifications )}}ipsHide{{endif}}" data-role="empty">{lang="no_results_notifications"}</div>
+</div>

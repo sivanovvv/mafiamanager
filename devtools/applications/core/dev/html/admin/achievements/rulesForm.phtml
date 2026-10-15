@@ -1,0 +1,147 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+
+<div class='cRulesForm ipsPos_center i-margin-top_4'>
+	{{if isset( $hiddenValues['rule_enabled'] ) and ! $hiddenValues['rule_enabled']}}
+		<div class="ipsMessage ipsMessage--general i-margin-bottom_3">
+			{lang="acp_rule_is_paused"}
+		</div>
+	{{endif}}
+
+	<form accept-charset="utf-8" action="{$action}" method="post" data-controller="core.admin.members.achievementRuleForm" class='ipsBox' data-ipsform>
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			{{if \is_array($v)}}
+				{{foreach $v as $_k => $_v}}
+					{{if $_k != 'rule_enabled'}}
+					<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+					{{endif}}
+				{{endforeach}}
+			{{else}}
+				<input type="hidden" name="{$k}" value="{$v}">
+			{{endif}}
+		{{endforeach}}
+
+		<div class='i-padding_3'>
+			<h1 class='ipsTitle ipsTitle--h3'>
+				{{if request.id}}{lang="edit_achievement_rule"}{{else}}{lang="new_achievement_rule"}{{endif}}
+			</h1>
+			<p class='i-font-size_1'>{lang="achievement_desc"}</p>
+		</div>
+		<div class='i-background_2 i-border-top_3 i-border-bottom_3 i-padding_3 i-position_relative cRulesForm__container'>
+			
+			{{$ruleSelect = $elements['']['achievement_rule_action'];}}
+			{{$options = $ruleSelect->options['options']; }}
+			{{$toggles = $ruleSelect->options['toggles']; }}
+			{{$ruleSelect->options['toggles'] = array();}}
+			{{$parts = array();}}
+
+			{{// First, just store the elements in groups so we can build the HTML later}}
+			{{foreach $options as $option => $extension}}
+				{{foreach $elements[''] as $k => $element}}
+					{{if \in_array( $k, $toggles[ $option ] ) }}
+						{{// Find related filters}}
+						{{if \substr( $k, 0, 19 ) === 'achievement_filter_'}}
+							{{$parts[ $option ]['filter'][$k]['element'] = $element;}}
+							{{$subFilterPrefix = "achievement_subfilter_" . \substr( $k, 19 ) . "_";}}
+							
+							{{// Find related subfilters}}
+							{{foreach $elements[''] as $j => $subElement}}
+								{{if \substr( $j, 0, \strlen( $subFilterPrefix ) ) === $subFilterPrefix}}
+									{{$parts[ $option ]['filter'][$k]['subFilters'][$j] = $subElement;}}
+								{{endif}}
+							{{endforeach}}	
+						{{endif}}
+						{{// Find award fields }}
+						{{if \substr( $k, -14 ) === '_award_subject'}}
+							{{$parts[ $option ]['awardSubject'] = $element;}}
+						{{elseif \substr( $k, -12 ) === '_award_other'}}
+							{{$parts[ $option ]['awardOther'] = $element;}}
+						{{endif}}
+
+                        {{// Find award translatable fields }}
+                        {{if \substr( $k, -20 ) === '_award_subject_badge'}}
+                            {{$parts[ $option ]['awardSubjectTranslatable'] = $element;}}
+                        {{elseif \substr( $k, -18 ) === '_award_other_badge'}}
+                            {{$parts[ $option ]['awardOtherTranslatable'] = $element;}}
+                        {{endif}}
+					{{endif}}
+				{{endforeach}}
+                {{if isset( $parts[$option] )}}
+                    {{$ruleSelect->options['toggles'][$option] = ["rule_{$option}"];}}
+                {{endif}}
+			{{endforeach}}
+
+			{{// Now we can build all the HTML}}
+			<div class="cRulesForm__condition ipsBox i-position_relative i-padding_3 i-margin-bottom_3 ipsFieldRow--fullWidth">
+				<h2 class='cRulesForm__condition__title ipsRadius i-text-align_center i-font-size_1 i-font-weight_600 ipsType_veryLight i-flex_00'>{lang="achievement_rule_action"}</h2>
+				<div>{$elements['']['achievement_rule_action']->html()|raw}</div>
+			</div>
+
+			{{foreach $options as $option => $extension}}
+				<div id='rule_{$option}' data-role="ruleWrap" hidden>
+					{{if !empty( $parts[ $option ]['filter'])}}
+						<div class='cRulesForm__conditionButtons' data-role="conditionButtons">
+							{{foreach $parts[ $option ]['filter'] as $k => $filter}}
+								{template="rulesForm_addFilterButton" group="achievements" params="$k, $filter['element'], $form"}
+							{{endforeach}}
+						</div>
+
+						{{foreach $parts[ $option ]['filter'] as $k => $filter}}
+							{template="rulesForm_filter" group="achievements" params="$filter['element']"}
+
+							{{if isset( $filter['subFilters'] ) && \count( $filter['subFilters'])}}
+								<div class='cRulesForm__conditionButtons' data-role="conditionButtons">
+									{{foreach $filter['subFilters'] as $j => $subFilter}}
+										{template="rulesForm_addFilterButton" group="achievements" params="$j, $subFilter, $form"}
+									{{endforeach}}
+								</div>
+
+								{{foreach $filter['subFilters'] as $j => $subFilter}}
+									{template="rulesForm_filter" group="achievements" params="$subFilter"}
+								{{endforeach}}
+							{{endif}}
+						{{endforeach}}
+					{{endif}}				
+
+					<div class="cRulesForm__condition ipsBox i-position_relative i-padding_3 i-margin-top_3">
+						<h2 class='cRulesForm__condition__title ipsRadius i-text-align_center i-font-size_1 i-font-weight_600 ipsType_veryLight i-flex_00'>{lang="achievement_rule_award"}</h2>
+						<div class='i-flex_11'>
+							{{$awardSubject = $parts[ $option ]['awardSubject'];}}
+							{{$awardOther = $parts[ $option ]['awardOther'] ?? NULL;}}
+                            {{$awardSubjectTranslatable = $parts[ $option ]['awardSubjectTranslatable'];}}
+                            {{$awardOtherTranslatable = $parts[ $option ]['awardOtherTranslatable'] ?? NULL;}}
+
+							<div id="{$awardSubject->htmlId}">
+								{{if $awardSubject->label}}
+									<p class='i-font-weight_bold cRulesForm__condition__toDesc'>{$awardSubject->label}</p>
+								{{endif}}
+								{$awardSubject->html()|raw}
+							</div>
+                            <div id="{$awardSubjectTranslatable->htmlId}" class='i-padding-top_3' hidden>
+                                <p class='cRulesForm__condition__toDesc'>{lang="Achievement_reason_badge_awarded"}</p>
+                                {$awardSubjectTranslatable->html()|raw}
+                            </div>
+
+							{{if $awardOther !== NULL}}
+								<div id="{$awardOther->htmlId}" class='i-border-top_3 i-margin-top_3 i-padding-top_3'>
+									{{if $awardOther->label}}
+										<p class='i-font-weight_bold cRulesForm__condition__toDesc'>{$awardOther->label}</p>
+									{{endif}}
+									{$awardOther->html()|raw}
+								</div>
+                                <div id="{$awardOtherTranslatable->htmlId}" class='i-padding-top_3' hidden>
+                                    <p class='cRulesForm__condition__toDesc'>{lang="Achievement_reason_badge_awarded"}</p>
+                                    {$awardOtherTranslatable->html()|raw}
+                                </div>
+							{{endif}}
+						</div>
+					</div>
+				</div>			
+			{{endforeach}}
+		</div>
+		<div class='i-padding_3 i-flex i-justify-content_end'>
+			<button type="submit" class='ipsButton ipsButton--primary'>{lang="save_rule"}</button>
+		</div>
+	</form>
+</div>

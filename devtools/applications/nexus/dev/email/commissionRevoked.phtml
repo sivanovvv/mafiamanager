@@ -1,0 +1,8 @@
+<ips:template parameters="$invoice, $item, $commission, $email" />
+{{if $item}}
+	{$email->language->addToStack("email_commission_rev_product", FALSE, array( 'sprintf' => array( $item->name, $commission ) ) )} 
+{{else}}
+	{$email->language->addToStack("email_commission_rev_no_product", FALSE, array( 'sprintf' => array( $commission ) ) )} 
+{{endif}}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

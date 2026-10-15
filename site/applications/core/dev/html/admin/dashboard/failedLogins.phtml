@@ -1,0 +1,24 @@
+<ips:template parameters="$logins" />
+{{if \count( $logins )}}
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--compact ipsData--failed-logins">
+		{{foreach $logins as $login }}
+			<li class='ipsData__item'>
+				<div class='ipsData__main'>
+					<h4 class='ipsData__title'>{$login['admin_username']}</h4>
+					<p class='ipsData__meta'>
+						{datetime="$login['admin_time']"}
+					</p>
+				</div>
+			</li>
+		{{endforeach}}
+		</ul>
+	</i-data>
+	<div class="i-padding_3">
+		<a href="{url="app=core&module=staff&controller=admin&do=loginLogs&filter=adminloginlogs_unsuccessful"}">{lang="block_failed_logins_all"}</a>
+	</div>
+{{else}}
+	<div class='ipsEmptyMessage'>
+		{lang="no_failed_logins"}
+	</div>
+{{endif}}

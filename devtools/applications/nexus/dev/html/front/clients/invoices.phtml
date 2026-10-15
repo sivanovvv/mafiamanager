@@ -1,0 +1,29 @@
+<ips:template parameters="$invoices, $pagination" />
+{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack('orders_title')"}
+<div class="ipsBox ipsBox--commerceInvoices ipsPull">
+	{{if \count( $invoices )}}
+		{{if trim($pagination)}}
+			<div class="ipsButtonBar ipsButtonBar--top">
+				<div class="ipsButtonBar__pagination">
+					{$pagination|raw}
+				</div>
+			</div>
+		{{endif}}
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--invoices cNexusOrderList">
+				{{foreach $invoices as $invoice}}
+					{template="invoiceList" group="clients" params="$invoice"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+		{{if trim($pagination)}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination">
+					{$pagination|raw}
+				</div>
+			</div>
+		{{endif}}
+	{{else}}
+		<p class="ipsEmptyMessage">{lang="orders_none"}</p>
+	{{endif}}
+</div>

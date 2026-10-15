@@ -1,0 +1,9 @@
+<ips:template parameters="$club, $size='tiny', $classes=''" />
+
+<a href='{$club->url()}' class='ipsUserPhoto ipsUserPhoto--{$size} cClubIcon {$classes}' aria-hidden="true" tabindex="-1">
+	{{if $club->profile_photo}}
+		<img src='{file="$club->profile_photo" extension="core_Clubs"}' alt='{$club->name}' loading='lazy'>
+	{{else}}
+		<img src='{resource="default_club.png" app="core" location="global"}' alt='{$club->name}' loading='lazy'>
+	{{endif}}
+</a>

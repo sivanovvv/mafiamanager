@@ -1,0 +1,8 @@
+<ips:template parameters="$items" />
+{{if \count($items)}}
+  <ul>
+    {{foreach $items as $item}}
+      <li><a href='{$item->url()}' data-id="{$item->_id}">{$item->mapped( 'title' )}</a></li>
+    {{endforeach}}
+  </ul>
+{{endif}}

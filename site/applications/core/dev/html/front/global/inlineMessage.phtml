@@ -1,0 +1,16 @@
+<ips:template parameters="$message" />
+<div id='elInlineMessage' class='i-padding_3' title='{lang="messenger_inline_title" sprintf="$message->author()->name"}'>
+	<div class='ipsPhotoPanel'>
+		{template="userPhoto" app="core" group="global" params="$message->author(), 'medium'"}
+		<div>
+			<strong>{$message->item()->title}</strong><br>
+			<span class='i-color_soft'>{lang="messenger_inline_date"} {datetime="$message->date"}</span>
+			<br>
+			<div class='ipsTruncate_3'>
+				{$message->post|raw}
+			</div>
+			<hr class='ipsHr'>
+			<a href='{$message->url()}' class='ipsButton ipsButton--primary ipsButton--small'>{lang="messenger_inline_button"}</a>{{if \IPS\Member::loggedIn()->msg_count_new > 1}} <a href='{url="app=core&module=messaging&controller=messenger" seoTemplate="messaging"}' class='ipsButton ipsButton--primary ipsButton--small'>{lang="messenger_inline_view_all"}</a>{{endif}}{{if $message->canReportOrRevoke() === TRUE}} &nbsp;&nbsp; <a href='{$message->url('report')}'><span class='ipsResponsive_showPhone'><i class='fa-solid fa-flag' aria-hidden="true"></i></span><span class='ipsResponsive_hidePhone'>{lang="report_reply"}</span></a>{{endif}}
+		</div>
+	</div>
+</div>

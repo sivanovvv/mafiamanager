@@ -1,0 +1,4 @@
+<ips:template parameters="$images, $layout='table', $isCarousel=false" />
+{{if ! \is_array( $images )}}
+<div><img src="{$images}" class="ipsPageBuilderUpload" loading="lazy" alt=""></div>
+{{endif}}

@@ -1,0 +1,9 @@
+<ips:template parameters="$updates" />
+{lang="upgrade_check_patches"}
+<div class="i-margin-top_1">
+	<ul>
+		{{foreach $updates as $issue}}
+			<li>{$issue}</li>
+		{{endforeach}}
+	</ul>
+</div>

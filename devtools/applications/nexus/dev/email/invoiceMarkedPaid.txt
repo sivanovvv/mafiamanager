@@ -1,0 +1,32 @@
+<ips:template parameters="$invoice, $summary, $email" />
+
+{$email->language->get('email_invoice_paid')}
+
+-- {setting="board_name"}
+
+{expression="sprintf( $email->language->get('order_number'), $invoice->id )" raw="true"}
+=====
+{{if $invoice->po}}{$email->language->get('invoice_po_number')}: {$invoice->po}{{endif}}
+
+{$email->language->get('email_view_order')}: {$invoice->url()}
+
+
+{$email->language->get("order_details")}
+=====
+{{foreach $summary['items'] as $k => $item}}
+{$item->quantity} x</span> {$item->name} [{$item->price->toString( $email->language )} {$email->language->get("each_short")}] ({$item->linePrice()->toString( $email->language )})
+{{endforeach}}
+---
+{$email->language->get('subtotal')}: {$summary['subtotal']->toString( $email->language )}
+{{if \count( $summary['tax'] )}}
+---
+{{foreach $summary['tax'] as $taxId => $tax}}
+{$email->language->get( 'nexus_tax_' . $taxId )} ({expression="$tax['rate']*100" raw="true"}%): {$tax['amount']->toString( $email->language )}
+{{endforeach}}
+{{endif}}
+---
+{$email->language->get('total')}: {$summary['total']->toString( $email->language )}
+{{if $transactions = $invoice->transactions() and \count( $transactions )}}{{foreach $transactions as $transaction}}{{if $transaction->status === $transaction::STATUS_PAID}}
+{$email->language->get('email_paid_by')} {{if $transaction->method}}{$transaction->method->getTitleForLanguage( $email->language )}{{else}}{$email->language->get('account_credit')}{{endif}}: {$transaction->amount->toString( $email->language )}
+{{endif}}{{endforeach}}
+{{endif}}

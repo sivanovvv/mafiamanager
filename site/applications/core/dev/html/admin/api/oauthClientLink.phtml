@@ -1,0 +1,2 @@
+<ips:template parameters="$client" />
+<a {{if member.hasAcpRestriction( 'core', 'api', 'oauth_manage' )}}href="{url="app=core&module=applications&controller=oauth&do=view&client_id={$client->client_id}"}"{{endif}}>{$client->_title}</a>

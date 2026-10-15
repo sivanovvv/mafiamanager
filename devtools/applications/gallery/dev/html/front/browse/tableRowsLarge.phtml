@@ -1,0 +1,52 @@
+<ips:template parameters="$table, $headers, $images" />
+{{foreach $images as $image}}
+	<div class='{{if $image->hidden()}}ipsModerated{{endif}} i-padding_3 i-border-bottom_1 {$image->ui( 'css' )}' data-imageId="{$image->id}" {$image->ui( 'dataAttributes' )}>
+		<figure class='ipsFigure'>
+			{{if $image->media }}
+				<a href='{$image->url()}' title='{lang="view_this_video" sprintf="$image->caption"}' class='ipsFigure__main'>
+					<video data-role="video" loading="lazy" {{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+						<source src="{file="$image->original_file_name" extension="gallery_Images"}" type='{$image->file_type}' />
+					</video>
+					<i class="ipsFigure__play" aria-hidden="true"></i>
+				</a>
+			{{else}}
+				<a href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}' class='ipsFigure__main'>
+					{{$sizes = $image->_dimensions;}}
+					<img src='{file="$image->masked_file_name" extension="gallery_Images"}' width="{$sizes['large'][0]}" height="{$sizes['large'][1]}" alt="{$image->caption}" loading="lazy">
+				</a>
+			{{endif}}
+            {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image"}
+        </figure>
+		<div class='i-margin-top_2'>
+			<div class='i-flex i-flex-wrap_wrap i-align-items_center i-justify-content_space-between'>
+				<div class='ipsTitle ipsTitle--h4'>
+					<h2 class=''>
+						{{if $image->unread()}}<span class='ipsIndicator' data-ipsTooltip title='{{if $image->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'></span>{{endif}}
+						{{if $image->prefix()}}
+							{template="prefix" group="global" app="core" params="$image->prefix( TRUE ), $image->prefix()"}
+						{{endif}}
+						<a href='{$image->url()}' title='{lang="view_this_image" sprintf="$image->caption"}'>
+							{{if $image->unread()}}<strong>{$image->caption}</strong>{{else}}{$image->caption}{{endif}}
+						</a>
+					</h2>
+					<div class='ipsBadges'>
+					    {{foreach $image->badges() as $badge}}{$badge|raw}{{endforeach}}
+					</div>
+				</div>
+				<ul class='ipsList ipsList--inline'>
+					{{if $image->directContainer()->allow_comments && $image->comments > 0}}
+						<li>{lang="num_comments" pluralize="$image->comments"}</li>
+					{{endif}}
+					{{if $image->views > 0}}
+						<li>{lang="num_views_with_number" pluralize="$image->views"}</li>
+					{{endif}}
+					{{if $table->canModerate()}}
+						<li>
+							<input type='checkbox' data-role='moderation' name="moderate[{$image->id}]" data-actions="{{if $image->mapped('featured')}}unfeature{{else}}feature{{endif}} {{if $image->mapped('pinned')}}unpin{{else}}pin{{endif}} {{if $image->hidden() === -1}}unhide{{elseif $image->hidden() === 1}}approve{{else}}hide{{endif}} {{if $image->mapped('locked')}}unlock{{else}}lock{{endif}} move delete" data-state='{{if $image->tableStates()}}{$image->tableStates()}{{endif}}' class='ipsInput ipsInput--toggle'>
+						</li>
+					{{endif}}
+				</ul>
+			</div>
+		</div>
+	</div>
+{{endforeach}}

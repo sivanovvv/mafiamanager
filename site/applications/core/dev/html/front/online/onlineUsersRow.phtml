@@ -1,0 +1,25 @@
+<ips:template parameters="$row" />
+<li class='i-text-align_center i-padding_3 i-padding-bottom_4 i-grid i-gap_2 cOnlineUser {{if $row['login_type'] == \IPS\Session\Front::LOGIN_TYPE_ANONYMOUS}}i-opacity_4{{endif}}'>
+    <div class='i-flex i-justify-content_center'>
+		<div class='i-basis_140'>{$row['photo']|raw}</div>
+	</div>
+	<h3 class='i-font-weight_600 i-font-size_3' data-ips-hook="name">
+		{{if $row['login_type'] == \IPS\Session\Front::LOGIN_TYPE_ANONYMOUS}}
+			<span class="ipsBadge ipsBadge--icon ipsBadge--soft" title='{lang="signed_in_anoymously"}' data-ipsTooltip><i class='fa-solid fa-eye' aria-hidden="true"></i></span>
+		{{endif}}
+		{$row['member_name']|raw}
+	</h3>
+	<div data-ips-hook="location">
+		<p class='i-font-weight_600 i-color_soft i-link-color_inherit'>{$row['location_lang']|raw}</p>
+		<ul class='ipsList ipsList--sep i-justify-content_center i-color_soft i-margin-top_1'>
+			<li>{$row['running_time']}</li>
+			{{if \IPS\Member::loggedIn()->modPermission( 'can_use_ip_tools' )}}
+				{{if \IPS\Member::loggedIn()->modPermission('can_use_ip_tools') and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'modcp' ) )}}
+					<li><a href="{url="app=core&module=modcp&controller=modcp&tab=ip_tools&ip={$row['ip_address']}" seoTemplate="modcp_ip_tools"}">{$row['ip_address']}</a></li>
+				{{else}}
+					<li>{$row['ip_address']}</li>
+				{{endif}}
+			{{endif}}
+		</ul>
+	</div>
+</li>

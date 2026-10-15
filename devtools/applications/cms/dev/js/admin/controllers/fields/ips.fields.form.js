@@ -1,0 +1,139 @@
+/**
+ * Invision Community
+ * (c) Invision Power Services, Inc. - https://www.invisioncommunity.com
+ *
+ * ips.fields.form.js
+ *
+ */
+;( function($){
+	"use strict";
+
+	ips.controller.register('cms.admin.fields.form', {
+		currentValue: null,
+		selectedListingTemplate: null,
+		selectedDisplayTemplate: null,
+		initialize: function () {
+			let self = this;
+			const fieldDefaultValue = document.querySelector('#elTextarea_field_default_value')
+			if (fieldDefaultValue) {
+				fieldDefaultValue.addEventListener( 'input', ips.utils.throttle(() => this.checkChange(), 50));
+				this.currentValue = fieldDefaultValue.value || '';
+				document.querySelectorAll('#field_default_update_existing').ipsHide();
+			}
+
+			this.on('change', 'input[data-control="color"]', this.changeBadgeColor);
+			this.on('change', 'input[type="checkbox"][name*="color"]', this.changeBadgeColor);
+			this.on('change', 'select[name="field_type"]', this.checkTemplates);
+			this.on('change', '#elSelect_field_display_listing_template_use_how, #elSelect_field_display_display_template_use_how', this.updateTemplateContent);
+			this.on('change', '#elSelect_field_display_listing_template_id', function(e){
+				self.selectedListingTemplate = e.target.value;
+				self.updateTemplateContent(e);
+			});
+			this.on('change', '#elSelect_field_display_display_template_id', function(e){
+				self.selectedDisplayTemplate = e.target.value;
+				self.updateTemplateContent(e);
+			});
+
+			this.elem.querySelector('form').addEventListener('ips:calculateToggles', e => {
+				const form = e.target;
+				if (!(form instanceof HTMLFormElement)) {
+					return;
+				}
+				const typeSelector = form.querySelector('select[name="field_type"]');
+				const showMapActive = typeSelector?.value?.toLowerCase() === 'address';
+				const mapEl = form.querySelectorAll('#field_show_map_listing,#field_show_map_display');
+				if (mapEl && !showMapActive) {
+					mapEl.forEach(el => e.detail.togglesOff.add(el));
+				}
+
+				// for these, several of the listing/display format options don't apply
+				if (typeSelector?.value?.match(/^(youtube|spotify|soundcloud|status)$/i)) {
+					form
+						.querySelectorAll("#field_display_listing_json_badge, #field_display_listing_badge_bgcolor, #field_display_listing_badge_color, #field_display_display_json_badge, #field_display_display_badge_bgcolor, #field_display_display_badge_color")
+						.forEach(el => {
+							e.detail.togglesOff.add(el);
+							e.detail.togglesOn.delete(el);
+						});
+					if( typeSelector?.value?.match(/^(status)$/i) ) {
+						form
+							.querySelectorAll("#media_display_listing_method, #media_display_display_method")
+							.forEach(el => {
+								e.detail.togglesOff.add(el);
+								e.detail.togglesOn.delete(el);
+							});
+					}
+				} else {
+					form
+						.querySelectorAll("#media_display_listing_method, #media_display_display_method")
+						.forEach(el => {
+							e.detail.togglesOff.add(el);
+							e.detail.togglesOn.delete(el);
+						});
+				}
+
+				// field_truncate is an exception where there are two togglers; in this case we just target the "Show in listing template" one
+				const fieldTruncate = form.querySelector('#field_truncate');
+				if (fieldTruncate) {
+					if (form.querySelector('#check_field_display_listing') && !form.querySelector('#check_field_display_listing').checked) {
+						e.detail.togglesOff.add(fieldTruncate);
+						e.detail.togglesOn.delete(fieldTruncate);
+					}
+				}
+			})
+		},
+		
+		/**
+		 * checkChange handler
+		 *
+		 * @returns {void}
+		 */
+		checkChange() {
+			if (document.querySelector('#elTextarea_field_default_value').value !== this.currentValue) {
+				document.querySelector('#field_default_update_existing').ipsShow();
+			} else {
+				document.querySelector('#field_default_update_existing').ipsHide();
+			}
+		},
+
+		changeBadgeColor(e){
+			const colorPicker = e.target?.closest?.('.ipsFieldRow[id]').getAttribute('id');
+
+			const badge = `#elField_field_display_${colorPicker?.includes('listing') ? 'listing' : 'display'}_json_badge_badge_label`;
+			const color = (!colorPicker || document.querySelector(`#${colorPicker}_none`)?.checked) ?
+				'' : document.querySelector(`input[name="${colorPicker}"]`)?.value;
+
+			document
+				.querySelectorAll(`${badge} span`)
+				.forEach(
+					span => span.style[colorPicker?.includes('bgcolor') ? 'background' : 'color'] = color
+				);
+		},
+
+		checkTemplates(e){
+			const fieldType = e.target.value;
+			let listingTemplates = document.getElementById('elSelect_field_display_listing_template_id') || null;
+			if(listingTemplates){
+				listingTemplates.querySelectorAll('optgroup').forEach( (el) => {
+					el.ipsHide();
+				});
+				listingTemplates.querySelector('optgroup[label="' + fieldType + '"]')?.ipsShow();
+			}
+		},
+
+		async updateTemplateContent(e){
+			const dropdown = e.target?.closest?.('.ipsFieldRow[id]').getAttribute('id');
+			const templateDropdown = `elSelect_field_display_${dropdown?.includes('listing') ? 'listing' : 'display'}_template_id`;
+			const templateId = document.getElementById(templateDropdown)?.value;
+
+			const selectedTemplate = dropdown?.includes('listing') ? this.selectedListingTemplate : this.selectedDisplayTemplate;
+			const codemirror = document.getElementById(`elTextarea_field_display_${dropdown?.includes('listing') ? 'listing' : 'display'}_json_custom`);
+			if(codemirror && e.target.value === 'copy' && (templateId !== selectedTemplate || !codemirror.value.length)){
+				const template = await ips.fetch('?app=cms&module=pages&controller=ajax&do=loadTemplate&show=json&noencode=1',{ dataType: 'json', data: { t_location: 'field', t_key: templateId } } );
+
+				let content = template.template_content;
+				codemirror.dispatchEvent(new CustomEvent('insertCode', {detail: {content}}));
+				codemirror.setAttribute('loaded','true');
+			}
+		}
+	});
+}(jQuery));

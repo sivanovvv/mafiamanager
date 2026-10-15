@@ -1,0 +1,19 @@
+{
+    "normal": {
+        "added": [
+            "rss_tags_type",
+            "rss_tags_non_taggable_warning",
+            "rss_tags",
+            "statsreports_save_block_filters",
+            "statsreports_save_block_filters_desc",
+            "statsreports_update_block_filters"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

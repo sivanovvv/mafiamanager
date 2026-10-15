@@ -1,0 +1,66 @@
+<ips:template parameters="$blog, $table, $category=NULL" />
+
+{{if $club = $blog->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $blog"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+{template="blogHeader" group="view" app="blog" params="$blog, (!$club OR !\IPS\Settings::i()->clubs OR \IPS\Settings::i()->clubs_header != 'full')"}
+
+{{if $blog->description}}
+	<section class='ipsBox ipsBox--blogDescription ipsBox--padding ipsPull'>
+		<h3 class='ipsTitle ipsTitle--h5 ipsTitle--margin'>{lang="about_this_blog"}</h3>
+		{template="richText" group="global" app="core" location="global" params="$blog->description, array('ipsTruncate_4')"}
+	</section>
+{{endif}}
+
+{{$menu = $blog->menu();}}
+{{if \IPS\blog\Entry::canCreate( \IPS\Member::loggedIn(), $blog ) or $menu->hasContent() or \count( \IPS\blog\Entry\Category::roots( NULL, NULL, array( 'entry_category_blog_id=?', $blog->id ) ) )}}
+	<ul class="ipsButtons ipsButtons--main" data-ips-hook='blogMainButtons'>
+		{{if !$blog->club_id and $menu->hasContent()}}
+			<li>
+			    {$menu|raw}
+			</li>
+		{{endif}}
+        {{if \count( \IPS\blog\Entry\Category::roots( NULL, NULL, array( 'entry_category_blog_id=?', $blog->id ) ) )}}
+			<li>
+				<button id='elBlogCategory' popovertarget="elBlogCategory_menu" class="ipsButton ipsButton--text">
+					<span>{{if $category}}{lang="blog_category_viewing" sprintf="$category->name"}{{else}}{lang="blog_category_select"}{{endif}}</span><i class='ipsMenuCaret' aria-hidden="true"></i>
+				</button>
+				<i-dropdown id="elBlogCategory_menu" popover>
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							<li class="iDropdown__title i-flex i-align-items_center i-justify-content_space-between">
+								{lang="categories"}{{if $category}} <span>(<a href="{$blog->url()}">{lang="blog_categories_all"}</a>)</span>{{endif}}
+							</li>
+							{{foreach \IPS\blog\Entry\Category::roots( NULL, NULL, array( 'entry_category_blog_id=?', $blog->id ) ) as $cat}}
+								<li>{$cat->link()|raw}</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</i-dropdown>
+			</li>
+		{{endif}}
+		{{if \IPS\blog\Entry::canCreate( \IPS\Member::loggedIn(), $blog )}}
+			<li>
+				{{if $category}}
+					<a class="ipsButton ipsButton--primary" href="{url="app=blog&module=blogs&controller=submit&id={$blog->id}&cat={$category->_id}" seoTemplate="blog_submit"}" rel='nofollow noindex'>{lang="add_blog_entry"}</a>
+				{{else}}
+					<a class="ipsButton ipsButton--primary" href="{url="app=blog&module=blogs&controller=submit&id={$blog->id}" seoTemplate="blog_submit"}" rel='nofollow noindex'>{lang="add_blog_entry"}</a>
+				{{endif}}
+			</li>
+        {{endif}}
+	</ul>
+{{endif}}
+
+{$table|raw}
+
+<div class='ipsBox ipsBox--padding ipsPull ipsResponsive_showPhone'>
+	{template="follow" app="core" group="global" params="'blog', 'blog', $blog->_id, \IPS\blog\Entry::containerFollowerCount( $blog )"}
+</div>
+
+{{if $blog->club()}}
+	</div>
+{{endif}}

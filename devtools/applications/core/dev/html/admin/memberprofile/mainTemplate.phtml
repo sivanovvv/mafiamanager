@@ -1,0 +1,36 @@
+<ips:template parameters="$member, $extensions, $activeTab, $activeTabContent, $history" />
+<div class='acpMemberView'>
+	
+	{{if \count( $extensions ) > 1}}
+		<i-tabs class='ipsTabs acpMemberView_tabBar' id='ipsTabs_member' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_member_content' data-ipsTabBar-panelClass="acpMemberView_tabBarPanel">
+			<div role='tablist'>
+				{{foreach $extensions as $key => $classname}}
+					<a href='{$member->acpUrl()->setQueryString( 'tab', $key )}' id='ipsTabs_member_{$key}' aria-controls="ipsTabs_member_{$key}_panel" class="ipsTabs__tab" role="tab" aria-selected="{{if $key == $activeTab}}true{{else}}false{{endif}}">
+						{$classname::title()}
+					</a>
+				{{endforeach}}
+			</div>
+			{template="tabScrollers" app="core" group="global" location="global"}
+		</i-tabs>
+	{{endif}}
+	
+	{{if $history}}
+		<div class="acpMemberView_layoutWrap">
+			<div class="acpMemberView_layoutMain">
+	{{endif}}
+	
+	<div id='ipsTabs_member_content'>
+		<div id="ipsTabs_member_{$activeTab}_panel" class="ipsTabs__panel acpMemberView_tabBarPanel" role="tabpanel" aria-labelledby="ipsTabs_member_{$activeTab}">
+			{$activeTabContent|raw}
+		</div>
+	</div>
+	
+	
+	{{if $history}}
+			</div>
+			<div class="acpMemberView_layoutHistory">
+				{$history|raw}
+			</div>
+		</div>
+	{{endif}}
+</div>

@@ -1,0 +1,21 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/forms\/row",
+            "global\/forms\/text",
+            "front\/global\/globalTemplate"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

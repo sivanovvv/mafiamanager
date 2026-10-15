@@ -1,0 +1,10 @@
+<ips:template parameters="$database" />
+<div class='ipsBox i-padding_3'>
+	<i class="fa-solid fa-download ipsAlert_icon" aria-hidden="true"></i>
+	{lang="cms_download_db_explain"}
+	<ul class="ipsButtons ipsButtons--end ipsButtons--downloadDialog">
+		<li>
+			<a href='{url="app=cms&module=databases&controller=databases&do=download&id={$database->_id}&go=true"}' class='ipsButton ipsButton--secondary'>{lang="cms_download_db" sprintf="$database->_title"}</a>
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,167 @@
+<ips:template parameters="$file, $pendingVersion" />
+
+{{if $club = $file->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $file->container()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<div>
+	<div class='{{if $file->primary_screenshot}}ipsColumns{{endif}}'>
+		<div {{if $file->primary_screenshot_thumb}}class='ipsColumns__primary'{{endif}}>
+            <header class='ipsPageHeader ipsBox ipsBox--downloadsPendingHeader ipsPull ipsPageHeader--downloads-pending'>
+                <div class="ipsPageHeader__row">
+					<div class='ipsPageHeader__primary'>
+						<h1 class='ipsPageHeader__title'>
+							{{if $pendingVersion->hidden() === 1}}
+								<span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i></span>
+							{{endif}}
+							<span class=''>{{if $file->locked()}}<i class='fa-solid fa-lock' aria-hidden="true"></i> {{endif}}{$file->name}{{if $file->container()->version_numbers}} {$pendingVersion->form_values['file_version']}{{endif}}</span>
+						</h1>	
+						{{if $file->isPaid()}}
+							<p class="ipsPageHeader__desc">
+								{{if $price = $file->priceToDisplay()}}
+									<span class='cFilePrice'>{$price|raw}</span>
+									{{if $renewalTerm = $file->renewalTerm()}}
+										<span class=''> &middot; {lang="file_renewal_term_val" sprintf="$renewalTerm"}</span>
+									{{endif}}
+								{{endif}}
+							</p>
+						{{endif}}
+					</div>
+					<div class='i-color_soft'>{lang="file_new_version_date" htmlsprintf="\IPS\DateTime::ts($pendingVersion->date)->html()"}</div>
+				</div>
+                <div class="ipsPageHeader__row">
+                    <div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+                        {template="userPhoto" app="core" group="global" params="$file->author(), 'tiny', $file->warningRef()"}
+                        <div>
+                            <p class='i-font-size_2 i-link-color_inherit'>
+                                {lang="byline_nodate_itemprop" htmlsprintf="$file->author()->link( $file->warningRef(), NULL, $file->isAnonymous() )"}{{if member.group['idm_view_approvers'] and $file->approver}} {lang="file_approved_by" sprintf="\IPS\Member::load( $file->approver )->name" htmlsprintf="\IPS\DateTime::ts( $file->approvedon )->html( false )"}{{endif}}
+                            </p>
+                            {{if $file->author()->member_id}}
+                            <ul class='ipsList ipsList--inline'>
+                                {{if $file->author()->member_id}}
+                                    <li><a href='{url="app=core&module=members&controller=profile&id={$file->author()->member_id}&do=content&type=downloads_file" base="front" seoTitles="$file->author()->members_seo_name" seoTemplate="profile_content"}'>{lang="find_users_files"}</a></li>
+                                {{endif}}
+                            </ul>
+                            {{endif}}
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+	</div>
+
+	{template="contentItemMessages" group="global" app="core" params="$file->getMessages(), $file"}
+	
+	{{if $pendingVersion->hidden() === 1 and $pendingVersion->canUnhide()}}
+		<div class="ipsMessage ipsMessage--withButtons ipsMessage--warning i-margin-block_2">
+			<div>
+				<h4 class="ipsMessage__title">{lang="file_version_pending_approval"}</h4>
+				{{if $file->hidden() === 1}}
+					<p class="i-color_soft">{lang="file_version_pending_cannot_approve"}</p>
+				{{endif}}
+			</div>
+			<ul class='ipsButtons' data-controller="downloads.front.pending.buttons">
+                {{if $file->hidden() !== 1}}
+				<li><a href="{$pendingVersion->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unhide' ) )}" class="ipsButton ipsButton--positive" title='{lang="approve_title_file"}'><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="approve"}</a></li>
+				{{endif}}
+                <li><a href='{$pendingVersion->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'delete' ) )}' data-confirm  title='{lang="pending_version_reject_title"}' data-confirmMessage="{lang="pending_version_reject_title"}" data-confirmSubMessage="{lang="pending_version_reject_desc"}" class='ipsButton ipsButton--negative'><i class='fa-solid fa-xmark' aria-hidden="true"></i> {lang="pending_version_reject"}</a></li>
+			</ul>
+		</div>
+	{{endif}}
+
+	<div class='ipsBox ipsBox--downloadsPending i-margin-top_block'>
+		{{if $file->screenshots( 0, TRUE, NULL, TRUE )->getInnerIterator()->count()}}
+			<h2 class='ipsBox__header ipsHide'>{lang="screenshots_ct" pluralize="$file->screenshots()->getInnerIterator()->count()"}</h2>
+			<div class='ipsBox__content'>
+				<ul class='ipsCarousel ipsCarousel--images i-gap_2 ipsCarousel--downloads-pending-screenshots' id='downloads-pending-screenshots' tabindex="0">
+					{{$fullScreenshots = iterator_to_array( $file->screenshots( 0, TRUE, NULL, TRUE) );}}
+					{{foreach $file->screenshots( 1, TRUE, NULL, TRUE ) as $id => $screenshot}}
+						<li class='i-background_1 i-padding_2'>
+							<a href="{$fullScreenshots[ $id ]->url}" class="ipsThumb" data-ipsLightbox data-ipsLightbox-group="download_{$file->id}">
+								<img src="{$screenshot->url}" alt="" loading='lazy'>
+							</a>
+						</li>
+					{{endforeach}}
+				</ul>
+				{template="carouselNavigation" group="global" app="core" params="'downloads-pending-screenshots'"}
+			</div>
+		{{endif}} 
+		<div class='ipsColumns'>
+			<article class='ipsColumns__primary'>
+				<div class='i-padding_3'>
+					<section class='i-margin-top_3'>
+						<h2 class='ipsTitle ipsTitle--h3'>{lang="file_changelog"}</h2>
+						{{if empty( $pendingVersion->content() )}}
+							<p class="i-color_soft">{lang="pending_no_changelog"}</p>
+						{{else}}
+						<div class='ipsRichText ' data-controller='core.front.core.lightboxedImages'>
+								{$pendingVersion->content()|raw}
+						</div>
+						{{endif}}
+
+						<h2 class='ipsTitle ipsTitle--h3 i-margin-top_3'>{lang="downloads_file_pl"}</h2>
+						{{$files = $file->files( NULL, TRUE, TRUE );}}
+						{{if \count( $files )}}
+						<i-data>
+							<ul class='ipsData ipsData--table ipsData--pending-view'>
+								{{foreach $files as $f}}
+								{{$data = $files->data();}}
+								<li class='ipsData__item'>
+									<div class='ipsData__main'>
+										<h4 class='ipsData__title'><a href="{{if settings.idm_antileech AND !$file->requiresDownloadConfirmation()}}{$pendingVersion->url('download')->csrf()->setQueryString( 'fileId', $data['record_id'] )}{{else}}{$pendingVersion->url('download')->setQueryString( 'fileId', $data['record_id'] )}{{endif}}">{$f->originalFilename}</a></h4>
+										{{if $data['record_size']}}<p class='ipsData__meta'>{filesize="$data['record_size']"}</p>{{endif}}
+									</div>
+									<div class=''>
+										<span class="ipsHide" data-role="downloadCounterContainer">{lang="download_begins_in"} <span data-role="downloadCounter"></span> {lang="seconds"}</span>
+										<a href="{{if settings.idm_antileech AND !$file->requiresDownloadConfirmation()}}{$pendingVersion->url('download')->csrf()->setQueryString( 'fileId', $data['record_id'] )}{{else}}{$pendingVersion->url('download')->setQueryString( 'fileId', $data['record_id'] )}{{endif}}" class='ipsButton ipsButton--primary ipsButton--small'>{lang="download"}</a>
+									</div>
+								</li>
+								{{endforeach}}
+							</ul>
+						</i-data>
+						{{else}}
+							<p class="ipsEmptyMessage">{lang="pending_no_changelog"}</p>
+						{{endif}}
+					</section>
+				</div>
+			</article>
+			<aside class='ipsColumns__secondary i-basis_380'>
+				<div class='i-padding_3'>
+					{{if $file->topic()}}
+						<a href='{$file->topic()->url()}' title='{lang="dl_get_support_title"}' class='ipsButton ipsButton--wide ipsButton--secondary'>{lang="dl_get_support"}</a>
+						<hr class='ipsHr'>
+					{{endif}}
+					<h2 class='ipsTitle ipsTitle--h3'>{lang="file_information"}</h2>
+					<i-data>
+						<ul class="ipsData ipsData--table ipsData--file-information">
+							<li class="ipsData__item">
+								<div class='ipsData__main'>
+									<strong>{lang="submitted"}</strong>
+								</div>
+								<div class="i-basis_160">{datetime="$file->submitted"}</div>
+							</li>
+							{{if $file->updated != $file->submitted}}
+								<li class="ipsData__item">
+									<div class='ipsData__main'>
+										<div class='ipsData__main'>
+											<strong>{lang="updated"}</strong>
+										</div>
+										<div class="i-basis_160">{datetime="$file->updated"}</div>
+									</div>
+								</li>
+							{{endif}}
+						</ul>
+					</i-data>
+				</div>
+			</aside>
+		</div>
+	</div>
+
+</div>
+
+{{if $file->container()->club()}}
+	</div>
+{{endif}}

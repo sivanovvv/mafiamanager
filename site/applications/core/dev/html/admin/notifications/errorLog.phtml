@@ -1,0 +1,9 @@
+<ips:template parameters="$table" />
+{$table|raw}
+<div class="i-margin-top_4">
+	<a href="{url="app=core&module=support&controller=errorLogs"}" class="ipsButton ipsButton--primary ipsButton--tiny">{lang="view_all"}</a>
+	{{if member.hasAcpRestriction( 'core', 'support', 'diagnostic_log_settings' )}}
+		&nbsp;
+		<a href="{url="app=core&module=support&controller=errorLogs&do=settings"}" class="ipsButton ipsButton--inherit ipsButton--tiny" data-ipsDialog data-ipsDialog-title="{lang="settings"}">{lang="settings"}</a>
+	{{endif}}
+</div>

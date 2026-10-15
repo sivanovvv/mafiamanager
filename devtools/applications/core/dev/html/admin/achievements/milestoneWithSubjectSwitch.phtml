@@ -1,0 +1,7 @@
+<ips:template parameters="$name, $value" />
+<select class="ipsInput ipsInput--select" name="{$name}[0]">
+	<option value="receiver" {{if isset( $value[0] ) and $value[0] == 'receiver'}}selected="selected"{{endif}}>{lang="achievement_who_reciever"}</option>
+	<option value="giver" {{if isset( $value[0] ) and $value[0] == 'giver'}}selected="selected"{{endif}}>{lang="achievement_who_giver"}</option>
+</select>
+<input type="number" class="ipsInput ipsField_short" min="0" name="{$name}[1]" value="{{if isset( $value[1] )}}{$value[1]}{{endif}}">
+{lang="achievement_who_suffix"}

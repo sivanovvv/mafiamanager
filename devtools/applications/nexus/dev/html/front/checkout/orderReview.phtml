@@ -1,0 +1,62 @@
+<ips:template parameters="$invoice" />
+
+<section class=''>
+	<div class="i-padding_3 i-border-top_3 i-border-bottom_3 i-flex i-align-items_center i-gap_2">
+		<h2 class='ipsTitle ipsTitle--h3'><span class="i-color_soft">{lang="order_review"}:</span> {lang="order"} #{$invoice->id}</h2>
+		{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'nexus', 'clients' ) ) }}
+			<a href='{{if $invoice->guest_data and isset( $invoice->guest_data['guestTransactionKey'] )}}{$invoice->url()->setQueryString( array( 'do' => 'printout', 'key' => $invoice->guest_data['guestTransactionKey'] ) )}{{else}}{$invoice->url()->setQueryString( 'do', 'printout' )}{{endif}}' target="_blank" rel='noopener' class='ipsJS_show ipsButton ipsButton--inherit ipsButton--small i-margin-start_auto'><i class="fa-solid fa-print" aria-hidden="true"></i> {lang="order_invoice_print"}</a>
+		{{endif}}
+	</div>
+	<div class='i-padding_3'>
+		<div class='ipsFluid i-basis_300 i-margin-top_3'>
+			<div>
+				{{if $invoice->billaddress}}
+					<div class='ipsSpanGrid i-margin-bottom_4'>
+						{{if $invoice->billaddress}}
+							<div class='ipsSpanGrid__6'>
+								<h3 class='ipsTitle ipsTitle--h3'>{lang="billing_address"}</h3>
+								<div class='i-margin-top_3'>
+									{$invoice->billaddress->toString('<br>')|raw}
+								</div>
+							</div>
+						{{endif}}
+					</div>
+				{{endif}}
+
+				<h3 class='ipsTitle ipsTitle--h3'>{lang="payment_details"}</h3>
+				{template="paymentLog" group="clients" app="nexus" params="$invoice"}
+			</div>
+			<div>
+				<h2 class='ipsTitle ipsTitle--h3'>{lang="order_review"}</h2>
+				{{$summary = $invoice->summary();}}
+				<i-data>
+					<ul class="ipsData ipsData--table ipsData--order-review i-margin-top_3">
+						{{foreach $summary['items'] as $item}}
+							{{if !( $item instanceof \IPS\nexus\extensions\nexus\Item\CouponDiscount )}}
+								<li class='ipsData__item'>
+									<div class="ipsData__image" aria-hidden="true">
+										{{if $image = $item->image()}}
+											<img src="{$image->url}" alt=""  loading="lazy">
+										{{else}}
+											<i aria-hidden="true"></i>
+										{{endif}}
+									</div>
+									<div class='ipsData__main'>
+										<div><span class='i-color_soft'>{$item->quantity} x </span>{$item->name}</div>
+										{{if \count( $item->details )}}
+											<span class="i-color_soft">
+												{{foreach $item->details as $k => $v}}
+													<strong>{lang="nexus_pfield_{$k}"}: </strong> {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}<br>
+												{{endforeach}}
+											</span>
+										{{endif}}
+									</div>
+								</li>
+							{{endif}}
+						{{endforeach}}
+					</ul>
+				</i-data>
+			</div>
+		</div>
+	</div>	
+</section>

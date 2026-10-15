@@ -1,0 +1,24 @@
+/* Ensure elements occupy space so the intersectionObserver can respond to them */
+[data-ipsfetch]:not([data-ipsfetch-loaded]){
+	min-height: 1px;
+}
+/* Animated spinner while data-ipsfetch content loads */
+i-fetch-spinner{
+	display: grid;
+	place-content: center;
+	min-height: 200px;
+}
+	i-fetch-spinner::before{
+		content: "";
+		display: block;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		border: 5px solid color-mix(in hsl, currentColor 30%, transparent);
+		border-top-color: currentColor;
+		animation: i-fetch-spinner .8s infinite linear;
+	}
+@keyframes i-fetch-spinner {
+	0% { transform: rotate(0turn); }
+	100% { transform: rotate(1turn); }
+}

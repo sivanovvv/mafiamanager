@@ -1,0 +1,28 @@
+<ips:template parameters="$results, $timeframe, $layout='table', $isCarousel=false" />
+{{if \count( $results )}}
+	<i-data>
+		<ul class="ipsData ipsData--{$layout} ipsData--widget-mostSolvedRows">
+			{{foreach $results as $memberId => $solvedCount}}
+				{{$member = \IPS\Member::load( $memberId );}}
+				<li class='ipsData__item'>
+					<a href="{$member->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$member->name}</span></a>
+					<div class="{{if \in_array($layout, array('table', 'minimal'))}}ipsData__icon{{else}}ipsData__image{{endif}}">
+						{template="userPhoto" app="core" group="global" params="$member, 'fluid'"}
+					</div>
+					<div class='ipsData__content'>
+						<div class='ipsData__main'>
+							<div class="ipsData__title">{$member->link()|raw}</div>
+							<div class="ipsData__meta">
+								<span title="{lang="solved_badge_tooltip_time"}" data-ipsTooltip class='ipsRepBadge ipsRepBadge--positive'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {expression="\IPS\Member::loggedIn()->language()->formatNumber( $solvedCount )"}</span>
+							</div>
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	</i-data>
+{{else}}
+	<div class='ipsEmptyMessage'>
+		<p>{lang="top_solved_empty__{$timeframe}"}</p>
+	</div>
+{{endif}}

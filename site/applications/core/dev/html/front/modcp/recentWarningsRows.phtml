@@ -1,0 +1,40 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if empty( $rows )}}
+	<li class='ipsData__item'>
+		<div class='ipsEmptyMessage'>{lang="no_results"}</div>
+	</li>
+{{else}}
+	{{foreach $rows as $warning}}
+		<li class='ipsData__item'>
+			<div class='ipsData__icon'>{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $warning->member ), 'fluid'"}</div>
+			<div class='ipsData__content'>
+				<div class='ipsData__main'>
+					<div class='ipsData__title'>
+						<span class="ipsWarningPoints ipsWarningPoints--small">{$warning->points}</span>
+						<h4><a href="{$warning->url()}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsTooltip title='{lang="wan_action_points" pluralize="$warning->points"}'>{lang="core_warn_reason_{$warning->reason}"}</a></h4>
+					</div>
+					<div class='ipsData__meta'>
+						<ul class='ipsList ipsList--sep'>
+							<li class='i-font-weight_500'>{lang="user_warned_by" htmlsprintf="\IPS\Member::load( $warning->member )->link(), \IPS\Member::load( $warning->moderator )->link()"}</li>
+							<li>{datetime="$warning->date"}</li>
+						</ul>
+					</div>
+					{{if \IPS\Settings::i()->warnings_acknowledge}}
+						<div class='i-margin-top_2'>
+							{{if $warning->acknowledged}}
+								<strong class='i-color_positive'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="warning_acknowledged"}</strong>
+							{{else}}
+								<span class='i-color_soft'>{lang="warning_not_acknowledged"}</span>
+							{{endif}}
+						</div>
+					{{endif}}
+					{{if $warning->note_mods}}
+						<div class='i-margin-top_2 ipsRichText ipsTruncate_4'>
+							{expression="\IPS\Text\Parser::truncate( $warning->note_mods )" raw="true"}
+						</div>
+					{{endif}}
+				</div>
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

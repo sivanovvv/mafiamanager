@@ -1,0 +1,15 @@
+{
+    "files": {
+        "added": [],
+        "edited": [
+            "global\/framework\/common\/ui\/ips.ui.alert.js",
+            "global\/framework\/templates\/ips.core.templates.js"
+        ],
+        "removed": []
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

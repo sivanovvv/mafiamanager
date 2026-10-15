@@ -1,0 +1,50 @@
+<ips:template parameters="$venue, $upcoming=array(), $past=array(), $address=NULL" />
+<div>
+	<section>
+			<div class='ipsColumns'>
+				<aside class='ipsColumns__secondary i-basis_280'>
+					{$venue->map( 270, 270 )|raw}
+					<div class='i-background_2'>
+						{{if $address}}
+						<div class='i-padding_2 i-background_3'>
+							<h3 class='ipsMinorTitle'>
+								<strong>{lang="venue_address"}</strong>
+							</h3>
+							{$address|raw}
+						</div>
+						{{endif}}
+					</div>
+					{{if \IPS\Member::loggedIn()->member_id}}
+					<ul class="ipsButtons ipsButtons--main">
+						<li>
+							<a class="ipsButton ipsButton--primary" href="{url="app=calendar&module=calendar&controller=submit&venue={$venue->id}" seoTemplate="calendar_submit"}" data-ipsDialog data-ipsdialog-size="narrow" rel='nofollow noindex'>{lang="create_event"}</a>
+						</li>
+					</ul>
+					{{endif}}
+				</aside>
+				<div class='ipsColumns__primary'>
+					<div class='ipsBox i-padding_3'>
+						{{if $venue->description}}
+						<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_3'>{lang="venue_details"}</h2>
+
+						<div>
+							<div class='ipsRichText'>
+								{$venue->description|raw}
+							</div>
+						</div>
+						<br>
+						{{endif}}
+						<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_3'>{lang="venue_upcoming_events"}</h2>
+						<div data-controller='calendar.front.venue.main'>
+								{{if $upcoming}}
+									{$upcoming|raw}
+								{{else}}
+									{lang="no_upcoming_events"}
+								{{endif}}
+						</div>
+					</div>
+				</div>
+			</div>
+
+	</section>
+</div>

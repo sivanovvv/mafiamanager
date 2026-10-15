@@ -1,0 +1,41 @@
+<ips:template parameters="$transaction, $invoice, $invoiceSummary, $email" />
+
+{$email->language->addToStack("email_thanks_for_order", FALSE, array( 'htmlsprintf' => array( \IPS\Settings::i()->board_name ) ) )}
+
+&mdash; {setting="board_name"}
+
+-----
+**{expression="sprintf( $email->language->get('order_number'), $invoice->id )" raw="true"}**
+
+{$email->language->addToStack("email_view_order", FALSE)}: {$invoice->url()}
+
+{$email->language->addToStack("billing_address", FALSE)}
+===
+{$invoice->member->cm_name}
+{{if $invoice->billaddress}}{$invoice->billaddress->toString('\n')|raw}{{endif}}
+
+{$email->language->addToStack("payment_details", FALSE)}
+===
+{$email->language->addToStack("status", FALSE)}: {$email->language->addToStack("tstatus_okay", FALSE)}
+{$email->language->addToStack("email_payment_method", FALSE)}: {{if $transaction->method}}{$transaction->method->getTitleForLanguage( $email->language )}{{else}}{$email->language->addToStack("account_credit", FALSE)}{{endif}}
+{$email->language->addToStack("email_transaction_id", FALSE)}: {$transaction->gw_id}
+{$email->language->addToStack("date", FALSE)}: {$transaction->date}
+{$email->language->addToStack("amount", FALSE)}: {$transaction->amount->toString( $email->language )}
+
+{$email->language->addToStack("order_details", FALSE)}
+===
+{{foreach $invoiceSummary['items'] as $k => $item}}
+{$item->quantity} x</span> {$item->name} [{$email->language->addToStack("each_short", FALSE, array( 'htmlsprintf' => array( $item->price->toString( $email->language ) ) ) )}] ({$item->linePrice()->toString( $email->language )})
+{{endforeach}}
+---
+{$email->language->get('subtotal')}: {$invoiceSummary['subtotal']->toString( $email->language )}
+{{if \count( $invoiceSummary['tax'] )}}
+---
+{{foreach $invoiceSummary['tax'] as $taxId => $tax}}
+{$email->language->get( 'nexus_tax_' . $taxId )} ({expression="$tax['rate']*100" raw="true"}%): {$tax['amount']->toString( $email->language )}
+{{endforeach}}
+{{endif}}
+---
+{$email->language->get('total')}: {$invoiceSummary['total']->toString( $email->language )}
+
+-- {setting="board_name"}

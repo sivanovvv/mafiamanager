@@ -1,0 +1,203 @@
+/* Toolboxes are side panels, used for things like sidebar manager and easy mode themes */
+.ipsApp .ipsToolbox, #elSidebarManager [data-role=info] [data-role=description] {
+	color-scheme: dark;
+	--_background: oklch(25% calc(var(--i-base-c) * 20%) var(--i-base-h));
+	--i-co: hsl(0 0% 100%);
+	--i-color_hard: hsl(0 0% 100%);
+	--i-color_soft: oklch(75% calc(var(--i-base-c) * 20%) var(--i-base-h));
+	background: var(--_background);
+	color: var(--i-co);
+}
+
+@supports not (color:oklch(25% 25% 200)){
+	.ipsApp .ipsToolbox, #elSidebarManager [data-role=info] [data-role=description]{
+		--_background: #111;
+		--i-color_soft: hsl(0 0% 100% / .6);
+	}
+}
+	
+	.ipsToolbox a:not( .ipsButton ) {
+		color: inherit;
+		text-decoration: underline;
+	}
+	.ipsToolbox_title {
+		font-size: 1.5em;
+		font-weight: 600;
+		margin-bottom: 0;
+	}
+
+	.ipsToolbox_sectionTitle {
+		background: oklch(20% calc(var(--i-base-c) * 25%) var(--i-base-h));
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		font-weight: 600;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1em;
+	}
+	.ipsToolbox_sectionTitle > :not([data-role="custom_block_info"]) {
+		display: block;
+		padding: 1em;
+		font-size: 1.2em;
+	}
+
+	.ipsToolbox input, .ipsToolbox select,
+	.ipsToolbox textarea {
+		background-color: rgba(255,255,255,0.1);
+		color: inherit;
+	}
+
+	.ipsToolbox input[type=number] {
+		width: 100%;
+		max-width: 350px;
+	}
+
+	#elSidebarManager {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		width: var(--i-manage-widgets-sidebar, 300px);
+		z-index: 1000;	/* Make sure it shows on top of things when page horizontally scrolls */
+		inset-inline-start: 0;
+		display: flex;
+		flex-direction: column;
+	}
+	
+		#elSidebarManager .ipsToolbox__tools {
+			flex: 1 1 auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#elSidebarManager .ipsToolbox__tools > * {
+			flex: 0 0 auto;
+		}
+		
+		#elSidebarManager [data-role="availableBlocks"] {
+			overflow-y: auto;
+			overscroll-behavior: contain;
+			flex: 1 0 100px;
+		}
+
+		#elSidebarManager [data-role="emptyMessage"] {
+			align-self: center;
+			color: var(--i-color_soft);
+		}
+
+		#elSidebarManager_header {
+			display: flex;
+			gap: 1em;
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		#elSidebarManager [data-role=title] {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		#elSidebarManager [data-role=info] {
+			position: relative;
+		}
+		#elSidebarManager [data-role=info] [data-role=description] {
+			position: absolute;
+			width: 300px;
+			top: 0;
+			inset-inline-start: calc(0.75em + 100%);
+			opacity: 0;
+			transition: opacity 0.3s;
+			pointer-events: none;
+			z-index: 2;
+		}
+		#elSidebarManager [data-role=info]:hover [data-role=description] {
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		#elSidebarManager .ipsInput--widget-search{
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--%3E%3Cpath d='M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z' fill='white'/%3E%3C/svg%3E");
+			background-repeat: no-repeat;
+			background-size: 1em auto;
+			background-position: 1em 50%;
+			padding-inline-start: 2.8em;
+		}
+
+	#elSidebarManager [data-role="custom_block_description"] {
+		background: oklch(20% calc(var(--i-base-c) * 25%) var(--i-base-h));
+		padding: 1.2em;
+		inset-block-end: calc(100% - (var(--i-box--bo-ra) * 5));
+		border-radius: var(--i-box--bo-ra);
+		border: 1px solid color-mix(in srgb, var(--i-color_soft) 34%, transparent);
+		font-size: 0.9em;
+		color: color-mix(in srgb, var(--i-color_soft) 50%, var(--i-color_hard));
+		transform: scaleY(0);
+		opacity: 0;
+		transition: all 0.275s ease-out;
+		transform-origin: bottom;
+		position: absolute;
+		inset-inline: 0;
+		transition-delay: 0.25s;
+	}
+	#elSidebarManager [data-role="custom_block_description"] a {
+		color: var(--i-color_hard);
+	}
+		#elSidebarManager [data-role="custom_block_info"] {
+			margin-inline-end: 1.2em;
+		}
+		#elSidebarManager .ipsToolbox_sectionTitle:hover [data-role="custom_block_description"] {
+			transform: scaleY(1);
+			inset-block-end: calc(100% - (var(--i-box--bo-ra)));
+			opacity: 1;
+		}
+	
+	.cSidebarManager_block {
+		padding: 1.2em;
+		border-bottom: 1px solid color-mix(in srgb, var(--i-color_soft) 14%, transparent);
+		background-color: var(--_background);
+	}
+	
+		.cSidebarManager_block:hover{
+			background-image: linear-gradient(hsl(0 0% 100% / .04) 0% 100%);
+		}
+	
+		.cSidebarManager_block h4{
+			font-weight: 600;
+		}
+	
+		.cSidebarManager_block p{
+			margin-top: .4em;
+			color: var(--i-color_soft);
+			font-size: .9em;
+		}
+	
+	.cSidebarManager_placeholder {
+		background: color-mix(in srgb, var(--i-co) 30%, transparent);
+		height: 120px;
+	}
+	
+		#elSidebarManager .cSidebarManager_placeholder {
+			background: transparent;
+		}
+
+
+/* Favorites */
+#elSidebarManager [data-role="blocktitle"] {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 5px;
+}
+
+#elSidebarManager [data-role="favorite-indicator"]{
+	font-weight: 400;
+	color: var(--i-color_soft);
+	cursor: pointer;
+}
+#elSidebarManager [data-is-favorite],
+#elSidebarManager [data-role="favorite-indicator"]:hover{
+	font-weight: 900;
+	color: var(--i-color_hard);
+}

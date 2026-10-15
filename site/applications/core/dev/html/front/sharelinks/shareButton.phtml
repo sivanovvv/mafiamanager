@@ -1,0 +1,26 @@
+<ips:template parameters="$item, $classes = ''" />
+{{$id = mt_rand();}}
+{{if \count( $item->sharelinks() ) }}
+    <button type="button" id="elShareItem_{$id}" popovertarget="elShareItem_{$id}_menu" class='ipsButton ipsButton--share ipsButton--inherit {$classes}'>
+        <i class='fa-solid fa-share-nodes' aria-hidden="true"></i><span class="ipsButton__label">{lang="share"}</span>
+    </button>
+    <i-dropdown popover id="elShareItem_{$id}_menu" data-controller="core.front.core.sharelink">
+        <div class="iDropdown">
+            <div class='i-padding_2'>
+                {{$url = $item->url();}}
+                {{if \IPS\Settings::i()->ref_on}}
+                    {{$url = $url->setQueryString( array( '_rid' => \IPS\Member::loggedIn()->member_id  ) );}}
+                {{endif}}
+                <button type="button" class="ipsPageActions__mainLink" data-ipscopy data-ipscopy-flashmessage data-ipscopy-text="{$url}" data-ipstooltip title='{lang="copy_share_link"}'><i class="fa-regular fa-copy" aria-hidden="true"></i> {$url}</button>
+                <ul class='ipsList ipsList--inline i-justify-content_center i-gap_1 i-margin-top_2'>
+                    {{foreach $item->sharelinks() as $sharelink }}
+                        <li>{$sharelink|raw}</li>
+                    {{endforeach}}
+                </ul>
+                {{if $shareData = $item->webShareData()}}
+                    <button class='ipsHide ipsButton ipsButton--small ipsButton--inherit ipsButton--wide i-margin-top_2' data-controller='core.front.core.webshare' data-role='webShare' data-webShareTitle='{$shareData['title']}' data-webShareText='{$shareData['text']}' data-webShareUrl='{$shareData['url']}'>{lang="more_share_options"}</button>
+                {{endif}}
+            </div>
+        </div>
+    </i-dropdown>
+{{endif}}

@@ -1,0 +1,52 @@
+<ips:template parameters="$reviews, $layout='table', $isCarousel=false" />
+<header class='ipsWidget__header'>
+	<h3>{lang="block_recentCommerceReviews"}</h3>
+	{{if $isCarousel}}
+		{{$carouselID = 'widget-recent-commerce-reviews_' . mt_rand();}}
+		{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+	{{endif}}
+</header>
+<div class='ipsWidget__content'>
+	{{if !empty( $reviews ) }}
+		<i-data>
+			<ul class='ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--widget-recent-commerce-reviews' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+				{{foreach $reviews as $review}}
+					{{$package =  \IPS\nexus\Package::load( $review->item()->id );}}
+					<li class='ipsData__item'>
+						<a href="{$package->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$package->_title}</span></a>
+						<a href='{$review->url()}' class='ipsData__image' aria-hidden="true" tabindex="-1">
+							{{if $package->image}}
+								<img src="{$package->image}" alt="{$package->_title}" loading="lazy">
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+						</a>
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<h4 class='ipsData__title'>
+									<a href="{$review->url()}" title='{lang="view_this_product" sprintf="$review->item()->title"}'>{$review->item()->title}</a>
+								</h4>
+								<div class="i-flex i-gap_2">
+									<div class='cNexusWidgetPrice'>{$package->price()}</div>
+									{template="rating" group="global" location="front" app="core" params="'small', $review->rating, \IPS\Settings::i()->reviews_rating_out_of"}
+									<span class='i-color_soft'>({$package->item()->reviews})</span>
+								</div>				
+								<div class='ipsData__desc ipsRichText'>
+									{$review->truncated(TRUE, 100)|raw}
+								</div>
+							</div>
+							<div class="ipsData__last">
+								<div class="ipsData__last-text">
+									<div class="ipsData__last-primary">{lang="byline" htmlsprintf="$review->author()->link()"}</div>
+									<div class="ipsData__last-secondary">{datetime="$review->mapped('date')"}</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	{{else}}
+		<div class='ipsEmptyMessage'>{lang="no_recent_reviews"}</div>
+	{{endif}}
+</div>

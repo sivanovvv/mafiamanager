@@ -1,0 +1,7 @@
+<ips:template parameters="$table, $total" />
+{$table|raw}
+{{if $total > 250}}
+	<div class="i-padding_4">
+		{lang="modcp_hidden_showing_x_of_y" sprintf="250, $total"}
+	</div>
+{{endif}}

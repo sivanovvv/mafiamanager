@@ -1,0 +1,20 @@
+<ips:template parameters="$stream, $results, $autoUpdate, $showTimeline=FALSE, $sort='date', $view='expanded'" />
+<div data-role='streamResults' data-controller='core.front.streams.results' data-streamReadType="{$stream->read}" {{if !$autoUpdate}}data-view='{$view}'{{endif}} {{if $autoUpdate && settings.auto_polling_enabled}}data-autoPoll{{endif}} data-streamUrl="{$stream->url()}" {{if isset( \IPS\Request::i()->id )}}data-streamID='{expression="\IPS\Request::i()->id"}'{{endif}}>
+	<div class='i-padding_1 i-flex i-align-items_center i-flex-wrap_wrap i-gap_3 i-justify-content_end i-background_2 i-border-bottom_3'>
+		<p id='elStreamUpdateMsg' class='i-color_soft i-font-weight_500 {{if !( $autoUpdate && settings.auto_polling_enabled )}}ipsHide{{endif}} ipsJS_show ipsResponsive_hidePhone' data-role='updateMessage'><i class='fa-solid fa-arrows-rotate i-margin-end_icon' aria-hidden="true"></i> {lang="stream_auto_updates"}</p>
+		<ul class="ipsButtonGroup">
+			<li>
+				<a href="{$stream->baseUrl->setQueryString( 'view', 'condensed')->csrf()}" data-action='switchView' data-view='condensed' data-ipsTooltip title="{lang="stream_condensed"}" class="ipsButton {{if $view == 'condensed'}}ipsButton--active{{endif}}" rel="nofollow"><i class="fa-solid fa-list" aria-hidden="true"></i><span class="ipsInvisible">{lang="stream_results_as_condensed"}</span></a>
+			</li>
+			<li>
+				<a href="{$stream->baseUrl->setQueryString( 'view', 'expanded')->csrf()}" data-action='switchView' data-view='expanded' data-ipsTooltip title="{lang="stream_expanded"}" class="ipsButton {{if $view == 'expanded'}}ipsButton--active{{endif}}" rel="nofollow"><i class="fa-solid fa-bars" aria-hidden="true"></i> <span class="ipsInvisible">{lang="stream_results_as_expanded"}</span></a>
+			</li>
+		</ul>
+	</div>
+	<ol class='ipsStream {{if $showTimeline !== FALSE && \count( $results )}}ipsStream_withTimeline{{endif}}' data-role='streamContent'>
+		{template="streamItems" group="streams" app="core" params="$results, $showTimeline, $sort, $view"}
+	</ol>
+	<div class='i-padding_2 i-text-align_center ipsJS_show {{if !\count( $results )}}ipsHide{{endif}}' data-role="loadMoreContainer">
+		<a href='#' class='ipsButton ipsButton--inherit' data-action='loadMore'>{lang="load_more_activity"}</a>
+	</div>
+</div>

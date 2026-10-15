@@ -1,0 +1,18 @@
+<ips:template parameters="$image, $name, $size='medium', $classes='', $lang='view_this', $url='', $extension='core_Attachment', $dataParam='', $lazyLoad=false" />
+
+{{if $url}}
+	<a {{if $dataParam}}{$dataParam} {{endif}}href='{$url}' title='{lang="$lang" sprintf="$name"}' class='{$classes} ipsThumb ipsThumb_{$size}' alt=''>
+{{else}}
+	<span class='{$classes} ipsThumb ipsThumb_{$size}'>
+{{endif}}
+{{if $image}}
+	{{$image = ( $image instanceof \IPS\File ) ? (string) $image->url : $image;}}
+	<img src='{file="$image" extension="$extension"}' alt='' loading='lazy'>
+{{else}}
+	<i aria-hidden="true"></i>
+{{endif}}
+{{if $url}}
+	</a>
+{{else}}
+	</span>
+{{endif}}

@@ -1,0 +1,16 @@
+<ips:template parameters="$html, $actions" />
+<div class='ipsApprovalQueueItem'>
+    <ul class='ipsButtons ipsButtons--end i-padding_2 i-background_2'>
+        <li>
+            <a href="{$actions['delete']}" class="ipsButton ipsButton--small" data-action="approvalQueueAction" data-type="delete"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span>{lang="delete"}</span></a>
+        </li>
+        <li>
+            <a href="{$actions['approve']}" class="ipsButton ipsButton--small ipsButton--positive" data-action="approvalQueueAction" data-type="approve"><i class="fa-solid fa-check" aria-hidden="true"></i><span>{lang="approve"}</span></a>
+        </li>
+    </ul>
+    <i-data>
+        <ul class="ipsData ipsData--table ipsData--approvalQueueClubWrapper">
+            {$html|raw}
+        </ul>
+    </i-data>
+</div>

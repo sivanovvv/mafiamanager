@@ -1,0 +1,31 @@
+<ips:template parameters="$value, $url" />
+{{if $value}}
+	<div class="">
+		<ul class="ipsList ipsList--inline">
+			<li>
+				{{if $value['protocol'] === 'sftp'}}
+					<span class="ipsBadge ipsBadge--style1">SFTP</span>
+				{{elseif $value['protocol'] === 'ssl_ftp'}}
+					<span class="ipsBadge ipsBadge--style6">{lang="ftp_with_ssl"}</span>
+				{{endif}}
+				<span class="i-font-family_monospace">{$value['server']}{{if $value['port']}}:{$value['port']}{{endif}}</span>
+			</li>
+			<li>
+				<i class="fa-solid fa-user" aria-hidden="true"></i> <span class="i-font-family_monospace">{$value['un']}</span>
+			</li>
+			<li>
+				<i class="fa-solid fa-lock" aria-hidden="true"></i> <span class="i-font-family_monospace">{$value['pw']}</span>
+			</li>
+			{{if $value['path']}}
+				<li>
+					<i class="fa-solid fa-folder" aria-hidden="true"></i> <span class="i-font-family_monospace">{$value['path']}</span>
+				</li>
+			{{endif}}
+			{{if $url}}
+				<li>
+					<a href="{$url}" class="ipsButton ipsButton--soft ipsButton--tiny">{lang="connect"}</a>
+				</li>
+			{{endif}}
+		</ul>
+	</div>
+{{endif}}

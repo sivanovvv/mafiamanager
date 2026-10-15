@@ -1,0 +1,10 @@
+<ips:template parameters="$value, $total, $deleted" />
+{{if settings.dellog_retention_period}}
+<div>
+	<span class='cStat__number cStat__number--medium' data-number='{$value}' data-ipsTooltip title="{lang="stats_deleted_tooltip" sprintf="$deleted, $total"}">{$value}%</span>
+</div>
+{{else}}
+    <p class='i-color_soft i-text-align_center'>
+        {lang="no_data"}
+    </p>
+{{endif}}

@@ -1,0 +1,97 @@
+<ips:template parameters="$table, $headers, $albums" />
+{{foreach $albums as $album}}
+	{{if $album instanceof \IPS\Content\Item}}
+		{{$album = $album->asNode();}}
+	{{endif}}
+	<li class='ipsColumns ipsColumns--padding ipsColumns--lines i-border-bottom_1 {{if $album->asItem()->hidden()}} ipsModerated{{endif}} {$album->ui( 'css' )}' {$album->ui( 'dataAttributes' )}>
+
+			<div class='ipsColumns__secondary i-basis_380'>
+				<div class='ipsTitle ipsTitle--h4 ipsTitle--margin'>
+					<div class='ipsBadges'>
+						{{if \IPS\gallery\Image::containerUnread( $album )}}
+							<span class="ipsIndicator" data-ipsTooltip title="{lang="album_new_content"}"></span>
+						{{endif}}
+						{{if $album->asItem()->mapped('featured')}}
+							<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="featured"}'><i class='fa-solid fa-star' aria-hidden="true"></i></span>
+						{{endif}}
+						{{if $album->type === \IPS\gallery\Album::AUTH_TYPE_PRIVATE}}
+							<span class="ipsBadge ipsBadge--warning">{lang="album_private_badge"}</span>
+						{{elseif $album->type === \IPS\gallery\Album::AUTH_TYPE_RESTRICTED}}
+							<span class="ipsBadge ipsBadge--warning">{lang="album_friend_only_badge"}</span>
+						{{endif}}
+					</div>
+					<h3>
+						{{if \IPS\gallery\Image::containerUnread( $album )}}<strong>{{endif}}
+							<a href='{$album->url()}' title='{lang="view_this_album" sprintf="$album->_title"}'>{$album->_title}</a>
+						{{if \IPS\gallery\Image::containerUnread( $album )}}</strong>{{endif}}
+					</h3>
+				</div>
+
+				{{if $result = $album->truncated()}}
+					<div class='ipsRichText ipsTruncate_4'>
+						{$result|raw}
+					</div>
+				{{endif}}
+
+				<div class="i-margin-top_3 i-flex i-flex-wrap_wrap i-gap_2">
+					<ul class='ipsList ipsList--icons i-link-color_inherit i-font-weight_500 i-flex_11 i-basis_240'>
+						{{if !isset( \IPS\Request::i()->tab ) || \IPS\Request::i()->tab !== 'node_gallery_gallery'}}
+							<li class='i-color_soft'><i class='fa-regular fa-user-circle' aria-hidden="true"></i> {lang="album_created_by"} {$album->owner()->link()|raw}</li>
+						{{endif}}
+						{{if $album->last_img_date}}
+							<li class='i-color_soft'><i class="fa-regular fa-clock" aria-hidden="true"></i> {lang="updated"} {datetime="$album->last_img_date"}</li>
+						{{endif}}
+					</ul>
+					<ul class='ipsList ipsList--icons i-link-color_inherit i-font-weight_500 i-flex_11 i-basis_240'>
+						<li><i class="fa-solid fa-photo-film" aria-hidden="true"></i> {lang="num_images" pluralize="$album->count_imgs"}</li>
+						{{if $album->use_comments && $album->comments > 0}}
+							<li><i class='fa-regular fa-comments' aria-hidden="true"></i> {lang="gallery_album_num_comments_lc" pluralize="$album->comments"}</li>
+						{{endif}}
+						{{if $album->allow_comments && $album->count_comments > 0}}
+							<li><i class='fa-solid fa-comment' aria-hidden="true"></i> {lang="gallery_image_comments_s" pluralize="$album->count_comments"}</li>
+						{{endif}}
+						{{if $album->use_reviews && $album->reviews > 0}}
+							<li><i class='fa-solid fa-comment' aria-hidden="true"></i> {lang="gallery_album_num_reviews_lc" pluralize="$album->reviews"}</li>
+						{{endif}}
+					</ul>
+				</div>
+
+				{{if $table->canModerate()}}
+					<div class='i-margin-top_2'>
+						<input type='checkbox' data-role='moderation' name="moderate[{$album->_id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $album ) )"}" data-state='' class='ipsInput ipsInput--toggle'>
+					</div>
+				{{endif}}
+			</div>
+			<div class='ipsColumns__primary'>
+				
+				<ul class='ipsMasonry ipsMasonry--album-summary i-basis_80' {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+					{{foreach $album->_latestImages as $image }}
+						{{$imageWidth=isset( $image->_dimensions['small'][0] ) ? $image->_dimensions['small'][0] : 0;}}
+                    	{{$imageHeight=isset( $image->_dimensions['small'][1] ) ? $image->_dimensions['small'][1] : 0;}}
+                    	<li class='ipsMasonry__item' {{if $imageWidth && $imageHeight}}style='--i-ratio:{$imageWidth}/{$imageHeight}'{{endif}} data-imageId="{$image->id}">
+							<figure class='ipsFigure'>
+								<a href='{$image->url( "getPrefComment" )}' class='ipsFigure__main' aria-label="{$image->caption}">
+									{{if $image->small_file_name}}
+										<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="" loading="lazy">
+									{{elseif $image->media}}
+										<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+											<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+										</video>
+										<i class="ipsFigure__play" aria-hidden="true"></i>
+									{{else}}
+										<i class="ipsFigure__icon" aria-hidden="true"></i>
+									{{endif}}
+								</a>
+								{{if ( $image->directContainer()->allow_comments && $image->container()->allow_comments && count($image->comments()) > 0 )}}
+									<div class='ipsFigure__footer'>
+										<span><i class='fa-solid fa-comment' aria-hidden="true"></i> {expression="\count( $image->comments() )"}</span>
+									</div>
+								{{endif}}
+                                {template="nsfwOverlay" app="gallery" location="front" group="global" params="$image, FALSE"}
+							</figure>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+	</li>
+{{endforeach}}

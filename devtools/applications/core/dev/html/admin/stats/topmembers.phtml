@@ -1,0 +1,32 @@
+<ips:template parameters="$select, $pagination, $members, $total" />
+
+<div class="ipsBox" data-ips-template="topmembers">
+	<h1 class="ipsBox__header">{lang="core_stats_referrer_count" pluralize="$total"}</h1>
+</div>
+<br>
+{{if trim( $pagination )}}
+	{$pagination|raw}
+	<br><br>
+{{endif}}
+	<table class="ipsTable ipsTable_zebra">
+		<thead>
+			<tr>
+				<th width="60"></th>
+				<th>{lang="member"}</th>
+				<th>{lang="count"}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $select as $row}}
+				{{$member = \IPS\Member::constructFromData( $members[ $row['member_id'] ] );}}
+				<tr>
+					<td>{template="userPhoto" app="core" group="global" params="$member"}</td>
+					<td>{$member->name}</td>
+					<td>{$row['count']}</td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+	</table>
+	<br>
+
+	{$pagination|raw}

@@ -1,0 +1,20 @@
+<ips:template parameters="$notification, $spacer=FALSE" />
+<div data-role="notificationBlock">
+	<div class="ipsBox cNotification cNotification_{$notification->style()}">
+		{{$dismissible = $notification->dismissible();}}
+		{{if $dismissible !== $notification::DISMISSIBLE_NO}}
+			<a href="{url="app=core&module=overview&controller=notifications&do=dismiss&id={$notification->id}" csrf="true"}" class="cNotification_dismiss" title="{lang="acp_notification_dismiss_{$dismissible}"}" data-ipsTooltip data-action="dismiss">
+				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+			</a>
+		{{endif}}
+		<h3 class='ipsBox__header'>
+			{$notification->title()|raw}
+		</h3>
+		<div class='i-padding_3'>
+			{$notification->body()|raw}
+		</div>
+	</div>
+	{{if $spacer}}
+		<hr class="ipsHr i-margin-block_4">
+	{{endif}}
+</div>

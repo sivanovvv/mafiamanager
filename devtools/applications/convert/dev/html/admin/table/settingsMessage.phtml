@@ -1,0 +1,5 @@
+<ips:template parameters="$app" />
+{{$url = \IPS\Http\Url::internal( "app=convert&module=manage&controller=convert&do=settings&id={$app->app_id}" );}}
+<div class='ipsMessage ipsMessage--info'>
+	{lang="converter_supports_settings_link" sprintf="$url"}
+</div>

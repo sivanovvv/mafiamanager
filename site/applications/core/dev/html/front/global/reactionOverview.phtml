@@ -1,0 +1,61 @@
+<ips:template parameters="$content, $showCount=TRUE, $size=NULL" />
+{{$reactions = $content->reputation;}}
+{{$reactionCount = is_array( $reactions ) ? count( $reactions ) : 0;}}
+<div class='ipsReactOverview
+	{{if \IPS\Settings::i()->reaction_count_display == 'count'}}
+		ipsReactOverview--points
+		{{if $reactionCount == 0}}ipsReactOverview--none{{endif}}
+	{{else}}
+		ipsReactOverview--reactions
+		{{if ! is_array( $reactions ) or ! \count( $reactions )}}
+			ipsReactOverview--none
+		{{endif}}
+	{{endif}}
+	{{if $size}}ipsReactOverview_{$size}{{endif}}'>
+	{{if \IPS\Settings::i()->reaction_count_display == 'count'}}
+		<div class='i-text-align_center'>
+			<span class='ipsReact_reactCountOnly i-text-align_center {{if $reactionCount >= 1}}i-background_positive{{elseif $reactionCount < 0}}i-background_negative{{else}}i-background_2{{endif}} i-link-color_inherit'>
+				{{if \IPS\Member::loggedIn()->group['gbw_view_reps']}}
+					<a href='{$content->url('showReactions')}' data-ipsTooltip title="{lang="see_who_reacted" escape="true"}" data-ipsDialog data-ipsDialog-title="{lang="see_who_reacted" escape="true"}">
+				{{endif}}
+					{$reactionCount}
+				{{if \IPS\Member::loggedIn()->group['gbw_view_reps']}}
+					</a>
+				{{endif}}
+			</span>
+		</div>
+		<p class='i-text-align_center'>
+			{lang="repuation_points"}
+		</p>
+	{{else}}
+		{{if \count( $content->reactBlurb( $content->reputation ?? null ) )}}
+			{{$isItem = ( $content instanceof \IPS\Content\Item ) ? 1 : 0;}}
+			<ul>
+				{{foreach array_reverse( $content->reactBlurb(), TRUE ) AS $key => $count}}
+					{{$reaction = \IPS\Content\Reaction::load( $key );}}
+					<li>
+						{{if\IPS\Member::loggedIn()->group['gbw_view_reps']}}
+							<a href='{$content->url('showReactions')->setQueryString( array( 'reaction' => $reaction->id, 'item' => $isItem ) )}' data-ipsDialog data-ipsDialog-title='{lang="see_who_reacted"}' data-ipsTooltip="{lang="see_who_reacted_x" sprintf="\IPS\Member::loggedIn()->language()->addToStack( 'reaction_title_' . $reaction->id )" escape="true"}">
+								<span class="ipsInvisible">{lang="see_who_reacted_x" sprintf="\IPS\Member::loggedIn()->language()->addToStack( 'reaction_title_' . $reaction->id )"}</span>
+								<img src='{$reaction->_icon->url}' alt="{lang="reaction_title_{$reaction->id}" escape="true"}" loading="lazy" width="120" height="120">
+							</a>
+						{{else}}
+							<span data-ipsTooltip title="{lang="reaction_title_{$reaction->id}"}">
+								<img src='{$reaction->_icon->url}' alt="{lang="reaction_title_{$reaction->id}" escape="true"}" loading="lazy" width="120" height="120">
+							</span>
+						{{endif}}
+					</li>
+				{{endforeach}}
+			</ul>
+		{{endif}}
+		{{if \is_array( $reactions )}}
+		    {{if $showCount && $size == 'small' && \count( $reactions )}}
+			    <span>{expression="\count( $reactions )"}</span>
+		    {{elseif $showCount}}
+			    <p class='i-text-align_center'>
+				    {lang="react_total" pluralize="\count( $reactions )"}
+			    </p>
+			{{endif}}
+		{{endif}}
+	{{endif}}
+</div>

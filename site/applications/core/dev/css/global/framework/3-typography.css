@@ -1,0 +1,151 @@
+.i-font-family_monospace{
+	font-family: monospace;
+}
+
+
+/* Align children inside .ipsTitle */
+:where(.ipsTitle > :is(h1, h2, h3, h4, h5):not(:only-child)){
+	display: inline;
+}
+
+:where(.ipsTitle > *:not(:last-child)){
+	margin-inline-end: .3em;
+}
+
+:where(.ipsTitle .ipsIndicator){
+	margin-inline-end: .7em;
+}
+
+/* v5 todo: Should all badges be wrapped in .ipsBadges? */
+:where(.ipsTitle :is(.ipsBadges, .ipsBadge--prefix), .ipsTitle > .ipsBadge){
+	vertical-align: .15em;
+}
+
+.ipsTitle{
+	font-weight: 600;
+	color: var(--i-color_hard);
+}
+
+	.ipsTitle--h1{
+		font-size: var(--i-font-size_7);
+		line-height: 1.1;
+	}
+
+		.ipsTitle--h1 .ipsBadges,
+		.ipsTitle--h1 > .ipsBadge{
+			font-size: max(0.5em, 16px);
+			vertical-align: .35em;
+		}
+
+	.ipsTitle--h2{
+		font-size: var(--i-font-size_6);
+		line-height: 1.2;
+		font-weight: 700;
+	}
+	.ipsTitle--h3{
+		font-size: var(--i-font-size_4);
+		font-weight: 700;
+	}
+	.ipsTitle--h4{
+		font-size: var(--i-font-size_3);
+		font-weight: 600;
+	}
+	.ipsTitle--h5{
+		font-size: var(--i-font-size_2);
+		font-weight: 600;
+	}
+	.ipsTitle--h6{
+		font-size: 1em;
+	}
+
+	.ipsTitle--margin{
+		margin-bottom: .5em;
+	}
+
+	.ipsTitle--padding{
+		padding: 1em;
+	}
+
+	.ipsTitle--hr{
+		display: flex;
+		align-items: center;
+		gap: .7em;
+	}
+
+		.ipsTitle--hr::after {
+			content: '';
+			height: 2px;
+			background: currentColor;
+			opacity: .1;
+			flex: 1 1 auto;
+		}
+
+.ipsMinorTitle{
+	color: var(--i-color_soft);
+	font-size: .9em;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+	.ipsMinorTitle :where(a){
+		color: inherit;
+	}
+
+/* Highlighted words (e.g. search results) */
+:where(.ipsLayout, .ipsApp_admin) mark {
+    background: var(--i-background_5);
+	background: color-mix(in srgb, var(--i-secondary) 18%, transparent);
+    padding: 0 5px;
+    color: var(--i-color_secondary) !important;
+    font-weight: inherit;
+    display: inline-block;
+    border-radius: min(var(--i-design-radius), 4px);
+}
+
+	:where(.ipsLayout, .ipsApp_admin) mark.ipsMatchWarning {
+		color: var(--i-color_warning) !important;
+	}
+
+.ipsAnonymousIcon{
+	color: var(--i-color_soft);
+	margin-inline-start: .5em;
+	vertical-align: middle;
+}
+	.ipsAnonymousIcon::before{
+		content: "\f06e";
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+	}
+
+.ipsUsername--anonymous{
+	font-style: italic;
+}
+
+/* Prevent times from wrapping, eg:	Feb
+	22
+*/
+.ipsTime--short{
+	white-space: nowrap;
+}
+/* Long times by default on desktops */
+:where(.ipsTime--long .ipsTime__short, .ipsTime--short .ipsTime__long){
+	display: none;
+}
+/* Short times by default on mobiles */
+@media (max-width: 500px){
+	:where(.ipsTime__long){
+		display: none;
+	}
+	:where(.ipsTime__short){
+		display: revert;
+	}
+}
+
+/* Both times are shown on < iOS 14.4. Only display long time */
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsTime__short{
+		display: none;
+	}
+}

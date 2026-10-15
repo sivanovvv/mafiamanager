@@ -1,0 +1,64 @@
+<ips:template parameters="$url,$title,$root,$rootParent,$rows,$rootButtons=array(),$lockParents=FALSE,$protectRoots=FALSE,$searchable=FALSE,$pagination=NULL" />
+
+{{if $rootButtons}}
+	<!-- Primary buttons -->
+	<div class='i-flex i-justify-content_end'>
+		{template="buttons" params="$rootButtons, $url" group="global" app="core"}
+	</div>
+{{endif}}
+
+<div class='ipsBox ipsBox--tree' data-ips-template="template">
+	
+	{{if ( request.root and !request.noshowroot ) or ($searchable && !empty( $rows )) }}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			<div class="ipsButtonBar__start">
+				{{if ( request.root and !request.noshowroot )}}
+				<!-- Back to root buttons -->
+					<a href='{$url}' class='ipsButton ipsButton--secondary ipsButton--small'><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {lang="$title"}</a>
+					{{if $rootParent !== NULL}}
+						{{if \is_object( $rootParent )}}
+							<a href='{$url->setQueryString( array( 'root' => $rootParent->_id ) )}' class='ipsButton ipsButton--inherit ipsButton--small'><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {$rootParent->_title}</a>
+						{{else}}
+							<a href='{$url->setQueryString( array( 'root' => $rootParent ) )}' class='ipsButton ipsButton--inherit ipsButton--small'><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+						{{endif}}
+					{{endif}}
+				{{elseif $pagination}}
+					{$pagination|raw}
+				{{endif}}
+			</div>
+			<div class="ipsButtonBar__end">
+				{{if $searchable && !empty( $rows )}}
+					<!-- Search -->
+					<div class="acpTable_search">
+						<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+						<input type='text' id='tree_search' placeholder='{lang="search_prefix_nofield"}'>
+					</div>
+				{{endif}}
+			</div>
+		</div>
+	{{endif}}
+
+	<div class='ipsTree_wrapper' data-ipsTree {{if $lockParents}}data-ipsTree-lockParents{{endif}} {{if $protectRoots}}data-ipsTree-protectRoots{{endif}} data-ipsTree-url='{{if request.root}}{$url->setQueryString( array( 'root' => \IPS\Request::i()->root ) )}{{else}}{$url}{{endif}}' data-ipsTree-searchable='#tree_search'>
+		{$root|raw}
+		{{if empty( $rows )}}
+			<div class='ipsEmptyMessage'>
+				{lang="no_results"}
+			</div>
+		{{else}}
+			<form accept-charset='utf-8' action="{$url->setQueryString( array( 'root' => \IPS\Request::i()->root ?: 0, 'do' => 'reorder' ) )}" method="post" data-role="treeListing">
+				<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+				<div class='ipsTree_rows'>
+					{template="rows" group="trees" app="core" params="$rows, mt_rand(), true"}
+				</div>
+			</form>
+			{{if $searchable}}
+				<div data-role="treeResults"></div>
+			{{endif}}
+		{{endif}}
+		{{if $pagination}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				{$pagination|raw}
+			</div>
+		{{endif}}
+	</div>
+</div>

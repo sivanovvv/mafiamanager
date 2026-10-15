@@ -1,0 +1,48 @@
+<ips:template parameters="$member, $clubs" />
+<i-data>
+	<ul class='ipsData ipsData--table ipsData--clubs'>
+		{{foreach $clubs as $club}}
+			<li class="ipsData__item {{if settings.clubs_require_approval and !$club->approved}}ipsModerated{{endif}}">
+				<div class='ipsData__icon'>
+					{template="clubIcon" group="clubs" app="core" location="front" params="$club, 'tiny'"}
+				</div>
+				<div class="ipsData__content">
+					<div class='ipsData__main'>
+						<h4 class='ipsData__title'>
+							{{if settings.clubs_require_approval and !$club->approved}}
+								<span><span class="ipsBadge ipsBadge--small ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="club_unapproved"}'><i class='fa-solid fa-eye-slash' aria-hidden="true"></i></span></span>
+							{{else}}
+								{{if $club->featured}}
+									<span><span class="ipsBadge ipsBadge--small ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="featured"}'><i class='fa-solid fa-star' aria-hidden="true"></i></span></span>
+								{{endif}}
+							{{endif}}
+							<span>
+								<a href='{$club->url()}' title="{$club->name}">{$club->name}</a>
+							</span>
+						</h4>
+						<div class='ipsData__desc ipsTruncate_3'>
+							{$club->about}
+						</div>
+					</div>
+					<div class="ipsData__extra">
+						<ul class='ipsData__stats'>
+							<li>
+								{lang="club_{$club->type}"}
+							</li>
+							{{if $club->type !== $club::TYPE_PUBLIC}}
+								<li class="i-color_soft">
+									{lang="club_members_count" pluralize="$club->members"}
+								</li>
+							{{endif}}
+						</ul>
+						{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'core', 'clubs', 'clubs_edit' )}}
+							<div>
+								<a href='{url="app=core&module=clubs&controller=clubs&do=edit&id={$club->id}"}' class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide'><i class='fa-solid fa-pencil' aria-hidden="true"></i> {lang="edit_club"}</a>
+							</div>
+						{{endif}}
+					</div>
+				</div>
+			</li>
+		{{endforeach}}
+	</ul>
+</i-data>

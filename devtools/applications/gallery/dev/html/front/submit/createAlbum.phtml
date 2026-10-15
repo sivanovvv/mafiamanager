@@ -1,0 +1,94 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+{{$dropdownFields = [ 'set_album_owner', 'album_type', 'album_sort_options', 'album_sort_options', 'album_allow_comments', 'album_allow_reviews', 'album_use_comments', 'album_use_reviews', 'album_type', 'album_allowed_access', 'album_submit_type', 'album_submit_access_members', 'album_submit_access_groups', 'set_album_owner', 'album_owner' ];}}
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--create-album" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<ul class='cGalleryDialog_formPanel'>
+		{{foreach $elements as $collection}}
+			{{foreach $collection as $inputName => $input}}
+				{{if !\in_array( $inputName, $dropdownFields )}}
+					{{if \is_object( $input ) }}
+						{$input->rowHtml($form)|raw}
+					{{else}}
+						{$input|raw}
+					{{endif}}
+				{{endif}}
+			{{endforeach}}
+		{{endforeach}}
+		<li class='ipsFieldRow' id='elAlbumExtrasRow'>
+			<ul class='ipsButtons ipsButtons--fill'>
+				{{if isset( $elements['']['set_album_owner'] ) && \count( $elements['']['set_album_owner']->options['options'] ) > 1}}
+					<li>
+						<button type="button" id="elAlbumCreate_owner" popovertarget="elAlbumCreate_owner_menu" class="ipsButton ipsButton--inherit ipsButton--small"><i class="fa-solid fa-user" aria-hidden="true"></i> {lang="album_create_owner"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+						<i-dropdown popover id="elAlbumCreate_owner_menu">
+							<div class="iDropdown">
+								<ul class='ipsForm {$class} ipsForm--vertical ipsForm--album-owner'>
+									{{foreach array( 'set_album_owner', 'album_owner' ) as $inputName}}
+										{{if isset( $elements[''][ $inputName ] )}}
+											{$elements[''][ $inputName ]->rowHtml()|raw}
+										{{endif}}
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				{{endif}}
+				{{if ( isset( $elements['']['album_type'] ) && \count( $elements['']['album_type']->options['options'] ) > 1 ) OR ( isset( $elements['']['album_submit_type'] ) && \count( $elements['']['album_submit_type']->options['options'] ) > 1 )}}
+					<li>
+						<button type="button" id="elAlbumCreate_privacy" popovertarget="elAlbumCreate_privacy_menu" class="ipsButton ipsButton--inherit ipsButton--small"><i class="fa-solid fa-lock" aria-hidden="true"></i> {lang="album_create_privacy"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+						<i-dropdown popover id="elAlbumCreate_privacy_menu">
+							<div class="iDropdown">
+								<ul class='ipsForm {$class} ipsForm--vertical ipsForm--album-privacy'>
+									{{foreach array( 'album_type', 'album_allowed_access', 'album_submit_type', 'album_submit_access_members', 'album_submit_access_groups' ) as $inputName}}
+										{{if isset( $elements[''][ $inputName ] )}}
+											{{if \is_object( $elements[''][ $inputName ] ) }}
+												{$elements[''][ $inputName ]->rowHtml($form)|raw}
+											{{else}}
+												{$elements[''][ $inputName ]|raw}
+											{{endif}}
+										{{endif}}
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				{{endif}}
+				{{if isset( $elements['']['album_sort_options'] ) || isset( $elements['']['album_allow_comments'] ) || isset( $elements['']['album_allow_reviews'] ) || isset( $elements['']['album_use_comments'] ) || isset( $elements['']['album_use_reviews'] )}}
+					<li>
+						<button type="button" id="elAlbumCreate_features" popovertarget="elAlbumCreate_features_menu" class="ipsButton ipsButton--inherit ipsButton--small"><i class="fa-solid fa-comments" aria-hidden="true"></i> {lang="album_create_features"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+						<i-dropdown popover id="elAlbumCreate_features_menu">
+							<div class="iDropdown">
+								<ul class='ipsForm {$class} ipsForm--vertical ipsForm--album-features'>
+									{{foreach array( 'album_sort_options', 'album_allow_comments', 'album_allow_reviews', 'album_use_comments', 'album_use_reviews' ) as $inputName}}
+										{{if isset( $elements[''][ $inputName ] )}}
+											{{if \is_object( $elements[''][ $inputName ] ) }}
+												{$elements[''][ $inputName ]->rowHtml($form)|raw}
+											{{else}}
+												{$elements[''][ $inputName ]|raw}
+											{{endif}}
+										{{endif}}
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				{{endif}}
+			</ul>
+		</li>
+	</ul>
+	<div class='ipsSubmitRow cGalleryDialog_submitBar'>
+		<button type='submit' class='ipsButton ipsButton--primary'>{lang="create_album"}</button>
+	</div>
+</form>

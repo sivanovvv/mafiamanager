@@ -1,0 +1,62 @@
+<ips:template parameters="$comment, $item, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--gallery-album-review' {{if settings.gallery_nsfw}} data-controller="gallery.front.global.nsfw"{{endif}}>
+	{template="embedHeader" group="embed" app="core" params="$comment, $item->mapped('title'), $comment->mapped('date'), $url"}
+	<div class=''>
+		{{if $item->asNode()->coverPhoto('small')}}
+			<figure class='ipsFigure ipsFigure--embed-hero'>
+				<a href='{$item->asNode()->url()}' class='ipsFigure__main'>
+					<img src='{$item->asNode()->coverPhoto('masked')}' alt="{$item->asNode()->name}" loading="lazy">
+				</a>
+			</figure>
+		{{endif}}
+		{{$images = \IPS\Gallery\Image::getItemsWithPermission( array( array( 'image_album_id=?', $item->asNode()->id ) ), ( $item->asNode()->sort_options == 'title' ) ? 'image_caption ASC' : \IPS\gallery\Image::$databasePrefix . \IPS\gallery\Image::$databaseColumnMap[ $item->asNode()->sort_options ] . ' DESC', 19 );}}
+		{{if \count( $images )}}
+			<ul class='cGalleryEmbed_albumStrip i-background_2'>
+				{{foreach $images as $albumImage}}
+					<li>
+						<figure class='ipsFigure ipsFigure--ratio'>
+							<a href='{$albumImage->url()}' class='ipsFigure__main'>
+								{{if $albumImage->masked_file_name}}
+									<img src='{file="$albumImage->masked_file_name" extension="gallery_Images"}' alt='' loading="lazy">
+								{{else}}
+									<i class="ipsFigure__play" aria-hidden="true"></i>
+								{{endif}}
+							</a>
+							{template="nsfwOverlay" app="gallery" location="front" group="global" params="$albumImage, FALSE"}
+						</figure>
+					</li>
+				{{endforeach}}
+
+				{{$albumNode = $item->asNode();}}
+				{{if $albumNode->count_imgs > 19}}
+					<li>
+						<figure class='ipsFigure ipsFigure--ratio'>
+							<a href='{$albumNode->url()}' class='ipsFigure__main'><span>+{expression="$albumNode->count_imgs - 19"}</span></a>
+						</figure>
+					</li>
+				{{endif}}
+			</ul>
+		{{endif}}
+		<div class='i-margin-bottom_3 i-padding-top_3 i-link-color_inherit'>
+			{template="embedOriginalItem" group="embed" app="core" params="$item"}
+		</div>
+
+		{template="rating" app="core" params="'veryLarge', $comment->mapped('rating')" group="global"} 
+		{{if $comment->mapped('votes_total')}}
+			<p>{$comment->helpfulLine()|raw}</p>
+		{{endif}}
+		<hr class='ipsHr'>
+		<div class='ipsRichEmbed__snippet'>
+			{$comment->truncated(TRUE)|raw}
+		</div>
+
+		{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and \count( $comment->reactions() )}}
+			<ul class='ipsList ipsList--inline i-margin-top_2'>
+				<li>
+					{template="reactionOverview" app="core" group="global" params="$comment, TRUE, 'small'"}
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</div>

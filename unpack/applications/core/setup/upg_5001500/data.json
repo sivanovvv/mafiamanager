@@ -1,0 +1,22 @@
+{
+    "id": 5001500,
+    "name": "5.0.15 Beta 1",
+    "steps": {
+        "queries": false,
+        "lang": true,
+        "theme": true,
+        "themeeditor": false,
+        "javascript": true,
+        "emailTemplates": true,
+        "acpSearchKeywords": false,
+        "settings": true,
+        "tasks": false,
+        "modules": false,
+        "widgets": false,
+        "customOptions": false,
+        "customRoutines": true
+    },
+    "forceMainUpgrader": true,
+    "forceManualDownloadNoCiC": false,
+    "forceManualDownloadCiC": false
+}

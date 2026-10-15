@@ -1,0 +1,19 @@
+<ips:template parameters="$transaction" />
+
+<div class="i-padding_3 i-background_2 i-border-bottom_3">
+	<p class="i-color_hard i-font-size_3 i-font-weight_500 i-margin-bottom_1">
+		{lang="order_thanks_blurb_no_email"}
+	</p>
+	<p>
+		{lang="order_wait_blurb"} {lang="order_wait_blurb2"}
+	</p>
+</div>
+
+<div class='ipsRichText i-padding_3'>
+	{$transaction->method->manualPaymentInstructions( $transaction )|raw}
+</div>
+{{if member.member_id}}
+    <p class='ipsMessage ipsMessage--info i-margin_1'>{lang="track_orders_in_billing"}</p>
+{{endif}}
+
+{template="orderReview" group="checkout" app="nexus" params="$transaction->invoice"}

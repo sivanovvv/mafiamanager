@@ -1,0 +1,294 @@
+/*
+	----------------
+	- Grids
+	----------------
+*/
+
+.ipsGrid{
+	--i-basis: 260px;
+	--i-column-gap: var(--i-sp_2);
+	--i-row-gap: var(--i-column-gap);
+
+	--i-grid--min: 1;
+	--i-grid--max: 99;
+	display: grid;
+	gap: var(--i-row-gap) var(--i-column-gap);
+	grid-template-columns: repeat(auto-fill, minmax(
+		min(
+			100% / var(--i-grid--min) - var(--i-column-gap),
+			max(
+				var(--i-basis),
+				100% / var(--i-grid--max) - var(--i-column-gap)
+			)
+		)
+		, 1fr
+	));
+}
+
+.ipsGrid--auto-fit{
+	grid-template-columns: repeat(auto-fit, minmax(
+		min(
+			100% / var(--i-grid--min) - var(--i-column-gap),
+			max(
+				var(--i-basis),
+				100% / var(--i-grid--max) - var(--i-column-gap)
+			)
+		)
+		, 1fr
+	));
+}
+
+.ipsGrid--1{ grid-template-columns: 1fr; }
+.ipsGrid--2{ grid-template-columns: repeat(2, 1fr); }
+.ipsGrid--3{ grid-template-columns: repeat(3, 1fr); }
+.ipsGrid--4{ grid-template-columns: repeat(4, 1fr); }
+.ipsGrid--5{ grid-template-columns: repeat(5, 1fr); }
+.ipsGrid--6{ grid-template-columns: repeat(6, 1fr); }
+.ipsGrid--7{ grid-template-columns: repeat(7, 1fr); }
+.ipsGrid--8{ grid-template-columns: repeat(8, 1fr); }
+
+.ipsGrid--max-1{ --i-grid--max: 1; }
+.ipsGrid--max-2{ --i-grid--max: 2; }
+.ipsGrid--max-3{ --i-grid--max: 3; }
+.ipsGrid--max-4{ --i-grid--max: 4; }
+.ipsGrid--max-5{ --i-grid--max: 5; }
+.ipsGrid--max-6{ --i-grid--max: 6; }
+.ipsGrid--max-7{ --i-grid--max: 7; }
+.ipsGrid--max-8{ --i-grid--max: 8; }
+
+.ipsGrid--min-1{ --i-grid--min: 1; }
+.ipsGrid--min-2{ --i-grid--min: 2; }
+.ipsGrid--min-3{ --i-grid--min: 3; }
+.ipsGrid--min-4{ --i-grid--min: 4; }
+.ipsGrid--min-5{ --i-grid--min: 5; }
+.ipsGrid--min-6{ --i-grid--min: 6; }
+
+.ipsGrid--categories{
+	--i-basis: 320px;
+	--i-column-gap: 1.5em;
+}
+
+/* Stretch item to full width */
+.ipsGrid__stretch{
+	grid-column: 1/-1;
+}
+
+/* Image grid */
+.ipsImageGrid{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 20px;
+}
+
+	.ipsImageGrid img{
+		max-height: 80px;
+	}
+
+/*
+	----------------
+	- Grid with separator lines
+	----------------
+*/
+
+.ipsGrid--lines{
+	--ipsGrid--lines--bo-co: var(--i-background_3);
+	gap: 1px;
+	overflow: hidden;
+}
+
+.ipsBox > .ipsGrid--lines{ border-radius: inherit; }
+
+	:where(.ipsGrid--lines > *){
+		outline: 1px solid var(--ipsGrid--lines--bo-co);
+		padding: 1em;
+	}
+
+/*
+	----------------
+	- Masonry
+	----------------
+*/
+
+.ipsMasonry{
+	--i-ratio: 16/9;
+	--i-column-gap: 7px;
+	--i-basis: clamp(120px, 25%, 240px);
+	display: flex;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: var(--i-column-gap);
+}
+
+	.ipsMasonry__item,
+	.ipsMasonry::after{
+		flex-grow: calc(10 * (var(--i-ratio)));
+		flex-shrink: 1;
+		flex-basis: calc(var(--i-ratio) * var(--i-basis));
+	}
+
+	.ipsMasonry__item{
+		aspect-ratio: var(--i-ratio);
+	}
+
+	.ipsMasonry__item:has(:checked){
+		outline: 2px solid var(--i-primary);
+		outline-offset: 2px;
+	}
+
+	.ipsMasonry::after{
+		content: '';
+		flex-basis: 50%;
+	}
+
+		.ipsMasonry .ipsFigure{
+			aspect-ratio: var(--i-ratio);
+			border-radius: 0;
+		}
+
+/*
+	----------------
+	- Fluid
+	----------------
+*/
+
+.ipsFluid{
+	--i-basis: auto;
+	--i-column-gap: var(--i-sp_2);
+	--i-row-gap: var(--i-column-gap);
+	--i-fluid--min: 1;
+	--i-fluid--max: 99;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--i-row-gap) var(--i-column-gap);
+}
+
+	.ipsFluid > *{
+		flex: 1 1 0%;
+		flex-basis:
+			min(
+				(100% - (var(--i-column-gap) * (var(--i-fluid--min) - 1))) / var(--i-fluid--min),
+				clamp(
+					var(--i-basis),
+					(100% - (var(--i-column-gap) * (var(--i-fluid--max) - 1))) / var(--i-fluid--max),
+					100%
+				)
+			)
+		;
+	}
+
+.ipsFluid--2 { --i-fluid--max: 2; }
+.ipsFluid--3 { --i-fluid--max: 3; }
+.ipsFluid--4 { --i-fluid--max: 4; }
+.ipsFluid--5 { --i-fluid--max: 5; }
+.ipsFluid--6 { --i-fluid--max: 6; }
+.ipsFluid--7 { --i-fluid--max: 7; }
+.ipsFluid--8 { --i-fluid--max: 8; }
+
+.ipsFluid--min-1 { --i-fluid--min: 1; }
+.ipsFluid--min-2 { --i-fluid--min: 2; }
+.ipsFluid--min-3 { --i-fluid--min: 3; }
+.ipsFluid--min-4 { --i-fluid--min: 4; }
+.ipsFluid--min-5 { --i-fluid--min: 5; }
+.ipsFluid--min-6 { --i-fluid--min: 6; }
+
+/*
+	----------------
+	- Columns
+	----------------
+*/
+
+.ipsColumns{
+	--i-basis: 300px;
+	--i-column-gap: var(--i-sp_2);
+	--i-row-gap: var(--i-column-gap);
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--i-row-gap) var(--i-column-gap);
+}
+
+	.ipsColumns--reverse{
+		flex-wrap: wrap-reverse;
+	}
+
+	.ipsColumns__primary{
+		flex: 9999 1 55%;
+	}
+
+	.ipsColumns__secondary{
+		--i-basis: auto;
+		flex: 1 1 var(--i-basis);
+	}
+
+@media (max-width: 767px){
+	.ipsColumns--stack{
+		display: grid;
+	}
+}
+
+
+/* Lines */
+.ipsColumns--lines{
+	gap: 1px;
+	background-color: var(--i-background_4);
+}
+
+:where(.ipsColumns--lines > .ipsColumns__primary){
+	background-color: var(--i-background_1);
+}
+
+:where(.ipsColumns--lines > .ipsColumns__secondary){
+	background-color: var(--i-background_2);
+}
+
+@media (min-width: 980px){
+	.ipsColumns--lines > :nth-child(1):nth-last-child(2){
+		border-start-start-radius: inherit;
+		border-end-start-radius: inherit;
+	}
+
+	.ipsColumns--lines > :nth-child(2):nth-last-child(1){
+		border-start-end-radius: inherit;
+		border-end-end-radius: inherit;
+	}
+}
+
+.ipsColumns--padding .ipsColumns__primary,
+.ipsColumns--padding .ipsColumns__secondary,
+.ipsFluid--padding > *{
+	padding: var(--i-sp_3);
+}
+
+
+/* v5 todo: These are old 12 column grids. Slowly merge these out over time. */
+.ipsSpanGrid{
+	display: grid;
+	gap: var(--i-sp_2);
+}
+
+/* Support old grids from v4, but deprecate over time */
+.ipsGrid:has(> [class*="ipsGrid_span"]){
+	display: grid;
+	gap: var(--i-sp_2);
+}
+
+@media (min-width: 768px){
+	.ipsSpanGrid{
+		grid-template-columns: repeat(12, 1fr);
+	}
+	.ipsGrid:has(> [class*="ipsGrid_span"]){
+		grid-template-columns: repeat(12, 1fr);
+	}
+	/* These classes are prefixed to prevent .ipsSpanGrid__x from applying a width inside .ipsGrid */
+	.ipsSpanGrid .ipsSpanGrid__2, .ipsGrid_span2{ grid-column: span 2; }
+	.ipsSpanGrid .ipsSpanGrid__3, .ipsGrid_span3{ grid-column: span 3; }
+	.ipsSpanGrid .ipsSpanGrid__4, .ipsGrid_span4{ grid-column: span 4; }
+	.ipsSpanGrid .ipsSpanGrid__5, .ipsGrid_span5{ grid-column: span 5; }
+	.ipsSpanGrid .ipsSpanGrid__6, .ipsGrid_span6{ grid-column: span 6; }
+	.ipsSpanGrid .ipsSpanGrid__7, .ipsGrid_span7{ grid-column: span 7; }
+	.ipsSpanGrid .ipsSpanGrid__8, .ipsGrid_span8{ grid-column: span 8; }
+	.ipsSpanGrid .ipsSpanGrid__9, .ipsGrid_span9{ grid-column: span 9; }
+	.ipsSpanGrid .ipsSpanGrid__10, .ipsGrid_span10{ grid-column: span 10; }
+	.ipsSpanGrid .ipsSpanGrid__11, .ipsGrid_span11{ grid-column: span 11; }
+	.ipsSpanGrid .ipsSpanGrid__12, .ipsGrid_span12{ grid-column: span 12; }
+}

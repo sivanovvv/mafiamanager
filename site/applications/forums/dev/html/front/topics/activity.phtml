@@ -1,0 +1,150 @@
+<ips:template parameters="$topic, $location" />
+{{$lastPoster = \IPS\Member::load( $topic->last_poster_id);}}
+{{$members = $topic->topPosters(4);}}
+{{$busy = $topic->showSummaryFeature('popularDays') ? $topic->popularDays(4) : FALSE;}}
+{{$reacted = $topic->showSummaryFeature('topPost') ? $topic->topReactedPosts(3) : FALSE;}}
+{{$helpful = $topic->showSummaryFeature('helpful') ? $topic->helpfulPosts(3) : FALSE;}}
+{{$images = $topic->showSummaryFeature('uploads') ? $topic->imageAttachments(4) : FALSE;}}
+{{$hasAnyContent = (bool) ($members or $reacted or $helpful or $images);}}
+{{if $location == 'sidebar'}}
+<div class="ipsWidget cTopicOverviewContainer">
+	<div class="cTopicOverview cTopicOverview--sidebar ipsResponsive_showDesktop" {{if $hasAnyContent}}data-controller='forums.front.topic.activity'{{endif}}>
+{{else}}
+<div class="ipsBox ipsPull cTopicOverviewContainer {{if $topic->showSummaryOnDesktop() != 'post'}}ipsResponsive_hideDesktop{{endif}} {{if ! $topic->showSummaryOnMobile()}}ipsResponsive_hidePhone{{endif}}">
+	<div class="cTopicOverview cTopicOverview--main" {{if $hasAnyContent}}data-controller='forums.front.topic.activity'{{endif}}>
+{{endif}}
+		<div class="cTopicOverview__content">
+			<ul class='cTopicOverview__item cTopicOverview__item--stats'>
+				{{if $topic->posts > 1}}
+					<li>
+						<span class="i-color_soft i-font-weight_500">{lang="replies"}</span>
+						<span class="i-color_hard i-font-weight_700 i-font-size_3">{number="$topic->posts-1" format="short"}</span>
+					</li>
+				{{endif}}
+				<li>
+					<span class="i-color_soft i-font-weight_500">{lang="views"}</span>
+					<span class="i-color_hard i-font-weight_700 i-font-size_3">{number="$topic->views" format="short"}</span>
+				</li>
+				<li>
+					<span class="i-color_soft i-font-weight_500">{lang="topicactivity_created"}</span>
+					<span class="i-color_hard i-font-weight_700 i-font-size_3">{datetime="$topic->start_date" short="true"}</span>
+				</li>
+				<li>
+					<span class="i-color_soft i-font-weight_500">{lang="last_reply"}</span>
+					<span class="i-color_hard i-font-weight_700 i-font-size_3">{datetime="$topic->last_post" short="true"}</span>
+				</li>
+			</ul>
+			{{if $parentTopic = $topic->parent()}}
+			    <div class='cTopicOverview__item cTopicOverview__item--children'>
+			        <h4 class='cTopicOverview__title'>{lang="large_topic_sidebar_title"}</h4>
+			        {{foreach $parentTopic->children() as $child}}
+			            <div>
+			                <a href='{$child->url()}' class='i-color_soft i-font-weight_500'>{$child->title}</a>
+			            </div>
+			        {{endforeach}}
+			    </div>
+			{{endif}}
+			{{if $members OR $busy OR $reacted OR $images OR $helpful}}
+			{{if $members}}
+				<div class='cTopicOverview__item cTopicOverview__item--topPosters'>
+					<h4 class='cTopicOverview__title'>{lang="topicactivity_topposters"}</h4>
+					<ul class='cTopicOverview__dataList'>
+						{{foreach $members as $data}}
+							<li class="ipsPhotoPanel">
+								{template="userPhoto" app="core" group="global" params="$data['member'], 'fluid'"}
+								<div class='ipsPhotoPanel__text'>
+									<strong class='ipsPhotoPanel__primary i-color_hard'><a href='{$data['member']->url()}'>{$data['member']->name}</a></strong>
+									<span class='ipsPhotoPanel__secondary'>{lang="topicactivity_number_posts" pluralize="$data['count']"}</span>
+								</div>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endif}}
+			{{if $busy}}
+				<div class='cTopicOverview__item cTopicOverview__item--popularDays'>
+					<h4 class='cTopicOverview__title'>{lang="topicactivity_populardays"}</h4>
+					<ul class='cTopicOverview__dataList'>
+						{{foreach $busy as $row}}
+							<li>
+								<a href="{$topic->shareableUrl( $row['commentId'] )}" rel="nofollow" class='cTopicOverview__dataItem i-grid i-color_soft'>
+									<span class='i-font-weight_bold i-color_hard'>{$row['date']->dayAndShortMonth()} {$row['date']->format('Y')}</span>
+									<span>{lang="topicactivity_number_posts" pluralize="$row['count']"}</span>
+								</a>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endif}}
+			{{if $reacted}}
+				<div class='cTopicOverview__item cTopicOverview__item--popularPosts'>
+					<h4 class='cTopicOverview__title'>{lang="topicactivity_popularposts"}</h4>
+					<ul class='cTopicOverview__dataList'>
+						{{foreach $reacted as $data}}
+							<li>
+								<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+									<span class='ipsUserPhoto'>
+										<img src='{$data['comment']->author()->photo}' alt='{$data['comment']->author()->name}' loading='lazy'>
+									</span>
+									<div class="ipsPhotoPanel__text">
+										<h5 class='ipsPhotoPanel__primary i-color_hard'>{$data['comment']->author()->name}</h5>
+										<p class='ipsPhotoPanel__secondary'>
+											<a href="{$data['comment']->url()}" rel="nofollow">{datetime="$data['comment']->mapped('date')"}</a>
+										</p>
+									</div>
+								</div>
+								<p class='i-margin-top_2 ipsRichText ipsTruncate_3'>
+									{$data['comment']->truncated(true, 200)}
+								</p>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endif}}
+			{{if $helpful}}
+				<div class='cTopicOverview__item cTopicOverview__item--helpfulPosts'>
+					<h4 class='cTopicOverview__title'>{lang="topicactivity_helpfulposts"}</h4>
+					<ul class='cTopicOverview__dataList'>
+						{{foreach $helpful as $data}}
+							<li>
+								<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+									<span class='ipsUserPhoto'>
+										<img src='{$data['comment']->author()->photo}' alt='{$data['comment']->author()->name}' loading='lazy'>
+									</span>
+									<div class="ipsPhotoPanel__text">
+										<h5 class="ipsPhotoPanel__primary i-color_hard">{$data['comment']->author()->name}</h5>
+										<p class="ipsPhotoPanel__secondary">
+											<a href="{$data['comment']->shareableUrl()}" rel="nofollow">{datetime="$data['comment']->mapped('date')"}</a>
+										</p>
+									</div>
+								</div>
+								<p class='i-margin-top_2 ipsRichText ipsTruncate_3'>
+									{$data['comment']->truncated(true, 200)}
+								</p>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endif}}
+			{{if $images}}
+				<div class='cTopicOverview__item cTopicOverview__item--images'>
+					<h4 class='cTopicOverview__title'>{lang="topicactivity_images"}</h4>
+					<ul class='cTopicOverview__imageGrid' data-controller='core.front.core.lightboxedImages'>
+						{{foreach $images as $row}}
+							{{$image = \IPS\File::get( 'core_Attachment', ( $row['attach_thumb_location'] ) ? $row['attach_thumb_location'] : $row['attach_location'] )->url;}}
+							<li class='cTopicOverview__image'>
+								<a href="{$row['commentUrl']}" rel="nofollow" class='ipsThumb'>
+									<img src="{$image}" alt='' loading='lazy'>
+								</a>
+							</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			{{endif}}
+			{{endif}}
+		</div>
+		{{if $hasAnyContent}}
+			<button type="button" data-action='toggleOverview' class='cTopicOverview__toggle'><span class="ipsInvisible">{lang="topicactivity_expand"}</span><i class='fa-solid fa-chevron-down' aria-hidden="true"></i></button>
+		{{endif}}
+	</div>
+</div>

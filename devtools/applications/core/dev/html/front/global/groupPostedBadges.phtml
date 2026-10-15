@@ -1,0 +1,16 @@
+<ips:template parameters="$groups, $lang = '', $extraClasses = ''" />
+
+{{foreach $groups as $group}}
+	{{$groupNames[] = $group->name;}}
+{{endforeach}}
+{{$list = \IPS\Member::loggedIn()->language()->formatList( $groupNames );}}
+
+<ul class="ipsData__groups {$extraClasses}" {{if $lang}}data-ipsTooltip title='{lang="$lang" htmlsprintf="$list"}'{{endif}}>
+	{{foreach $groups as $group}}
+		{{if $group->g_icon }}
+			<li><img src='{file="$group->g_icon" extension="core_Theme"}' alt='' loading='lazy' {{if $width = $group->g_icon_width}}width="{$width}"{{endif}}></li>
+		{{else}}
+			<li><span class='ipsBadge ipsBadge--neutral'>{$group->name}</span></li>
+		{{endif}}
+	{{endforeach}}
+</ul>

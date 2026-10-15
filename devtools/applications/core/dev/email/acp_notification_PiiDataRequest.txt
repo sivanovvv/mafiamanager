@@ -1,0 +1,6 @@
+<ips:template parameters="$notification, $member, $email" />
+{$email->language->addToStack('email_notification_pii_data_request', FALSE, array( 'sprintf' => array( $member->url(), $member->name ) ) )}
+
+{url="app=core&module=members&controller=privacy" seoTemplate="privacy" base="admin"}
+
+-- {setting="board_name"}

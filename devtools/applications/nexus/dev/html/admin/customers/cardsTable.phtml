@@ -1,0 +1,13 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+{template="buttons" params="$table->rootButtons, ''" group="global" app="core" if="isset( $headers['_buttons'] )"}
+
+{{if \count( $rows )}}
+	<ul class='ipsList ipsList--inline cNexusCards i-margin-top_1 i-text-align_center'>
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+	</ul>
+{{else}}
+	<p class='ipsEmptyMessage'>
+		{lang="no_credit_cards"}
+	</p>
+{{endif}}

@@ -1,0 +1,21 @@
+<ips:template parameters="$feed" />
+<form method="post">
+	<input type="hidden" name="continue" value="1">
+	<i-data>
+		<ol class="ipsData ipsData--table ipsData--import-preview">
+			{{foreach $feed as $item}}
+				<li class="ipsData__item">
+					<div class='ipsData__main'>
+						<h3 class='ipsData__title'>{$item['title']}</h3>
+						<div class='ipsData__meta'>
+							{$item['date']}
+						</div>
+					</div>
+				</li>
+			{{endforeach}}
+		</ol>
+	</i-data>
+	<div class="ipsSubmitRow">
+		<button type="submit" class="ipsButton ipsButton--primary">{lang="continue"}</button>
+	</div>
+</form>

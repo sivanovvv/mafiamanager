@@ -1,0 +1,16 @@
+<ips:template parameters="$title, $form, $container=NULL" />
+
+{{if $container and \IPS\IPS::classUsesTrait( $container, 'IPS\Content\ClubContainer' ) and $club = $container->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $container"}
+	{{endif}}
+{{endif}}
+
+{{/*}}
+<!-- This form is used for editing certain types of content: Downloads, Courses, etc -->
+{{*/}}
+
+<header class="ipsPageHeader ipsPageHeader--edit-content">
+	<h1 class="ipsPageHeader__title">{$title}</h1>
+</header>
+{$form|raw}

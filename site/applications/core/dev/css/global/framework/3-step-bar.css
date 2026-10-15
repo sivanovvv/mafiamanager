@@ -1,0 +1,47 @@
+/*
+	----------------
+	- Steps/wizard
+	----------------
+*/
+
+.ipsSteps {
+	display: flex;
+	flex-wrap: wrap;
+	color: var(--i-color_hard);
+}
+
+.ipsStep{
+	flex: 1 1 auto;
+	border-bottom: 3px solid var(--i-background_5);
+}
+
+	.ipsStep > :is(a, span) {
+		padding: 1em;
+		display: grid;
+	}
+
+	.ipsStep strong{
+		font-size: 1.1em;
+	}
+
+	.ipsStep__desc {
+		font-size: .9em;
+		color: var(--i-color_soft);
+	}
+
+	/* Active */
+	.ipsStep--active{
+		background: color-mix(in srgb, var(--i-primary) 4%, transparent);
+		border-bottom-color: var(--i-primary);
+	}
+	.ipsStep--active .ipsStep__desc{
+		color: inherit;
+	}
+
+	/* Future steps */
+	.ipsStep--active ~ .ipsStep{
+		border-color: var(--i-background_3);
+	}
+	.ipsStep--active ~ .ipsStep{
+		color: var(--i-color_soft);
+	}

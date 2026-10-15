@@ -1,0 +1,15 @@
+<ips:template parameters="$title, $form, $ajax=FALSE" />
+{{if $ajax}}
+	<div class="i-flex i-gap_3 i-padding_3 i-padding-bottom_0">
+		<h3 class="i-flex_11 ipsTitle ipsTitle--h5">{$title}</h3>
+		<button type="button" class="i-font-size_4 i-color_soft cNotificationTypes__toggle" data-action="closeNotificationSettings"><span class="ipsInvisible">{lang="close"}</span><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+	</div>
+	<div>
+		{$form|raw}
+	</div>
+{{else}}
+	{template="pageHeader" group="global" params="$title"}
+	<div class="ipsBox ipsBox--notificationSettingsType">
+		{$form|raw}
+	</div>
+{{endif}}

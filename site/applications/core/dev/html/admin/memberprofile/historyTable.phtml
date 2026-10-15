@@ -1,0 +1,13 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+{{if \count( $rows )}}
+	<ol class='cMemberHistory {{foreach $table->classes as $class}}{$class} {{endforeach}}' id='elTable_{$table->uniqueId}' data-role="tableRows">
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+	</ol>
+{{else}}
+	<p class='ipsEmptyMessage'>{lang="customer_no_history"}</p>
+{{endif}}
+{{if $table->pages > 1}}
+	<div class="ipsViewAll">
+		<a href="{$table->baseUrl}">{lang="see_all_history"}</a>
+	</div>
+{{endif}}

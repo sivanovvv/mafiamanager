@@ -1,0 +1,114 @@
+<ips:template parameters="$package, $subscription, $showImagePlaceholder=FALSE" />
+<!--{$package->id}-->
+<div class='ipsData__item cSubscriptions {{if isset( \IPS\Request::i()->id ) and \IPS\Request::i()->id == $package->id}}cSubscription--highlighted{{endif}} {{if $subscription and $subscription->package and $subscription->package->id === $package->id}}cSubscription--active {{if !$subscription->active}}cSubscription--expired{{endif}}{{endif}} {$package->ui( 'css' )}' {$package->ui( 'dataAttributes' )} data-ips-hook="block">
+	{{if $package->_image || $showImagePlaceholder}}
+		<div class='ipsData__image' aria-hidden='true'>
+			{{if $package->_image}}
+				<img src='{$package->_image->url}' loading='lazy' alt=''>
+			{{else}}
+				<i class="fa-solid fa-box" aria-hidden="true"></i>
+			{{endif}}
+		</div>
+	{{endif}}
+	<div class='ipsData__content'>
+		<div class="ipsData__main" data-ips-hook="header">
+			<h2 class='ipsData__title'>{$package->_title}</h2>
+			<div>
+				{{if $priceInfo = $package->priceInfo() and $priceInfo['primaryPrice']}}
+					{template="packageBlockPrice" app="nexus" group="store" params="$priceInfo"}
+				{{else}}
+					<span class="cNexusPrice">{lang="nexus_sub_cost_unavailable"}</span>
+				{{endif}}
+			</div>
+			<div class="ipsRichText ipsData__desc ipsData__desc--all">{$package->description}</div>
+		</div>
+
+		{{if $subscription and $subscription->package and $subscription->package->id === $package->id}}
+			<div class='cSubscriptionRenew {{if $subscription->active}}i-color_positive{{else}}i-color_negative{{endif}} i-text-align_center i-font-weight_600 i-margin-bottom_2'>{$subscription->currentBlurb()}</div>
+		{{endif}}
+
+		{{if $subscription}}
+			{{if $subscription->package and $subscription->purchase }}
+				{{$upgradeCost = (!( $subscription->purchase->billing_agreement and !$subscription->purchase->billing_agreement->canceled )  )? $package->costToUpgradeIncludingTax( $subscription->package, \IPS\nexus\Customer::loggedIn() ) : NULL;}}
+				{{if $subscription->package->id === $package->id}}
+					{{if $subscription->purchase->expire and ( $canRenewUntil = $subscription->purchase->canRenewUntil( NULL,TRUE ) or ( $subscription->purchase->can_reactivate ) or ( $pendingInvoice = $subscription->purchase->invoice_pending and $pendingInvoice->status === $pendingInvoice::STATUS_PENDING ) or $subscription->purchase->canCancel())}}
+						<div class='cSubscriptionInfo' data-ips-hook="infoActivePurchase">
+							<ul class='ipsButtons ipsButtons--fill'>
+								{{if $pendingInvoice = $subscription->purchase->invoice_pending and $pendingInvoice->status === $pendingInvoice::STATUS_PENDING}}
+									<li>
+										<a href="{$pendingInvoice->checkoutUrl()}" class='ipsButton ipsButton--positive' title="{lang="order_pay_now_title"}">
+											{lang="purchase_renew_now"}
+										</a>
+									</li>
+								{{elseif $canRenewUntil}}
+									<li>
+										<a href='{url="app=nexus&module=clients&controller=purchases&do=renew&id={$subscription->purchase->id}" base="front" csrf="true" seoTemplate="clientspurchaserenew" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $subscription->purchase->name )"}' class='ipsButton ipsButton--positive' title='{lang="purchase_renew_now_title"}' {{if $canRenewUntil === TRUE or $canRenewUntil > 1}}data-ipsDialog data-ipsDialog-size='narrow'{{endif}}>
+											{lang="purchase_renew_now"}
+										</a>
+									</li>
+								{{elseif $renewOptions = json_decode( $package->renew_options, TRUE ) and \count( $renewOptions ) and $subscription->purchase->can_reactivate and ( !$subscription->purchase->billing_agreement or $subscription->purchase->billing_agreement->canceled )}}
+									<li>
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=reactivate&id={$package->id}" base="front" csrf="true" seoTemplate="nexus_subscription"}' class='ipsButton ipsButton--positive' title='{lang="purchase_renew_now_title"}'>
+											{lang="reactivate_package"}
+										</a>
+									</li>
+								{{endif}}
+								{{if $subscription->purchase->canCancel()}}
+									<li>
+										<a href='{url="app=nexus&module=clients&controller=purchases&do=cancel&id={$subscription->purchase->id}" base="front" csrf="true" seoTemplate="clientspurchasecancel" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $subscription->purchase->name )"}&ref={expression="base64_encode( \IPS\Http\Url::internal( 'app=nexus&module=subscriptions&controller=subscriptions', 'front', 'nexus_subscriptions' ) )"}' class="ipsButton ipsButton--negative" data-confirm data-confirmSubMessage='{lang="purchase_cancel_renewal_confirm"}'>
+											{lang="purchase_cancel_renewal"}
+										</a>
+									</li>
+								{{endif}}
+							</ul>
+						</div>
+					{{endif}}
+				{{elseif $upgradeCost !== NULL}}
+					<div class='cSubscriptionInfo' data-ips-hook="infoExpiredPurchase">
+						<ul class='ipsButtons ipsButtons--fill'>
+							{{if $upgradeCost->amount->isGreaterThanZero() or ( $upgradeCost->amount->isZero() and $package->price() >= $subscription->package->price())}}
+								<li>
+									{{if $upgradeCost->amount->isZero()}}
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=change&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--inherit" data-change-subscription data-change-message='{lang="nexus_sub_change_no_charge"}'>
+									{{elseif !$subscription->active}}
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=change&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--inherit" data-change-subscription data-change-message='{lang="nexus_sub_change_confirm_switch" sprintf="$subscription->package->_title, $package->_title, $upgradeCost"}'>
+									{{else}}
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=change&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--inherit" data-change-subscription data-change-message='{lang="nexus_sub_change_confirm_upgrade" sprintf="$subscription->package->_title, $package->_title, $upgradeCost"}'>
+									{{endif}}
+									{{if $subscription->active}}
+										{lang="nexus_subs_upgrade_button"}
+									{{else}}
+										{lang="nexus_subs_switch_button"}
+									{{endif}}
+									</a>
+								</li>
+							{{else}}
+								<li>
+									{{if $upgradeCost->amount->isZero()}}
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=change&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--negative" data-change-subscription data-change-message='{lang="nexus_sub_change_no_charge"}'>
+									{{elseif !$subscription->active}}
+										{{$upgradeCost = new \IPS\nexus\Money( $upgradeCost->amount->absolute(), $upgradeCost->currency );}}
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=change&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--negative" data-change-subscription data-change-message='{lang="nexus_sub_change_confirm_switch" sprintf="$subscription->package->_title, $package->_title, $upgradeCost"}'>
+									{{else}}
+										{{$upgradeCost = new \IPS\nexus\Money( $upgradeCost->amount->absolute(), $upgradeCost->currency );}}
+										<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=change&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--negative" data-change-subscription data-change-message='"{lang="nexus_sub_change_confirm_downgrade" sprintf="$subscription->package->_title, $package->_title, $upgradeCost"}'>
+									{{endif}}
+										{{if $subscription->active}}
+											{lang="nexus_subs_downgrade_button"}
+										{{else}}
+											{lang="nexus_subs_switch_button"}
+										{{endif}}
+									</a>
+								</li>
+							{{endif}}
+						</ul>
+					</div>
+				{{endif}}
+			{{endif}}
+		{{else}}
+			<div class='cSubscriptionInfo' data-ips-hook="infoNoPurchase">
+				<a href='{url="app=nexus&module=subscriptions&controller=subscriptions&do=purchase&id={$package->id}" csrf="true" seoTemplate="nexus_subscription"}' class="ipsButton ipsButton--primary">{lang="nexus_subs_buy"}</a>
+			</div>
+		{{endif}}
+	</div>
+</div>

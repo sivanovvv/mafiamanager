@@ -1,0 +1,162 @@
+<ips:template parameters="$item, $comment, $editorName, $app, $type, $class=''" />
+{{$itemIdField = $item::$databaseColumnId; $idField = $comment::$databaseColumnId;}}
+<div id='comment-{$comment->$idField}_wrap' data-controller='core.front.core.comment' data-feedid="{$comment->feedId}" data-commentApp='{$app}' data-commentType='{$type}' data-commentID="{$comment->$idField}" data-quoteData='{expression="json_encode( array('userid' => $comment->author()->member_id, 'username' => $comment->author()->name, 'timestamp' => $comment->mapped('date'), 'contentapp' => $app, 'contenttype' => $type, 'contentclass' => $class, 'contentid' => $item->$itemIdField, 'contentcommentid' => $comment->$idField) )"}' class='ipsEntry__content js-ipsEntry__content {{if $comment->hidden()}}ipsModerated{{endif}}'
+{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\IntersectionViewTracking' ) AND $hash=$comment->getViewTrackingHash()}}
+data-view-hash="{$hash|raw}"
+data-view-tracking-data="{expression="base64_encode(json_encode( $comment->getViewTrackingData() ))" raw="true"}"
+{{endif}}
+>
+	<header class='ipsEntry__header'>
+		<div class='ipsEntry__header-align'>
+			<div class='ipsPhotoPanel'>
+				<div class='ipsAvatarStack'>
+					{template="userPhoto" app="core" group="global" params="$comment->author(), 'fluid', $comment->warningRef()"}
+					{{if !$comment->isAnonymous() and $comment->author()->canHaveAchievements() and \IPS\core\Achievements\Rank::show() and $rank = $comment->author()->rank()}}
+						{$rank->html( 'ipsAvatarStack__rank' )|raw}
+					{{endif}}
+					{{if $comment->author()->isOnline() AND ( !$comment->author()->isOnlineAnonymously() OR ( $comment->author()->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+						<span class='ipsOnline' data-ipsTooltip title='{{if $comment->author()->isOnlineAnonymously()}}{lang="online_now_anon" sprintf="$comment->author()->name"}{{elseif $comment->author()->isOnline()}}{lang="online_now" sprintf="$comment->author()->name"}{{endif}}'></span>
+					{{endif}}
+				</div>
+				<div class='ipsPhotoPanel__text'>
+					<div class='ipsEntry__username'>
+						<h3>{template="userLink" app="core" group="global" params="$comment->author(), $comment->warningRef(), NULL, $comment->isAnonymous()"}</h3>
+						{{if !$comment->isAnonymous()}}
+							<span class='ipsEntry__group'>
+								{{if $comment->author()->modShowBadge()}}
+									<a href='{url="app=core&module=staffdirectory&controller=directory" seoTemplate="staffdirectory"}' class="ipsEntry__moderatorBadge" data-ipsTooltip title='{lang="member_is_moderator" sprintf="$comment->author()->name"}'>
+										{expression="\IPS\Member\Group::load( $comment->author()->member_group_id )->formattedName" raw="true"}
+									</a>
+								{{else}}
+									{expression="\IPS\Member\Group::load( $comment->author()->member_group_id )->formattedName" raw="true"}
+								{{endif}}
+							</span>
+						{{endif}}
+						{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Anonymous' ) and $comment->isAnonymous() and \IPS\Member::loggedIn()->modPermission('can_view_anonymous_posters')}}
+							<a data-ipsHover data-ipsHover-width="370" data-ipsHover-onClick href="{$comment->url( 'reveal' )->csrf()}"><span class="ipsAnonymousIcon" data-ipsTooltip title='{lang="post_anonymously_reveal"}'></span></a>
+						{{endif}}
+					</div>
+					<div class='ipsPhotoPanel__secondary'>
+						{{if ! \IPS\Output::i()->reduceLinks()}}<a href='{$comment->shareableUrl()}'>{{endif}}{$comment->dateLine()|raw}{{if ! \IPS\Output::i()->reduceLinks()}}</a>{{endif}}
+						{{if $comment->editLine()}}
+							({lang="edited_lc"})
+						{{endif}}
+					</div>
+				</div>
+			</div>
+			{{if $comment->author()->hasHighlightedReplies() || ( \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and $comment->isHighlighted() ) OR $comment->isFeatured()}}
+				<ul class='ipsBadges'>
+					{{if $comment->author()->hasHighlightedReplies()}}
+						<li><span class='ipsBadge ipsBadge--highlightedGroup'>{expression="\IPS\Member\Group::load( $comment->author()->highlightedGroup() )->name" raw="true"}</span></li>
+					{{endif}}
+					{{if $comment->isFeatured()}}
+						<li><span class='ipsBadge ipsBadge--positive'>{lang="this_is_a_featured_post"}</span></li>
+					{{endif}}
+					{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and $comment->isHighlighted()}}
+						<li><span class='ipsBadge ipsBadge--popular'>{lang="this_is_a_popular_comment"}</span></li>
+					{{endif}}
+				</ul>
+			{{endif}}
+			{{if \count( $item->commentMultimodActions() )}}
+				<label>
+					<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+					<input type="checkbox" name="multimod[{$comment->$idField}]" value="1" data-role="moderation" data-actions="{{if $comment->canSplit()}}split merge{{endif}} {{if $comment->hidden() === -1 AND $comment->canUnhide()}}unhide{{elseif $comment->hidden() === 1 AND $comment->canUnhide()}}approve{{elseif $comment->canHide()}}hide{{endif}} {{if $comment->canDelete()}}delete{{endif}}" data-state='{{if $comment->tableStates()}}{$comment->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+				</label>
+			{{endif}}
+			{{$menu = $comment->menu();}}
+			{{if $menu->hasContent() || \count( $item->commentMultimodActions() )}}
+				{$menu|raw}
+			{{endif}}
+			{{if $comment->author()->member_id}}
+				<button class='ipsEntry__topButton ipsEntry__topButton--profile' type='button' aria-controls='mini-profile-{$comment->$idField}' aria-expanded='false' data-ipscontrols data-ipscontrols-src="{$comment->authorMiniProfileUrl}" data-ipstooltip='{lang="author_stats"}'><i class="fa-solid fa-chevron-down" aria-hidden="true"></i><span class="ipsInvisible">{lang="author_stats"}</span></button>
+			{{endif}}
+		</div>
+        {{if $comment->author()->member_id}}
+
+        {template="miniProfileWrap" app="core" group="global" params="$comment->author(), $comment->$idField, remoteLoading: true"}
+
+        {{endif}}
+	</header>
+	<div class='ipsEntry__post'>
+		
+		{{if member.modPermission('mod_see_warn') and $comment->warning}}
+			{template="commentWarned" group="global" app="core" params="$comment"}
+		{{endif}}
+		{{if $comment->showRecognized()}}
+		    {template="commentRecognized" group="global" app="core" params="$comment"}
+        {{endif}}
+		{{if $comment->hidden() AND $comment->hidden() != -2}}
+			<div class='ipsEntry__hiddenMessage'>{$comment->hiddenBlurb()}</div>
+		{{elseif $comment->hidden() == -2}}
+			<div class='ipsEntry__hiddenMessage'>{$comment->deletedBlurb()}</div>
+		{{endif}}
+		{{if $comment->hidden() === 1 && $comment->author()->member_id == \IPS\Member::loggedIn()->member_id}}
+			<div class='i-margin-bottom_3'><strong class='i-color_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="comment_awaiting_approval"}</strong></div>
+		{{endif}}
+		<div class='ipsRichText ipsRichText--user' data-role='commentContent' data-controller='core.front.core.lightboxedImages'>
+			{$comment->content()|raw}
+			{{if $comment->editLine()}}
+				{$comment->editLine()|raw}
+			{{endif}}
+		</div>
+	</div>
+	{{if ( $comment->hidden() !== 1 && \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and settings.reputation_enabled and $comment->hasReactionBar() ) || ( $comment->hidden() === 1 && ( $comment->canUnhide() || $comment->canDelete() ) ) || ( $comment->hidden() === 0 and $item->canComment() and $editorName ) }}
+		<div class='ipsEntry__footer'>
+			<menu class='ipsEntry__controls' data-role="commentControls">
+				{{if $comment->hidden() === 1 && ( $comment->canUnhide() || $comment->canDelete() )}}
+					{{if $comment->canUnhide()}}
+						<li><a href='{$comment->url('unhide')->csrf()}' class='ipsButton ipsButton--small ipsButton--positive' data-action='approveComment'><i class='fa-solid fa-check' aria-hidden="true"></i><span>{lang="approve"}</span></a></li>
+					{{endif}}
+					{{if $comment->canDelete()}}
+						<li><a href='{$comment->url('delete')->csrf()->setPage('page',\IPS\Request::i()->page)}' data-action='deleteComment' data-updateOnDelete="#commentCount"><i class='fa-solid fa-xmark' aria-hidden="true"></i><span>{lang="delete"}</span></a></li>
+					{{endif}}
+					{{if $comment->canEdit() || $comment->canSplit() || $comment->canHide()}}
+						<li>
+							<button type="button" id="elControlsCommentsSub_{$comment->$idField}" popovertarget="elControlsCommentsSub_{$comment->$idField}_menu"><span>{lang="moderator_tools"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+							<i-dropdown popover id="elControlsCommentsSub_{$comment->$idField}_menu">
+								<div class="iDropdown">
+									<ul class="iDropdown__items">
+										{{if $comment->canEdit()}}
+											{{if $comment->mapped('first') and $comment->item()->canEdit()}}
+												<li><a href='{$comment->item()->url()->setQueryString( 'do', 'edit' )}'>{lang="edit"}</a></li>
+											{{else}}
+												<li><a href='{$comment->url('edit')}' data-action='editComment'>{lang="edit"}</a></li>
+											{{endif}}
+										{{endif}}
+										{{if $comment->canSplit()}}
+											<li><a href='{$comment->url('split')}' data-action='splitComment' data-ipsDialog data-ipsDialog-title="{lang="split_to_new" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $item::$title )"}">{lang="split"}</a></li>
+										{{endif}}
+										{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Hideable' ) and $comment->canHide()}}
+											<li><a href='{$comment->url('hide')->csrf()}' data-ipsDialog data-ipsDialog-title="{lang="hide"}">{lang="hide"}</a></li>
+										{{endif}}
+									</ul>
+								</div>
+							</i-dropdown>
+						</li>
+					{{endif}}
+				{{else}}
+					{{if $comment->hidden() === 0 and $item->canComment() and $editorName}}
+						<li data-ipsQuote-editor='{$editorName}' data-ipsQuote-target='#comment-{$comment->$idField}' class='ipsJS_show'>
+							<button class='cMultiQuote ipsHide' data-action='multiQuoteComment' data-ipsTooltip data-ipsQuote-multiQuote data-mqId='mq{$comment->$idField}' aria-label='{lang="multiquote"}'><i class='fa-solid fa-plus' aria-hidden="true"></i></button>
+						</li>
+						<li data-ipsQuote-editor='{$editorName}' data-ipsQuote-target='#comment-{$comment->$idField}' class='ipsJS_show'>
+							<a href='#' data-action="quoteComment" data-ipsQuote-singleQuote><i class="fa-solid fa-quote-left" aria-hidden="true"></i><span>{lang="quote"}</span></a>
+						</li>
+					{{endif}}
+					{{if \IPS\Application::appIsEnabled('cloud')}}
+						{template="spam" app="cloud" group="spam" params="$comment, FALSE"}
+					{{endif}}	
+				{{endif}}
+				<li class='ipsHide' data-role='commentLoading'>
+					<span class='ipsLoading ipsLoading--tiny'></span>
+				</li>
+			</menu>
+			{{if $comment->hidden() !== 1 && \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and settings.reputation_enabled and $comment->hasReactionBar()}}
+				{template="reputation" group="global" app="core" params="$comment"}
+			{{endif}}
+		</div>
+	{{endif}}
+	{{if ! \IPS\Output::i()->reduceLinks()}}
+    {template="sharemenu" group="global" app="core" params="$comment"}
+    {{endif}}
+</div>

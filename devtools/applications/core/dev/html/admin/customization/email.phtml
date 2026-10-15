@@ -1,0 +1,44 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--email" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm data-itemID='{expression="\IPS\Request::i()->id"}'>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+
+	<div class='ipsBox'>
+		<div class='i-padding_3'>
+			<h3 class='ipsTitle ipsTitle--h3'>{lang="emailtpl_title"}</h3>
+			<p>
+				{lang="emailtpl_info"}
+			</p>
+		
+			<hr class='ipsHr'>
+		
+			<ul class='ipsForm {$class} ipsForm--vertical ipsForm--email'>
+				{{foreach $elements as $collection}}
+					{{foreach $collection as $inputName => $input}}
+						{{if \is_object( $input ) }}
+							{$input->rowHtml($form)|raw}
+						{{else}}
+							{$input|raw}
+						{{endif}}
+					{{endforeach}}
+				{{endforeach}}
+			</ul>
+		</div>
+		<div class="ipsSubmitRow">
+			{expression="implode( '', $actionButtons)" raw="true"}
+		</div>
+	</div>
+</form>

@@ -1,0 +1,35 @@
+<ips:template parameters="$entry, $layout='table', $isCarousel=false" />
+<li class='ipsData__item {$entry->ui('css')}' {$entry->ui('dataAttributes')}>
+	<a href="{$entry->url('getLastComment')}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$entry->name}</span></a>
+	<div class="ipsData__image" aria-hidden="true" data-ips-hook='image'>
+		{{if $entry->cover_photo}}
+			<img src='{file="$entry->cover_photo" extension="blog_Entries"}' alt='' loading='lazy'>
+		{{else}}
+			<div class="ipsFallbackImage" aria-hidden="true"></div>
+		{{endif}}
+	</div>
+	<div class="ipsData__content">
+		<div class='ipsData__main'>
+			<div class='ipsData__title'><h4 data-ips-hook='title'><a href="{$entry->url('getLastComment')}" title='{lang="view_this_entry" sprintf="$entry->_title"}'>{$entry->name}</a></h4></div>
+			<div class='ipsData__meta' data-ips-hook='metadata'>{lang="byline_nodate" htmlsprintf="$entry->author()->link()"} {lang="in"} <a href='{$entry->container()->url()}'>{$entry->container()->_title}</a></div>
+			{{if \IPS\Settings::i()->blog_enable_rating}}
+				{template="rating" group="global" location="front" app="core" params="'small', $entry->averageRating(), 5, $entry->memberRating()"}
+			{{endif}}
+			{{if isset($orientation) and $orientation == 'horizontal'}}
+				<div class='ipsData__desc ipsRichText ipsTruncate_2'>{$entry->truncated()|raw}</div>
+			{{endif}}
+		</div>
+		<div class="ipsData__extra">
+			<ul class="ipsData__stats" data-ips-hook='stats'>
+				<li data-stattype="comments">
+					<span class='ipsData__stats-icon' data-stat-value="{number='$entry->num_comments'}" aria-hidden="true" data-ipstooltip title='{number="$entry->num_comments"} {lang="blog_comments" pluralize="$entry->num_comments"}'></span>
+					<span class='ipsData__stats-label'>{number="$entry->num_comments"} {lang="blog_comments" pluralize="$entry->num_comments"}</span>
+				</li>
+				<li data-stattype="views">
+					<span class='ipsData__stats-icon' data-stat-value="{number='$entry->views'}" aria-hidden="true" data-ipstooltip title='{number="$entry->views"} {lang="blog_views" pluralize="$entry->views"}'></span>
+					<span class='ipsData__stats-label'>{number="$entry->views"} {lang="blog_views" pluralize="$entry->views"}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+</li>

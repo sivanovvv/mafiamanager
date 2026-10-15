@@ -1,0 +1,16 @@
+{
+    "normal": {
+        "added": [
+            "downloads_file_lc",
+            "downloads_file_comment_lc",
+            "downloads_file_review_lc"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

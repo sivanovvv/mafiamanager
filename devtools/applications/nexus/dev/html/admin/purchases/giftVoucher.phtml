@@ -1,0 +1,38 @@
+<ips:template parameters="$purchase, $data" />
+
+<div class='i-padding_3 i-background_2'>
+	<div class='ipsColumns'>
+		<div class='ipsColumns__secondary i-basis_280'>
+			<h2 class='ipsMinorTitle'>{lang="gift_voucher"}</h2>
+			<p class='i-font-size_2 cNexusGiftCardPrice'>
+				{money="$data['amount']" currency="$data['currency']"}
+			</p>	
+			<div class='i-font-size_2'>
+				<strong>{$data['code']}</strong>
+			</div>
+			<p class='i-font-size_1'>
+				{{if $data['method'] === 'email'}}
+					{lang="sent_to"} {$data['recipient_email']}
+				{{else}}
+					<a href='{$purchase->url()->setQueryString( 'do', 'extra' )}'>{lang="printable_version"}</a>
+				{{endif}}
+			</p>
+		</div>
+		<div class='ipsColumns__primary i-background_1'>
+			<div class='i-padding_3 i-font-size_1'>
+				{{if $data['recipient_name']}}
+					<strong>{$data['recipient_name']},</strong>
+					<br>
+					<br>
+				{{endif}}
+				{{if $data['message']}}
+					{expression="nl2br( htmlspecialchars( $data['message'], ENT_DISALLOWED, 'UTF-8', FALSE ) )" raw="true"}
+				{{endif}}
+				{{if $data['sender']}}
+					<br><br>
+					<strong>{lang="from"} {$data['sender']}</strong>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+</div>

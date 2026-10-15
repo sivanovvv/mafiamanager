@@ -1,0 +1,9 @@
+<ips:template parameters="$form" />
+{{if !\IPS\Request::i()->isAjax()}}
+	{template="pageHeader" group="global" params="\IPS\Member::loggedIn()->language()->addToStack('contact')"}
+	<div class='ipsBox ipsBox--contact'>
+{{endif}}
+		<div>
+			{$form|raw}
+		</div>
+	</div>

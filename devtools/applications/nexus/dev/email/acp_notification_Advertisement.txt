@@ -1,0 +1,4 @@
+<ips:template parameters="$notification, $purchase, $email" />
+{$email->language->addToStack( "email_ad_needs_approval", FALSE )}
+
+{$email->language->addToStack("view_advertisements", FALSE)}: {url="app=core&module=promotion&controller=advertisements&filter=ad_filters_pending" base="admin" plain="true"}

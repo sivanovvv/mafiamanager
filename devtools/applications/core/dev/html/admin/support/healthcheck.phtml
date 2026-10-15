@@ -1,0 +1,35 @@
+<ips:template parameters="$requirements" />
+{{foreach $requirements['requirements'] as $k => $_requirements}}
+	<div class="i-margin-bottom_1">
+		<h2 class="ipsTitle ipsTitle--h3">{lang="requirements_header" sprintf="$k"}</h2>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--requirements i-margin-top_1">
+				{{foreach $_requirements as $item}}
+					<li class="ipsData__item">
+						<span class="{{if $item['success']}}i-color_positive{{else}}i-color_warning{{endif}}">
+							<i class="fa {{if $item['success']}}fa-check{{else}}fa-times{{endif}}" aria-hidden="true"></i>
+							{$item['message']}
+						</span>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endforeach}}
+{{if isset( $requirements['advice'] ) and \count( $requirements['advice'] )}}
+	<div class="i-margin-bottom_1">
+		<h2 class="ipsTitle ipsTitle--h3">{lang="advice"}</h2>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--requirements-advice i-margin-top_1">
+				{{foreach $requirements['advice'] as $item}}
+					<li class="ipsData__item">
+						<span class="">
+							<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+							{$item}
+						</span>
+					</li>
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

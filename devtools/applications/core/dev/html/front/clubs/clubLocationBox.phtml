@@ -1,0 +1,10 @@
+<ips:template parameters="$club, $location" />
+<div class="ipsWidget ipsWidget--vertical ipsWidget--clubLocationBox">
+	<h2 class='ipsWidget__header'>{lang="club_location"}</h2>
+	<div class='ipsWidget__content ipsWidget__padding i-text-align_center'>
+		{$location->map()->render( 500, 300 )|raw}
+		<div class='ipsRichText i-text-align_center i-padding_2 i-link-color_inherit'>
+			{$location}
+		</div>
+	</div>
+</div>

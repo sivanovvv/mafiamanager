@@ -1,0 +1,44 @@
+<ips:template parameters="$tags=array(), $tagLinks=array()" />
+
+{{foreach $tags as $tagKey => $tagValue}}
+	{{if \is_array( $tagValue )}}
+		<li>
+			<ul>
+				<li>
+					<h4 class='i-color_hard i-font-weight_500 i-background_3 i-padding_2 i-flex i-align-items_center i-gap_2'>
+						<span>{lang="$tagKey"}</span>
+						{{if isset( $tagLinks[$tagKey] )}}
+							<a href='{$tagLinks[$tagKey]['link']}' data-customtags-dialog class='ipsButton ipsButton--inherit ipsButton--small i-margin-start_auto' target='_blank' {{if isset( $tagLinks[$tagKey]['data'] )}}{{foreach $tagLinks[$tagKey]['data'] AS $dataKey => $dataValue}}data-{$dataKey}='{$dataValue}'{{endforeach}}{{endif}} {{if isset( $tagLinks[$tagKey]['title'] )}}title='{$tagLinks[$tagKey]['title']}' data-ipsTooltip{{endif}}>
+								<i class='fa-solid fa-{$tagLinks[$tagKey]['icon']}' aria-hidden="true"></i>
+							</a>
+						{{endif}}
+					</h4>
+				</li>
+				<li>
+					<ul data-role='tagList_{$tagKey}'>
+					{{foreach $tagValue as $key => $value}}
+						<li>
+							<button type="button" data-tagKey="{$key}">
+								<code class="language-ipsphtml">{$key}</code>
+								{{if $value}}<div class='i-color_soft i-font-size_-2 i-margin-top_1'>{$value}</div>{{endif}}
+                            </button>
+						</li>
+					{{endforeach}}
+					</ul>
+				</li>
+			</ul>
+		</li>
+	{{else}}
+		<li>
+			<button type="button" data-tagKey="{$tagKey}">
+				<code class="language-ipsphtml">{$tagKey}</code>
+				{{if $tagValue}}<div class='i-color_soft i-font-size_-2 i-margin-top_1'>{$tagValue}</div>{{endif}}
+			</button>
+			{{if isset( $tagLinks[$tagKey] )}}
+				<a href='{$tagLinks[$tagKey]['link']}' target='_blank' data-customtags-dialog {{if isset( $tagLinks[$tagKey]['data'] )}}{{foreach $tagLinks[$tagKey]['data'] AS $dataKey => $dataValue}}data-{$dataKey}='{$dataValue}'{{endforeach}}{{endif}} {{if isset( $tagLinks[$tagKey]['title'] )}}title='{$tagLinks[$tagKey]['title']}' data-ipsTooltip{{endif}}'>
+					<i class='fa-solid fa-{$tagLinks[$tagKey]['icon']}' aria-hidden="true"></i>
+				</a>
+			{{endif}}
+		</li>
+	{{endif}}
+{{endforeach}}

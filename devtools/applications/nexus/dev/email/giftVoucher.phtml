@@ -1,0 +1,96 @@
+<ips:template parameters="$name, $amount, $code, $message, $sender, $color, $email" />
+{$email->language->addToStack("youve_got_a_giftcard", FALSE)}
+<br><br>
+<style type='text/css'>
+	.cGiftCard tr:first-child td:first-child {
+	    border-top-left-radius:10px
+	}
+
+	.cGiftCard tr:first-child td:last-child {
+	    border-top-right-radius:10px
+	}
+
+	.cGiftCard tr:last-child td:first-child {
+	    border-bottom-left-radius:10px
+	}
+
+	.cGiftCard tr:last-child td:last-child {
+	    border-bottom-right-radius:10px
+	}
+</style>
+<table width='100%' cellpadding='20' cellspacing='0' align='center' bgcolor='#fafafa' class="background_2">
+	<tr>
+		<td dir='{dir}'>
+			<table width='400' cellpadding='0' cellspacing='0' align='center' class='cGiftCard background_3' bgcolor='#f0f0f0' style='line-height: 1'>
+				<tr height='15'>
+					<td dir='{dir}' width='15' height='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+					<td dir='{dir}' width='370' height='15' bgcolor='{$color}' colspan='2'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+					<td dir='{dir}' width='15' height='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+					<td dir='{dir}' width='135' height='90' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/gift.png' width='99' height='99'>
+					</td>
+					<td dir='{dir}' width='235' bgcolor='{$color}' valign='top' align='right'>
+						<h2 style='font-size: 20px; font-weight: 400; font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; color: #ffffff !important; color: rgba(255,255,255,0.6) !important; margin: 0; padding: 15px 0 0 0;'>{setting="board_name"}</h2>
+					</td>
+					<td dir='{dir}' width='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+					<td dir='{dir}' width='135' bgcolor='{$color}' valign='bottom'>
+						<a href='{url="app=nexus&module=store&controller=gifts&do=redeem" base="front" seoTemplate="store_giftvouchers_redeem"}' style='background-color: rgba(51,51,51,0.8); color: #ffffff; display: block; padding: 10px 20px; font-weight: 500; font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.8; border-radius: 3px; text-align: center; text-decoration: none'>{$email->language->addToStack("email_redeem", FALSE)}</a>
+						<span style='color: #ffffff; color: rgba(255,255,255,0.6); margin-top: 5px; display: block; font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px'>
+							{$code}
+						</span>
+					</td>
+					<td dir='{dir}' width='235' bgcolor='{$color}' valign='bottom' align='right'>
+						<span style='font-size: 32px; color: #ffffff !important; font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;'>{$email->language->addToStack("email_gift_card", FALSE)}</span><br>
+						<span style='font-size: 52px; font-weight: 300; color: #ffffff !important; color: rgba(255,255,255,0.8) !important; font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; line-height: 1.3'>{$amount}</span>
+					</td>
+					<td dir='{dir}' width='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+				</tr>
+				<tr height='15'>
+					<td dir='{dir}' width='15' height='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+					<td dir='{dir}' width='370' height='15' bgcolor='{$color}' colspan='2'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+					<td dir='{dir}' width='15' height='15' bgcolor='{$color}'>
+						<img src='{setting="base_url"}applications/core/interface/email/spacer.png' width='1' height='1' alt=''>
+					</td>
+				</tr>
+			</table>
+			<table width='400' cellpadding='15' cellspacing='0' align='center' bgcolor='#f0f0f0' class="background_3">
+				<tr>
+					<td dir='{dir}'>
+						<strong style='font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #222222' class="color_hard">{$email->language->addToStack("email_giftcard_to", FALSE, array( 'sprintf' => array( $name ) ) )},</strong>
+						<p style='font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #222222' class="color_hard">
+							{$message}
+						</p>
+						<em style='font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #222222' class="color_hard">{$email->language->addToStack("email_giftcard_from", FALSE, array( 'sprintf' => array( $sender ) ) )}</em>
+					</td>
+			</table>					
+		</td>
+	</tr>
+</table>
+<br><br>
+{$email->language->addToStack("email_redeem_blurb", FALSE, array( 'sprintf' => array( $code, $amount ) ) )}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

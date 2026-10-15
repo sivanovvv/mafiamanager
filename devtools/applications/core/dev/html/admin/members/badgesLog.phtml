@@ -1,0 +1,5 @@
+<ips:template parameters="$table, $member" />
+<div class='ipsBox' data-ips-template="badgesLog">
+	<p class='i-padding_2 i-font-weight_500'>{lang="acp_badges_log_title" htmlsprintf="$member->acpUrl(), $member->name"}</p>
+</div>
+{$table|raw}

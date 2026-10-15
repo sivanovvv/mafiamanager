@@ -1,0 +1,10 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li>
+		<p class='i-font-weight_600 i-color_hard'>
+			{$row['alt_id']|raw}
+		</p>
+		<span class='i-color_soft'>{$row['email']}</span>
+	</li>
+{{endforeach}}

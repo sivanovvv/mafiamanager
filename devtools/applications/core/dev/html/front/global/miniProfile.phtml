@@ -1,0 +1,108 @@
+<ips:template parameters="$author, $anonymous=false, $solvedCount=null" />
+<!-- Mini profile -->
+{{if $author?->member_id}}
+<ul class='ipsEntry__profile'>
+    <li>
+        <ul data-ips-hook="postUserStats" class='ipsEntry__authorStats ipsEntry__authorStats--mini-profile'>
+            {{if !$anonymous}}
+                {{if \IPS\Member\Group::load( $author->member_group_id )->g_icon }}
+                    <li data-i-el="group-icon"><img src='{file="$author->group['g_icon']" extension="core_Theme"}' alt='' loading='lazy' {{if $width = $author->group['g_icon_width']}}width="{$width}"{{endif}}></li>
+                {{else}}
+                    <li data-i-el="group" hidden>{expression="\IPS\Member\Group::load( $author->member_group_id )->formattedName" raw="true"}</li>
+                {{endif}}
+            {{endif}}
+            <li data-i-el="posts">
+                {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) ) }}
+                    <a href="{url="app=core&module=members&controller=profile&id={$author->member_id}&do=content" seoTemplate="profile_content" seoTitle="$author->members_seo_name"}" rel="nofollow">
+                        <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                        {number="$author->member_posts"}
+                        {lang="posts_no_number" pluralize="$author->member_posts"}
+                    </a>
+                {{else}}
+                    <span>
+                        <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                        {number="$author->member_posts"}
+                        {lang="posts_no_number" pluralize="$author->member_posts"}
+                    </span>
+                {{endif}}
+            </li>
+            {{if $author->canHaveAchievements() and \IPS\core\Achievements\Rank::show() AND ( \count( \IPS\core\Achievements\Rank::getStore() ) && $author->rank() )}}
+                {{if \IPS\core\Achievements\Rank::getStore() && $rank = $author->rank()}}
+                    <li data-i-el="rank">
+                        <span>
+                            {$rank->html( '' )|raw}
+                            {$rank->_title}
+                            <span class="i-font-weight_normal i-opacity_6">({$rank->rankPosition()['pos']}/{$rank->rankPosition()['max']})</span>
+                        </span>
+                    </li>
+                {{endif}}
+            {{endif}}
+            {{if is_int( $solvedCount )}}
+                <li data-ips-hook="postUserSolutions" data-i-el='solutions'>
+                    {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members', 'front' ) ) }}
+                        <a href='{url="app=core&module=members&controller=profile&id={$author->member_id}&do=solutions" seoTemplate="profile_solutions" seoTitle="$author->members_seo_name"}' rel="nofollow">
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            {number="$solvedCount"}
+                            {lang="solutions"}
+                        </a>
+                    {{else}}
+                        <span>
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            {number="$solvedCount"}
+                            {lang="solutions"}
+                        </span>
+                    {{endif}}
+                </li>
+            {{endif}}
+            {{if $author->canHaveAchievements() and \IPS\core\Achievements\Badge::show() AND \IPS\core\Achievements\Badge::getStore()}}
+                <li data-i-el="badges">
+                    <a href="{url="app=core&module=members&controller=profile&id={$author->member_id}&do=badges" seoTemplate="profile_badges" seoTitle="$author->members_seo_name"}" data-action="badgeLog" title="{lang="members_badges" sprintf="$author->name"}">
+                        <i class="fa-solid fa-award" aria-hidden="true"></i>
+                        {number="$author->badgeCount()"}
+                        {lang="badges"}
+                    </a>
+                </li>
+            {{endif}}
+            {{if settings.reputation_enabled and settings.reputation_show_profile}}
+                <li data-i-el="reputation">
+                    {{if member.group['gbw_view_reps']}}
+                        <a href="{url="app=core&module=members&controller=profile&id={$author->member_id}&do=reputation" seoTemplate="profile_reputation" seoTitle="$author->members_seo_name"}" data-action="repLog" title="{lang="members_reputation" sprintf="$author->name"}">
+                            <i class="fa-solid fa-thumbs-up" aria-hidden="true"></i>
+                            {number="$author->pp_reputation_points"}
+                            {lang="reputation_title"}
+                        </a>
+                    {{else}}
+                        <span>
+                            <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+                            {number="$author->pp_reputation_points"}
+                            {lang="reputation_title"}
+                        </span>
+                    {{endif}}
+                </li>
+            {{endif}}
+            {{if \IPS\Settings::i()->warn_on and !$author->inGroup( explode( ',', \IPS\Settings::i()->warn_protected ) ) and ( \IPS\Member::loggedIn()->modPermission('mod_see_warn') or ( \IPS\Settings::i()->warn_show_own and \IPS\Member::loggedIn()->member_id == $author->member_id ) )}}
+                <li data-i-el="warning">
+                    <a href='{url="app=core&module=system&controller=warnings&id={$author->member_id}" seoTemplate="warn_list" seoTitle="$author->members_seo_name"}' title='{lang="see_all_warnings"}' data-ipsDialog data-ipsDialog-remoteVerify='false' data-ipsDialog-remoteSubmit='false' data-ipsDialog-title="{lang="members_warnings" sprintf="$author->name"}">
+                        <i class="fa-solid fa-thumbs-down" aria-hidden="true"></i>
+                        {lang="member_warn_level" pluralize="$author->warn_level"}
+                    </a>
+                </li>
+            {{endif}}
+            {{if \IPS\Member::loggedIn()->modPermission('can_see_emails')}}
+                <li data-i-el="email">
+                    <a href='mailto:{$author->email}' title='{lang="email_this_user"}'>
+                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        <span>{$author->email}</span>
+                    </a>
+                </li>
+            {{endif}}
+        </ul>
+    </li>
+    <li>
+        <!-- Custom profile fields -->
+        <ul data-ips-hook="postUserCustomFields" class='ipsEntry__authorFields'>
+            {template="customFieldsDisplay" group="global" app="core" params="$author"}
+        </ul>
+    </li>
+</ul>
+{{endif}}

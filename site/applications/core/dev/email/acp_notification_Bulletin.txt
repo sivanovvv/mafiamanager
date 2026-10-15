@@ -1,0 +1,4 @@
+<ips:template parameters="$notification, $extra, $email" />
+{$email->language->addToStack("acp_notification_bulletin_email")} **{$notification->title()}**
+
+{$email->language->addToStack("app_view_details")}: {url="app=core&module=overview&controller=notifications" base="admin" plain="true"}

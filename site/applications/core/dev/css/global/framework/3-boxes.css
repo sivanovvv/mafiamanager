@@ -1,0 +1,307 @@
+/*
+	----------------
+	- Boxes
+	----------------
+*/
+
+/* Global box styles */
+.ipsBox__header, .ipsWidget__header, .ipsInnerBox__header{
+	padding: 1em 1.2em;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1em;
+	border-radius: calc(var(--i-box--bo-ra) - var(--i-box--bo-wi)) calc(var(--i-box--bo-ra) - var(--i-box--bo-wi)) 0 0;
+	border-bottom: 1px solid var(--i-background_4);
+	font-size: 1.4em;
+	font-weight: 600;
+}
+
+/* Don't wrap forum category headers, since the collapse button will be on its own line */
+.ipsBox__header:has(.ipsBox__header-toggle){
+	flex-wrap: nowrap;
+}
+
+	.ipsBox__header :where(a),
+	.ipsWidget__header :where(a),
+	.ipsInnerBox__header :where(a){
+		color: inherit;
+	}
+
+	.ipsBox__header-secondary,
+	.ipsWidget__header-secondary,
+	.ipsInnerBox__header-secondary{
+		margin-inline-start: auto;
+		font-size: var(--i-rem);
+	}
+
+.ipsBox,
+.ipsEntry,
+.ipsWizard{
+	background-color: var(--i-box--ba-co);
+	border-radius: var(--i-box--bo-ra);
+	box-shadow: var(--i-box--bo-sh);
+	border-width: var(--i-box--bo-wi);
+	border-style: var(--i-box--bo-st);
+	border-color: var(--i-box--bo-co);
+}
+
+/* Adding this class will ensure child elements inherit the border-radius while still allowing sticky tabs to work */
+.ipsBox--clip{
+	overflow: clip;
+}
+
+/* Remove styles from nested .ipsBox elements */
+.ipsBox .ipsBox, .ipsDialog .ipsBox, .ipsDialog .ipsWizard, .ipsWizard .ipsBox, .ipsDialog .ipsWidget, .ipsWidget .ipsBox{
+	box-shadow: none;
+	border-width: 0;
+	background: transparent;
+}
+
+	.ipsBox__header{
+		flex: 0 0 auto; /* Useful when in flex-direction:column layouts */
+		--i-co: var(--i-boxHeader--co);
+		background-color: var(--i-boxHeader--ba-co);
+		color: var(--i-co);
+	}
+
+	.ipsBox__padding, .ipsBox--padding{
+		padding: var(--i-box--pa-bl) var(--i-box--pa-in);
+	}	
+
+	.ipsBox__footer{
+		padding: var(--i-sp_2) var(--i-sp_3);
+		background-color: var(--i-background_3);
+		border-bottom-left-radius: inherit;
+		border-bottom-right-radius: inherit;
+	}
+
+/* Inner boxes */
+.ipsInnerBox{
+	border: 2px solid var(--i-background_3);
+	border-radius: var(--i-box--bo-ra);
+}
+
+	.ipsInnerBox__header{
+		color: var(--i-color_hard);
+		font-weight: 600;
+		font-size: 1.1em;
+	}
+
+	.ipsInnerBox--padding, .ipsInnerBox__padding{
+		padding: 2em;
+	}
+
+
+/* Tinted boxes */
+.ipsInnerBox--inherit{
+	background-color: var(--i-background_2);
+}
+
+
+/* Collapse icon */
+.ipsBox__header-toggle{
+	margin-inline-start: auto;
+	background: color-mix(in srgb, var(--i-co) 5%, transparent);
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	height: 1.7em;
+	width: 2.6em;
+}
+
+@media (hover:hover){
+	.ipsBox__header-toggle{
+		opacity: .6;
+		transition: opacity 0.15s linear;
+		background: color-mix(in srgb, var(--i-co) 20%, transparent);
+	}
+	.ipsBox__header:not(:hover) .ipsBox__header-toggle{
+		opacity: 0;
+	}
+}
+
+	.ipsBox__header-toggle:hover,
+	.ipsBox__header-toggle:focus-visible{
+		opacity: 1 !important;
+	}
+
+	.ipsBox__header-toggle::before{
+		content: "\2b";
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+	}
+
+		.ipsBox__header-toggle[aria-expanded="true"]::before{
+			content: "\f068";
+		}
+
+/* Collapsed forum category headers */
+.ipsBox__header:has([aria-expanded="false"]){
+	border-width: 0;
+	border-radius: inherit;
+}
+
+/*
+	----------------
+	- Widgets
+	----------------
+*/
+
+.ipsWidget{
+	background: var(--i-widget--ba-co);
+	border-radius: var(--i-widget--bo-ra);
+	box-shadow: var(--i-widget--bo-sh);
+	border-width: var(--i-widget--bo-wi);
+	border-style: var(--i-widget--bo-st);
+	border-color: var(--i-widget--bo-co);
+	background-clip: padding-box;
+	position: relative;
+}
+
+/* Remove widget styles from certain elements */
+.ipsWidget[data-blockid^="app_core_advertisements_"],
+.ipsWidget.ipsWidget--transparent {
+	background: transparent;
+	box-shadow: none;
+	border-width: 0;
+}
+
+	.ipsWidget__header{
+		flex: 0 0 auto; /* Useful in flex-direction:column elements */
+		--i-co: var(--i-widget-header--co);
+		color: var(--i-co);
+		background-color: var(--i-widget-header--ba-co);
+		font-size: 1.1em;
+		font-weight: 600;
+	}
+
+	/* Used when widgets have been assigned custom background colors, padding, etc */
+	.ipsWidget__customStyles{
+		border-radius: inherit;
+	}
+
+	.ipsWidget__padding{
+		padding: var(--Widget__padding--pa, 1.5em);
+	}
+
+	/* Remove padding from transparent widgets */
+	:where(.ipsWidget--transparent) .ipsWidget__padding{
+		padding: 0;
+	}
+	.ipsWidget:has(.ipsCarousel--page-builder-image-widget) .ipsWidget__padding{
+		padding: 0;
+	}
+
+/* CMS navigation */
+.ipsWidget__nav{
+	font-weight: 500;
+	padding: 5px;
+}
+
+.ipsWidget__nav :is(a, summary){
+	display: flex;
+	align-items: center;
+	gap: .8em;
+	padding: .7em;
+	padding-inline-start: 1.4em;
+	border-radius: min(var(--i-design-radius), 5px);
+}
+
+.ipsWidget__nav details details :is(a, summary){
+	padding-inline-start: 3em;
+}
+
+.ipsWidget__nav details details details :is(a, summary){
+	padding-inline-start: 4.6em;
+}
+
+.ipsWidget__nav :is(a, summary):hover{
+	color: var(--i-color_hard);
+	background-color: var(--i-background_2);
+}
+
+.ipsWidget__nav summary{
+	color: var(--i-color_hard);
+}
+
+.ipsWidget__nav summary::after{
+	margin: -2em 0;
+	font-size: .8em;
+	content: "\2b";
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-weight: 900;
+	margin-inline-start: auto;
+	width: 2em;
+	height: 2em;
+	color: var(--i-color_soft);
+	border-radius: 4px;
+	display: grid;
+	place-content: center;
+}
+
+.ipsWidget__nav summary:hover::after{
+	background: color-mix(in srgb, var(--i-color_soft) 10%, transparent);
+}
+
+.ipsWidget__nav [open] > summary::after{
+	content: "\f068";
+}
+
+.ipsWidget__nav a{
+	color: var(--i-color_root);
+}
+
+.ipsWidget__nav details a::before{
+	content: "-";
+	margin-inline-start: 1em;
+	opacity: .5;
+	align-self: baseline;
+}
+
+.ipsWidget__nav a[aria-current="page"]{
+	background-color: var(--i-background_3);
+	color: var(--i-color_hard);
+}
+
+/*
+	----------------
+	- Responsive pull
+	----------------
+*/
+@media (max-width: 767px){
+	html .ipsPull{
+		border-radius: 0;
+		margin-left: calc(var(--i-layout-gutter) * -1);
+		margin-right: calc(var(--i-layout-gutter) * -1);
+		border-left-width: 0;
+		border-right-width: 0;
+	}
+
+		.ipsPull .ipsPull{
+			margin-left: 0;
+			margin-right: 0;
+		}
+
+		.ipsPull .ipsBox__header,
+		.ipsPull .ipsButtonBar{
+			border-radius: 0;
+		}
+}
+
+/*
+	----------------
+	- Other
+	----------------
+*/
+
+/* Let certain divs inherit border-radius, so it can correctly be applied to .ipsBox__header, etc */
+:where(.ipsBox > [data-tableid]){
+	border-radius: inherit;
+}

@@ -1,0 +1,18 @@
+<ips:template parameters="$points, $badge, $title" />
+<div>
+	<div class="i-flex i-align-items_center i-flex-wrap_wrap i-column-gap_2">
+		{{if $badge}}
+			<span style="max-width:20px">{$badge->html('', FALSE)|raw}</span>
+		{{endif}}
+		{{if $points and $badge}}
+			{lang="achievements_awards_points_and_badge" sprintf="$badge->_title" pluralize="$points"}
+		{{elseif $points}}
+			{lang="achievements_awards_points" pluralize="$points"}
+		{{elseif $badge}}
+			{lang="achievements_awards_badge" sprintf="$badge->_title"}
+		{{endif}}
+		{{if $title}}
+			<div class='i-color_soft'>{lang="$title"}</div>
+		{{endif}}
+	</div>
+</div>

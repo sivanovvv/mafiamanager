@@ -1,0 +1,12 @@
+<ips:template parameters="$name, $type, $title, $key" />
+<input type='hidden' name='{$name}[key]' value='{$key}'>
+<div class='i-flex i-gap_2'>
+    <div>
+        <div class='i-color_soft i-font-size_-2 i-margin-bottom_1'>{lang="block_templatefield_type"}</div>
+        {$type|raw}
+    </div>
+    <div class='i-flex_10'>
+        <div class='i-color_soft i-font-size_-2 i-margin-bottom_1'>{lang="block_templatefield_title"}</div>
+        {$title|raw}
+    </div>
+</div>

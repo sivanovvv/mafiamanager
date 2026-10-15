@@ -1,0 +1,18 @@
+<ips:template parameters="$nearme, $mapMarkers" />
+
+{{if \count( $nearme )}}
+	<i-data>
+		<ul class='ipsData ipsData--grid ipsData--events-list ipsEventList ipsEventList--nearMe'>
+			<li class="ipsData__item ipsEventsNearMe__map">
+				<div id='map' data-markers="{expression="json_encode( $mapMarkers )"}"></div>
+			</li>
+			{{foreach $nearme as $event}}
+				{template="event" group="events" app="calendar" params="$event"}
+			{{endforeach}}
+		</ul>
+	</i-data>
+{{else}}
+	<p class='ipsEmptyMessage'>
+        {lang="events_near_you_soon"}
+	</p>
+{{endif}}

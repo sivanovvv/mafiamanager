@@ -1,0 +1,12 @@
+<ips:template parameters="$table, $headers, $entries" />
+{{if \count( $entries ) > 0}}
+	<i-data>
+		<section class="ipsData ipsData--grid ipsData--blog-entries">
+			{{foreach $entries as $id => $entry}}
+				{template="indexGridEntry" app="blog" location="front" group="browse" params="$entry, false, $table"}
+			{{endforeach}}
+		</section>
+	</i-data>
+{{else}}
+	{template="noEntries" group="view" app="blog" params="$table->container()"}
+{{endif}}

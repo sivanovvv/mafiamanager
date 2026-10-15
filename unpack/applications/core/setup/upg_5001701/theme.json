@@ -1,0 +1,21 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/system\/searchResultSnippet"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "global\/framework\/3-streams.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

@@ -1,0 +1,66 @@
+<ips:template parameters="$week, $month, $year, $all, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_topDownloads"}</h3>
+{{$tabID = mt_rand();}}
+<i-tabs class='ipsTabs ipsTabs--small ipsTabs--stretch' id='ipsTabs_topDownloads{$tabID}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_topDownloads{$tabID}_content'>
+	<div role="tablist">
+		<button type="button" id='ipsTabs_topDownloads{$tabID}_Week' class='ipsTabs__tab' role="tab" aria-controls='ipsTabs_topDownloads{$tabID}_Week_panel' aria-selected='true'>{lang="top_week"}</button>
+		<button type="button" id='ipsTabs_topDownloads{$tabID}_Month' class='ipsTabs__tab' role="tab" aria-controls='ipsTabs_topDownloads{$tabID}_Month_panel' aria-selected='false'>{lang="top_month"}</button>
+		<button type="button" id='ipsTabs_topDownloads{$tabID}_Year' class='ipsTabs__tab' role="tab" aria-controls='ipsTabs_topDownloads{$tabID}_Year_panel' aria-selected='false'>{lang="top_year"}</button>
+		<button type="button" id='ipsTabs_topDownloads{$tabID}_All' class='ipsTabs__tab' role="tab" aria-controls='ipsTabs_topDownloads{$tabID}_All_panel' aria-selected='false'>{lang="top_alltime"}</button>
+	</div>
+	{template="tabScrollers" app="core" group="global" location="global"}
+</i-tabs>
+<section id='ipsTabs_topDownloads{$tabID}_content' class='ipsTabs__panels'>
+	<div id="ipsTabs_topDownloads{$tabID}_Week_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_topDownloads{$tabID}_Week">
+		{{if \count( $week )}}
+			<i-data>
+				<ol class='ipsData ipsData--table ipsData--top-downloads-week'>
+					{{foreach $week as $idx => $data}}
+						{template="fileRow" group="widgets" app="downloads" params="$data, $layout"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		{{else}}
+			<p class='ipsEmptyMessage'>{lang="no_downloaded_files__week"}</p>
+		{{endif}}
+	</div>
+	<div id="ipsTabs_topDownloads{$tabID}_Month_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_topDownloads{$tabID}_Month" hidden>
+		{{if \count( $month )}}
+			<i-data>
+				<ol class='ipsData ipsData--table ipsData--top-downloads-month'>
+					{{foreach $month as $idx => $data}}
+						{template="fileRow" group="widgets" app="downloads" params="$data, $layout"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		{{else}}
+			<p class='ipsEmptyMessage'>{lang="no_downloaded_files__month"}</p>
+		{{endif}}
+	</div>
+	<div id="ipsTabs_topDownloads{$tabID}_Year_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_topDownloads{$tabID}_Year" hidden>
+		{{if \count( $year )}}
+			<i-data>
+				<ol class='ipsData ipsData--table ipsData--top-downloads-year'>
+					{{foreach $year as $idx => $data}}
+						{template="fileRow" group="widgets" app="downloads" params="$data, $layout"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		{{else}}
+			<p class='ipsEmptyMessage'>{lang="no_downloaded_files__year"}</p>
+		{{endif}}
+	</div>
+	<div id="ipsTabs_topDownloads{$tabID}_All_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_topDownloads{$tabID}_All" hidden>
+		{{if \count( $all )}}
+			<i-data>
+				<ol class='ipsData ipsData--table ipsData--top-downloads-all'>
+					{{foreach $all as $idx => $data}}
+						{template="fileRow" group="widgets" app="downloads" params="$data, $layout"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		{{else}}
+			<p class='ipsEmptyMessage'>{lang="no_downloaded_files"}</p>
+		{{endif}}
+	</div>
+</section>

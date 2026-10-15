@@ -1,0 +1,72 @@
+<ips:template parameters="$record, $database" />
+<article class="ipsData__item {{if $record->hidden()}}ipsModerated{{endif}}" {{if $record->unread()}}data-ips-unread{{else}}data-ips-read{{endif}}>
+	<a href='{$record->url( "getPrefComment" )}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{wordbreak="$record->_title"}</span></a>
+	{{if $record->showRecordImage()}}
+	    <a href='{$record->url( "getPrefComment" )}' class="ipsData__image" aria-hidden="true" tabindex="-1" aria-hidden="true" tabindex="-1">
+		    {{if $record->record_image}}
+			    <img src='{file="$record->record_image" extension="cms_Records"}' loading="lazy" alt="">
+		    {{else}}
+			    <i aria-hidden="true"></i>
+		        {{endif}}
+	    </a>
+	{{endif}}
+	<div class="ipsData__content">
+		<div class="ipsData__main">
+			{{if $record::database()->use_categories}}
+				<div class="ipsContainerTitle" hidden><a href="{$record->container()->url()}">{$record->container()->_title}</a></div>
+			{{endif}}
+			<div class="ipsData__title">
+				<span class="ipsBadges">
+					{template="assignmentBadge" app="core" group="global" params="$record, ''"}
+					{{if $record->prefix()}}
+						{template="prefix" group="global" app="core" params="$record->prefix( TRUE ), $record->prefix()"}
+					{{endif}}
+					{{foreach $record->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</span>
+				<h2>
+					{{if $record->unread()}}
+						<a href='{$record->url("getNewComment")}' class='ipsIndicator' data-ipsTooltip='{lang="cms_unread_record"}'><span class="ipsInvisible">{lang="cms_unread_record"}</span></a>
+					{{endif}}
+					<a href='{$record->url( "getPrefComment" )}' title='{lang="read_more_about" sprintf="$record->_title"}'>{wordbreak="$record->_title"}</a>
+				</h2>
+			</div>
+			<section class='ipsData__desc ipsRichText'>
+				{$record->truncated()|raw}
+			</section>
+			{{if \count( $record->customFieldsForDisplay('listing') )}}
+				<ul class='ipsData__fields'>
+					{{foreach $record->customFieldsForDisplay('listing') as $fieldId => $fieldValue}}
+						{{if $fieldValue}}
+							<li>{$fieldValue|raw}</li>
+						{{endif}}
+					{{endforeach}}
+				</ul>
+			{{endif}}
+			{{if \count( $record->tags() )}}
+				{template="tags" group="global" app="core" params="$record->tags()"}
+			{{endif}}
+		</div>
+		<div class="ipsData__extra">
+			<ul class="ipsData__stats">
+				{{if $record::database()->options['comments']}}
+					<li data-stattype="comments" data-v="{$record->record_comments}"><a href='{$record->url()}#comments' title='{lang="view_comments"}'>{lang="num_comments" pluralize="$record->record_comments"}</a></li>
+				{{endif}}
+				<li data-stattype="views">{lang="num_views_with_number" pluralize="$record->record_views"}</li>
+				{{if $record::database()->options['reviews'] and ($record->averageReviewRating() > 0 or $record->memberReviewRating() > 0)}}
+					<li>{template="rating" app="core" params="'small', $record->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $record->memberReviewRating()" group="global"}</li>
+				{{elseif $record->container()->allow_rating}}
+					<li>{template="rating" group="global" location="front" app="core" params="'small', $record->rating_value, \IPS\Settings::i()->reviews_rating_out_of"}
+				{{endif}}
+			</ul>
+			<div class="ipsData__last">
+				{template="userPhoto" app="core" params="$record->author()" group="global"}
+				<div class="ipsData__last-text">
+					<div class="ipsData__last-primary">
+						{$record->author()->link( NULL, NULL, $record->isAnonymous() )|raw}
+					</div>
+					<div class="ipsData__last-secondary">{datetime="$record->mapped( 'date' )"}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</article>

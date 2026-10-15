@@ -1,0 +1,43 @@
+<ips:template parameters="$database, $articles, $url, $pagination" />
+<header class='ipsPageHeader ipsBox ipsPull ipsPageHeader--three-column-first-featured'>
+	<div class="ipsPageHeader__row">
+		<div class='ipsPageHeader__primary'>
+			<h1 class='ipsPageHeader__title'>{$database->_title}</h1>
+			{{if $database->_description}}
+				<div class='ipsPageHeader__desc'>
+					{$database->_description}
+				</div>
+			{{endif}}
+		</div>
+		{{if $database->use_categories}}
+			<div class="ipsButtons">
+				<a href="{$url->setQueryString('show', 'categories')}" class="ipsButton ipsButton--small ipsButton--inherit"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> {lang="cms_show_categories"}</a>
+			</div>
+		{{endif}}
+	</div>
+</header>
+
+{{if $database->can('add') or \IPS\Member::loggedIn()->member_id}}
+	<ul class="ipsButtons ipsButtons--main i-margin-block_block">
+		{{if $database->can('add')}}
+			<li>
+				<a class="ipsButton ipsButton--primary" {{if $database->use_categories}}data-ipsDialog="1" data-ipsDialog-size="narrow" data-ipsDialog-title="{lang="cms_select_category"}"{{endif}} href="{$url->setQueryString( array( 'do' => 'form', 'd' => \IPS\cms\Databases\Dispatcher::i()->databaseId ) )}">{lang="cms_add_new_record_button" sprintf="$database->recordWord( 1 )"}</a>
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}
+
+<section class='ipsCmsEntries {{if $pagination['page'] === 1}}ipsCmsEntries--feature{{endif}} ipsCmsEntries--3'>
+	{{if \count($articles)}}
+		{{foreach $articles as $id => $record}}
+			{{if $id === 0 && $pagination['page'] === 1}}
+				{template="entry" app="cms" location="database" group="category_3_column_first_featured" params="$record, $database, $id, TRUE"}
+			{{else}}
+				{template="entry" app="cms" location="database" group="category_3_column_first_featured" params="$record, $database, $id, FALSE"}
+			{{endif}}
+		{{endforeach}}
+	{{endif}}
+</section>
+{{if $pagination['pages'] > 1}}
+	{template="pagination" app="core" location="global" group="global" params="$url, $pagination['pages'], $pagination['page'], ( $database->field_perpage ?? 25 ), TRUE, 'page'"}
+{{endif}}

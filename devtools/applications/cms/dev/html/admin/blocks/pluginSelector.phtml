@@ -1,0 +1,54 @@
+<ips:template parameters="$plugins, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $formClass='', $attributes=array(), $sidebar=''" />
+<div class='ipsBox'>
+	<form accept-charset='utf-8' action="{$action}" method="post">
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endforeach}}
+		{{if $uploadField}}
+			<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		{{endif}}
+
+		<div class='i-padding_3 i-background_dark'>{lang="content_block_plugin_select"}</div>
+		<div class='acpFormTabContent'>
+			<div class="ipsTabs__panel">
+				<ul class='ipsForm ipsForm--horizontal ipsForm--plugin-selector'>
+					{{foreach $plugins as $app => $data}}
+						{{foreach $data as $key => $obj}}
+							<li class='ipsFieldRow'>
+								<div class='ipsFieldRow__label'>
+									{$obj->title}
+									<span class='ipsBadge {{if $obj->type === 'feed'}}ipsBadge--style2{{else}}ipsBadge--style7{{endif}}'>{lang='content_block_type_{$obj->type}'}</span>
+								</div>
+								<div class='ipsFieldRow__content'>
+									<input id='elField_block_plugin' type="radio" role="radio" name="block_plugin" value="{$app}__{$obj->key}">
+									<div class='ipsFieldRow__desc'>
+										{$obj->description|raw}
+									</div>
+								</div>
+							</li>
+							{{if $obj->type === 'feed'}}
+								{{foreach $obj->contentTypes as $key => $lang }}
+									<li class='ipsFieldRow'>
+										<div class='ipsFieldRow__label'>
+											&nbsp;
+										</div>
+										<div class='ipsFieldRow__content'>
+											<input id='elField_block_plugin' type="radio" role="radio" name="contentType_{$app}__{$obj->key}" value="{$key}"> {$lang}
+											<div class='ipsFieldRow__desc'>
+												@todo this should be hidden until parent radio selected
+											</div>
+										</div>
+									</li>
+								{{endforeach}}
+							{{endif}}
+						{{endforeach}}
+					{{endforeach}}
+				</ul>
+			</div>
+			<div class="ipsSubmitRow">
+				{template="button" app="core" location="global" group="forms" params="'next', 'submit', null, 'ipsButton ipsButton--primary'"}
+			</div>
+		</div>
+	</form>
+</div>

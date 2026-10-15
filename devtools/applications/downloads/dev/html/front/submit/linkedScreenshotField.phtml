@@ -1,0 +1,5 @@
+<ips:template parameters="$name, $value" />
+<div data-controller="downloads.front.submit.linkedScreenshots" data-name='{$name}' data-initialValue='{expression="json_encode( $value )"}'>
+	<ul data-role="fieldsArea" class="i-grid i-gap_2 i-margin-bottom_2"></ul>
+	<a class="ipsButton ipsButton--soft ipsButton--small" data-action="addField"><i class="fa-solid fa-plus-circle" aria-hidden="true"></i> {lang="stack_add"}</a>
+</div>

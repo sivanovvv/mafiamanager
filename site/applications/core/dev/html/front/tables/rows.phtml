@@ -1,0 +1,127 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{$rowIds = array();}}
+{{foreach $rows as $row}}
+	{{$idField = $row::$databaseColumnId;}}
+	{{$rowIds[] = $row->$idField;}}
+{{endforeach}}
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+	{{$idField = $row::$databaseColumnId;}}
+		{{if $row->mapped('moved_to')}}
+			{{if $movedTo = $row->movedTo()}}
+				<li class="ipsData__item ipsData__item--moved">
+					<a href='{$movedTo->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row->mapped('title')}</span></a>
+					<div class='ipsData__icon ipsData__icon--indicator'>
+						<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__content'>
+						<div class='ipsData__main'>
+							<div class='ipsData__title'>
+								<h4><a href='{$movedTo->url()}' title='{lang="go_to_new_location"}'>{$row->mapped('title')}</a></h4>
+							</div>
+							<p class='ipsData__meta'>
+								{{if isset( $row::$databaseColumnMap['status'] )}}
+									{{$statusField = $row::$databaseColumnMap['status'];}}
+									{{if $row->$statusField == 'merged'}}
+										{lang="merged_to" sprintf="$movedTo->url(), $movedTo->mapped('title')"}
+									{{else}}
+										{lang="moved_to" sprintf="$movedTo->container()->url(), $movedTo->container()->_title"}
+									{{endif}}
+								{{else}}
+									{lang="moved_to" sprintf="$movedTo->container()->url(), $movedTo->container()->_title"}
+								{{endif}}
+							</p>
+						</div>
+					</div>
+					{{if $table->canModerate()}}
+						<label class="ipsData__mod">
+							<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+							<input type='checkbox' data-role='moderation' name="moderate[{$row->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{{if $row->mapped('pinned')}}pinned{{endif}} {{if $row->mapped('featured')}}featured{{endif}}' class="ipsInput ipsInput--toggle">
+						</label>
+					{{endif}}
+				</li>
+			{{endif}}
+		{{else}}
+			<li class="ipsData__item {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} {{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Hideable' ) and $row->hidden()}}ipsModerated{{endif}} {$row->ui( 'css' )}" {{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\ReadMarkers' ) and $row->unread()}}data-ips-unread{{else}}data-ips-read{{endif}} {$row->ui( 'dataAttributes' )}>
+				{{if $row->mapped('title') or $row->mapped('title') == 0}}<a href='{$row->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row->mapped('title')}</span></a>{{endif}}
+				{{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\ReadMarkers' ) and $row->unread()}}
+					<a href='{$row->url( 'getNewComment' )}' data-ipsTooltip='{lang="first_unread_post"}' class='ipsIndicator {{if $row->containerWrapper() AND \IPS\IPS::classUsesTrait( $row->containerWrapper(), 'IPS\Node\Statistics' ) AND \in_array( $row->$idField, $row->containerWrapper()->contentPostedIn( null, $rowIds ) )}}ipsIndicator--participated{{endif}}' data-ips-hook="unreadIcon"><span class="ipsInvisible">{lang="first_unread_post"}</span></a>
+				{{else}}
+					<span class='ipsIndicator ipsIndicator--read {{if $row->containerWrapper() AND \IPS\IPS::classUsesTrait( $row->containerWrapper(), 'IPS\Node\Statistics' ) AND \in_array( $row->$idField, $row->containerWrapper()->contentPostedIn( null, $rowIds ) )}}ipsIndicator--participated{{endif}}' aria-hidden='true'></span>
+				{{endif}}
+				<div class='ipsData__content'>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>
+							<div class="ipsBadges">
+							    {{foreach $row->badges() as $badge}}{$badge|raw}{{endforeach}}
+								{{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Taggable' ) AND $row->prefix()}}
+									{template="prefix" group="global" app="core" params="$row->prefix( TRUE ), $row->prefix()"}
+								{{endif}}
+							</div>
+							<h4>
+								<a href='{$row->url()}' {{if $row->tableHoverUrl and $row->canView()}}data-ipsHover data-ipsHover-target='{$row->url()->setQueryString('preview', 1)}'data-ipsHover{{endif}} {{if $row->canEdit() AND $row->editableTitle === TRUE}}data-role="editableTitle" title="{lang="click_hold_edit"}"{{endif}}>
+									{{if $row->mapped('title') or $row->mapped('title') == 0}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}
+								</a>
+							</h4>
+							{{if $row->commentPageCount() > 1}}
+		                        {$row->commentPagination( array(), 'miniPagination' )|raw}
+		                    {{endif}}
+		                </div>
+						{{if method_exists( $row, 'tableDescription' )}}
+		                	<div class='ipsData__desc ipsTruncate_2'>{$row->tableDescription()|raw}</div>
+						{{else}}
+							<div class='ipsData__meta'>
+	                            {lang="byline_name_date" htmlsprintf="$row->author()->link( $row->warningRef(), NULL, \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Anonymous' ) ? $row->isAnonymous() : FALSE ), \IPS\DateTime::ts( $row->__get( $row::$databaseColumnMap['date'] ) )->html(TRUE)"}
+								{{if \in_array( \IPS\Request::i()->controller, array( 'search' ) )}}
+									{lang="in"} <a href="{$row->container()->url()}">{$row->container()->_title}</a>
+								{{endif}}
+							</div>
+						{{endif}}
+		                {{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Taggable' ) AND $row->tags() AND \count( $row->tags() )}}
+							{template="tags" group="global" app="core" params="$row->tags(), true, true"}
+						{{endif}}
+					</div>
+					<div class="ipsData__extra">
+						<ul class='ipsData__stats'>
+							{{foreach $row->stats(TRUE) as $k => $v}}
+								<li {{if \in_array( $k, $row->hotStats )}}class="ipsData__stats-hot" data-text='{lang="hot_item"}' data-ipsTooltip title='{lang="hot_item_desc"}'{{endif}}>
+									<span>{number="$v"}</span>
+									<span>{lang="$k" pluralize="$v"}</span>
+								</li>
+							{{endforeach}}
+						</ul>
+						<div class="ipsData__last">
+							{{if $row->mapped('num_comments')}}
+								{template="userPhoto" app="core" group="global" params="$row->lastCommenter(), 'tiny'"}
+							{{else}}
+								{template="userPhoto" app="core" group="global" params="$row->author(), 'tiny'"}
+							{{endif}}
+							<div class="ipsData__last-text">
+								<div class="ipsData__last-primary">
+									{{if $row->mapped('num_comments')}}
+										{$row->lastCommenter()->link()|raw}
+									{{else}}
+										{$row->author()->link()|raw}
+									{{endif}}
+								</div>
+								<div class="ipsData__last-secondary">
+									{{if $row->mapped('last_comment')}}
+										<a href="{$row->url('getLastComment')}">{datetime="$row->mapped('last_comment')"}</a>
+									{{else}}
+										{datetime="$row->mapped('date')"}
+									{{endif}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{if $table->canModerate()}}
+					<label class="ipsData__mod">
+						<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+						<input type='checkbox' data-role='moderation' name="moderate[{$row->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{{if $row->tableStates()}}{$row->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+					</label>
+				{{endif}}
+			</li>
+		{{endif}}
+	{{endforeach}}
+{{endif}}

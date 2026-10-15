@@ -1,0 +1,9 @@
+<ips:template parameters="$guidelines" />
+<div class="ipsBox ipsBox--guidelines ipsPull">
+	{{if !\IPS\Request::i()->isAjax()}}
+		<header class='ipsPageHeader ipsPageHeader--padding'>
+			<h1 class='ipsPageHeader__title'>{lang="guidelines"}</h1>
+		</header>
+	{{endif}}
+	<div class='ipsBox__padding ipsRichText'>{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('guidelines_value'), array('')"}</div>
+</div>

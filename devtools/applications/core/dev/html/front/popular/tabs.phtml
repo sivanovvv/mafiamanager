@@ -1,0 +1,26 @@
+<ips:template parameters="$tabs, $activeTab, $content" />
+
+<header class='ipsPageHeader'>
+	<h1 class='ipsPageHeader__title'>{lang="leaderboard_title"}</h1>
+</header>
+
+<div class='ipsBox ipsBox--leaderboard ipsPull'>
+	{{$icons = array('leaderboard' => 'trophy', 'history' => 'clock', 'members' => 'star', 'trending' => 'line-chart');}}
+	<i-tabs class='ipsTabs ipsTabs--withIcons ipsTabs--stretch' id='ipsTabs_leaderboard' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_leaderboard_content'>
+		<div role='tablist'>
+			{{foreach $tabs as $key}}
+				{{$seoTemplate = 'leaderboard_' . $key;}}
+				<a href='{url="app=core&module=discover&controller=popular&tab={$key}" seoTemplate="$seoTemplate"}' role='tab' id='ipsTabs_leaderboard_{$key}' aria-controls="ipsTabs_leaderboard_{$key}_panel" class='ipsTabs__tab' aria-selected="{{if $key == $activeTab}}true{{else}}false{{endif}}">
+					<i class='fa-solid fa-{$icons[$key]}' aria-hidden="true"></i>
+					{lang="leaderboard_tabs_{$key}"}
+				</a>
+			{{endforeach}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<section id='ipsTabs_leaderboard_content' class="ipsTabs__panels">
+		<div id='ipsTabs_leaderboard_{$activeTab}_panel' aria-labelledby='ipsTabs_leaderboard_{$activeTab}' role="tabpanel" class='ipsTabs__panel'>
+			{$content|raw}
+		</div>
+	</section>
+</div>

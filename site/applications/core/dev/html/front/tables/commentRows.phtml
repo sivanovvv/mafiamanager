@@ -1,0 +1,67 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	{{$idField = $row::$databaseColumnId;}}
+	<!-- v5 todo: This is used in profiles, when viewing comment entries (ie. Event Comments) -->
+	<li class='ipsData__item' data-rowID='{$row->$idField}'>
+		<article id='elComment_{$row->$idField}' class='ipsEntry ipsEntry--simple ipsEntry--profile-activity-comments {{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Reactable' ) and $row->isHighlighted()}}ipsEntry--popular{{endif}} {{if $row->hidden()}}ipsModerated{{endif}}'>
+			<div id='comment-{$row->$idField}_wrap' class='ipsEntry__content js-ipsEntry__content'>	
+				<header class='ipsEntry__header'>
+					<div class="ipsEntry__header-align">
+						<div class="i-flex_11">
+							{$row->contentTableHeader()|raw}
+						</div>
+						<ul class='i-flex i-align-items_center i-gap_3'>
+							{{if $row->canReportOrRevoke() === TRUE}}
+								<li><a href='{$row->url('report')}' {{if member.member_id or \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-remoteSubmit data-ipsDialog-size='medium' data-ipsDialog-flashMessage='{lang="report_submit_success"}' data-ipsDialog-title="{lang="report_reply"}"{{endif}} data-action='reportComment' title='{lang="report_content"}' class='i-color_soft'>{lang="report"}</a></li>
+							{{endif}}
+							{{if $table->canModerate() and ( $row->canSplit() or ( $row->hidden() === -1 AND $row->canUnhide() ) or ( $row->hidden() === 1 AND $row->canUnhide() ) or $row->canDelete() )}}
+								<li>
+									<input type="checkbox" name="moderate[{$row->$idField}]" value="1" data-role="moderation" data-actions="{{if $row->canSplit()}}split{{endif}} {{if $row->hidden() === -1 AND $row->canUnhide()}}unhide{{elseif $row->hidden() === 1 AND $row->canUnhide()}}approve{{elseif $row->canHide()}}hide{{endif}} {{if $row->canDelete()}}delete{{endif}}" data-state='{{if $row->tableStates()}}{$row->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+								</li>
+							{{endif}}
+						</ul>
+					</div>
+				</header>
+				<div class='ipsEntry__post'>
+					{{if \IPS\Request::i()->controller == 'activity'}}
+						<div class='ipsPhotoPanel ipsPhotoPanel--mini'>
+							{template="userPhoto" group="global" app="core" params="$row->author(), 'mini'"}
+							<div class="ipsPhotoPanel__text">
+								<h3 class="ipsPhotoPanel__primary">{$row->author()->link( NULL, NULL, \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Anonymous' ) ? $row->isAnonymous() : FALSE )|raw}</h3>
+					{{endif}}
+					<p class="ipsPhotoPanel__secondary">
+						<a href='{$row->url( 'find' )}'>{$row->dateLine()|raw}</a>
+						{{if $row->editLine()}}
+							&middot; {$row->editLine()|raw}
+						{{endif}}
+						{{if $row->hidden()}}
+							&middot; {$row->hiddenBlurb()}
+						{{endif}}							
+					</p>
+					{{if \IPS\Request::i()->controller == 'activity'}}
+							</div>
+						</div>
+					{{endif}}
+					<div>
+						{{if \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Reactable' ) and $row->isHighlighted()}}
+							<ul class='ipsBadges'>
+								<li><span class='ipsBadge ipsBadge--popular'>{lang="this_is_a_popular_post"}</span></li>
+							</ul>
+						{{endif}}
+					</div>
+					<div data-role='commentContent' class='ipsRichText i-margin-top_3' data-controller='core.front.core.lightboxedImages'>
+						{{if $row->hidden() === 1 && $row->author()->member_id == \IPS\Member::loggedIn()->member_id}}
+							<strong class='i-color_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="comment_awaiting_approval"}</strong>
+						{{endif}}
+						{$row->content()|raw}
+					</div>
+				</div>
+				{{if $row->hidden() !== 1 && \IPS\IPS::classUsesTrait( $row, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+					<div class='ipsEntry__footer'>
+						{template="reputation" group="global" app="core" params="$row"}
+					</div>
+				{{endif}}
+			</div>
+		</article>
+	</li>
+{{endforeach}}

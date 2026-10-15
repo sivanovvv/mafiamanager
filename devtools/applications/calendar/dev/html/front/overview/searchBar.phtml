@@ -1,0 +1,72 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar='', $form=NULL" />
+
+<form accept-charset='utf-8' class="ipsForm {$class} i-flex_11" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm data-controller='calendar.front.overview.search'{{if \IPS\GeoLocation::enabled()}} data-placeholder='{$elements['']['location']->options['placeholder']}'{{endif}}>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+	{{if \is_array($v)}}
+	{{foreach $v as $_k => $_v}}
+	<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+	{{endforeach}}
+	{{else}}
+	<input type="hidden" name="{$k}" value="{$v}">
+	{{endif}}
+	{{endforeach}}
+
+	{{$byLocation = FALSE;}}
+	{{if isset( \IPS\Request::i()->lat ) && isset( \IPS\Request::i()->lon )}}
+	<input type='hidden' name='lat' value='{request="lat"}'>
+	<input type='hidden' name='lon' value='{request="lon"}'>
+	{{endif}}
+
+	{{if isset( \IPS\Request::i()->searchNearLocation )}}
+	<input type='hidden' name='searchNearLocation' value='1'>
+	{{$byLocation = TRUE;}}
+	{{endif}}
+
+	<ul class='cEvents__search'>
+		{{foreach $elements[''] as $key => $input}}
+		{{if $key === 'location'}}
+		<li class='cEvents__search__field cEvents__search__field--location'>
+			<div class="i-flex i-justify-content_space-between">
+				<label class='cEvents__search__label' for="elInput_location">{lang="events_search_location"}</label>
+				<div class='i-flex i-gap_1'>
+					{{if $byLocation}}
+						{{$input->options['placeholder'] = \IPS\Member::loggedIn()->language()->addToStack( "events_search_your_location" );}}
+						{{$input->options['disabled'] = TRUE;}}
+						<button type="button" class='ipsEventSearch__searchLocation' hidden data-action='useMyLocation'><i class='fa-solid fa-crosshairs' aria-hidden="true"></i> <span>{lang="events_search_use_location"}</span></button>
+						<button type="button" class='ipsEventSearch__searchLocation' data-action='cancelLocation'><span>{lang="events_search_cancel_location"}</span></button>
+					{{else}}
+						<button type="button" class='ipsEventSearch__searchLocation' data-action='useMyLocation'><i class='fa-solid fa-crosshairs' aria-hidden="true"></i> <span>{lang="events_search_use_location"}</span></button>
+						<button type="button" class='ipsEventSearch__searchLocation' hidden data-action='cancelLocation'><span>{lang="events_search_cancel_location"}</span></button>
+					{{endif}}
+				</div>
+			</div>
+			{$input->html()|raw}
+		</li>
+		{{elseif $key === 'show'}}
+		<li class='cEvents__search__field cEvents__search__field--show'>
+			<label class="cEvents__search__input">
+				<span class='cEvents__search__label'>{lang="events_search_type"}</span>
+				{$input->html()|raw}
+			</label>
+		</li>
+		{{elseif $key === 'date'}}
+		<li class='cEvents__search__field cEvents__search__field--date cEvents__search__field--from'>
+			<label class="cEvents__search__input">
+				<span class='cEvents__search__label'>{lang="events_search_from"}</span>
+				{$input->start->html()|raw}
+			</label>
+		</li>
+		<li class='cEvents__search__field cEvents__search__field--date cEvents__search__field--to'>
+			<label class="cEvents__search__input">
+				<span class='cEvents__search__label'>{lang="events_search_to"}</span>
+				{$input->end->html()|raw}
+			</label>
+		</li>
+		{{endif}}
+		{{endforeach}}
+		<li class='cEvents__search__field cEvents__search__field--submit'>
+			<button type='submit' class='ipsButton ipsButton--large ipsButton--primary i-width_100p'><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>{lang="events_search_search"}</span></button>
+		</li>
+	</ul>
+</form>

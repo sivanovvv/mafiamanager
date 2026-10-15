@@ -1,0 +1,11 @@
+{
+    "added": [],
+    "edited": [
+        "notification_event_reminder",
+        "notification_event_rsvp",
+        "notification_new_content",
+        "digests__item",
+        "digests__comment"
+    ],
+    "removed": []
+}

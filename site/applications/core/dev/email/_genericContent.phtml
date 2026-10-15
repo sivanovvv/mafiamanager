@@ -1,0 +1,63 @@
+<ips:template parameters="$content, $includeLinks, $includeAuthor, $email" />
+{{if $includeAuthor}}
+<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	<tr>
+		<td dir='{dir}' width='60' valign='top' class='hidePhone'>
+			<img src='{$content->author()->get_photo( true, true )}' width='40' height='40' style='border-radius: 6px;' class="avatar">
+		</td>
+		<td dir='{dir}' valign='top'>
+{{endif}}
+<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+	<tr>
+		<td dir='{dir}'>
+			<table width='100%' cellpadding='5' cellspacing='0' border='0'>
+				{{if $content instanceof \IPS\Content\Review}}
+					<tr>
+						<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px;">
+							{{foreach range( 1, 5 ) as $i}}
+								{{if $i <= $content->mapped('rating')}}<img src='{resource="email/rating_on.png" location="interface" app="core"}' width='14' height='13' alt='*'>{{elseif ( $i - 0.5 ) <= $content->mapped('rating')}}<img src='{resource="email/rating_half.png" location="interface" app="core"}' width='14' height='13' alt='*'>{{else}}<img src='{resource="email/rating_off.png" location="interface" app="core"}' width='14' height='13' alt=''>{{endif}}
+							{{endforeach}}
+						</td>
+					</tr>
+				{{elseif $content instanceof \IPS\Content\Item}}
+					{{if $container = $content->containerWrapper()}}
+						<tr>
+							<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px; color: #4b4b4b" class="color_soft">
+								{$email->language->addToStack("email_posted_in", FALSE, array( 'sprintf' => array( $container->getTitleForLanguage( $email->language ) ) ) )}
+							</td>
+						</tr>
+					{{endif}}
+				{{else}}
+					<tr>
+						<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px; color: #4b4b4b" class="color_soft">
+							{$email->language->addToStack("email_posted_in", FALSE, array( 'sprintf' => array( $content->item()->mapped('title') ) ) )}
+						</td>
+					</tr>
+				{{endif}}
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px;">
+						<strong>{expression="(string) $content->mapped('title')"}</strong>
+					</td>
+				</tr>
+				{{$emailContent = $email->parseTextForEmail( $content->content(), $email->language, ( \IPS\Settings::i()->email_truncate ? 150 : NULL ) );}}
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px;">
+						{$emailContent|raw}{{if \IPS\Settings::i()->email_truncate AND \mb_strlen( $content->content() ) > 150}}...{{endif}}
+					</td>
+				</tr>
+				{{if $includeLinks}}
+					<tr>
+						<td dir='{dir}'>
+							<a href='{$content->url()}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("go_to_this_x", FALSE, array( 'sprintf' => array( mb_strtolower( $email->language->addToStack( $content::$title, FALSE ) ) ) ) )}</a>
+						</td>
+					</tr>
+				{{endif}}
+			</table>
+		</td>
+	</tr>
+</table>
+{{if $includeAuthor}}
+		</td>
+	</tr>
+</table>
+{{endif}}

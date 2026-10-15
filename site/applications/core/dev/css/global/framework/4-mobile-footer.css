@@ -1,0 +1,110 @@
+.ipsMobileFooter {
+	--i-outline-offset: -2px;
+	color: var(--i-mobileFooter--co);
+	box-shadow: color-mix(in srgb, var(--i-color_root) 25%, transparent) 0px -1px 0px 0px;
+	background-color: var(--i-mobileFooter--ba-co);
+	text-align: center;
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: 0;
+	width: 100%;
+	height: var(--i-mobileFooter--he);
+	z-index: var(--i-z-index_mobileFooter);
+	font-family: system-ui, sans-serif; /* Force footer bar to use OS font. Other fonts may be difficult to read at small sizes */
+}
+
+/* Hide if disabled via settings */
+[data-ips-theme-setting-mobile-icons-location="header"] .ipsMobileFooter{
+	display: none;
+}
+
+/* Move footer when editor is focused on touch devices (so it doesn't take up valuable screen space */
+@media (hover:none){
+	.ipsLayout:has(.ProseMirror-focused) ~ .ipsMobileFooter{
+		position: static;
+	}
+}
+
+@media (min-width: 980px){
+	.ipsMobileFooter{
+		display: none;
+	}
+}
+
+	.ipsMobileFooter ul {
+		display: flex;
+		padding: 3px;
+		height: calc(var(--i-mobileFooter--he) - env(safe-area-inset-bottom));
+	}
+		.ipsMobileFooter__item {
+			flex: 1 1 1%;
+		}
+
+	.ipsMobileFooter__link {
+		display: grid;
+		text-align: center;
+		align-content: center;
+		gap: .3em;
+		position: relative;
+		height: 100%;
+		width: 100%;
+		color: inherit;
+		text-decoration: none;
+		border-radius: 4px;
+		padding: .2em 0;
+		touch-action: manipulation;
+	}
+
+	/* This prevents the outline from appearing on iOS when the 'x' icon is tapped inside the off-canvas menu */
+	@media (hover: none){
+		.ipsMobileFooter__link{
+			outline-width: 0;
+		}
+	}
+
+	@media (any-hover:hover){
+		.ipsMobileFooter__link:hover{
+			background: color-mix(in srgb, currentColor 10%, transparent);
+		}
+	}
+
+		.ipsMobileFooter__link[aria-expanded="true"] {
+			background: var(--i-mobileFooter-active--ba-co);
+			color: var(--i-mobileFooter-active--co);
+		}
+
+	.ipsMobileFooter__link svg{
+		place-self: center;
+		fill: currentColor;
+		width: auto;
+		height: 18px;
+	}
+
+	.ipsMobileFooter .ipsNotification {
+		top: 2px;
+		inset-inline-end: max(50% - 2.7em, 0em);
+	}
+
+	.ipsMobileFooter__icon{
+		display: grid;
+	}
+
+	.ipsMobileFooter__text{
+		font-weight: 600;
+		opacity: .7;
+		font-size: clamp(8px, 0.5em + 0.4vw, 10px);
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		max-width: 100%;
+	}
+
+/* Remove labels if theme setting requests it */
+[data-ips-theme-setting-mobile-footer-labels="0"] .ipsMobileFooter__text{
+	display: none;
+}
+
+/* Larger icons when text is removed */
+[data-ips-theme-setting-mobile-footer-labels="0"] .ipsMobileFooter__link svg{
+	height: 20px;
+}

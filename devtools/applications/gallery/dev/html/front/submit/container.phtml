@@ -1,0 +1,8 @@
+<ips:template parameters="$container" />
+<div>
+	{{if $container['album']}}
+		{lang="gallery_submit_prefix_album" sprintf="$container['album']->_title"}
+	{{else}}
+		{lang="gallery_submit_prefix_cat" sprintf="$container['category']->_title"}
+	{{endif}}
+</div>

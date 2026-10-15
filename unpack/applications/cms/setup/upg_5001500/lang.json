@@ -1,0 +1,17 @@
+{
+    "normal": {
+        "added": [
+            "folder_title",
+            "folder_title_desc",
+            "cms_page_error_no_db",
+            "cms_page_error_too_many_dbs"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

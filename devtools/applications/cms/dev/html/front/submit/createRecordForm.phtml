@@ -1,0 +1,109 @@
+<ips:template parameters="$record, $category, $hasModOptions, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class=''" />
+{{$modOptions = array( 'create_record_state', 'record_publish_date', 'record_expiry_date', 'record_on_homepage', 'record_pinned', 'record_allow_comments', 'record_comment_cutoff' );}}
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--create-record" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}}>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+
+	{{if $hasModOptions}}
+		<div class='ipsColumns'>
+			<div class='ipsColumns__primary'>
+	{{endif}}
+
+	{{if !empty( $errorTabs )}}
+		<p class="ipsMessage ipsMessage--error i-margin-bottom_1 ipsJS_show">{lang="tab_error"}</p>
+	{{endif}}
+
+	<div class='ipsBox ipsBox--cmsCreateRecord'>
+		<h2 class='ipsBox__header'>{lang="topic_details"}</h2>
+		{{if \count( $elements ) > 1}}
+			<i-tabs class='ipsTabs' id='ipsTabs_{$id}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{$id}_content'>
+				<div role='tablist'>
+					{{$checkedTab = NULL;}}
+					{{foreach $elements as $name => $content}}
+						<a href='#ipsTabs_{$id}_{$name}_panel' id='ipsTabs_{$id}_{$name}' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_{$id}_{$name}_panel" aria-selected="{{if !$checkedTab}}true{{$checkedTab = $name;}}{{else}}false{{endif}}">{lang="$name"}</a>
+					{{endforeach}}
+				</div>
+				{template="tabScrollers" app="core" group="global" location="global"}
+			</i-tabs>
+			<div id='ipsTabs_{$id}_content' class='ipsTabs__panels ipsTabs__panels--padded'>
+				{{foreach $elements as $name => $contents}}
+					<div id='ipsTabs_{$id}_{$name}_panel' class="ipsTabs__panel" aria-labelledby="ipsTabs_{$id}_{$name}"  {{if $checkedTab != $name}}hidden{{endif}}>
+						
+						{{if $hasModOptions && $name == 'topic_mainTab'}}
+							<div class='ipsColumns'>
+								<div class='ipsColumns__primary'>
+						{{endif}}
+							<ul class='ipsForm {$class} ipsForm--vertical ipsForm--create-record'>
+								{{foreach $contents as $inputName => $input}}
+									{{if !\in_array( $inputName, $modOptions )}}
+										{$input|raw}
+									{{endif}}
+								{{endforeach}}
+							</ul>
+						{{if $hasModOptions && $name == 'topic_mainTab'}}
+								</div>
+								<div class='ipsColumns__secondary i-basis_280'>
+									<h2 class='ipsBox__header'>{lang="topic_moderator_options"}</h2>
+									<div class='i-background_2 i-padding_3'>
+										<ul class='ipsForm ipsForm--vertical ipsForm--create-record-mod'>
+											{{foreach $elements as $collection}}
+												{{foreach $collection as $inputName => $input}}
+													{{if \in_array( $inputName, $modOptions )}}
+														{$input|raw}
+													{{endif}}
+												{{endforeach}}
+											{{endforeach}}
+										</ul>
+									</div>
+								</div>
+							</div>
+						{{endif}}
+					</div>
+				{{endforeach}}
+			</div>		
+		{{else}}
+			<div class='i-padding_3'>
+				{{if $hasModOptions}}
+					<div class='ipsColumns'>
+						<div class='ipsColumns__primary'>
+				{{endif}}
+					<ul class='ipsForm {$class} ipsForm--vertical ipsForm--create-record'>
+						{{foreach $elements as $collection}}
+							{{foreach $collection as $inputName => $input}}
+								{{if !\in_array( $inputName, $modOptions )}}
+									{$input|raw}
+								{{endif}}
+							{{endforeach}}
+						{{endforeach}}
+					</ul>
+				{{if $hasModOptions}}
+						</div>
+						<div class='ipsColumns__secondary i-basis_280'>
+							<h2 class='ipsBox__header'>{lang="topic_moderator_options"}</h2>
+							<div class='i-background_2 i-padding_3'>
+								<ul class='ipsForm ipsForm--vertical ipsForm--create-record-mod'>
+									{{foreach $elements as $collection}}
+										{{foreach $collection as $inputName => $input}}
+											{{if \in_array( $inputName, $modOptions )}}
+												{$input|raw}
+											{{endif}}
+										{{endforeach}}
+									{{endforeach}}
+								</ul>
+							</div>
+						</div>
+					</div>
+				{{endif}}
+			</div>
+		{{endif}}
+		<div class='ipsSubmitRow'>
+			<button type='submit' class='ipsButton ipsButton--primary'>{lang="content_record_form_save"}</button>
+		</div>
+	</div>
+</form>

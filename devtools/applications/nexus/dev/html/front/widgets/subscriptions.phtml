@@ -1,0 +1,37 @@
+<ips:template parameters="$layout='wallpaper', $isCarousel=false" />
+<header class='ipsWidget__header'>
+	<h3>{lang="nexus_subs_widget_title"}</h3>
+	{{if $isCarousel}}
+		{{$carouselID = 'widget--subscriptions_' . mt_rand();}}
+		{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+	{{endif}}
+</header>
+<div class='ipsWidget__content'>
+	<i-data>
+		<ul class="ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--subscriptions-widget" {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+			{{foreach \IPS\nexus\Subscription\Package::roots() as $package}}
+				{{if $package->enabled }}
+					<li class="ipsData__item">
+						<a href="{$package->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="nexus_subs_widget_title_and_price" sprintf="$package->_title, $package->priceBlurb()"}</span></a>
+						<div class="ipsData__image" aria-hidden="true">
+							{{if $package->_image}}
+								<img src='{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $package->_image->url )"}' alt='' loading='lazy'>
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+						</div>
+						<div class="ipsData__content">
+							<div class='ipsData__main'>
+								<h4 class="ipsData__title"><a href="{$package->url()}">{expression="$package->_title"}</a></h4>
+								<div class="ipsData__meta">{expression="$package->priceBlurb()"} {{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}{lang="nexus_tax_explain_val"}{{endif}}</div>
+							</div>
+						</div>
+					</li>
+				{{endif}}
+			{{endforeach}}
+		</ul>
+	</i-data>
+	<p class='cWidgetSubscription_linkbox i-background_2 i-border-end-start-radius_box i-border-end-end-radius_box i-border-top_3 i-padding_2 i-font-weight_600 i-text-align_end i-font-size_-2'>
+		<a href='{url="app=nexus&module=subscriptions&controller=subscriptions" seoTemplate="nexus_subscriptions"}'>{lang="nexus_subs_show_all_subs"} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+	</p>
+</div>

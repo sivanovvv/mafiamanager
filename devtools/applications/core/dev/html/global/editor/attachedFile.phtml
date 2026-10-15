@@ -1,0 +1,2 @@
+<ips:template parameters="$url, $title, $pTag=TRUE, $ext='', $fileId='', $fileKey=''" />
+{{if $pTag}}<p>{{endif}}<a class="ipsAttachLink" href="{$url}" data-fileExt='{$ext}' {{if $fileId}}data-fileid='{$fileId}'{{endif}} {{if $fileKey}}data-filekey='{$fileKey}'{{endif}}>{$title}</a>{{if $pTag}}</p>{{endif}}

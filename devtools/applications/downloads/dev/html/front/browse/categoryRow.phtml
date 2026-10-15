@@ -1,0 +1,91 @@
+<ips:template parameters="$table, $headers, $categories, $layout='table'" />
+{{foreach $categories as $category}}
+	{{if $category->can('view') AND ( $category->open OR \IPS\Member::loggedIn()->isAdmin() )}}
+		{{$club = $category->club();}}
+		<li class="ipsData__item {$category->ui( 'css' )}" {{if !\IPS\downloads\File::containerUnread( $category )}}data-ips-read{{else}}data-ips-unread{{endif}} {$category->ui( 'dataAttributes' )}>
+			<a href="{$category->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{{if $club}}{lang="club_node" sprintf="$club->name, $category->_title"}{{else}}{$category->_title}{{endif}}</span></a>
+		
+			<div class="ipsData__image" aria-hidden="true">
+				{{if $layout==="table"}}
+				
+					{{if $icon = $category->getIcon()}}
+						{$icon|raw}
+					{{else}}
+						<span class='ipsIcon ipsIcon--fa' aria-hidden="true"><i class="fa-ips"></i></span>
+					{{endif}}
+
+				{{else}}
+
+					{{if $category->card_image}}
+						<img src='{file="$category->card_image" extension="downloads_Cards"}' alt='' loading='lazy'>
+					{{elseif $club}}
+						{{$coverPhoto = $club->coverPhoto( FALSE );}}
+						{{$cfObject = $coverPhoto->object;}}
+						{{if $coverPhoto->file}}
+							<img src="{$coverPhoto->file->url}" alt='' loading='lazy'>
+						{{elseif $club->profile_photo}}
+							<img src='{file="$club->profile_photo" extension="core_Clubs"}' alt='' loading='lazy'>
+						{{elseif ! empty( $cfObject::$coverPhotoDefault )}}
+							<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$coverPhoto->object->coverPhotoBackgroundColor()};"></div>
+						{{else}}
+							<span class='ipsIcon ipsIcon--fa' aria-hidden="true"><i class="fa-ips"></i></span>
+						{{endif}}
+					{{else}}
+						{{if $icon = $category->getIcon()}}
+							{$icon|raw}
+						{{else}}
+							<span class='ipsIcon ipsIcon--fa' aria-hidden="true"><i class="fa-ips"></i></span>
+						{{endif}}
+					{{endif}}
+
+				{{endif}}
+			</div>
+
+			<div class="ipsData__content">
+				<div class="ipsData__main">
+					<div class='ipsData__title'>
+						{{if \IPS\downloads\File::containerUnread( $category )}}
+							<span class="ipsIndicator" title='{lang="unread"}' data-ipstooltip></span>
+						{{endif}}
+						<h4><a href="{$category->url()}">{$category->_title}</a></h4>
+					</div>
+					{{if $club}}<div class="ipsData__club"><a href="{$club->url()}">{$club->name}</a></div>{{endif}}
+					{{if $category->description}}
+						<div class="ipsData__desc">
+							{template="richText" group="global" app="core" location="global" params="$category->description, array('')"}
+						</div>
+					{{endif}}
+					{{if $category->hasChildren()}}
+						<ul class="ipsSubList">
+							{{foreach $category->children() as $subcategory}}
+								<li class="ipsSubList__item {{if \IPS\downloads\File::containerUnread( $subcategory )}}ipsSubList__item--unread{{else}}ipsSubList__item--read{{endif}}">
+									<a href="{$subcategory->url()}">{$subcategory->_title}</a>
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+				</div>
+				<ul class="ipsData__stats">
+					{{$count = \IPS\downloads\File::contentCount( $category );}}
+					<li>
+						<span>{number="$count"}</span>
+						<span>{lang="files_no_number" pluralize="$count"}</span>
+					</li>
+				</ul>
+				{{if $lastPost = $category->lastFile()}}
+					<div class="ipsData__last">
+						{template="userPhoto" app="core" group="global" params="$lastPost->author(), 'fluid'"}
+						<div class='ipsData__last-text'>
+							<div class='ipsData__last-primary'>
+								<a href="{$lastPost->url()}" class=''>{$lastPost->name}</a>
+							</div>
+							<div class='ipsData__last-secondary'>
+								{lang="byline_nodate" htmlsprintf="$lastPost->author()->link( NULL, NULL, $lastPost->isAnonymous() )"} {datetime="$lastPost->submitted"}
+							</div>
+						</div>
+					</div>
+				{{endif}}
+			</div>
+		</li>
+	{{endif}}
+{{endforeach}}

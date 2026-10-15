@@ -1,0 +1,5 @@
+<ips:template parameters="$reportIndex, $content, $templateContent, $email" />
+{{$text=nl2br($templateContent);}}
+{$text|raw}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

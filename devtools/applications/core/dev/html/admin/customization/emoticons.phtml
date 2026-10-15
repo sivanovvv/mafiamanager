@@ -1,0 +1,68 @@
+<ips:template parameters="$sets" />
+{{if member.hasAcpRestriction( 'core', 'editor', 'emoticons_add' )}}
+	<ul class="ipsButtons ipsButtons--main">
+		<li>
+			<a href="{url="app=core&module=editor&controller=emoticons&do=add"}" class="ipsButton ipsButton--primary" data-ipsDialog data-ipsdialog-title="{lang="emoticons_add"}">
+				<i class="fa-solid fa-plus-circle" aria-hidden="true"></i> <span data-role="title">{lang="emoticons_add"}</span>
+			</a>
+		</li>
+	</ul>
+{{endif}}
+<div class="ipsBox ipsBox--emoticons">
+	<form accept-charset='utf-8' action="{url="app=core&module=editor&controller=emoticons&do=edit"}" method="post" data-controller="core.admin.customization.emoticons" id="emoticonsManagement">
+		<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+		<ul data-role="setList">
+			{{foreach $sets as $setKey => $emoticons}}
+				<li data-emoticonSet="{$setKey}">
+					<div class='i-flex i-flex-wrap_wrap i-align-items_center i-gap_2 i-padding_2'>
+						<h2 class='ipsTitle ipsTitle--h3 i-flex_11'>
+							{lang="$setKey"}
+						</h2>
+						<ul class='ipsButtons'>
+							<li>
+								<a href="{url="app=core&module=editor&controller=emoticons&do=editTitle&key=$setKey"}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title="{lang="emoticons_edit_groupname"}" title="{lang="emoticons_edit_groupname"}" class='ipsButton ipsButton--inherit ipsButton--small'><i class='fa-solid fa-pencil' aria-hidden="true"></i> {lang="emoticons_edit_groupname"}</a>
+							</li>
+							{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'core', 'editor', 'emoticons_delete' )}}
+								<li>
+									<a href="{url="app=core&module=editor&controller=emoticons&do=deleteSet&key=$setKey" csrf="true"}" data-confirm data-confirmsubmessage="{lang="emoticons_delete_set_confirm"}" title="{lang="emoticons_delete_set"}" class='ipsButton ipsButton--inherit ipsButton--small i-color_negative'><i class='fa-solid fa-xmark-circle' aria-hidden="true"></i> {lang="emoticons_delete_set"}</a>
+								</li>
+							{{endif}}
+						</ul>
+					</div>
+					<ul class='ipsGrid i-gap_2 i-padding_2 i-basis_180 i-background_2' data-role="emoticonsList" data-emoticonGroup="{$setKey}">
+						{{foreach $emoticons as $emo}}
+							<li id="emo_{$emo['id']}" data-emoticonID='{$emo['id']}' class="cEmoticons_box i-flex i-flex-direction_column">
+								<div class='i-flex_11 i-padding_2 i-text-align_center' data-role='dragHandle'>
+									{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'core', 'editor', 'emoticons_delete' )}}
+										<a href='{url="app=core&module=editor&controller=emoticons&do=delete&id="}{$emo['id']}' data-delete data-delete-warning="{lang="emoticons_delete_confirm"}" data-deleterow="#emo_{$emo['id']}" class='ipsBadge ipsBadge--negative ipsBadge--icon' title='{lang="delete"}' data-ipsTooltip><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+									{{endif}}
+									{{try{}}
+										{{if $emo['image_2x']}}
+											<img src="{file="$emo['image']" extension="core_Emoticons"}" srcset="{file="$emo['image_2x']" extension="core_Emoticons"} 2x" alt='' class='ipsImage' {{if $emo['width'] AND $emo['width']}} width='{$emo['width']}' height='{$emo['height']}'{{endif}}>
+										{{else}}
+											<img src="{file="$emo['image']" extension="core_Emoticons"}" alt='' class='ipsImage'>
+										{{endif}}
+									{{} catch( \Exception $ex ){}}
+										{lang="emoticon_invalid" sprintf="$emo['image']"}
+									{{ } }}
+								</div>						
+								<div class='cEmoticons_input i-flex i-align-items_center i-gap_2 i-padding_2 i-font-size_-1 i-text-align_center'>
+									<input type="hidden" name="emo[{$emo['id']}][set]" value="{$setKey}" data-emoticon-id="{$emo['id']}">
+									<input value="{$emo['typed']}" name="emo[{$emo['id']}][name]" data-role="emoticonTyped" class="ipsInput">
+									{{if $emo['image_2x']}}
+										<span class='cEmoticons_hd i-flex_00 i-font-size_-3 i-color_positive' title='{lang="emoticon_hd"}' data-ipsTooltip><i class='fa-solid fa-check' aria-hidden="true"></i> HD</span>
+									{{endif}}
+								</div>
+							</li>
+						{{endforeach}}
+					</ul>
+				</li>
+			{{endforeach}}
+		</ul>
+		{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'core', 'editor', 'emoticons_edit' )}}
+			<div class="ipsSubmitRow">
+				<button class='ipsButton ipsButton--primary'>{lang="save"}</button>
+			</div>
+		{{endif}}
+	</form>
+</div>

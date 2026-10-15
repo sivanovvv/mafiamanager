@@ -1,0 +1,4 @@
+<ips:template parameters="$realUrl, $linkUrl, $title, $mimeType, $id" />
+<audio controls src="<fileStore.core_Attachment>/{$realUrl}" type="{$mimeType}" data-fileid="{$id}" preload="metadata">
+    <a class="ipsAttachLink" href="{$linkUrl}">{$title}</a>
+</audio>

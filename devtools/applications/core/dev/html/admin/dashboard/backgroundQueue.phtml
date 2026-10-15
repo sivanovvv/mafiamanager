@@ -1,0 +1,42 @@
+<ips:template parameters="$rows, $totalCount" />
+{{if \count( $rows )}}
+	<i-data>
+		<div class="ipsData ipsData--table ipsData--background-queue">
+			{{foreach $rows as $row}}
+				<div class='ipsData__item'>
+					<div class='i-basis_200'>
+						{{if $row['complete'] === NULL OR $row['complete'] > 100}}
+							<div class="ipsProgress ipsProgress--animated ipsProgress--indeterminate"><div class="ipsProgress__progress">{lang="progress_bar_percent_not_available"}</div></div>
+						{{else}}
+							{{$progressId = 'ipsProgress-' . mt_rand();}}
+							<span id="{$progressId}" class="ipsInvisible">{expression="number_format( $row['complete'], 2)" }</span>
+							<progress aria-labelledby="{$progressId}" class="ipsProgress" title='{$row['complete']}%' data-ipstooltip value="{expression="number_format( $row['complete'], 2)" }" max="100"></progress>
+						{{endif}}
+					</div>
+					<div class='ipsData__title'>
+						<span class='i-font-size_1 i-margin-bottom_1 ipsTruncate ipsTruncate_line'><strong>{$row['text']|raw}</strong></span>
+					</div>
+				</div>
+			{{endforeach}}
+		</div>
+	</i-data>
+	{{if $totalCount > 100}}
+		<p>
+			{lang="background_process_more" pluralize="$totalCount - 100"}
+		</p>
+	{{endif}}
+	<div class="i-color_soft i-text-align_center i-link-text-decoration_underline i-padding_2">
+		{{if settings.task_use_cron == 'normal' AND !\IPS\CIC}}
+			{lang="background_processes_desc_nocron"}
+		{{else}}
+			{lang="background_processes_desc"}
+		{{endif}}
+		{{if !\IPS\CIC}}
+			<br>{lang="background_processes_run_now" sprintf="\IPS\Member::loggedIn()->language()->addToStack('background_process_run_title')"}
+		{{endif}}
+	</div>
+{{else}}
+	<div class="ipsEmptyMessage">
+		{lang="no_background_processes"}
+	</div>
+{{endif}}

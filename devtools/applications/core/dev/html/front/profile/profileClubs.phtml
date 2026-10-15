@@ -1,0 +1,23 @@
+<ips:template parameters="$member, $clubs, $pagination" />
+
+{{if \count( $clubs )}}
+	{{if $pagination}}
+		{$pagination|raw}
+	{{endif}}
+
+	<i-data>
+		<ul class='ipsData ipsData--grid ipsData--profile-clubs'>
+			{{foreach $clubs as $club}}
+				{template="clubCard" group="clubs" app="core" params="$club"}
+			{{endforeach}}
+		</ul>
+	</i-data>
+
+	{{if $pagination}}
+		{$pagination|raw}
+	{{endif}}
+{{else}}
+	<p class='ipsEmptyMessage'>
+		{lang="member_no_clubs" sprintf="$member->name"}
+	</p>
+{{endif}}

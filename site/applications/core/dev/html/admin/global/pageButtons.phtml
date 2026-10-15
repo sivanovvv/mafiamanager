@@ -1,0 +1,75 @@
+<ips:template parameters="$buttons" />
+{{if !empty( $buttons )}}
+	{{usort( $buttons, function ($a, $b ){ if( isset( $a['primary'] ) && $a['primary'] ){ return 1; }else{ return 0;} } );}}
+	{{$hasSecondary = false;}}
+	<ul class="ipsButtons ipsButtons--main">
+		{{foreach $buttons as $action}}
+			<li {{if isset( $action['primary'] ) && $action['primary']}}class='acpToolbar_primary'{{endif}}>
+				{{if !( isset( $action['primary'] ) && $action['primary'] )}}
+					{{$hasSecondary = true;}}
+				{{endif}}
+				{{if isset( $action['menu'] ) || isset( $action['dropdown'] )}}
+				    {{$id = $action['id'] ?? 'el' . md5( mt_rand() );}}
+					<button
+						type="button"
+							id='{$id}'
+							popovertarget='{$id}_menu'
+						
+						class='ipsButton {{if isset( $action['primary'] ) && $action['primary']}}ipsButton--primary{{elseif isset( $action['color'] )}}{$action['color']}{{else}}ipsButton--secondary{{endif}} {{if isset( $action['class'] )}}{$action['class']}{{endif}}'
+						{{if isset( $action['tooltip'] )}}title="{$action['tooltip']}" data-ipsTooltip{{endif}}
+						{{if isset( $action['data'] )}}
+							{{foreach $action['data'] as $k => $v}}
+								data-{$k}="{$v}"
+							{{endforeach}}
+						{{endif}}
+					>
+						<i class='fa-solid fa-{$action['icon']}' aria-hidden="true"></i> <span data-role="title">{lang="$action['title']"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+					</button>
+					{{if isset( $action['menu'] )}}
+						<i-dropdown popover id="{$id}_menu">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									{{foreach $action['menu'] as $item}}
+										{{if isset( $item['hr'] ) and $item['hr']}}
+											<li><hr></li>
+										{{else}}
+											<li class="{{if isset( $item['class'] )}}{$item['class']}{{endif}}">
+												<a href="{$item['link']}" {{if isset( $item['target'] )}}target='{$item['target']}'{{if $item['target'] == '_blank'}} rel="noopener"{{endif}}{{endif}} {{if isset( $item['data'] )}}{{foreach $item['data'] as $k => $v}} data-{$k}="{$v}"{{endforeach}}{{endif}}>
+													{{if isset( $item['icon'] )}}
+														<i class='fa-solid fa-{$item['icon']}' aria-hidden="true"></i>
+													{{endif}}
+													<span data-role="title">{lang="$item['title']"}</span>
+												</a>
+											</li>
+										{{endif}}
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					{{endif}}
+				{{else}}
+					<a
+						{{if isset( $action['link'] )}}
+							href='{{if mb_substr( $action['link'], 0, 1 ) === '#' or preg_match( '/^[a-z]{3,5}:\/\/.*$/', $action['link'] )}}{$action['link']}{{else}}{url="{$action['link']}"}{{endif}}'
+						{{else}}
+							href='#'
+						{{endif}}
+						{{if isset( $action['id'] )}}
+							id='{$action['id']}'
+						{{endif}}
+						class='ipsButton {{if isset( $action['primary'] ) && $action['primary']}}ipsButton--primary{{elseif isset( $action['color'] )}}{$action['color']}{{else}}ipsButton--secondary{{endif}} {{if isset( $action['class'] )}}{$action['class']}{{endif}}'
+						{{if isset( $action['target'] )}}target="{$action['target']}"{{if $action['target'] == '_blank'}} rel="noopener"{{endif}}{{endif}}
+						{{if isset( $action['tooltip'] )}}title="{$action['tooltip']}" data-ipsTooltip{{endif}}
+						{{if isset( $action['data'] )}}
+							{{foreach $action['data'] as $k => $v}}
+								data-{$k}="{$v}"
+							{{endforeach}}
+						{{endif}}
+					>
+						<i class='fa-solid fa-{$action['icon']}' aria-hidden="true"></i> <span data-role="title">{lang="$action['title']"}</span>
+					</a>
+				{{endif}}
+			</li>
+		{{endforeach}}
+	</ul>
+{{endif}}

@@ -1,0 +1,10 @@
+<ips:template parameters="$name, $value" />
+
+<ul class='i-flex i-flex-wrap_wrap i-gap_1 cColorChoices'>
+	{{foreach array('general', 'warning', 'error', 'success' ) as $type}}
+		<li data-ipsTooltip title='{lang="message_type_{$type}"}'>
+			<input type='radio' name='{$name}' value='{$type}' {{if $value === $type}}checked{{endif}}>
+			<span class='cColorChoice_chooser ipsMessage--{$type}'></span>
+		</li>
+	{{endforeach}}
+</ul>

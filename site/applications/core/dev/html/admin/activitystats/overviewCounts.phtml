@@ -1,0 +1,53 @@
+<ips:template parameters="$values, $previousValues=array(), $nodes=array()" />
+	{{reset($values);}}
+	{{$firstTitle = key( $values );}}
+	{{$firstCount = array_shift( $values );}}
+
+	<div>
+		<span class='cStat__number cStat__number--medium' data-number='{$firstCount}'>{number="$firstCount"}</span>
+		{{if isset( $previousValues[ $firstTitle ] )}}
+			<p class='cStat__change cStat__change--large {{if $previousValues[ $firstTitle ] > $firstCount}}i-color_negative{{elseif $previousValues[ $firstTitle ] < $firstCount}}i-color_positive{{else}}i-color_soft{{endif}}' data-ipsTooltip title="{lang="previous_period"} {number="$previousValues[ $firstTitle ]"}">
+				{{if $previousValues[ $firstTitle ] > $firstCount}}
+					-{expression="round( 100 - ( $firstCount / $previousValues[ $firstTitle ] * 100 ), 2 )"}%
+				{{elseif $previousValues[ $firstTitle ] < $firstCount}}
+					{{if $previousValues[ $firstTitle ]}}+{expression="round( ( ( $firstCount - $previousValues[ $firstTitle ] ) / $previousValues[ $firstTitle ] ) * 100, 2 )"}%{{else}}+ ∞{{endif}}
+				{{else}}
+					&mdash;
+				{{endif}}
+			</p>
+		{{endif}}
+
+		{{if \count( $values )}}
+			<hr class='ipsHr'>
+			<div class='i-flex'>
+				{{foreach $values as $title => $count}}
+					<div class='cStatTile__split'>
+						<h3 class='cStatTile__subTitle ipsTruncate ipsTruncate_line'>{lang="$title"}</h3>
+						<span class='cStat__number cStat__number--small' data-number='{$count}'>{number="$count"}</span>
+						{{if isset( $previousValues[ $title ] )}}
+							<p class='cStat__change cStat__change--small {{if $previousValues[ $title ] > $count}}i-color_negative{{elseif $previousValues[ $title ] < $count}}i-color_positive{{else}}i-color_soft{{endif}}' data-ipsTooltip title="{lang="previous_period"} {number="$previousValues[ $title ]"}">
+								{{if $previousValues[ $title ] > $count}}
+									-{expression="round( 100 - ( $count / $previousValues[ $title ] * 100 ), 2 )"}%
+								{{elseif $previousValues[ $title ] < $count}}
+									{{if $previousValues[ $title ]}}+{expression="round( ( ( $count - $previousValues[ $title ] ) / $previousValues[ $title ] ) * 100, 2 )"}%{{else}}+ ∞{{endif}}
+								{{else}}
+									&mdash;
+								{{endif}}
+							</p>
+						{{endif}}
+					</div>
+				{{endforeach}}
+			</div>
+		{{endif}}	
+
+		{{if \count( $nodes )}}
+			<hr class='ipsHr'>
+			<div class='i-flex'>
+				<div class='cStatTile__split'>
+					<p class='cStat__change cStat__change--small'>
+						{lang="overview_stats_curfilter" list="$nodes"}
+					</p>
+				</div>
+			</div>
+		{{endif}}
+	</div>

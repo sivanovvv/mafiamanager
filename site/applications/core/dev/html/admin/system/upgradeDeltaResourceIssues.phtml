@@ -1,0 +1,29 @@
+<ips:template parameters="$version, $resources" />
+<form action="{url="app=core&module=system&controller=upgrade" csrf="1"}" method="post">
+	<input type="hidden" name="version" value="{$version}">
+	<input type="hidden" name="select_version_submitted" value="1">
+	<input type="hidden" name="skip_md5_check" value="1">
+	<input type="hidden" name="skip_resource_check" value="1">
+	<div class="i-padding_3">
+        <div class="i-margin-bottom_1">
+            <h2 class='ipsTitle ipsTitle--h3'>{lang="download_upgrade_initial_resource_title"}</h2>
+        </div>
+        <div class="i-margin-bottom_1">
+            <p>{lang="download_upgrade_initial_resource_explain"}</p>
+        </div>
+        {{foreach $resources as $type => $res}}
+        {{if \count( $res )}}
+        <h3>{lang="download_upgrade_initial_resource_upgrade_{$type}" sprintf="\count($res)" pluralize="\count($res)"}</h3>
+        {lang="download_upgrade_initial_resource_upgrade_{$type}_blurb"}
+        <ul class="i-flex i-align-items_center i-gap_2 i-flex-wrap_wrap i-margin-top_1">
+        {{foreach $res AS $r }}
+            <li>{$r['title']}</li>
+        {{endforeach}}
+        </ul>
+        {{endif}}
+        {{endforeach}}
+	</div>
+	<div class="ipsSubmitRow">
+		<input type="submit" class="ipsButton ipsButton--primary" name="skip_resource_check" value="{lang="continue"}">
+	</div>
+</form>

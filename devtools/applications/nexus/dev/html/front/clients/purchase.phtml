@@ -1,0 +1,94 @@
+<ips:template parameters="$purchase" />
+{{$extra = $purchase->clientAreaPage();}}
+<div class='ipsBox ipsBox--commercePurchase'>
+	<div class='ipsColumns cNexusPurchase i-padding_2'>
+		<div class='ipsColumns__secondary i-basis_200'>
+			<span class='ipsThumb i-display_block'>
+				{{if $image = $purchase->image()}}
+					<img src="{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $image->url )"}" alt="" loading="lazy">
+				{{elseif $icon = $purchase->getIcon()}}
+				    <i class='fa fa-solid fa-{$icon}' aria-hidden="true"></i>
+				{{else}}
+					{{if $purchase->type == 'giftvoucher'}}
+						<i class="fa-solid fa-gift" aria-hidden="true"></i>
+					{{else}}
+						<i class="fa-solid fa-box-open" aria-hidden="true"></i>
+					{{endif}}
+				{{endif}}
+			</span>
+
+			<hr class='ipsHr'>
+
+			{{if ( $purchase->expire AND $canRenewUntil = $purchase->canRenewUntil(NULL,TRUE) ) OR $purchase->canCancel()}}
+				<ul class='i-grid i-gap_2 cNexusPurchase_renewActions'>
+					{{if $purchase->expire AND $canRenewUntil}}
+						<li><a href="{url="app=nexus&module=clients&controller=purchases&do=renew&id={$purchase->id}" base="front" csrf="true" seoTemplate="clientspurchaserenew" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $purchase->name )"}" class='ipsButton ipsButton--primary ipsButton--wide ipsButton--small' title="{lang="purchase_renew_now_title"}" {{if $canRenewUntil === TRUE or $canRenewUntil > 1}}data-ipsDialog data-ipsDialog-size='narrow'{{endif}}>{lang="purchase_renew_now"}</a></li>
+					{{endif}}
+					{{if $purchase->canCancel()}}
+						<li><a href="{url="app=nexus&module=clients&controller=purchases&do=cancel&id={$purchase->id}" base="front" csrf="true" seoTemplate="clientspurchasecancel" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $purchase->name )"}" class='ipsButton ipsButton--text ipsButton--wide ipsButton--small' data-confirm data-confirmSubMessage="{lang="purchase_cancel_renewal_confirm"}">{lang="purchase_cancel_renewal"}</a></li>
+					{{endif}}
+				</ul>
+			{{endif}}
+
+			<dl class='cNexusPurchase_info i-margin-top_3' data-ips-hook="purchaseInfo">
+				<dt class='ipsMinorTitle'><strong>{lang="ps_start"}</strong></dt>
+				<dd>{$purchase->start->localeDate()}</dd>
+				{{if $purchase->expire}}
+					<dt class='ipsMinorTitle'><strong>{lang="ps_expire"}</strong></dt>
+					<dd>{$purchase->expire->localeDate()}</dd>
+				{{endif}}
+				{{if $purchase->renewals and !$purchase->grouped_renewals}}
+					<dt class='ipsMinorTitle'><strong>{lang="purchase_renewal_terms"}</strong></dt>
+					<dd>{$purchase->renewals->toDisplay( $purchase->member )}</dd>
+				{{endif}}
+				{{if $purchase->billing_agreement AND !$purchase->billing_agreement->canceled}}
+					<dt class='ipsMinorTitle'><strong>{lang="ps_billing_agreement"}</strong></dt>
+					<dd class='i-link-color_inherit'><a href='{$purchase->billing_agreement->url()}'>{$purchase->billing_agreement->gw_id}</a></dd>
+				{{endif}}
+			</dl>
+		</div>
+		<div class='ipsColumns__primary'>
+			<h1 class="ipsTitle ipsTitle--h3">{$purchase->name}</h1>
+			<p>
+				{{if $purchase->cancelled}}
+					<span class='ipsBadge ipsBadge--negative'>{lang="purchase_canceled"}</span>&nbsp;
+				{{elseif !$purchase->active}}
+					<span class='ipsBadge ipsBadge--neutral'>{lang="purchase_expired"}</span>&nbsp;
+				{{elseif $purchase->expire}}
+					{{if $purchase->grace_period and $purchase->expire->getTimestamp() < time()}}
+						<span class='ipsBadge ipsBadge--positive'>{lang="purchase_in_grace_period_front"}</span>&nbsp;
+					{{else}}
+						<span class='ipsBadge ipsBadge--positive'>{lang="purchase_active"}</span>&nbsp;
+					{{endif}}
+				{{endif}}
+				{lang="$purchase->getTypeTitle()"}
+			</p>
+			<br><br>
+
+			{{if $pendingInvoice = $purchase->invoice_pending and $pendingInvoice->status === $pendingInvoice::STATUS_PENDING}}
+				<div class='i-margin-bottom_3 ipsMessage ipsMessage--info'>
+					{lang="purchase_pending_invoice"} {{if $pendingInvoice->canView()}}<a href="{$pendingInvoice->checkoutUrl()}" title="{lang="order_pay_now_title"}">{lang="order_pay_now"}</a>{{endif}}
+				</div>
+			{{endif}}
+
+			{{if $lkey = $purchase->licenseKey()}}
+				<div class='i-background_2 i-padding_3 i-text-align_center i-margin-bottom_4'>
+					<h2 class='ipsMinorTitle i-margin-bottom_2'>{lang="purchase_license_key"}</h2>
+					<div class='i-font-size_2 i-font-family_monospace cNexusLicenseKey'>
+						{$lkey->key}
+					</div>
+				</div>
+			{{endif}}
+
+			{{if isset( $extra['packageInfo'] )}}
+				<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="purchase_package_info"}</h2>
+					{template="richText" group="global" app="core" location="global" params="$extra['packageInfo'], array('i-margin-bottom_3')"}
+			{{endif}}
+
+			{{if isset( $extra['purchaseInfo'] )}}
+				<div>{$extra['purchaseInfo']|raw}</div>
+				<br><br>
+			{{endif}}
+		</div>
+	</div>
+</div>

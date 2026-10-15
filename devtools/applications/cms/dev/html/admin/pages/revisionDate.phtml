@@ -1,0 +1,13 @@
+<ips:template parameters="$time, $manualSave=0" />
+<ul class='ipsList ipsList--inline i-gap_2'>
+ <li>
+{{if $manualSave}}
+    <span class="ipsBadge ipsBadge--icon ipsBadge--small ipsBadge--positive" data-ipsTooltip title="{lang="revision_page_type_manual"}"><i class='fa fa-save' aria-hidden="true"></i></span>
+{{else}}
+   <span class="ipsBadge ipsBadge--icon ipsBadge--small ipsBadge--neutral" data-ipsTooltip title="{lang="revision_page_type_auto"}"><i class='fa fa-history' aria-hidden="true"></i></span>
+{{endif}}
+</li>
+ <li>
+    <span class="{{if $manualSave}}i-color_positive{{else}}i-color_soft{{endif}}">{$time}</span>
+ </li>
+ </ul>

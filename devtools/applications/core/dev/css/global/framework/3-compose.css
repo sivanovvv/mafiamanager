@@ -1,0 +1,713 @@
+.ipsComposeAreaWrapper{
+	background: var(--i-background_2);
+	padding: 1.4em;
+}
+
+/* Add a border and inherit the border-radius when necessary (eg. database reviews/comments) */
+.ipsBox .ipsComposeAreaWrapper{
+	border-radius: 0 0 var(--i-box--bo-ra) var(--i-box--bo-ra);
+	border-top: 1px solid var(--i-background_4);
+}
+
+/* Join the conversation */
+.cGuestTeaser{
+	padding: 2em;
+}
+.ipsComposeAreaWrapper .cGuestTeaser{
+	padding: 0;
+	margin-bottom: 2em;
+}
+
+/* Editor ipsBox */
+.ipsComposeArea{
+	display: flex;
+	gap: 1.2em;
+}
+
+	.ipsComposeArea__photo{
+		flex: 0 0 50px;
+	}
+
+	@media (max-width: 767px){
+		.ipsComposeArea__photo{
+			display: none;
+		}
+	}
+
+	.ipsComposeArea_editor{
+		flex: 1 1 100%;
+	}
+
+	@media (min-width: 768px){
+		.ipsComposeArea__photo + .ipsComposeArea_editor .ipsEditor::before{
+			content: '';
+			width: 10px;
+			height: 10px;
+			position: absolute;
+			border: inherit;
+			border-inline-end-width: 0 !important;
+			border-bottom-width: 0 !important;
+			top: 19px;
+			inset-inline-end: calc(100% - 5px);
+			transform: rotate(calc(-45deg * var(--i-lang-dir)));
+			background: var(--i-background_1);
+			box-sizing: content-box;
+		}
+
+		.ipsComposeArea__photo + .ipsComposeArea_editor .ipsEditor:focus-within::before{
+			border-color: var(--i-input-active--bo-co);
+		}
+	}
+
+.ipsComposeArea_editor .ipsNotification {
+	top: 0;
+}
+
+.ipsComposeArea_dummy {
+	padding: 1em;
+	color: var(--i-color_soft);
+	cursor: pointer;
+}
+
+.ipsComposeArea_dummy i{
+	margin-inline-end: .3em;
+}
+
+.ipsComposeArea_dummy .i-color_warning{
+	display: block;
+	font-weight: 500;
+}
+
+/* Post preview */
+.ipsComposeArea_editor [data-role="previewContainer"] iframe{
+	--i-compose-frame-width: 100%;
+	width: min(100%, var(--i-compose-frame-width));
+}
+
+	[data-preview-size="tablet"] [data-role="previewContainer"] iframe {--i-compose-frame-width: 780px;}
+	[data-preview-size="phone"] [data-role="previewContainer"] iframe {--i-compose-frame-width: 375px;}
+
+	.ipsComposeArea_smallPreview {
+		box-shadow: hsl(0 0% 0% / .1) 0px 5px 16px -5px;
+		margin: 10px 0;
+	}
+
+	.ipsComposeArea_editor [data-action="closePreview"],
+	.ipsComposeArea_editorPaste .ipsComposeArea_editorPasteSwitch {
+		font-family: arial, sans-serif;
+		width: 1.5em;
+		height: 1.5em;
+		border-radius: 50%;
+		font-size: 20px;
+		background: #000;
+		color: #fff;
+		display: grid;
+		place-content: center;
+		text-decoration: none !important;
+		flex: 0 0 auto;
+		cursor: pointer;
+		margin-inline-start: auto;
+	}
+
+/* Paste bar */
+.ipsComposeArea_editorPaste {
+	background: var(--i-background_dark);
+	color: var(--i-color_background-dark-contrast);
+	display: flex;
+	align-items: center;
+	gap: 1em;
+	font-size: .9em;
+	border-radius: 5px;
+	padding-inline-start: 1em;
+	padding-inline-end: .5em;
+	min-height: 3.5em;
+}
+
+	.ipsComposeArea_editorPaste[style*="block"]{
+		display: flex !important;
+	}
+
+	.ipsComposeArea_editorPaste .fa-solid{
+		margin-inline-end: .6em;
+	}
+
+.ipsComposeArea_editorPaste a {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.ipsComposeArea--textarea {
+	position: relative;
+}
+
+/* Ensure notice bars are hidden whenever editor is minimized */
+.ipsComposeArea_minimized .ipsComposeArea_editorPaste {
+	display: none !important;
+}
+
+/* SIDEBAR */
+.ipsComposeArea_sidebar {
+	--i-basis: 300px !important;
+	display: flex;
+	flex-direction: column;
+	background: var(--i-background_2);
+	border: 1px solid var(--i-background_4);
+	border-radius: var(--i-box--bo-ra);
+}
+
+.ipsComposeArea_sidebar [data-role="tagsList"] {
+	overflow-y: auto;
+	flex: 1 0 360px;
+}
+
+.ipsComposeArea_sidebar [data-tagKey] {
+	width: 100%;
+	padding: 1.5em;
+	cursor: pointer;
+	word-break: break-word;
+	border-bottom: 1px solid var(--i-background_4);
+}
+
+.ipsComposeArea_sidebar [data-tagKey]:hover{
+	background-color: var(--i-background_1);;
+}
+
+.ipsComposeArea_sidebar [data-tagkey] code {
+	display: block;
+	padding: 0 !important;
+	font-size: 0.9em;
+	background-color: transparent;
+}
+
+/* Drag files here to attach */
+.ipsComposeArea_dropZone {
+	padding: 0.8em 1em;
+	padding-inline-end: .3em;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	align-items: baseline;
+	gap: .7em;
+	margin: .5em;
+	background-color: var(--i-background_3);
+	border-radius: 5px;
+}
+
+/* Existing attachment/stock photo */
+.ipsComposeArea__media-other{
+	margin: -.6em 0;
+}
+.ipsComposeArea__media-other a {
+	font-size: max(1em, 16px);
+	padding: .4em .8em;
+	display: block;
+	color: var(--i-color_soft);
+	border-radius: min(var(--i-design-radius), 5px);
+}
+
+	.ipsComposeArea__media-other a:hover{
+		color: var(--i-color_root);
+		background: var(--i-background_1);
+	}
+
+/* Compose warnings */
+.ipsComposeArea_warning {
+	color: var(--i-color_warning);
+	margin-bottom: 1.4em;
+	font-weight: 500;
+}
+
+@media (min-width: 768px){
+	.ipsComposeArea_warning{
+		margin-inline-start: 75px;
+	}
+}
+	
+	.ipsComposeArea--unavailable {
+		pointer-events: none;
+	}
+
+/* ATTACHMENTS */
+.ipsUploader{
+	font-size: var(--i-font-size);
+	font-weight: normal;
+}
+	.ipsUploader__buttons{
+		display: flex;
+		flex-wrap: wrap;
+		gap: .5em;
+	}
+
+	.ipsAttachment_dropZoneSmall_info{
+		flex: 999 1 50%;
+		display: grid;
+	}
+
+	.ipsUploader__container {
+		margin-top: .4em;
+		display: grid;
+		gap: 1em;
+	}
+
+	/* Hide empty file list if files have been uploaded and then deleted */
+	.ipsUploader__container:not(:has(*)){
+		display: none;
+	}
+	
+	.ipsUploader__container--files {
+		grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+	}
+	.ipsUploader__container--images {
+		grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+	}
+
+	.ipsUploader__row {
+		--_ba-co: var(--if-light,var(--i-background_1)) var(--if-dark, var(--i-background_5));
+		background: var(--_ba-co);
+		border-radius: min(var(--i-design-radius), 6px);
+		padding: .7em;
+		position: relative;
+		display: flex;
+		align-items: center;
+		box-shadow: hsl(0 0% 5% / 7%) 0px 1px 1px, hsl(0 0% 5% / 7%) 0px 5px 16px;
+		gap: 1em;
+	}
+
+		.ipsUploader__row.ipsAttach_error {
+			border-color: var(--i-color_negative) !important;
+			background: var(--i-background_negative-soft);
+		}
+
+			.ipsUploader__row.ipsAttach_error .ipsUploader__rowPreview__generic {
+				background: var(--i-background_1);
+			}
+			
+			.ipsUploader__row.ipsAttach_error .ipsUploader__rowPreview__generic i[class*=" fa-"]:before {
+				content: "\f071";
+			}
+
+		.ipsUploader--insertable .ipsUploader__row {
+			cursor: pointer;
+		}
+	
+		.ipsUploader__container--files .ipsUploader__row {
+			height: 110px;			
+		}
+
+		.ipsUploader__container--images .ipsUploader__row {
+			display: block;
+		} 
+
+	.ipsUploader__rowPreview {
+		text-align: center;
+		align-self: stretch;
+		flex: 0 0 100px;
+		background-image: none !important; /* Uploader sets the background image, but in this scenario we don't want to use it */
+	}
+
+		.ipsUploader__container--images .ipsUploader__rowPreview,
+		.ipsUploader__row[data-filetype="video"] .ipsUploader__rowPreview__generic {
+			height: 140px;
+		}
+
+		.ipsUploader__row :is(img, video) {
+			width: 100%;
+			height: 100%;
+			object-fit: scale-down;
+			border-radius: min(var(--i-design-radius), 5px);
+			pointer-events: none;
+		}
+	
+		.ipsUploader__rowPreview__generic {
+			background: var(--i-background_3);
+			height: 100%;
+			display: grid;
+			place-content: center;
+		}
+
+		.ipsUploader__rowPreview__generic [class*="fa-"] {
+			font-size: 22px;
+			color: var(--i-color_soft);
+		}
+
+	.ipsUploader_rowMeta {
+		flex: 1 1 100%;
+		position: relative;
+		max-width: 100%;
+	}
+
+	.ipsUploader__container--images .ipsUploader_rowMeta {
+		padding: .6em .3em .3em;
+	}
+
+	.ipsUploader_rowTitle {
+		font-weight: 550;
+		color: var(--i-color_hard);
+		white-space: nowrap;
+		overflow: hidden;
+		width: 100%;
+		text-overflow: ellipsis;
+	}
+
+	.ipsUploader_rowDesc{
+		color: var(--i-color_soft);
+	}
+
+	.ipsUploader__rowDelete {
+		font-family: Arial, sans-serif;
+		width: 1.38em;
+		height: 1.38em;
+		background: var(--i-base-contrast_5);
+		color: var(--i-base_2);
+		display: grid;
+		place-content: center;
+		border-radius: 50%;
+		position: absolute;
+		top: -4px;
+		font-size: 16px;
+		text-decoration: none;
+		inset-inline-end: -4px;
+	}
+	
+	.ipsUploader .ipsMeter {
+		margin-top: 8px;
+	}
+
+	.ipsUploader__rowInsert {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		inset-inline-end: 0;
+		background: var(--i-background_1);
+		background: 
+			linear-gradient(
+				to right,
+				color-mix(in srgb, var(--_ba-co) 0%, transparent),
+				var(--_ba-co) 2em
+			);
+		display: flex;
+		align-items: center;
+		padding-inline-start: 3em;
+	}
+
+		.ipsUploader__rowInsert a {
+			font-size: .9em;
+			color: var(--i-color_primary);
+			text-decoration: none;
+			font-weight: 500;
+		}
+
+		@media (min-width: 980px){
+			.ipsUploader--insertable .ipsUploader__row:not(:hover) .ipsUploader__rowInsert {
+				opacity: 0;
+			}
+		}
+
+@media screen and (max-width: 979px) {
+	.ipsUploader__container--files .ipsUploader__row {
+		height: auto;
+	}
+	.ipsUploader__container--images .ipsUploader__rowPreview{
+		max-height: 100px;
+	}
+}
+
+.ipsAttachment_dropZone {
+	background-color: var(--if-light, var(--i-background_3)) var(--if-dark, var(--i-background_2));
+	padding: 1.4em;
+	transition: background-color 0.2s;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1em 1.4em;
+	border-radius: min(var(--i-design-radius), 5px);
+}
+
+:is(.ipsAttachment_dropZone, .ipsComposeArea_dropZone).ipsDragging {
+	background-color: var(--i-background_4);
+}
+
+.ipsUploader__icon{
+	font-size: 1.1em;
+	color: var(--i-color_soft);
+	opacity: .5;
+}
+
+.ipsAttachment_fileList{
+	flex: 1 1 100%;
+}
+
+	/* Hide empty file lists */
+	.ipsAttachment_fileList:has(.ipsUploader__container:empty),
+	.ipsAttachment_fileList:has([data-role="fileList"]:empty){
+		display: none;
+	}
+
+.ipsAttachment_dropZone * {
+	/*pointer-events: none;  This prevents dragleave from firing when dragging over elements in the drop zone */
+}
+
+	.ipsAttachment_dropZone a,
+	.ipsAttachment_dropZone .moxie-shim,
+	.ipsAttachment_dropZone .moxie-shim * {
+		pointer-events: auto; /* Reinstate default events for button */
+	}
+
+	.ipsAttachment__desc{
+		color: var(--i-color_hard);
+		font-weight: 550;
+		font-size: 1em;
+	}
+
+		.ipsAttachment__desc span{
+			cursor: pointer;
+			position: relative;
+			z-index: 1;
+			text-decoration: underline;
+		}
+
+	.ipsAttachment_supportDrag:is([data-supports-drag="false"] *),
+	.ipsAttachment_nonDrag:not([data-supports-drag="false"] *) {
+		display: none;
+	}
+
+.ipsAttach {
+	position: relative;
+}
+
+.ipsAttach.ipsAttach_selected {
+	outline: 2px solid var(--i-primary);
+	outline-offset: -2px;
+}
+
+.ipsAttach:has(:checked) {
+	outline: 2px solid var(--i-primary);
+	outline-offset: -2px;
+}
+
+/* Insert existing attachment / Select featured image */
+.ipsAttach_selection {
+	width: 24px;
+	height: 24px; 
+	border-radius: 50%;
+	display: inline-grid;
+	place-content: center;
+	color: #fff;
+	background: var(--i-background_dark);
+	background: color-mix(in srgb, var(--i-background_dark) 40%, transparent);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+	
+	.ipsAttach_selectionOn .ipsAttach_selection {
+		background: var(--i-primary);
+		color: var(--i-primary-contrast);
+		outline: 2px solid hsl(0 0% 100%);
+	}
+
+/* IMAGE ATTACHMENTS */
+/* Used for Insert Existing Attachment */
+.ipsAttachment_fileList--grid{
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: .5em;
+	padding: .5em;
+	background: var(--i-background_3);
+}
+
+/* Used for screenshot selection (Downloads) */
+.ipsAttachment_fileList--radios{
+	display: flex;
+	overflow: auto;
+	gap: 1em;
+	padding: 1em;
+	background: var(--i-background_3);
+	text-align: center;
+	border-radius: min(var(--i-design-radius), 5px);
+}
+
+	.ipsAttachment_fileList--radios .ipsImageAttach{
+		flex: 0 0 auto;
+		padding: 8px;
+	}
+
+	.ipsAttachment_fileList--radios .ipsImageAttach_thumb{
+		aspect-ratio: auto;
+	}
+
+	.ipsAttachment_fileList--radios .ipsImageAttach_thumb :is(img, video){
+		width: auto;
+		height: 170px;
+		border-radius: min(var(--i-design-radius), 5px);
+		object-fit: scale-down;
+	}
+
+	.ipsAttachment_fileList--radios input{
+		margin: calc(5px + 8px) 0 5px;
+	}
+
+.ipsImageAttach {
+	position: relative;
+	padding: 1em;
+	background: var(--i-background_1);
+	border-radius: min(var(--i-design-radius), 5px);
+	isolation: isolate;
+}
+
+.ipsImageAttach_thumb {
+	aspect-ratio: 16/9;
+}
+
+	.ipsImageAttach_thumb :is(img, video) {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		cursor: pointer;
+	}
+
+	.ipsImageAttach_thumb .ipsThumb{
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+	}
+
+.ipsImageAttach_status {
+	display: block;
+	line-height: 125px;
+	opacity: 0.5;
+}
+
+
+
+
+
+
+
+
+/* Feature content: image selection */
+/* Convert ipsThumbs into their natural ratio so thumbs aren't cropped via 'cover' or 'contain' */
+.cPromote_attachList{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+}
+.cPromote_attachList [data-role="preview"] img{
+	height: 100px;
+	border-radius: var(--i-thumb--bo-ra);
+	object-fit: scale-down;
+	background-color: var(--i-box--ba-co);
+}
+
+.cPromote_attachImage {
+	position: relative;
+}
+
+	.cPromote_attachImage {
+		border-radius: var(--i-thumb--bo-ra);
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+	}
+
+		.cPromote_attachImage:where(:has(.cPromote_attachImage__checkbox)):hover{
+			outline-color: var(--i-background_6);
+		}
+
+		.cPromote_attachImage:has([type="checkbox"]:checked){
+			outline-color: var(--i-primary);
+		}
+
+	.cPromote_attachImage .ipsMeter {
+		width: auto;
+		position: absolute;
+		left: 5px;
+		right: 5px;
+		bottom: 10px;
+	}
+
+	.ipsImageAttach_controls{
+		position: absolute;
+		top: 0;
+		inset-inline-end: 0;
+		display: flex;
+		justify-content: end;
+		gap: 10px;
+		padding: 10px;
+	}
+
+	.cPromote_attachImage__checkbox {
+		position: absolute;
+		inset: 0;
+		padding: 8px;
+		display: grid;
+		justify-content: end;
+		cursor: pointer;
+	}
+
+/* SERVICE FIELDS */
+	
+	#eOriginalText textarea {
+		height: 200px !important;
+	}
+
+.ipsAttach .ipsAttach_title {
+	max-width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin-top: .7em;
+	font-weight: 600;
+	color: var(--i-color_hard);
+}
+
+	.ipsAttach .ipsAttach_title + p {
+		color: var(--i-color_soft);
+		font-size: .9em;
+	}
+
+.ipsAttach:not(.ipsAttach_done) [data-role="preview"] {
+	opacity: 0.5;
+}
+
+/* Stock replies */
+.ipsStockReplies_menu {
+	border-radius: 0px;
+	height: 250px;
+	overflow-y: auto;
+}
+
+.ipsStockReplies_row.i-padding_2 {
+	padding-inline-start: 1.5em;
+}
+	.ipsStockReplies_row:hover {
+		cursor: pointer;
+		background: var(--i-background_2);
+	}
+
+.ipsStockReplies_content .ipsLoading {
+	height: 250px;
+}
+
+/* My Media */
+.cMyMedia{
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+}
+.cMyMedia__align{
+	display: contents;
+}
+
+.cMyMedia .ipsColumns{
+	flex: 1 1 auto;
+}
+
+.cMyMedia .ipsColumns__primary{
+	height: 100%;
+	overflow: auto;
+}
+
+.cMyMedia_controls{
+	flex: 0 0 auto;
+}
+
+.cMyMedia [data-role="myMediaContent"] {
+	overflow-y: auto;
+}

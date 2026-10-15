@@ -1,0 +1,37 @@
+{
+    "normal": {
+        "added": [
+            "close",
+            "form_regex_slashes",
+            "reindexing_search_index_item",
+            "backgroundQueue_pwaIcons",
+            "search_method_elastic_queue_desc",
+            "search_method_elastic_queue_pending",
+            "acplog__support_tool_rebuild_search_index_item",
+            "health_rebuild_search_index_item",
+            "rebuild_search_index_item_desc",
+            "rebuild_search_index_item_url",
+            "rebuild_search_index_item_url_desc",
+            "rebuild_search_index_item_submit",
+            "rebuild_search_index_item_invalid_url",
+            "rebuild_search_index_item_not_found",
+            "rebuild_search_index_item_not_searchable",
+            "rebuild_search_index_item_not_elastic",
+            "rebuild_search_index_item_queued",
+            "stream_filters"
+        ],
+        "edited": [
+            "search_elastic_server_desc"
+        ],
+        "removed": [
+            "form_no_email_allowed",
+            "stream_toggle_filters_hidden",
+            "stream_toggle_filters_shown"
+        ]
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

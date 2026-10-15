@@ -1,0 +1,102 @@
+<ips:template parameters="$image" />
+
+<div id='elGalleryImage' class='elGalleryImage' data-role="imageFrame" data-image-id="{$image->id}" {{if $image->data}}data-imageSizes='{$image->data}'{{endif}}>
+	{{if $image->media }}
+		<div class='cGallery_videoContainer' data-ips-hook="videoContainer">
+			<video data-controller="core.global.core.embeddedvideo" id="elGalleryVideo" data-role="video" controls preload="auto" width="100%" height="100%"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{endif}}>
+				<source src="{file="$image->original_file_name" extension="gallery_Images"}" type='{$image->file_type}' />
+				<embed wmode="opaque" autoplay="true" showcontrols="true" showstatusbar="true" showtracker="true" src="{file="$image->original_file_name" extension="gallery_Images"}" width="480" height="360" type='{$image->file_type}' />
+			</video>
+		</div>
+	{{else}}
+		<div class='cGalleryViewImage' data-role='notesWrapper' data-controller='gallery.front.view.notes' data-imageID='{$image->id}' {{if $image->canEdit()}}data-editable{{endif}} data-notesData='{$image->_notes_json}' data-ips-hook="imageContainer">
+			<a href='{file="$image->masked_file_name" extension="gallery_Images"}' title='{lang="view_in_lightbox"}' data-ipsLightbox>
+				{{$imageWidth=isset( $image->_dimensions['small'][0] ) ? $image->_dimensions['small'][0] : 0;}}
+                {{$imageHeight=isset( $image->_dimensions['small'][1] ) ? $image->_dimensions['small'][1] : 0;}}
+				<img src='{file="$image->masked_file_name" extension="gallery_Images"}' alt="{$image->caption}" {{if $imageWidth && $imageHeight}}width="{$imageWidth}" height="{$imageHeight}"{{endif}} title='{$image->caption}' data-role='theImage' fetchpriority="high" decoding="sync">
+			</a>
+			{{if \is_countable( $image->_notes ) AND \count( $image->_notes )}}
+				<noscript>
+					{{foreach $image->_notes as $note}}
+						<div class='cGalleryNote' style='left: {$note['LEFT']}%; top: {$note['TOP']}%; width: {$note['WIDTH']}%; height: {$note['HEIGHT']}%'>
+							<div class='cGalleryNote_border'></div>
+							<div class='cGalleryNote_note'><div>{$note['NOTE']}</div></div>
+						</div>
+					{{endforeach}}
+				</noscript>
+			{{endif}}
+		</div>
+        	{template="nsfwOverlay" app="gallery" location="front" group="global" params="$image"}
+
+		<div class='cGalleryImageFade'>
+			{{if $image->canEdit() OR $image->canDownloadOriginal() OR \IPS\Member::loggedIn()->member_id}}
+				<button type="button" id="elImageTools" popovertarget="elImageTools_menu" class='ipsButton ipsButton--overlay ipsJS_show cGalleryViewImage_controls'><span>{lang="image_tools"}</span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<i-dropdown popover id="elImageTools_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{if $image->canEdit()}}
+								<li class='ipsResponsive_hidePhone'>
+									<button type="button" title='{lang="add_image_note"}' data-action='addNote'><i class='fa-solid fa-pen-to-square' aria-hidden="true"></i> {lang="add_image_note"}</button>
+								</li>
+								{{if !$image->media}}
+									<li><hr class='ipsResponsive_hidePhone'></li>
+									<li>
+										<a href='{$image->url( 'rotate' )->csrf()->setQueryString( 'direction', 'right' )}' title='{lang="rotate_right"}'>
+											<i class='fa-solid fa-rotate-right' aria-hidden="true"></i> {lang="rotate_right"}
+										</a>
+									</li>
+									<li>
+										<a href='{$image->url( 'rotate' )->csrf()->setQueryString( 'direction', 'left' )}' title="{lang="rotate_left"}">
+											<i class='fa-solid fa-rotate-left' aria-hidden="true"></i> {lang="rotate_left"}
+										</a>
+									</li>
+								{{endif}}
+							{{endif}}
+							{{if \IPS\Member::loggedIn()->member_id}}
+									{{if $image->canSetAsAlbumCover() OR $image->canSetAsCategoryCover()}}
+										<li><hr></li>
+										{{if $image->canSetAsAlbumCover() AND $image->canSetAsCategoryCover()}}
+											<li><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'category')->csrf()}'><i class="fa-solid fa-images" aria-hidden="true"></i>{lang="cover_category_only"}</a></li>
+											<li><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'album')->csrf()}'><i class="fa-solid fa-images" aria-hidden="true"></i>{lang="cover_album_only"}</a></li>
+											<li><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'both')->csrf()}'><i class="fa-solid fa-images" aria-hidden="true"></i>{lang="cover_both"}</a></li>
+										{{elseif $image->canSetAsCategoryCover()}}
+											<li><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'category')->csrf()}'><i class="fa-solid fa-images" aria-hidden="true"></i>{lang="cover_category"}</a></li>
+										{{elseif $image->canSetAsAlbumCover()}}
+											<li><a data-action='setAsCover' href='{$image->url()->setQueryString( 'do', 'cover' )->setQueryString( 'set', 'album')->csrf()}'><i class="fa-solid fa-images" aria-hidden="true"></i>{lang="cover_album"}</a></li>
+										{{endif}}
+										{{if \IPS\Member::loggedIn()->member_id}}
+											<li>
+												<a href='{$image->url('setAsPhoto')->csrf()}' data-action='setAsProfile' title="{lang="set_gallery_image_photo"}"><i class="fa-solid fa-circle-user" aria-hidden="true"></i>{lang="set_gallery_image_photo"}</a>
+											</li>
+											{{if \IPS\Settings::i()->gallery_nsfw and $image->canEdit()}}
+												<li><hr></li>
+												<li>
+													<a href='{$image->url('toggleNSFW')->csrf()}' data-action='setAsProfile' title="{{if $image->nsfw}}{lang="set_gallery_image_nsfw_on"}{{else}}{lang="set_gallery_image_nsfw_off"}{{endif}}"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i>{{if $image->nsfw}}{lang="set_gallery_image_nsfw_on"}{{else}}{lang="set_gallery_image_nsfw_off"}{{endif}}</a>
+												</li>
+											{{endif}}
+										{{endif}}
+									{{elseif \IPS\Member::loggedIn()->member_id}}
+										<li>
+											<a href='{$image->url('setAsPhoto')->csrf()}' title='{lang="set_gallery_image_photo"}'><i class="fa-solid fa-circle-user" aria-hidden="true"></i>{lang="set_gallery_image_photo"}</a>
+										</li>
+									{{endif}}
+								</li>
+							{{endif}}
+							{{if $image->canDownloadOriginal()}}
+								<li>
+									<a href='{$image->url('download')}' title='{lang="download"}'><i class='fa-solid fa-download' aria-hidden="true"></i> {lang="download"}</a>
+								</li>
+							{{endif}}
+						</ul>
+					</div>
+				</i-dropdown>
+			{{endif}}
+		</div>
+	{{endif}}
+	<span class='elGalleryImageNav'>
+       {{if $image->hasPreviousOrNext()}}
+            <a href='{$image->url()->setQueryString( [ 'browse' => 1, 'do' => 'previous' ] )}' class='elGalleryImageNav_prev' data-action="changeImage" data-direction="prev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+            <a href='{$image->url()->setQueryString( [ 'browse' => 1, 'do' => 'next' ] )}' class='elGalleryImageNav_next' data-action="changeImage" data-direction="next"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        {{endif}}
+	</span>
+</div>

@@ -1,0 +1,1184 @@
+/*
+	----------------
+	- Inputs
+	- All inputs (checkbox, radio, text, number, range, etc) use .ipsInput
+	----------------
+*/
+
+.ipsInput:where(:not([type="checkbox"], [type="radio"], [type="range"])){
+	--i-co: currentColor;
+	--i-outline-width: 0px;
+	background-color: var(--i-input--ba-co);
+	border-radius: var(--i-input--bo-ra);
+	border: var(--i-input--bo-wi) var(--i-input--bo-st, solid) var(--i-input--bo-co);
+	box-shadow: var(--i-input--bo-sh, none);
+	color: var(--i-co);
+	display: inline-flex;
+	padding: var(--i-input--pa-bl) var(--i-input--pa-in);
+	width: 100%;
+	max-width: 100%; /* Necessary if width is overwritten somewhere */
+	vertical-align: middle;
+}
+
+.ipsEditor__tiptap-wrap--codeMode {
+	--i-outline-width: 0px;
+	background-color: var(--i-box--ba-co);
+	border-radius: var(--i-input--bo-ra);
+	border: var(--i-input--bo-wi) var(--i-input--bo-st, solid) var(--i-input--bo-co);
+	box-shadow: var(--i-input--bo-sh, none);
+}
+
+:where([data-ips-scheme="light"]) :where(.ipsInput:not([type="checkbox"], [type="radio"], [type="range"])){
+	background-clip: padding-box;
+}
+
+@media (any-hover:hover){
+	.ipsInput:where(:not([type="checkbox"], [type="radio"], [type="range"], .ipsInput--pseudo)):hover{
+		border-color: var(--i-input-hover--bo-co);
+	}
+}
+
+/* Mobiles/tablets */
+@media (hover: none) and (max-width: 1024px) {
+	.ipsInput:where(:not([type="checkbox"], [type="radio"], [type="range"])){
+		font-size: max(16px, 1em);
+	}
+}
+
+.ipsInput:focus-within,
+.ipsInput:where(:not([type="checkbox"], [type="radio"], [type="range"])):focus{
+	outline: 2px solid var(--i-input-active--bo-co);
+	outline-offset: -1px;
+}
+	
+.ipsInput::placeholder{
+	color: inherit;
+	opacity: var(--i-placeholder--op, .75);
+}
+
+.ipsInput:where([type="number"], [type="date"], [type="time"]){
+	width: auto;
+}
+
+.ipsInput[type="number"]:is([size="3"], [size="4"], [size="5"], [size="6"], [size="7"], [size="8"], [size="9"], [size="10"]){
+	width: calc(4ch + var(--_size, 3) * 1ch);
+	padding-inline: 0;
+	text-align: center;
+}
+
+.ipsInput[type="number"][size="4"]{
+	--_size: 4;
+}
+.ipsInput[type="number"][size="5"]{
+	--_size: 5;
+}
+.ipsInput[type="number"][size="6"]{
+	--_size: 6;
+}
+.ipsInput[type="number"][size="7"]{
+	--_size: 7;
+}
+.ipsInput[type="number"][size="8"]{
+	--_size: 8;
+}
+.ipsInput[type="number"][size="9"]{
+	--_size: 9;
+}
+.ipsInput[type="number"][size="10"]{
+	--_size: 10;
+}
+
+/* Stripe inputs are handled by an iframe. Since the text is always black, invert the iframe in dark mode to make the text readable */
+[data-ips-scheme="dark"] .ipsInput--stripeInput iframe{
+	filter: invert(1);
+}
+
+/* Fluid */
+.ipsInput--fluid{
+	field-sizing: content;
+}
+
+/* Range */
+.ipsInput:where([type="range"]) {
+	flex: 1 1 auto; /* Used in ACP for alignment with current/max value */
+	--i-co: var(--i-color_root);
+	--_track--op: .2;
+	-webkit-appearance: none;
+	appearance: none;
+	background: transparent;
+	cursor: ew-resize;
+	width: 100%;
+	border: 0;
+	height: 1.4em;
+	box-shadow: none;
+	padding: 0;
+	color: var(--i-co);
+	outline: none !important;
+}
+
+.ipsInput:where([type="range"]):focus-visible::-webkit-slider-thumb{
+	outline: 2px solid var(--i-input-active--bo-co);
+	outline-offset: 4px;
+}
+.ipsInput:where([type="range"]):focus-visible::-moz-range-thumb{
+	outline: 2px solid var(--i-input-active--bo-co);
+	outline-offset: 4px;
+}
+
+.ipsInput:where([type="range"]):is(:hover, :focus-visible){
+	--_track--op: .5;
+	--_thumb--sc: 1;
+}
+
+.ipsInput:where([type="range"])::-webkit-slider-runnable-track {
+	background: currentColor;
+	opacity: var(--_track--op);
+	height: 5px;
+	border-radius: 3px;
+	transition: .2s;
+}
+.ipsInput:where([type="range"])::-moz-range-track {
+	background: currentColor;
+	opacity: var(--_track--op);
+	height: 5px;
+	border-radius: 3px;
+	transition: .2s;
+}
+
+.ipsInput:where([type="range"])::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	margin-top: -6px;
+	background-color: var(--i-co);
+	border: none;
+	height: 16px;
+	width: 8px;
+	border-radius: 3px;
+	transform: scale(var(--_thumb--sc, .7));
+	transition: .2s;
+	box-shadow: var(--i-background_1) 0px 0px 0px 2px;
+}
+.ipsInput:where([type="range"])::-moz-range-thumb {
+	background-color: var(--i-co);
+	border: none;
+	height: 16px;
+	width: 8px;
+	border-radius: 3px;
+	transform: scale(var(--_thumb--sc, .7));
+	transition: .2s;
+	box-shadow: var(--i-background_1) 0px 0px 0px 2px;
+}
+
+@media(hover:none){
+	.ipsInput:where([type="range"])::-webkit-slider-thumb {
+		width: 40px;
+		height: 20px;
+		margin-top: -10px;
+		border-radius: 6px;
+		transform: none;
+	}
+}
+
+
+/* Colors */
+.ipsInput:where([type="color"]) {
+	padding: 0;
+	border-radius: inherit;
+	height: 100%;
+	opacity: 0;
+}
+
+.ipsInput:where([type="color"])::-moz-color-swatch {
+	border:none;
+	padding: 0;
+	margin: 0;
+}
+
+.ipsInput:where([type="color"])::-webkit-color-swatch {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.ipsInput:where([type="color"])::-webkit-color-swatch-wrapper {
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+
+.ipsInput__color-wrap {
+	--i-co-inverse: #000;
+	--i-co: #fff;
+	display: flex;
+	gap: .5em;
+	align-items: center;
+}
+
+.ipsInput__color-wrap-inner {
+	display: inline-flex;
+	justify-content: stretch;
+	min-width: 50px;
+	border-radius: calc(var(--i-button--bo-ra, 3) * 1px);
+	/*overflow: hidden;*/
+	height: 2em;
+	height: 2lh;
+	position: relative;
+	flex-basis: 14ch;
+	border: 1px solid color-mix(in srgb, var(--i-color_soft) 20%, transparent);
+	background: var(--i-co);
+}
+.ipsInput__color-wrap-inner input {
+	cursor: pointer;
+}
+
+.ipsInput__color-wrap-inner .ipsInput__color-iro-container {
+	display: none;
+}
+
+.ipsInput__color-wrap-inner .ipsInput__color-iro-container--open {
+	display: block;
+	position: absolute;
+	top: 100%;
+	z-index: var(--ips-js-zindex-top);
+}
+
+.ipsInput--color-disabled {
+	background: none;
+	position: relative;
+}
+
+.ipsInput--color-disabled::before,
+.ipsInput--color-disabled::after {
+	position: absolute;
+	content: "";
+	inset: 0;
+}
+.ipsInput--color-disabled::before {
+	background: var(--i-background_1);
+}
+.ipsInput--color-disabled::after, .ipsCheckerboard {
+	--i-ch-fg: color-mix(in srgb, var(--i-background_1) 75%, var(--i-color_root));
+	background-image: linear-gradient(45deg, var(--i-ch-fg) 25%, transparent 25%), linear-gradient(-45deg, var(--i-ch-fg) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--i-ch-fg) 75%), linear-gradient(-45deg, transparent 75%, var(--i-ch-fg) 75%);
+	background-size: 1lh 1lh;
+	background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+
+.ipsInput--color-disabled input[type='color']:not(:active, :focus-within) {
+	opacity:0;
+}
+
+.ipsInput__color-label {
+	position: absolute;
+	inset: 0;
+	display: inline;
+	align-content: center;
+	padding: 0 1em;
+	color: var(--i-co-inverse);
+	border-radius: inherit;
+}
+
+.ipsInput__color-label:focus-visible {
+	outline-offset: 0;
+	outline-color: black;
+}
+
+/* Add arrow to select elements */
+select.ipsInput{
+	padding: var(--i-input--pa-bl) var(--i-input--pa-in);
+	padding-inline-end: calc(var(--i-input--pa-in) * 3);
+	background-image: var(--i-select--arrow);
+	background-size: auto 1em;
+	background-repeat: no-repeat;
+	background-position: calc(100% - 1em) 50%;
+}
+
+	[dir="rtl"] select.ipsInput{
+		background-position: 1em 50%;
+	}
+
+	/* Smaller selects */
+	select.ipsInput:is([name*="[day]"], [name*="[month]"], [name*="[year]"]){
+		width: auto;
+	}
+
+/* Multi-select */
+@media not (hover:none){
+	select.ipsInput[multiple]{
+		background-image: none;
+		padding-inline-end: var(--i-input--pa-in);
+	}
+}
+select.ipsInput[multiple] option:hover{
+	background-color: var(--i-background_3);
+}
+
+select.ipsInput[multiple] option:checked{
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+
+/* Auto widths */
+.ipsInput--auto{
+	width: auto;
+}
+
+/* Larger inputs. The middle selector caters for auto-completes */
+.ipsInput--primary,
+.ipsInput--primary input,
+.ipsFieldRow--primary input {
+	font-size: 1.2em;
+}
+
+/* v5 todo: Only used in Commerce.. */
+.ipsInput--dummy{
+	min-height: 2em;
+}
+
+/* Hide 'x' in search input */
+.ipsInput::-webkit-search-cancel-button{
+	display: none;
+}
+
+:where(textarea).ipsInput{
+	height: auto;
+	padding: var(--i-input--pa-bl) var(--i-input--pa-in);
+	resize: vertical;
+}
+
+/* Disabled */
+.ipsInput:disabled{
+	opacity: .4;
+	font-style: italic;
+	pointer-events: none;
+}
+
+.ipsInput:disabled{
+	background-color: var(--i-background_3);
+}
+
+/* Monospace textarea */
+textarea.ipsField_codeInput {
+	font-family: "Courier New", Courier, monospace;
+}
+
+/* Autocomplete menus (tags, assign to, etc) */
+[data-controller="core.global.core.prefixedAutocomplete"]{
+	display: flex;
+	flex-wrap: wrap-reverse;
+	gap: .5em;
+}
+
+	/* Topic prefix select menu */
+	.ipsFieldRow__content [data-role="prefixRow"] {
+		flex: 1 0 auto;
+	}
+
+		.ipsFieldRow__content [data-role="prefixRow"] .ipsButton {
+			height: 100%;
+			width: 100%;
+		}
+
+/* Choose Tag(s) input */
+.ipsAutoComplete__list{
+	display: flex;
+	flex-wrap: wrap;
+	gap: .3em;
+	/* Necessary for the "clickable Add Tags" panel, using the ::before element */
+	isolation: isolate;
+}
+
+	.ipsAutoComplete__add {
+		flex-grow: 1;
+	}
+	.ipsAutoComplete__add > input[type="text"] {
+		width: 100%;
+		height: 100%;
+	}
+
+	.ipsAutoComplete__add:not(:first-child){
+		margin-inline-start: 1em;
+	}
+	/* Make the "Choose Tag(s)" option expand to full width. This makes the entire input area clickable instead of just the text. */
+	.ipsAutoComplete__add [data-action="addToken"]::before{
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+	}
+	
+		.ipsAutoComplete__add [data-action="addToken"]{
+			display: block;
+			font-size: .9em;
+			color: var(--i-color_root);
+			padding: 0 .6em;
+			line-height: 2;
+		}
+		.ipsAutoComplete__add [data-action="addToken"]:hover{
+			color: var(--i-color_hard);
+		}
+
+	/* Tokens */
+	.cToken {
+		--_co: var(--i-color_primary);
+		background-color: var(--i-background_4);
+		background-color: color-mix(in srgb, currentColor 10%, transparent);
+		color: var(--_co);
+		display: inline-flex;
+		font-size: .9em;
+		border-radius: min(5px, var(--i-design-radius));
+		padding: 0 1em;
+		cursor: pointer;
+		max-width: 100%;
+		overflow: hidden;
+		font-weight: 500;
+		line-height: 2;
+	}
+
+		.cToken.cToken_selected {
+			--_co: var(--i-primary-contrast);
+			background: var(--i-primary);
+		}
+
+		.cToken_close{
+			padding: 0 .5em;
+			margin-inline-start: 1em;
+			margin-inline-end: -1em;
+			border-inline-start: 1px solid color-mix(in srgb, var(--_co) 9%, transparent);
+		}
+
+		.cToken_close:not(:hover){
+			opacity: .6;
+		}
+
+		.cToken_close:hover{
+			background: color-mix(in srgb, var(--_co) 7%, transparent);
+		}
+
+.ipsAutocompleteMenu {
+	background: var(--i-dropdown--ba-co);
+	box-shadow: var(--i-dropdown--bo-sh);
+	border-radius: var(--i-dropdown--bo-ra);
+	z-index: var(--ips-js-zindex-top, 9999);
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+	margin: 3px 0;
+	min-width: min(300px, 90vw);
+}
+
+	/* Ensure the dropdown menu is displayed correctly in an overflowing dialog */
+	@supports (anchor-name: --x) {
+		.ipsDialog .ipsAutocompleteMenu{
+			position: fixed;
+			top: anchor(bottom);
+			left: anchor(left);
+			right: anchor(right);
+			width: auto;
+			min-width: 0;
+		}
+	}
+
+	.ipsAutocompleteMenu__search input{
+		padding: 1em;
+		border-bottom: 1px solid var(--i-background_6);
+		width: 100%;
+	}
+
+	.ipsAutocompleteMenu_itemWrapper {
+		max-height: 200px;
+		overflow: auto;
+		border-radius: inherit;
+		padding: .3em;
+	}
+	/* No results */
+	.ipsAutocompleteMenu_empty{
+		padding: .9em 1.3em;
+		color: var(--i-color_soft);
+		font-style: italic;
+		cursor: default;
+		/* Cater for .3em padding on the above list */
+		margin-top: -.6em;
+	}
+	.ipsAutocompleteMenu_item {
+		padding: .6em 1em;
+		border-radius: inherit;
+	}
+
+		.ipsAutocompleteMenu_item[data-selected] {
+			background: var(--i-primary);
+			color: var(--i-primary-contrast);
+			cursor: pointer;
+		}
+
+		.ipsAutocompleteMenu_item[data-selected] *{
+			color: inherit;
+		}
+
+		.ipsAutocompleteMenu_item[data-selected] .i-color_soft{
+			opacity: .7;
+		}
+
+.ipsField_autocomplete {
+	position: relative;
+	display: block;
+	padding: var(--i-input--pa-bl);
+}
+
+/* When an "item prefix" select menu is part of the UI, make the auto-complete occupy the remaining space */
+[data-role="prefixRow"] ~ .ipsField_autocomplete{
+	width: auto;
+	flex: 999 1 300px;
+}
+
+.ipsField_autocomplete .ipsList--inline{
+	--i-column-gap: .3em;
+}
+
+.ipsField_autocomplete [type="text"] {
+	border: 0;
+	border-radius: 0;
+	padding: 0;
+	background: transparent !important;
+	width: 20px;
+	max-width: 100%;
+	box-shadow: none;
+	outline: none;
+}
+
+.ipsField_autocomplete.ipsField_autocompleteDisabled {
+	pointer-events: none;
+}
+	
+	.ipsField_autocomplete.ipsField_autocompleteDisabled .cToken {
+		opacity: 0.6;
+	}
+
+.ipsField_autocomplete_loading {
+	position: absolute;
+	inset-inline-end: 10px;
+}
+
+.ipsField_autocomplete_loading::before{
+	content: 'loading..'
+}
+
+.ipsDialog .ipsField_autocomplete [data-action="addToken"] {
+	background: var(--i-secondary);
+	color: var(--i-secondary-contrast);
+	display: inline-flex;
+	align-items: center;
+	gap: .6em;
+	font-size: .9em;
+	border-radius: min(5px, var(--i-design-radius));
+	padding: 0 1em;
+	cursor: pointer;
+	max-width: 100%;
+	overflow: hidden;
+	font-weight: 500;
+	line-height: 2;
+}
+
+/* Tooltips are shown when duplicate items are entered into the autocomplete */
+.ipsAutoComplete .ipsTooltip--autoComplete{
+	position: absolute;
+	bottom: calc(100% + 6px);
+	left: 50%;
+	transform: translateX(-50%);
+}
+.ipsTooltip--autoComplete:not([hidden]){
+	opacity: 1;
+	translate: 0 0;
+}
+	@starting-style {
+		.ipsTooltip--autoComplete:not([hidden]){
+			opacity: 0;
+			translate: 0 10px;
+		}
+	}
+
+/* Restyle the "Assign to.." autocomplete in the reply form */
+#elInput_assign_content_to_wrapper{
+	--i-outline-color: var(--i-button--co);
+	--i-button--co: currentColor;
+	--i-button--bo-co: transparent;
+	--i-button--ba-co: color-mix(in srgb, var(--i-button--co) 10%, transparent);
+	--button-hover--ba-co: color-mix(in srgb, var(--i-button--co) 15%, transparent);
+	--button-hover--ba-im: linear-gradient(hsl(0 0% 0% / 0) 0% 100%);
+
+	all: revert;
+	display: flex;
+	position: relative;
+	background-color: var(--i-button--ba-co);
+	background-image: var(--button-hover--ba-im);
+	border-width: 0;
+	border-radius: calc(var(--i-button--bo-ra) * 1px);
+	box-shadow: var(--i-button--bo-sh);
+
+	height: calc(1em + var(--i-button--pa-bl) * 2);
+}
+
+	#elInput_assign_content_to_wrapper:hover{
+		background-image: linear-gradient(var(--button-hover--ba-co) 0% 100%), var(--button-hover--ba-im);
+	}
+
+	#elInput_assign_content_to_wrapper .ipsAutoComplete__list{
+		font-size: var(--i-button--fo-si, inherit);
+		font-weight: var(--i-button--fo-we);
+		color: var(--i-button--co);
+		line-height: var(--i-button--li-he, 1);
+		padding: 0;
+	}
+
+	#elInput_assign_content_to_wrapper .ipsAutoComplete__list li{
+		align-items: center;
+		display: inline-flex;
+		background: none;
+		color: currentColor;
+		font-weight: 600;
+	}
+
+	#elInput_assign_content_to_wrapper [data-action="addToken"]{
+		color: currentColor;
+		padding: 0 var(--i-button--pa-in);
+	}
+
+	#elInput_assign_content_to_wrapper .cToken_close{
+		align-self: stretch;
+		display: grid;
+		place-content: center;
+	}
+
+		#elInput_assign_content_to_wrapper .cToken_close::before{
+			content: '';
+			position: absolute;
+			inset: 0;
+		}
+
+	ul.ipsButtons:has( #elInput_assign_content_to_wrapper .cToken ) [data-role="assignmentPrefix"]{
+		display:inline;
+	}
+
+/* With prefix icons */
+.ipsInputIcon{
+	position: relative;
+}
+
+	.ipsInputIcon__icon{
+		position: absolute;
+		margin-top: auto;
+		margin-bottom: auto;
+		top: 0;
+		bottom: 0;
+		inset-inline-start: .8em;
+		pointer-events: none;
+	}
+
+	.ipsInputIcon .ipsInput{
+		padding-inline-start: 2.5em;
+	}
+
+/* Multi-language inputs */
+.ipsFlagEditor{
+	font-weight: 500;
+	margin-bottom: .4em;
+	color: var(--i-color_soft);
+	display: flex;
+	align-items: center;
+	gap: .5em;
+}
+
+/* Error and success */
+.ipsField_error, .ipsFieldRow_error :is(textarea, input, .ipsAutoComplete):not(.ipsFieldRow_errorExclude):not([type="checkbox"], [type="radio"], [type="range"], :focus, [disabled]){
+	background-color: var(--i-input-error--ba-co, hsl(350 56% 93%));
+	border-color: var(--i-input-error--bo-co, hsl(351 31% 60%));
+	color: var(--i-input-error--co, hsl(351 72% 20%));
+}
+.ipsField_success, .ipsFieldRow_success :is(textarea, input):not(:focus):not([type="checkbox"], [type="radio"], [type="range"]){
+	background-color: var(--i-input-success--ba-co, hsl(92 33% 92%));
+	border-color: var(--i-input-success--bo-co, hsl(92 59% 30%));
+	color: var(--i-input-success--co, hsl(92 72% 20%));
+}
+
+/* Different widths */
+.ipsField_short{
+	max-width: 200px;
+}
+.ipsField_medium{
+	max-width: 270px;
+}
+.ipsField_tiny{
+	max-width: 60px;
+}
+
+/* Overflowing checkboxes */
+.ipsField__checkboxOverflow:not(.ipsField__checkboxOverflow--scroll) [data-role="search"]{
+	display: none;
+}
+
+.ipsField__checkboxOverflow--scroll {
+	display: grid;
+	background-color: var(--i-input--ba-co);
+	border-color: var(--i-input--bo-co);
+	border-radius: var(--i-input--bo-ra);
+	border-style: var(--i-input--bo-st, solid);
+	border-width: var(--i-input--bo-wi);
+	box-shadow: var(--i-input--bo-sh, none);
+	color: var(--i-co);
+	width: 100%;
+}
+
+	.ipsField__checkboxOverflow--scroll .ipsFieldList {
+		padding: 1em 0;
+		max-height: 200px;
+		overflow-y: scroll;
+	}
+
+		.ipsField__checkboxOverflow--scroll .ipsFieldList > *{
+			padding: .4em 1em;
+		}
+
+	/* Reset existing form styles */
+	.ipsField__checkboxOverflow--scroll .ipsField__checkboxOverflow__search {
+		max-width: none;
+		border-width: 0;
+		border-bottom: 1px solid var(--i-background_3);
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	.ipsField__checkboxOverflow--scroll .ipsField__checkboxOverflow__focused {
+		background: var(--i-background_4);
+	}
+
+	/* All/none buttons */
+	.ipsField__checkboxOverflow__toggles{
+		padding-top: .5em;
+		padding-inline-start: 2.5em;
+	}
+
+	.ipsField__checkboxOverflow__toggles button:hover{
+		text-decoration: underline;
+	}
+	
+	.ipsField__checkboxOverflow--scroll .ipsField__checkboxOverflow__toggles {
+		padding: .8em;
+		border-top: 1px solid var(--i-background_3);
+	}
+
+/* v5 todo: Does this add padding to options on Windows? */
+/* Select menus */
+.ipsInput option{
+	padding: .6em 1em;
+	color: var(--i-color_root);
+	background: var(--i-background_2);
+}
+
+/* Simple select menus */
+.ipsSimpleSelect{
+	display: grid;
+	gap: .4em;
+	cursor: pointer;
+}
+
+	.ipsSimpleSelect::after{
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-style: normal;
+		font-weight: 900;
+		content: "\f107";
+		pointer-events: none;
+		grid-area: 1/-1;
+		align-self: center;
+		justify-self: end;
+		opacity: .5;
+		font-size: .8em;
+		padding: 0 1em;
+	}
+
+	.ipsSimpleSelect i{
+		grid-area: 1/-1;
+		padding-inline-start: 1.2em;
+		justify-self: start;
+		align-self: center;
+		opacity: .5;
+		pointer-events: none;
+		position: relative;
+	}
+
+	.ipsSimpleSelect select{
+		padding: .5em 1em;
+		padding-inline-end: 2em;
+		grid-area: 1/-1;
+		background: var(--i-background_3);
+		border-radius: min(var(--i-design-radius), 5px);
+		outline-offset: -2px;
+	}
+
+	.ipsSimpleSelect i + select{
+		padding-inline-start: 3em;
+	}
+
+/* Align select content to the end */
+.ipsSimpleSelect--end{
+	text-align: end;
+}
+
+.ipsSimpleSelect--end select{
+	direction: rtl;
+	text-align: start;
+	padding-inline-end: 1em;
+	padding-inline-start: 2em;
+}
+
+[dir="rtl"] .ipsSimpleSelect--end select{
+	direction: ltr;
+}
+
+/*
+	----------------
+	- Checkbox and Radio inputs
+	----------------
+*/
+
+.ipsInput:where([type="checkbox"], [type="radio"]){
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: var(--i-input-toggle--size, 1.2em);
+	position: relative;
+	vertical-align: middle;
+	width: var(--i-input-toggle--size, 1.2em);
+	cursor: pointer;
+	background-color: var(--i-input--ba-co);
+	border-width: var(--i-input--bo-wi);
+	border-style: solid;
+	border-color: var(--i-input-toggle--bo-co, var(--i-input--bo-co));
+	box-shadow: var(--i-input--bo-sh, none);
+	flex: 0 0 auto;
+}
+
+/* Hovered and Checked */
+@media (any-hover:hover){
+	.ipsInput:where([type="checkbox"], [type="radio"]):hover{
+		border-color: var(--i-input-hover--bo-co);
+	}
+}
+
+/* Focus */
+.ipsInput:where([type="checkbox"], [type="radio"]):focus-visible{
+	--i-outline-color: var(--i-primary);
+	border-color: var(--i-input-active--bo-co);
+	outline: var(--i-outline-width) var(--i-outline-style) var(--i-outline-color);
+	outline-offset: var(--i-outline-offset);
+}
+
+.ipsInput--pseudo{
+	padding: 0;
+	width: 1.3em;
+	height: 1.3em;
+	justify-content: center;
+	align-items: center;
+	background-clip: border-box;
+	cursor: pointer;
+}
+
+.ipsInput--pseudoChecked,
+.ipsInput:where([type="checkbox"], [type="radio"]):checked{
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+	border-color: transparent;
+}
+
+.ipsInput--pseudo::before,
+.ipsInput:where([type="checkbox"], [type="radio"])::before{
+	content: '';
+	visibility: hidden;
+}
+
+	.ipsInput--pseudoChecked::before,	
+	.ipsInput:where([type="checkbox"], [type="radio"]):checked::before{
+		visibility: visible;
+	}
+
+/* Checkbox */
+.ipsInput--pseudo,
+.ipsInput:where([type="checkbox"]){
+	border-radius: var(--i-input-checkbox--bo-ra, max(4px, .2em));
+}
+
+	/* Checkbox: tick */
+	.ipsInput--pseudoChecked::before,
+	.ipsInput:where([type="checkbox"])::before{
+		content: "\f00c";
+		font-family: var(--i-font-awesome);
+		font-weight: 900;
+		-webkit-font-smoothing: antialiased;
+		display: block;
+		font-style: normal;
+		font-variant: normal;
+		line-height: 1;
+		text-rendering: auto;
+		font-size: 0.75em;
+	}
+
+/* Radio */
+.ipsInput:where([type="radio"]){
+	border-radius: var(--i-input-radio--bo-ra, 50%);
+}
+
+	/* Radio: dot */	
+	.ipsInput:where([type="radio"])::before{
+		background: currentColor;
+		border-radius: inherit;
+		width: 40%;
+		height: 40%;
+	}
+
+/* Improved click/tap area */
+@media(hover:none) and (pointer:coarse){
+	.ipsInput:where([type="checkbox"], [type="radio"])::after{
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		height: max(30px, 100%);
+		width: max(30px, 100%);
+		transform: translate(-50%,-50%);
+		cursor: pointer;
+		z-index: 1;
+	}
+}
+
+/* Input wrapped with label */
+.ipsInputLabel{
+	display: flex;
+	align-items: center;
+	gap: .7em;
+}
+
+	.ipsInputLabel input{
+		flex: 0 0 auto;
+	}
+
+/*
+	----------------
+	- Label buttons
+	----------------
+*/
+
+.ipsLabelButton{
+	--_outline-width: 1px;
+	outline: var(--_outline-width) solid var(--_border-color, color-mix(in hsl, currentColor 40%, transparent));
+	outline-offset: calc(var(--_outline-width) * -1);
+	border-radius: min(var(--i-design-radius), 6px);
+	border-radius: var(--i-avatar--bo-ra);
+	background: var(--_background, transparent);
+	cursor: pointer;
+	display: block;
+	padding: 1em;
+}
+
+.ipsLabelButton:hover,
+.ipsLabelButton:focus-within{
+	outline-color: var(--_border-color--hover, color-mix(in hsl, currentColor 70%, transparent));
+}
+
+.ipsLabelButton:focus-within{
+	--_outline-width: 2px;
+}
+
+.ipsLabelButton:has(:checked){
+	--_outline-width: 2px;
+	outline-color: var(--_border-color--checked, var(--i-primary));
+}
+
+.ipsLabelButton input{
+	opacity: 0;
+	position: absolute;
+}
+
+/*
+	----------------
+	- On/off toggle
+	----------------
+*/
+
+.ipsSwitch{
+	--_width: 2em;
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	font-size: 1.5em;
+	height: 1em;
+	width: var(--_width);
+	vertical-align: middle;
+	cursor: pointer;
+	background-color: var(--i-background_6);
+	/* Chrome requires the variable. Safari requires var(--i-co) instead of currentColor */
+	--_bo-sh: inset color-mix(in srgb, var(--i-co) 40%, transparent) 0px 0px 0px 1px;
+	box-shadow: var(--_bo-sh);
+	border-radius: 50px;
+	position: relative;
+	transition: background 0.15s linear;
+}
+
+	.ipsSwitch::before{
+		content: '';
+		background: #fff;
+		border-radius: inherit;
+		position: absolute;
+		height: 1em;
+		width: 1em;
+		border: 3px solid transparent;
+		background-clip: padding-box;
+		transition: transform .15s linear;
+	}
+
+	.ipsSwitch[data-checked],
+	.ipsSwitch:checked{
+		background: var(--i-color_positive);
+	}
+
+	.ipsSwitch[data-checked]::before,
+	.ipsSwitch:checked::before{
+		transform: translateX(calc(var(--i-lang-dir) * (var(--_width) - 100%)));
+	}
+
+	.ipsSwitch:disabled{
+		cursor: not-allowed;
+		filter: opacity(.25);
+	}
+
+.ipsSwitch + label{
+	font-weight: 500;
+	margin-inline-start: .5em;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+
+/* CodeMirror */
+.CodeMirror {
+	border: var(--i-input--bo-wi) var(--i-input--bo-st, solid) var(--i-input--bo-co);
+	border-radius: var(--i-input--bo-ra);
+	cursor: text;
+}
+
+[dir="rtl"] .CodeMirror {
+	direction: ltr;
+}
+
+/* Loading */
+.ipsField_loading {
+	background-image: url('{resource="loaders/tiny_loading@2x.gif" inCss="true" app="core" location="front"}');
+	background-size: 14px 14px;
+	background-repeat: no-repeat;
+	background-position: right 5px center;
+}
+
+[dir="rtl"] .ipsField_loading {
+	background-position: left 5px center;
+}
+
+
+/* Live language translation */
+.ipsField_vle {
+	color: black !important;
+	font-weight: normal;
+}
+
+/* Recaptcha RTL fix: from v4 */
+[dir="rtl"] #recaptcha_table:not(.recaptcha_theme_clean) {
+	direction: ltr !important;
+}
+
+/* Password strength */
+[data-ips-scheme="light"] .ipsForm_meter{
+	--i-meter_1: #C62828;
+	--i-meter_2: #D84315;
+	--i-meter_3: #FF8F00;
+	--i-meter_4: #9E9D24;
+	--i-meter_5: #2E7D32;
+}
+[data-ips-scheme="dark"] .ipsForm_meter{
+	--i-meter_1: hsl(0 75% 80%);
+	--i-meter_2: hsl(14 75% 60%);
+	--i-meter_3: hsl(39 75% 60%);
+	--i-meter_4: hsl(75 75% 60%);
+	--i-meter_5: hsl(130 75% 61%);
+}
+.ipsForm_meter {
+	width: 100%;
+	height: 7px;
+	display: block;
+	margin-top: .7em;
+	border-radius: 4px;
+	background: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.ipsForm_meterAdvice {
+	font-size: max(10px, .8em);
+	font-weight: 600;
+	display: block;
+	margin-top: .5em;
+}
+
+	.ipsForm_meter[data-adviceValue="1"] + .ipsForm_meterAdvice { color: var(--i-meter_1);}
+	.ipsForm_meter[data-adviceValue="2"] + .ipsForm_meterAdvice { color: var(--i-meter_2);}
+	.ipsForm_meter[data-adviceValue="3"] + .ipsForm_meterAdvice { color: var(--i-meter_3);}
+	.ipsForm_meter[data-adviceValue="4"] + .ipsForm_meterAdvice { color: var(--i-meter_4);}
+	.ipsForm_meter[data-adviceValue="5"] + .ipsForm_meterAdvice { color: var(--i-meter_5);}
+
+.ipsForm_meter::-webkit-meter-bar {
+	border-radius: 4px;
+	background: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+/* Webkit based browsers */
+.ipsForm_meter[data-adviceValue="1"]::-webkit-meter-optimum-value { background: var(--i-meter_1); }
+.ipsForm_meter[data-adviceValue="2"]::-webkit-meter-optimum-value { background: var(--i-meter_2); }
+.ipsForm_meter[data-adviceValue="3"]::-webkit-meter-optimum-value { background: var(--i-meter_3); }
+.ipsForm_meter[data-adviceValue="4"]::-webkit-meter-optimum-value { background: var(--i-meter_4); }
+.ipsForm_meter[data-adviceValue="5"]::-webkit-meter-optimum-value { background: var(--i-meter_5); }
+
+/* Gecko based browsers */
+.ipsForm_meter[data-adviceValue="1"]::-moz-meter-bar { background: var(--i-meter_1); }
+.ipsForm_meter[data-adviceValue="2"]::-moz-meter-bar { background: var(--i-meter_2); }
+.ipsForm_meter[data-adviceValue="3"]::-moz-meter-bar { background: var(--i-meter_3); }
+.ipsForm_meter[data-adviceValue="4"]::-moz-meter-bar { background: var(--i-meter_4); }
+.ipsForm_meter[data-adviceValue="5"]::-moz-meter-bar { background: var(--i-meter_5); }
+
+
+/*!
+ * Cropper.js v1.5.9
+ * https://fengyuanchen.github.io/cropperjs
+ *
+ * Copyright 2015-present Chen Fengyuan
+ * Released under the MIT license
+ *
+ * Date: 2020-09-10T13:16:21.689Z
+ */.cropper-container{direction:ltr;font-size:0;line-height:0;position:relative;-ms-touch-action:none;touch-action:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.cropper-container img{display:block;height:100%;image-orientation:0deg;max-height:none!important;max-width:none!important;min-height:0!important;min-width:0!important;width:100%}.cropper-canvas,.cropper-crop-box,.cropper-drag-box,.cropper-modal,.cropper-wrap-box{bottom:0;left:0;position:absolute;right:0;top:0}.cropper-canvas,.cropper-wrap-box{overflow:hidden}.cropper-drag-box{background-color:#fff;opacity:0}.cropper-modal{background-color:#000;opacity:.5}.cropper-view-box{display:block;height:100%;outline:1px solid #39f;outline-color:rgba(51,153,255,.75);overflow:hidden;width:100%}.cropper-dashed{border:0 dashed #eee;display:block;opacity:.5;position:absolute}.cropper-dashed.dashed-h{border-bottom-width:1px;border-top-width:1px;height:33.33333%;left:0;top:33.33333%;width:100%}.cropper-dashed.dashed-v{border-left-width:1px;border-right-width:1px;height:100%;left:33.33333%;top:0;width:33.33333%}.cropper-center{display:block;height:0;left:50%;opacity:.75;position:absolute;top:50%;width:0}.cropper-center:after,.cropper-center:before{background-color:#eee;content:" ";display:block;position:absolute}.cropper-center:before{height:1px;left:-3px;top:0;width:7px}.cropper-center:after{height:7px;left:0;top:-3px;width:1px}.cropper-face,.cropper-line,.cropper-point{display:block;height:100%;opacity:.1;position:absolute;width:100%}.cropper-face{background-color:#fff;left:0;top:0}.cropper-line{background-color:#39f}.cropper-line.line-e{cursor:ew-resize;right:-3px;top:0;width:5px}.cropper-line.line-n{cursor:ns-resize;height:5px;left:0;top:-3px}.cropper-line.line-w{cursor:ew-resize;left:-3px;top:0;width:5px}.cropper-line.line-s{bottom:-3px;cursor:ns-resize;height:5px;left:0}.cropper-point{background-color:#39f;height:5px;opacity:.75;width:5px}.cropper-point.point-e{cursor:ew-resize;margin-top:-3px;right:-3px;top:50%}.cropper-point.point-n{cursor:ns-resize;left:50%;margin-left:-3px;top:-3px}.cropper-point.point-w{cursor:ew-resize;left:-3px;margin-top:-3px;top:50%}.cropper-point.point-s{bottom:-3px;cursor:s-resize;left:50%;margin-left:-3px}.cropper-point.point-ne{cursor:nesw-resize;right:-3px;top:-3px}.cropper-point.point-nw{cursor:nwse-resize;left:-3px;top:-3px}.cropper-point.point-sw{bottom:-3px;cursor:nesw-resize;left:-3px}.cropper-point.point-se{bottom:-3px;cursor:nwse-resize;height:20px;opacity:1;right:-3px;width:20px}@media (min-width:768px){.cropper-point.point-se{height:15px;width:15px}}@media (min-width:992px){.cropper-point.point-se{height:10px;width:10px}}@media (min-width:1200px){.cropper-point.point-se{height:5px;opacity:.75;width:5px}}.cropper-point.point-se:before{background-color:#39f;bottom:-50%;content:" ";display:block;height:200%;opacity:0;position:absolute;right:-50%;width:200%}.cropper-invisible{opacity:0}.cropper-bg{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC")}.cropper-hide{display:block;height:0;position:absolute;width:0}.cropper-hidden{display:none!important}.cropper-move{cursor:move}.cropper-crop{cursor:crosshair}.cropper-disabled .cropper-drag-box,.cropper-disabled .cropper-face,.cropper-disabled .cropper-line,.cropper-disabled .cropper-point{cursor:not-allowed}
+
+ /* This correctly centers the photo cropper: fixes #2372 */
+ [data-role="cropper"] {
+	margin: 0 auto;
+	max-width: 100%;
+	position: relative;
+}
+
+	.cropper-container{
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+
+
+
+/* Color input */

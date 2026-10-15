@@ -1,0 +1,31 @@
+<ips:template parameters="$id, $orientation='horizontal'" />
+{{if $id == 'header'}}
+	{template="announcementContentTop" app="core" group="global" params=""}
+{{endif}}
+
+{{if isset( \IPS\Output::i()->sidebar['widgetareas'][$id] )}}
+    {{$area = \IPS\Output::i()->sidebar['widgetareas'][$id];}}
+    {template="widgetArea" group="global" app="core" params="$area"}
+{{else}}
+    {{$widgets = \IPS\Output::i()->sidebar['widgets'] ?? [];}}
+    {{if ( ( isset( $widgets[ $id ] ) ) || \IPS\Dispatcher::i()->application?->canManageWidgets() )}}
+        {{if isset( $widgets[ $id ] ) AND \is_string( $widgets[ $id ] )}}
+        {$widgets[ $id ]|raw}
+        {{else}}
+        <section class='cWidgetContainer cWidgetContainer--main' {{if ! isset( $widgets[ $id ] )}}hidden{{endif}} {{if \IPS\Dispatcher::i()->application->canManageWidgets()}}data-controller='core.front.widgets.area'{{endif}} data-role='widgetReceiver' data-orientation='{$orientation}' data-widgetArea='{$id}'>
+            <ul>
+                {{if isset( $widgets[ $id ] )}}
+                    {{foreach $widgets[ $id ] as $widget}}
+                    <li
+                        class='{{if \get_class( $widget ) != 'IPS\cms\widgets\Database'}}ipsWidget ipsWidget--{$orientation}{{endif}}{{foreach $widget->getWrapperClasses() as $class}} {$class}{{endforeach}}' {{foreach $widget->dataAttributes() as $k => $v}} data-{$k}="{$v}"{{endforeach}}
+                        data-controller='core.front.widgets.block'
+                    >
+                        {$widget|raw}
+                    </li>
+                    {{endforeach}}
+                {{endif}}
+            </ul>
+        </section>
+        {{endif}}
+    {{endif}}
+{{endif}}

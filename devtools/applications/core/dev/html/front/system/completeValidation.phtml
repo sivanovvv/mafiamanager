@@ -1,0 +1,19 @@
+<ips:template parameters="$member, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL" />
+
+<form accept-charset='utf-8' method="post" action="{$action}" class='i-text-align_center' data-ipsForm data-ipsFormSubmit>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+
+	<div class='i-text-align_center ipsBox i-padding_3'>
+		<i class='ipsLargeIcon fa-solid fa-envelope-open-text' aria-hidden="true"></i>
+		<h1 class='ipsTitle ipsTitle--h2'>{lang="registration_validate_heading" sprintf="$member->name"}</h1>
+		<div class="ipsRichText i-font-size_2 i-margin-block_3">
+			<p>{lang="registration_validate_explain"}</p>
+		</div>
+		<div class="ipsButtons">
+			<button type='submit' class='ipsButton ipsButton--primary'>{lang="validate_my_account"}</button>
+		</div>
+	</div>
+</form>

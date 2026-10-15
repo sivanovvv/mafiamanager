@@ -1,0 +1,4 @@
+<ips:template parameters="$lang, $parse=TRUE, $background=FALSE" />
+<div class="ipsRichText {{if $background}}i-padding_3 i-background_2{{endif}}">
+	{{if $parse}}{lang="$lang"}{{else}}{$lang|raw}{{endif}}
+</div>

@@ -1,0 +1,62 @@
+<ips:template parameters="$indexData, $itemData, $images, $url, $condensed" />
+{{if $condensed}}
+	{{if \count( $images )}}
+		<ul class='cGalleryAlbums_recent cGalleryAlbums_recent--small' {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+			{{foreach $images as $k => $image}}
+				<li data-imageId="{$image->id}">
+					<figure class='ipsFigure'>
+						<a href='{$image->url( "getPrefComment" )}' class='ipsFigure__main'>
+							{{if $image->small_file_name}}
+								<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="{$image->caption}" loading="lazy">
+							{{elseif $image->media}}
+								<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+									<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+								</video>
+								<i class="ipsFigure__play" aria-hidden="true"></i>
+							{{else}}
+								<i class="ipsFigure__icon" aria-hidden="true"></i>
+							{{endif}}
+						</a>
+						{template="nsfwOverlay" app="gallery" location="front" group="global" params="$image, FALSE"}
+					</figure>
+				</li>
+			{{endforeach}}
+		</ul>
+	{{endif}}
+{{else}}
+	{{if trim( $indexData['index_content'] ) !== ''}}
+		<div {{if !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'search' )}}class='ipsRichText'{{else}}class='ipsRichText' data-searchable data-findTerm{{endif}}>
+			{expression="\IPS\Content\Search\Result::preDisplay( $indexData['index_content'] )" raw="true"}
+		</div>
+	{{endif}}
+
+	{{if \count($images)}}
+		<ul class='cGalleryAlbums_recent' {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+			{{foreach $images as $k => $image}}
+				<li data-imageId="{$image->id}">
+					<figure class='ipsFigure'>
+						<a href='{$image->url( "getPrefComment" )}' class='ipsFigure__main'>
+							{{if $image->small_file_name}}
+								<img src='{file="$image->small_file_name" extension="gallery_Images"}' alt="" loading="lazy">
+							{{elseif $image->media}}
+								<video loading="lazy"{{if $image->masked_file_name }} poster="{file="$image->masked_file_name" extension="gallery_Images"}"{{else}} preload="metadata"{{endif}}>
+									<source src="{file="$image->original_file_name" extension="gallery_Images"}{{if !$image->masked_file_name }}#t=1{{endif}}" type='{$image->file_type}' />
+								</video>
+								<i class="ipsFigure__play" aria-hidden="true"></i>
+							{{else}}
+								<i class="ipsFigure__icon" aria-hidden="true"></i>
+							{{endif}}
+							<span class="ipsInvisible">{$image->caption}</span>
+						</a>
+						{{if ( $image->directContainer()->allow_comments && $image->container()->allow_comments && count($image->comments()) > 0 )}}
+							<div class='ipsFigure__footer'>
+								<span><i class='fa-solid fa-comment' aria-hidden="true"></i> {expression="\count( $image->comments() )"}</span>
+							</div>
+						{{endif}}
+						{template="nsfwOverlay" app="gallery" location="front" group="global" params="$image, FALSE"}
+					</figure>
+				</li>
+			{{endforeach}}
+		</ul>
+	{{endif}}
+{{endif}}

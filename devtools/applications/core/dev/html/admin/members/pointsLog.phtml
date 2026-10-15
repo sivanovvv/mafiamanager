@@ -1,0 +1,5 @@
+<ips:template parameters="$table, $member" />
+<div class='ipsBox i-margin-bottom_1' data-ips-template="pointsLog">
+	<h1 class='ipsBox__header'>{lang="acp_points_log_title" htmlsprintf="$member->acpUrl(), $member->name"}</h1>
+</div>
+{$table|raw}

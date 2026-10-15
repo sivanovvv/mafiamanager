@@ -1,0 +1,43 @@
+<ips:template parameters="$editorId, $mediaSources, $currentMediaSource, $url, $results" />
+{{$safeEditorId = preg_replace( "/[^a-zA-Z0-9\-_]/", '_', $editorId );}}
+<div class="cMyMedia" data-controller='core.global.editor.insertable' data-editorid='{$editorId}'>
+	<div id="elEditor{$safeEditorId}Attach" class="cMyMedia__align">
+		{{if \count( $mediaSources ) > 1}}
+			<div class="ipsColumns ipsColumns--lines" data-ipsTabBar data-ipsTabBar-contentArea='#elEditor{$safeEditorId}AttachTabContent' data-ipsTabBar-itemSelector=".ipsSideMenu_item" data-ipsTabBar-activeClass="ipsSideMenu_itemActive" data-ipsTabBar-updateURL="false">
+				<div class="ipsColumns__secondary i-basis_220 i-padding_2 i-background_1">
+					<div class="ipsSideMenu" id='elAttachmentsMenu_{$safeEditorId}' data-ipsSideMenu>
+						<h3 class='ipsSideMenu__view'>
+							<a href='#elAttachmentsMenu_{$safeEditorId}' data-action='openSideMenu'><i class='fa-solid fa-bars' aria-hidden="true"></i><span>{lang="editor_attachment_location"}</span></a>
+						</h3>
+						<div class="ipsSideMenu__menu">
+							<ul class="ipsSideMenu__list">
+								{{foreach $mediaSources as $k}}
+									<li>
+										<a href="{url="app=core&module=system&controller=editor&do=myMedia&tab={$k}&existing=1"}" id="elEditor{$safeEditorId}AttachTabMedia{$k}" class="ipsSideMenu_item {{if $currentMediaSource == $k}}ipsSideMenu_itemActive{{endif}}">{lang="editorMedia_{$k}"}</a>
+									</li>
+								{{endforeach}}
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="ipsColumns__primary">
+		{{endif}}
+			<div id="elEditor{$safeEditorId}AttachTabContent" data-role="myMediaContent">
+				{{if \count( $mediaSources ) }}
+					{$results|raw}
+				{{else}}
+					<p class="ipsEmptyMessage i-text-align_start">{lang="editor_no_media"}</p>
+				{{endif}}
+			</div>
+		{{if \count( $mediaSources ) > 1}}
+				</div>
+			</div>
+		{{endif}}
+	</div>
+	<div class='ipsSubmitRow cMyMedia_controls'>
+		<ul class='ipsButtons ipsButtons--end'>
+			<li><a href='#' data-action="clearAll" class='ipsButton ipsButton--small ipsButton--inherit ipsButton--disabled'>{lang="editor_clear_selection"}</a></li>
+			<li><a href='#' data-action="insertSelected" class='ipsButton ipsButton--small ipsButton--secondary ipsButton--disabled'>{lang="editor_image_upload_insert_selected"}</a></li>
+		</ul>
+	</div>
+</div>

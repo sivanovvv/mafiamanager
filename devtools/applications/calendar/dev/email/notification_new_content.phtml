@@ -1,0 +1,10 @@
+<ips:template parameters="$content, $email" />
+{{if $content->author()->member_id}}
+	{$email->language->addToStack("email_new_calevent", FALSE, array( 'sprintf' => array( $content->author()->url(), $content->author()->name, $content->indefiniteArticle( $email->language ), $content->url(), $content->mapped('title'), $content->fixedDateTimeDescription( $email->language ) ) ) )}
+{{else}}
+	{$email->language->addToStack("email_new_calevent_guest", FALSE, array( 'sprintf' => array( $content->author()->name, $content->indefiniteArticle( $email->language ), $content->url(), $content->mapped('title'), $content->fixedDateTimeDescription( $email->language ) ) ) )}
+{{endif}}
+<br><br>
+{$content->emailContent( $email, 'html' )|raw}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

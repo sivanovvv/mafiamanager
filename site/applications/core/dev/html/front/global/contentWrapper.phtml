@@ -1,0 +1,12 @@
+<ips:template parameters="$item, $key" />
+{{$idColumn = $item::$databaseColumnId;}}
+{{$itemClassSafe = str_replace( '\\', '_', mb_substr( $item::class, 4 ) );}}
+<div data-ips-hook="contentWrap" id='{$key}-{$item->$idColumn}_wrap' data-controller='core.front.core.comment' data-feedid="{$item->feedId}" data-commentApp='{$item::$application}' data-commentType='{$item::$module}' data-quoteData='{expression="json_encode( array('userid' => $item->author()->member_id, 'username' => $item->author()->name, 'timestamp' => $item->mapped('date'), 'contentapp' => $item::$application, 'contenttype' => $item::$module, 'contentclass' => $itemClassSafe, 'contentid' => $item->$idColumn) )"}' class='ipsEntry__content js-ipsEntry__content'>
+    <div data-role='commentContent' class='ipsRichText ipsRichText--user' data-controller='core.front.core.lightboxedImages'>{$item->content()|raw}</div>
+
+    {{if ( ( \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Hideable' ) AND $item->hidden() === 0 ) || ! \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Hideable' ) ) and $item->canComment()}}
+        <div data-ipsquote-editor='{$item::$formLangPrefix}comment' data-ipsquote-target='#{$key}-{$item->$idColumn}' class='ipsHide'>
+            <a href='#' data-action='quoteComment' data-ipsqoute-singlequote=''></a>
+        </div>
+    {{endif}}
+</div>

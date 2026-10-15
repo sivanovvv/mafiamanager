@@ -1,0 +1,14 @@
+<ips:template parameters="$key='front', $mode='light', $settingName='logo-light', $size='desktop'" />
+{{if isset( \IPS\Theme::i()->logo[$key]['url'] ) AND \IPS\Theme::i()->logo[$key]['url'] !== null }}
+    {{$logo = \IPS\File::get( 'core_Theme', \IPS\Theme::i()->logo[$key]['url'] )->url;}}
+    {{$height = \IPS\Theme::i()->logo[$key]['img_height'] ?? '';}}
+    {{$width = \IPS\Theme::i()->logo[$key]['img_width'] ?? '';}}
+    <picture class='ipsLogo__image ipsLogo__image--{$mode}'>
+        <source srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" {{if $size === 'desktop'}}media="(max-width: 979px)"{{else}}media="(min-width: 980px)"{{endif}}>
+        <img src="{$logo}" {{if $width}}width="{$width}"{{endif}} {{if $height}}height="{$height}"{{endif}} alt='{setting="board_name"}' data-ips-theme-image='{$settingName}'>
+    </picture>
+{{elseif \IPS\Member::loggedIn()->isEditingTheme()}}
+    <picture class='ipsLogo__image ipsLogo__image--{$mode}' hidden>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt='{setting="board_name"}' data-ips-theme-image='{$settingName}'>
+    </picture>
+{{endif}}

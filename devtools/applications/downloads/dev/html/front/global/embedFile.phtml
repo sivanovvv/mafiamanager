@@ -1,0 +1,62 @@
+<ips:template parameters="$item, $url, $image=NULL" />
+
+<div class='ipsRichEmbed ipsRichEmbed--downloads-file'>
+	{template="embedHeader" group="embed" app="core" params="$item, $item->mapped('title'), $item->mapped('date'), $url"}
+	{{if $item->primary_screenshot_thumb}}
+		<a href='{$url}' title="{$item->mapped('title')}" class='ipsRichEmbed_masthead'>
+			<img src='{$image->url}' alt="{$item->mapped('title')}" loading="lazy" alt="">
+		</a>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+		{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+			<ul class='ipsList ipsList--inline'>
+				<li class='cFilePrice'>
+					{{if $item->isPaid()}}
+						{$item->priceToDisplay()|raw}
+					{{else}}
+						{lang="file_free"}
+					{{endif}}
+				</li>
+				{{if $renewalTerm = $item->renewalTerm()}}
+					<li class='i-color_soft'>
+						{lang="file_renewal_term_val" sprintf="$renewalTerm"}
+					</li>
+				{{endif}}
+			</ul>
+		{{endif}}
+		{{if $item->container()->version_numbers OR ($item->isPaid() and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) )) OR (!$item->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) ))}}
+		<ul class='ipsRichEmbed_stats'>
+			{{if $item->container()->version_numbers}} <li><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="version"} {$item->version}</li>{{endif}}
+			{{if $item->isPaid() and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) )}}
+				<li {{if !$item->purchaseCount()}}class='i-color_soft'{{endif}}><i class='fa-solid fa-cart-shopping' aria-hidden="true"></i> {lang="x_purchases" pluralize="$item->purchaseCount()"}</li>
+			{{endif}}
+			{{if !$item->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) )}}
+				<li {{if !$item->downloads}}class='i-color_soft'{{endif}}><i class='fa-solid fa-circle-arrow-down' aria-hidden="true"></i> {lang="num_downloads" pluralize="$item->downloads"}</li>
+			{{endif}}
+		</ul>
+		{{endif}}
+		{{if \IPS\Member::loggedIn()->member_id}}
+			<div>
+				{{if $item->canBuy() AND $item->isPurchasable()}}
+					{{if $item->canDownload()}}
+						<a href='{{if settings.idm_antileech AND !$item->requiresDownloadConfirmation()}}{$item->url('download')->csrf()}{{else}}{$item->url('download')}{{endif}}' class='ipsButton ipsButton--wide ipsButton--primary' {{if $item->requiresDownloadConfirmation()}}data-dialog{{endif}}>{lang="download_now"}</a>
+					{{else}}
+						<a href='{$item->url('buy')->csrf()}' class='ipsButton ipsButton--wide ipsButton--primary'><i class='fa-solid fa-cart-shopping' aria-hidden="true"></i> &nbsp;{lang="buy_now"}{{if $price = $item->priceToDisplay()}} - {$price|raw}{{endif}}</a>
+					{{endif}}
+				{{elseif $item->isPaid() AND !$item->isPurchasable( FALSE )}}
+					{lang="purchasing_disabled"}
+				{{else}}
+					{{if $item->canDownload() or !$item->downloadTeaser()}}
+						<a href='{{if settings.idm_antileech AND !$item->requiresDownloadConfirmation()}}{$item->url('download')->csrf()}{{else}}{$item->url('download')}{{endif}}' class='ipsButton ipsButton--wide ipsButton--primary' {{if $item->requiresDownloadConfirmation()}}data-dialog{{endif}}>{lang="download_now"}</a>
+					{{else}}
+						<span class="ipsButton ipsButton--soft ipsButton--wide ipsButton--disable">{lang="download_teaser"}</span>
+					{{endif}}
+				{{endif}}
+			</div>
+		{{endif}}
+		<div class='ipsRichEmbed__snippet'>
+			{$item->truncated(TRUE)|raw}
+		</div>
+		{template="embedItemStats" group="embed" app="core" params="$item, $item->container()->bitoptions['comments']"}
+	</div>
+</div>

@@ -1,0 +1,14 @@
+<ips:template parameters="$online, $chart, $total" />
+<div class="i-padding_3">
+	{{if \count( $online ) > 0}}
+		<div class='i-text-align_center i-color_soft i-font-size_2'>
+			{lang="onlineUsersDashboard_title" sprintf="$total" pluralize="$total"}
+		</div>
+		<div>{$chart|raw}</div>
+	{{else}}
+		<div class="ipsEmpty">
+			<i class='fa-solid fa-user-group' aria-hidden="true"></i>
+			<p>{lang="no_online_users"}</p>
+		</div>
+	{{endif}}
+</div>

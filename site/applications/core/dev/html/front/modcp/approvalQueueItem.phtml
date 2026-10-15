@@ -1,0 +1,57 @@
+<ips:template parameters="$item, $ref, $container, $title" />
+<div>
+	{{if $reason = $item->approvalQueueReason()}}
+		<div class='i-background_2 i-padding_3 i-margin_2 i-margin-top_0 i-border-radius_box'>
+			<div class='i-font-weight_600 i-color_hard i-margin-bottom_1'>{lang="reason_for_approval"}</div>
+			<p class='i-color_soft'>{$reason}</p>
+		</div>
+	{{endif}}
+		<article>
+			<div class='ipsEntry__header'>
+				<div class="ipsEntry__header-align">
+					<div class="ipsPhotoPanel"> 
+						{template="userPhoto" group="global" params="$item->author()"}
+						<div class="ipsPhotoPanel__text">
+							<div class="ipsPhotoPanel__primary">
+								{{if $item->author()->member_id}}
+									<button type="button" id="user{$item->author()->member_id}" popovertarget="user{$item->author()->member_id}_menu">{$item->author()->name} <i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+									<i-dropdown popover id="user{$item->author()->member_id}_menu">
+										<div class="iDropdown">
+											<ul class="iDropdown__items">
+												{{if \IPS\Member::loggedIn()->modPermission('mod_can_warn')}}
+													<li><a href='{url="app=core&module=system&controller=warnings&do=warn&id={$item->author()->member_id}&ref={$ref}" seoTemplate="warn_add" seoTitle="$item->author()->members_seo_name"}' data-ipsDialog data-ipsDialog-title="{lang="warn_member" sprintf="$item->author()->name"}" data-ipsDialog-remoteSubmit data-ipsDialog-destructOnClose data-ipsDialog-flashMessage="{lang="warning_issued"}" data-role="warnUserDialog">{lang="warn_user"}</a></li>
+												{{endif}}
+												{{if $item->author()->member_id != \IPS\Member::loggedIn()->member_id AND \IPS\Member::loggedIn()->modPermission('can_flag_as_spammer') and $item->author()->canBeFlaggedAsSpammer()}}
+													{{if $item->author()->members_bitoptions['bw_is_spammer']}}
+														<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$item->author()->member_id}&s=0" seoTemplate="flag_as_spammer" seoTitle="$item->author()->members_seo_name" csrf="true"}' data-confirm data-confirmSubMessage="{lang="spam_unflag_confirm"}" data-ipsMenuValue='spamFlagButton'>{lang="spam_unflag"}</a></li>
+													{{else}}
+														<li><a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$item->author()->member_id}&s=1" seoTemplate="flag_as_spammer" seoTitle="$item->author()->members_seo_name" csrf="true"}' data-confirm data-ipsMenuValue='spamFlagButton'>{lang="spam_flag"}</a></li>
+													{{endif}}
+												{{endif}}
+												<li><a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$item->author()->member_id}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}">{lang="message_send"}</a></li>
+											</ul>
+										</div>
+									</i-dropdown>
+								{{else}}
+									{$item->author()->name}
+								{{endif}}
+							</div>
+							<div class="ipsPhotoPanel__secondary i-font-size_-1">
+								<ul class='ipsList ipsList--sep'>
+									<li class='i-font-weight_600'><a href='{$item->url()}'><i class='fa-solid fa-{$item::$icon}' hidden aria-hidden="true"></i>{lang="$item::$title"}</a></li>
+									<li>{lang="date_replied" htmlsprintf="\IPS\DateTime::ts( $item->mapped('date') )->html(FALSE)"}</li>
+									{{if $container}}<li>{lang="posted_in_container"} <a href="{$container->url()}">{$container->_title}</a></li>{{endif}}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='ipsEntry__content'>
+				<div class="ipsEntry__post">
+					<h2 class="i-font-size_3 i-font-weight_600 i-margin-bottom_2"><a href="{$item->url()}" target="_blank">{$title}</a></h2>
+					<div class="ipsRichText" data-controller='core.front.core.lightboxedImages'>{$item->content()|raw}</div>
+				</div>
+			</div>
+		</article>
+</div>

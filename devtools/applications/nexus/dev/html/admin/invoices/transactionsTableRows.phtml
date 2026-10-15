@@ -1,0 +1,13 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	<li class='ipsData__item'>
+		<div class='ipsData__main'>
+			<h3 class='ipsTitle ipsTitle--h3'><strong>{$row['t_method']}</strong>&nbsp;&nbsp;{$row['t_status']|raw}</h3><br>
+			<span class='cNexusPrice'>{$row['t_amount']}</span>
+		</div>
+		<div class='i-basis_120 i-text-align_end'>
+			{template="controlStrip" params="$row['_buttons']" group="global" app="core"}
+		</div>
+	</li>
+{{endforeach}}

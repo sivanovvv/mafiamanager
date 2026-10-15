@@ -1,0 +1,28 @@
+<ips:template parameters="$file" />
+<h3>{$file->name}</h3>
+{{if $file->desc}}
+{$file->desc|raw}
+{{endif}}
+<div class="ipsRichTextBox ipsRichTextBox--alwaysopen">
+    <div class="ipsRichTextBox__title">
+        <p>{lang="file_information"}</p>
+    </div>
+    <p>
+        <strong><span data-ips-font-size="90">{lang="file_submitter"} </span></strong> {$file->author()->link( null, null, $file->isAnonymous() )|raw}
+    </p>
+    <p>
+        <strong><span data-ips-font-size="90">{lang="file_submitted"} </span></strong> {expression="\IPS\DateTime::ts( $file->submitted )->localeDate()"}
+    </p>
+    <p>
+        <strong><span data-ips-font-size="90">{lang="file_cat"} </span></strong> <a href="{$file->container()->url()}">{$file->container()->_title}</a>
+    </p>
+    {{foreach $file->customFields( TRUE ) as $k => $v}}
+        <p>
+            {$v|raw}
+        </p>
+    {{endforeach}}
+</div>
+
+<p>
+    <a href='{$file->url()}'>{lang="view_file"}</a>
+</p>

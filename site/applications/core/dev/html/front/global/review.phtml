@@ -1,0 +1,173 @@
+<ips:template parameters="$item, $review, $editorName, $app, $type" />
+<div data-ips-hook="reviewWrap" id='review-{$review->id}_wrap' data-controller='core.front.core.comment' data-feedid="{$review->feedId}" data-commentApp='{$app}' data-commentType='{$type}-review' data-commentID="{$review->id}" data-quoteData='{expression="json_encode( array('userid' => $review->author()->member_id, 'username' => $review->author()->name, 'timestamp' => $review->mapped('date'), 'contentapp' => $app, 'contenttype' => $type, 'contentid' => $item->id, 'contentcommentid' => $review->id) )"}' class='ipsEntry__content js-ipsEntry__content'
+{{if \IPS\IPS::classUsesTrait( $review, 'IPS\Content\IntersectionViewTracking' ) AND $hash=$review->getViewTrackingHash()}}
+data-view-hash="{$hash|raw}"
+data-view-tracking-data="{expression="base64_encode(json_encode( $review->getViewTrackingData() ))" raw="true"}"
+{{endif}}
+>
+	<header class='ipsEntry__header'>
+		<div class='ipsEntry__header-align'>
+			<div class='ipsPhotoPanel'>
+				<div class='ipsAvatarStack' data-ips-hook="reviewUserPhoto">
+					{template="userPhoto" app="core" group="global" params="$review->author(), 'fluid', $review->warningRef()"}
+					{{if $review->author()->canHaveAchievements() and \IPS\core\Achievements\Rank::show() and $rank = $review->author()->rank()}}
+						{$rank->html( 'ipsAvatarStack__rank' )|raw}
+					{{endif}}
+				</div>
+				<div class='ipsPhotoPanel__text'>
+					<div data-ips-hook="reviewUsername" class='ipsEntry__username'>
+						<h3>{template="userLink" app="core" group="global" params="$review->author(), $review->warningRef(), NULL, \IPS\IPS::classUsesTrait( $review, 'IPS\Content\Anonymous' ) ? $review->isAnonymous() : FALSE"}</h3>
+						{{if \IPS\IPS::classUsesTrait( $review, 'IPS\Content\Anonymous' ) AND !$review->isAnonymous()}}
+							<span class='ipsEntry__group'>
+								{{if $review->author()->modShowBadge()}}
+									<a href='{url="app=core&module=staffdirectory&controller=directory" seoTemplate="staffdirectory"}' class="ipsEntry__moderatorBadge" data-ipsTooltip title='{lang="member_is_moderator" sprintf="$review->author()->name"}'>
+										{expression="\IPS\Member\Group::load( $review->author()->member_group_id )->formattedName" raw="true"}
+									</a>
+								{{else}}
+									{expression="\IPS\Member\Group::load( $review->author()->member_group_id )->formattedName" raw="true"}
+								{{endif}}
+							</span>
+						{{endif}}
+					</div>
+					<p class='ipsPhotoPanel__secondary'>
+						{{if $review->mapped('date')}}
+							{datetime="$review->mapped('date')"}
+						{{else}}
+							{lang="unknown_date"}
+						{{endif}}
+						{{if $review->editLine()}}
+							({lang="edited_lc"})
+						{{endif}}
+					</p>
+				</div>
+			</div>
+			{{if \count( $item->reviewMultimodActions() )}}
+				<input type="checkbox" name="multimod[{$review->id}]" value="1" data-role="moderation" data-actions="{{if $review->hidden() === -1 AND $review->canUnhide()}}unhide{{elseif $review->hidden() === 1 AND $review->canUnhide()}}approve{{elseif $review->canHide()}}hide{{endif}} {{if $review->canDelete()}}delete{{endif}}" data-state='{{if $review->tableStates()}}{$review->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+			{{endif}}
+			{$review->menu()|raw}
+			{{if $review->author()->member_id}}
+				<button class='ipsEntry__topButton ipsEntry__topButton--profile' type='button' aria-controls='mini-profile-review-{$review->id}' aria-expanded='false' data-ipscontrols data-ipscontrols-src="{$review->authorMiniProfileUrl}" data-ipstooltip='{lang="author_stats"}'><i class="fa-solid fa-chevron-down" aria-hidden="true"></i><span class="ipsInvisible">{lang="author_stats"}</span></button>
+			{{endif}}
+		</div>
+        {{if $review->author()->member_id}}
+            {template="miniProfileWrap" app="core" group="global" params="$review->author(), $review->id, 'review', remoteLoading: true"}
+        {{endif}}
+	</header>
+	<div class='ipsEntry__post'>
+		{{if $review->hidden() AND $review->hidden() != -2}}
+			<div class='ipsEntry__hiddenMessage'>{$review->hiddenBlurb()}</div>
+		{{elseif $review->hidden() == -2}}
+			<div class='ipsEntry__hiddenMessage'>{$review->deletedBlurb()}</div>
+		{{endif}}
+		<div class='ipsRating ipsRating_large i-margin-bottom_3'>
+			<ul>
+				{{foreach range( 1, \intval( \IPS\Settings::i()->reviews_rating_out_of ) ) as $i}}
+					<li class='{{if $review->mapped('rating') >= $i}}ipsRating_on{{else}}ipsRating_off{{endif}}'>
+						<i class='fa-solid fa-star' aria-hidden="true"></i>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+		&nbsp;&nbsp; {{if $review->mapped('votes_total')}}<strong>{$review->helpfulLine()|raw}</strong>{{endif}}
+
+		<div data-ips-hook="review" id="review-{$review->id}" class='ipsRichText ipsRichText--user' data-role='commentContent' data-controller='core.front.core.lightboxedImages'>
+			{$review->content()|raw}
+			{{if $review->editLine()}}
+				{$review->editLine()|raw}
+			{{endif}}
+		</div>
+
+		{{if $review->hasAuthorResponse()}}
+			<div class='ipsReviewResponse i-padding_3 i-margin-bottom_3 i-background_2'>
+				<div class='i-flex i-align-items_center i-justify-content_space-between i-margin-bottom_2'>
+					<h4 class='ipsTitle ipsTitle--h5'>{lang="review_response_title"}</h4>
+					{{if $review->canEditResponse() OR $review->canDeleteResponse()}}
+					<button type="button" id="elControlsReviews_{$review->id}_response" popovertarget="elControlsReviews_{$review->id}_response_menu" class='ipsEntry__topButton ipsEntry__topButton--ellipsis' title='{lang="more_options"}'><i class='fa-solid fa-ellipsis' aria-hidden="true"></i></button>
+					{{endif}}
+				</div>
+				<div data-role="reviewResponse" class="ipsRichText" data-controller='core.front.core.lightboxedImages'>{$review->mapped('author_response')|raw}</div>
+
+				{{if $review->canEditResponse() OR $review->canDeleteResponse()}}
+					<i-dropdown popover id="elControlsReviews_{$review->id}_response_menu">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">	
+								{{if $review->canEditResponse()}}
+									<li><a href='{$review->url('editResponse')}' data-ipsDialog data-ipsDialog-title='{lang="review_author_respond"}'>{lang="edit"}</a></li>
+								{{endif}}
+								{{if $review->canDeleteResponse()}}
+									<li><a href='{$review->url('deleteResponse')->csrf()}' data-confirm>{lang="delete"}</a></li>
+								{{endif}}
+							</ul>
+						</div>
+					</i-dropdown>
+				{{endif}}
+			</div>
+		{{endif}}
+
+		{{if $review->hidden() !== 1}}
+			{{if member.member_id and ( !$review->mapped('votes_data') or !array_key_exists( member.member_id, json_decode( $review->mapped('votes_data'), TRUE ) ) ) and $review->author()->member_id != \IPS\Member::loggedIn()->member_id}}
+				<div class='i-flex i-align-items_center i-flex-wrap_wrap i-gap_2 i-margin-top_3'>
+					<div class='i-font-weight_500 i-color_hard i-font-size_-1'>{lang="did_you_find_this_helpful"}</div>
+					<div class='ipsButtons i-font-size_-2'>
+						<a href='{$review->url('rate')->setQueryString( 'helpful', TRUE )->csrf()}' class='ipsButton ipsButton--inherit i-color_positive' data-action="rateReview"><i class='fa-solid fa-check' aria-hidden="true"></i><span>{lang="yes"}</span></a>
+						<a href='{$review->url('rate')->setQueryString( 'helpful', FALSE )->csrf()}' class='ipsButton ipsButton--inherit i-color_negative' data-action="rateReview"><i class='fa-solid fa-xmark' aria-hidden="true"></i><span>{lang="no"}</span></a>
+					</div>
+				</div>
+			{{endif}}
+		{{endif}}
+	</div>
+
+	{{if ( member.member_id and ( !$review->mapped('votes_data') or !array_key_exists( member.member_id, json_decode( $review->mapped('votes_data'), TRUE ) ) ) ) || $review->canEdit() || $review->canDelete() || $review->canHide() || $review->canUnhide() || ( $review->hidden() !== 1 && \IPS\IPS::classUsesTrait( $review, 'IPS\Content\Reactable' ) and settings.reputation_enabled and $review->hasReactionBar() )}}
+		<div data-ips-hook="reviewFooter" class='ipsEntry__footer'>
+			{{if $review->canEdit() || $review->canDelete() || $review->canHide() || $review->canUnhide() || ( $review->hidden() !== 1 && $review->canRespond() ) }}
+				<menu class='ipsEntry__controls' data-role="commentControls" data-ips-hook="reviewControls">
+					{{if $review->hidden() === 1 && ( $review->canUnhide() || $review->canDelete() )}}
+						{{if $review->canUnhide()}}
+							<li><a href='{$review->url('unhide')->csrf()}' data-action='approveComment'><i class='fa-solid fa-check' aria-hidden="true"></i><span>{lang="approve"}</span></a></li>
+						{{endif}}
+						{{if $review->canDelete()}}
+							<li><a href='{$review->url('delete')->csrf()->setPage('page',\IPS\Request::i()->page)}' data-action='deleteComment' data-updateOnDelete="#commentCount"><i class='fa-solid fa-xmark' aria-hidden="true"></i><span>{lang="delete"}</span></a></li>
+						{{endif}}
+						{{if $review->canEdit() || $review->canSplit()}}
+							<li>
+								<button type="button" id="elControlsReviewsSub_{$review->id}" popovertarget="elControlsReviewsSub_{$review->id}_menu"><span>{lang="options"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></a>
+								<i-dropdown popover id="elControlsReviewsSub_{$review->id}_menu">
+									<div class="iDropdown">
+										<ul class="iDropdown__items">
+											{{if $review->canEdit()}}
+												{{if $review->mapped('first') and $review->item()->canEdit()}}
+													<li><a href='{$review->item()->url()->setQueryString( 'do', 'edit' )}'>{lang="edit"}</a></li>
+												{{else}}
+													<li><a href='{$review->url('edit')}' data-action='editComment'>{lang="edit"}</a></li>
+												{{endif}}
+											{{endif}}
+											{{if $review->canSplit()}}
+												<li><a href='{$review->url('split')}' data-action='splitComment' data-ipsDialog data-ipsDialog-title="{lang="split_to_new" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $item::$title )"}">{lang="split"}</a></li>
+											{{endif}}
+										</ul>
+									</div>
+								</i-dropdown>
+							</li>
+						{{endif}}
+					{{elseif $review->hidden() !== 1 && $review->canRespond()}}
+                        <li>
+                            <a href='{$review->url('respond')}' data-role='respond' data-ipsDialog data-ipsDialog-title='{lang="review_author_respond"}'><span>{lang="review_author_respond"}</span></a>
+                        </li>
+					{{endif}}
+					{{if \IPS\Application::appIsEnabled('cloud')}}
+						<li>{template="spam" app="cloud" group="spam" params="$review, FALSE"}</li>
+					{{endif}}	
+					<li class='ipsHide' data-role='commentLoading'>
+						<span class='ipsLoading ipsLoading--tiny'></span>
+					</li>
+				</menu>
+			{{endif}}
+			{{if $review->hidden() !== 1 && \IPS\IPS::classUsesTrait( $review, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+				{template="reputation" group="global" app="core" params="$review"}
+			{{endif}}
+		</div>
+	{{endif}}
+	{{if ! \IPS\Output::i()->reduceLinks()}}
+	{template="sharemenu" group="global" app="core" params="$review"}
+	{{endif}}
+</div>

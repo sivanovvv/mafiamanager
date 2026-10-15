@@ -1,0 +1,14 @@
+<ips:template parameters="$notification, $details, $email" />
+{expression="$email->language->addToStack( 'email_error_log', FALSE, array( 'htmlsprintf' => array( \IPS\Settings::i()->board_name ) ) )" raw="true"}
+
+=====
+{$email->language->addToStack("email_error_code", FALSE)}: #{$details[0]}
+{$email->language->addToStack("email_error_error", FALSE)}: {$details[1]}
+{$email->language->addToStack("email_error_app", FALSE)}: {expression="\IPS\Dispatcher::i()->application->_title" raw="true"}
+{$email->language->addToStack("email_error_user", FALSE)}: {member="name" raw="true"} ({expression="\IPS\Request::i()->ipAddress()" raw="true"})
+{$email->language->addToStack("email_error_date", FALSE)}: {datetime="time()" dateonly="true"}
+=====
+
+{$email->language->addToStack("email_error_log_info", FALSE)}
+
+-- {setting="board_name"}

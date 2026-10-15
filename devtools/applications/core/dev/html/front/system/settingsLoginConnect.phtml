@@ -1,0 +1,40 @@
+<ips:template parameters="$method, $login, $error" />
+{{if $error}}
+	<div class="ipsMessage ipsMessage--error">{lang="$error"}</div>
+{{endif}}
+<form accept-charset='utf-8' method='post' action='{$login->url}'>
+	<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+	{{if $method->type() === \IPS\Login::TYPE_USERNAME_PASSWORD}}
+		<ul class='ipsForm'>
+			<li class="ipsFieldRow ipsFieldRow--fullWidth">
+				{{$authType = $method->authType();}}
+				<label class="ipsFieldRow__label" for="auth">
+						{lang="email_address"}
+					<span class="ipsFieldRow__required">{lang="required"}</span>
+				</label>
+				<div class="ipsFieldRow__content">
+                    <input type="email" class="ipsInput ipsInput--text" placeholder="{lang="email_address"}" name="auth" id="auth" {{if isset( \IPS\Request::i()->auth )}}value="{request="auth"}"{{endif}}>
+				</div>
+			</li>
+			<li class="ipsFieldRow ipsFieldRow--fullWidth">
+				<label class="ipsFieldRow__label" for="password">
+					{lang="password"}
+					<span class="ipsFieldRow__required">{lang="required"}</span>
+				</label>
+				<div class="ipsFieldRow__content">
+					<input type="password" class="ipsInput ipsInput--text" placeholder="{lang="password"}" name="password" id="password" {{if isset( \IPS\Request::i()->password )}}value="{request="password"}"{{endif}}>
+				</div>
+			</li>
+			<li class="ipsFieldRow ipsFieldRow--fullWidth">
+				<button type="submit" name="_processLogin" value="usernamepassword" class="ipsButton ipsButton--primary ipsButton--small">{lang="login"}</button>
+				{{if $forgotPasswordUrl = $method->forgotPasswordUrl()}}
+					<p class="i-text-align_end i-font-size_-2">
+						<a href='{$forgotPasswordUrl}' target="_blank" rel="noopener">{lang="forgotten_password"}</a>
+					</p>
+				{{endif}}
+			</li>
+		</ul>	
+	{{else}}
+		{$method->button()|raw}
+	{{endif}}
+</form>

@@ -1,0 +1,60 @@
+<ips:template parameters="$database, $articles, $url, $pagination, $filters=array()" />
+<header class='ipsPageHeader ipsBox ipsPull ipsPageHeader--category-articles'>
+	<div class="ipsPageHeader__row">
+		<div class='ipsPageHeader__primary'>
+			<h1 class='ipsPageHeader__title'>{$database->_title}</h1>
+			{{if $database->_description}}
+				<div class='ipsPageHeader__desc'>
+					{$database->_description}
+				</div>
+			{{endif}}
+		</div>
+		<div class="ipsButtons">
+			{{if $database->use_categories}}
+				<a href="{$database->page->url()->setQueryString('show', 'categories')}" class="ipsButton ipsButton--inherit"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> {lang="cms_show_categories"}</a>
+			{{else}}
+				{{$catClass = 'IPS\cms\Categories' . $database->id; $category = $catClass::load( $database->default_category );}}
+				{template="follow" app="core" group="global" params="'cms','categories' . $database->id, $category->_id, \IPS\cms\Records::containerFollowerCount( $category )"}
+			{{endif}}
+		</div>
+	</div>
+</header>
+
+{{if $database->can('add') or \IPS\Member::loggedIn()->member_id}}
+	<ul class="ipsButtons ipsButtons--main i-margin-block_block">
+		{{if $database->can('add')}}
+			<li>
+				<a class="ipsButton ipsButton--primary" {{if $database->use_categories}}data-ipsDialog="1" data-ipsDialog-size="narrow" data-ipsDialog-title="{lang="cms_select_category"}"{{endif}} href="{$database->page->url()->setQueryString( array( 'do' => 'form' ) )}">{lang="cms_add_new_record_button" sprintf="$database->recordWord( 1 )"}</a>
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}
+
+{{if !empty( $filters )}}
+<div class='ipsMessage ipsMessage--info'>
+	<div class='i-flex i-flex-wrap_wrap-reverse i-gap_2 i-align-items_center'>
+		<span>{lang="cms_database_filtered_by"}</span>
+		<a href='{$database->page->url()->csrf()->setQueryString( array( "do" => "clearFilters" ) )}' class='ipsButton ipsButton--soft ipsButton--small'>{lang="cms_database_filtered_clear"}</a>
+	</div>
+	{{foreach $filters as $id => $data}}
+		{$data['field']->_title} ({$data['value']|raw})
+	{{endforeach}}
+</div>
+{{endif}}
+
+{{if \count($articles)}}
+	<section class='ipsBox ipsBox--cmsCategoryArticles ipsPull'>
+		<i-data>
+			<div class="ipsData ipsData--entries ipsData--{$database->display_settings['index']['layout']} ipsData--cms-category-articles">
+				{{foreach $articles as $id => $record}}
+					{template="entry" app="cms" location="database" group="category_articles" params="$record, $database"}
+				{{endforeach}}
+			</div>
+		</i-data>
+		<div class="ipsButtonBar ipsButtonBar--bottom">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" app="core" location="global" group="global" params="$url, $pagination['pages'], $pagination['page'], ( $database->field_perpage ?? 25 ), TRUE, 'page'"}
+			</div>
+		</div>
+	</section>
+{{endif}}

@@ -1,0 +1,23 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div data-baseurl='{$table->baseUrl}' data-resort='{$table->resortKey}' data-controller='core.global.core.table' {{if $table->getPaginationKey() != 'page'}}data-pageParam='{$table->getPaginationKey()}'{{endif}}>
+
+	<div class="ipsButtonBar ipsButtonBar--top {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+		<div class='ipsButtonBar__pagination'>
+			{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+		</div>
+	</div>
+
+	{{if \count( $rows )}}
+		<ol class='ipvGrid i-basis_300 i-padding_2 {{foreach $table->classes as $class}}{$class} {{endforeach}}' id='elTable_{$table->uniqueId}' data-role="tableRows" itemscope itemtype="http://schema.org/ItemList">
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+		</ol>
+	{{else}}
+		<p class='ipsEmptyMessage'>{lang="no_rows_in_table"}</p>
+	{{endif}}
+				
+	<div class="ipsButtonBar ipsButtonBar--bottom {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+		<div class='ipsButtonBar__pagination'>
+			{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+		</div>
+	</div>
+</div>

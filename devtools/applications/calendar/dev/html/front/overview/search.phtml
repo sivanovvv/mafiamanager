@@ -1,0 +1,4 @@
+<ips:template parameters="$searchForm, $results=array(), $mapMarkers=NULL" />
+
+{$searchForm->customTemplate( array( \IPS\Theme::i()->getTemplate( 'overview', 'calendar' ), 'searchBar' ) )|raw}
+{template="searchResultsWrapper" group="events" app="calendar" params="$results, $mapMarkers"}

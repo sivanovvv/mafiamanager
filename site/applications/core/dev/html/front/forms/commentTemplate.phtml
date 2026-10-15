@@ -1,0 +1,75 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class=''" />
+{{$minimized = false;}}
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--comment" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}}>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<div data-role='whosTyping' class='ipsHide i-margin-bottom_2'></div>
+	<div class='ipsComposeArea'>
+		<div class='ipsComposeArea__photo'>{template="userPhoto" app="core" group="global" params="\IPS\Member::loggedIn(), 'fluid'"}</div>
+		<div class='ipsComposeArea_editor'>
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $input}}
+					{{if $input->name == 'guest_name' or $input->name == 'guest_email' or $input instanceof \IPS\Helpers\Form\Select}}
+						<ul class='ipsForm ipsForm--vertical ipsForm--guest-post' data-ipsEditor-toolList>
+							<li class='ipsFieldRow ipsFieldRow--fullWidth i-padding_0 i-margin-bottom_2'>
+								<div class="ipsFieldRow__content">
+									{$input->html()|raw}
+									{{if $input->error}}
+										<div class="ipsFieldRow__warning" data-role="commentFormError">{lang="$input->error"}</div>
+									{{endif}}
+								</div>
+							</li>
+						</ul>
+					{{endif}}
+				{{endforeach}}
+			{{endforeach}}
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $input}}
+					{{if $input instanceof \IPS\Helpers\Form\Editor}}
+						{{if $input->options['minimize'] !== NULL}}
+							{{$minimized = true;}}
+						{{endif}}
+						{$input->html( TRUE )|raw}
+						{{if $input->error}}
+							<div class="ipsFieldRow__warning" data-role="commentFormError">{lang="$input->error"}</div>
+						{{endif}}
+					{{endif}}
+				{{endforeach}}
+			{{endforeach}}
+			<div class='i-flex i-align-items_center i-flex-wrap_wrap i-gap_3 i-margin-top_2' data-ipsEditor-toolList {{if $minimized}}hidden{{endif}}>
+				<ul class='i-flex_91 i-flex i-flex-wrap_wrap i-gap_4 i-row-gap_1'>
+					{{foreach $elements as $collection}}
+						{{foreach $collection as $input}}
+							{{if !($input instanceof \IPS\Helpers\Form\Select) && !($input instanceof \IPS\Helpers\Form\Editor) && $input->name != 'guest_name' && $input->name != 'guest_email' && $input->name != 'assign_content_to'}}
+								<li class='{{if !($input instanceof \IPS\Helpers\Form\Captcha)}}ipsComposeArea_formControl{{endif}}'>
+									{$input->html()|raw}
+									{{if $input->error}}
+										<div class="ipsFieldRow__warning" data-role="commentFormError">{lang="$input->error"}</div>
+									{{endif}}
+								</li>
+							{{endif}}
+						{{endforeach}}
+					{{endforeach}}
+				</ul>
+				<ul class='ipsButtons i-flex_11'>
+				    {{foreach $elements as $collection}}
+				        {{foreach $collection as $input}}
+				            {{if $input->name == 'assign_content_to'}}
+				                <li>{{if $input->value}}<span class='ipsHide i-font-weight_bold i-color_soft' data-role='assignmentPrefix'>{lang="assigned_to"} </span>{{endif}}{$input->html()|raw}</li>
+				            {{endif}}
+                    	{{endforeach}}
+                    {{endforeach}}
+					{{foreach $actionButtons as $button}}
+						<li>{$button|raw}</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		</div>
+	</div>
+</form>

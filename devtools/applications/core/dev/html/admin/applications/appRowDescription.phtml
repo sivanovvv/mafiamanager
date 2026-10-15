@@ -1,0 +1,13 @@
+<ips:template parameters="$application" />
+{{if $application->_disabledMessage}}
+	{$application->_disabledMessage}<br>
+{{endif}}
+
+{{if !\in_array( $application->directory, \IPS\IPS::$ipsApps )}}
+{{if $application->website}}
+{{$title = $application->author ?: $application->website();}}
+{template="basicUrl" group="global" app="core" location="global" params="$application->website(), TRUE, $title, false, TRUE, TRUE"}
+{{elseif $application->author}}
+{lang="byline_nodate" sprintf="$application->author"}
+{{endif}}
+{{endif}}

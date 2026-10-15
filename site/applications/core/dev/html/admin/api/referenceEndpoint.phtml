@@ -1,0 +1,68 @@
+<ips:template parameters="$data, $params, $exceptions, $response, $additionalClasses" />
+<div class="cApi">
+	<div class='i-padding_3'>
+		<div class="i-margin-bottom_4">
+			<h2 class="ipsTitle ipsTitle--h3"><code>{expression="\IPS\Api\Controller::parseEndpointForDisplay( $data['title'], 'large', TRUE )" raw="true"}</code></h2>
+			<p class="i-margin-bottom_2 i-font-size_2">{expression="nl2br( $data['description'] )"}</p>
+			{{if isset( $data['details']['apimemberonly'])}}
+				<p class="ipsMessage ipsMessage--warning">{lang="api_endpoint_member_only"}</p>
+			{{endif}}
+			{{if isset( $data['details']['apiclientonly'])}}
+				<p class="ipsMessage ipsMessage--warning">{lang="api_endpoint_client_only"}</p>
+			{{endif}}
+			{{if isset( $data['details']['note'])}}
+				{{foreach $data['details']['note'] as $note}}
+					<p class="ipsMessage ipsMessage--info">{$note[0]}</p>
+				{{endforeach}}
+			{{endif}}
+		</div>
+		
+		<div class="i-margin-bottom_4">
+			<h3 class="ipsTitle ipsTitle--h3 {{if $params}}i-margin-bottom_1{{endif}}">{lang="api_parameters"}</h3>
+			{{if $params}}
+				{template="referenceTable" group="api" params="$params"}
+			{{else}}
+				<div class='i-color_soft'>{lang="api_parameters_none"}</div>
+			{{endif}}
+		</div>
+
+		<div class="i-margin-bottom_4">
+			<h3 class="ipsTitle ipsTitle--h3  {{if $exceptions}}i-margin-bottom_1{{endif}}">{lang="api_exceptions"}</h3>
+			{{if $exceptions}}
+				<table class="ipsTable">
+					<tr>
+						<th>{lang="api_exception_code"}</th>
+						<th>{lang="api_exception_message"}</th>
+						<th>{lang="api_exception_desc"}</th>
+					</tr>
+					{{foreach $exceptions as $exception}}
+						<tr>
+							<td><code>{$exception[0]}</code></td>
+							<td><code>{$exception[1]}</code></td>
+							<td>{$exception[2]}</td>
+						</tr>
+					{{endforeach}}
+				</table>
+			{{else}}
+				<div class='i-color_soft'>{lang="api_exceptions_none"}</div>
+			{{endif}}
+		</div>
+
+		<div class="i-margin-bottom_4">
+			<h3 class="ipsTitle ipsTitle--h3 {{if $response}}i-margin-bottom_1{{endif}}">{lang="api_response"}</h3>
+			{{if $response}}
+				{$response|raw}
+			{{else}}
+				<div class='i-color_soft'>{lang="api_response_none"}</div>
+			{{endif}}
+		</div>
+
+		{{foreach $additionalClasses as $class => $data}}
+			<div class="i-margin-bottom_4">
+				<span id="object-{$class}"></span>
+				<h3 class="ipsTitle ipsTitle--h3 i-margin-bottom_1 i-link-color_inherit"><code>{$class}</code> {lang="api_object"}</h3>
+				{$data|raw}
+			</div>
+		{{endforeach}}
+	</div>
+</div>

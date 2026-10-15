@@ -1,0 +1,47 @@
+{
+    "html": {
+        "added": [
+            "front\/global\/contentHiddenMessage",
+            "front\/global\/contentWrapper",
+            "front\/widgets\/widgetCustomCSS"
+        ],
+        "edited": [
+            "front\/forms\/postingInformation",
+            "front\/global\/assignmentHeader",
+            "admin\/global\/blankTemplate",
+            "front\/global\/contentItemMessage",
+            "admin\/global\/globalTemplate",
+            "global\/global\/includeJS",
+            "front\/global\/mobileNavHeader",
+            "front\/global\/userLink",
+            "front\/global\/widgetArea",
+            "admin\/memberprofile\/header",
+            "front\/system\/searchResultSnippet",
+            "front\/widgets\/builderWrapper",
+            "front\/widgets\/formTemplate"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "global\/framework\/1-1-reset.css",
+            "global\/framework\/1-3-variables.css",
+            "global\/framework\/1-5-global.css",
+            "global\/framework\/3-inputs.css",
+            "global\/framework\/3-menus.css",
+            "global\/framework\/3-messages.css",
+            "global\/framework\/3-popup.css",
+            "global\/framework\/4-header.css",
+            "global\/framework\/4-layout.css",
+            "global\/framework\/4-search-dialog.css",
+            "admin\/members\/view.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

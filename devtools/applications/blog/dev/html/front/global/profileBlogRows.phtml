@@ -1,0 +1,40 @@
+<ips:template parameters="$table, $headers, $blogs, $showSmall" />
+{{foreach $blogs AS $blog}}
+	<li class='ipsInnerBox ipsInnerBox--padding {$blog->ui( 'css' )}' {$blog->ui( 'dataAttributes' )}>
+		<div class='ipsColumns i-align-items_center'>
+			<div class='ipsColumns__primary'>
+				<h3 class='ipsTitle ipsTitle--h4'>
+					<a href='{$blog->url()}'>{$blog->_title}</a> {{if $showSmall && !($blog->owner() instanceof \IPS\Member)}} <span class='i-color_soft' data-ipsTooltip title='{lang="this_is_group"}'><i class='fa-solid fa-users' aria-hidden="true"></i> {lang="byline_nodate" sprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $blog->id )"}</span>{{endif}}
+				</h3>
+			</div>
+			<div class='ipsColumns__secondary'>
+				<ul class='ipsList ipsList--inline ipsList--label-value'>
+					<li><span class='ipsList__value'>{$blog->_items}</span><span class='ipsList__label'>{lang="blog_entries" pluralize="$blog->_items"}</span></li>
+					<li><span class='ipsList__value'>{$blog->_comments}</span><span class='ipsList__label'>{lang="blog_comments" pluralize="$blog->_comments"}</span></li>
+					<li><span class='ipsList__value'>{$blog->num_views}</span><span class='ipsList__label'>{lang="blog_views" pluralize="$blog->num_views"}</span></li>
+				</ul>
+			</div>
+		</div>
+		{{if $blog->latestEntry()}}
+			<div class='i-margin-top_2 i-border-top_1 i-padding-top_2'>
+				<a href='{$blog->latestEntry()->url( "getPrefComment" )}' title='{lang="view_this_entry" sprintf="$blog->latestEntry()->name"}' class='i-font-weight_600 i-color_hard'>
+					{{if $blog->latestEntry()->unread()}}
+						<span class='ipsIndicator' data-ipsTooltip="{lang="unread_blog"}"><span class="ipsInvisible">{lang="unread_blog"}</span></span>
+					{{endif}}
+					{$blog->latestEntry()->name}
+				</a>
+				<ul class='ipsList ipsList--inline i-margin-top_1'>
+					<li>{datetime="$blog->latestEntry()->date"}</li>
+					{{if \IPS\Settings::i()->blog_enable_rating}}
+						<li>{template="rating" app="core" params="'small', $blog->latestEntry()->averageRating(), 5, $blog->latestEntry()->memberRating()" group="global"}</li>
+					{{endif}}
+					{{if !$blog->latestEntry()->num_comments}}
+						<li class='i-color_soft'>{lang="num_comments" pluralize="$blog->latestEntry()->num_comments"}</li>
+					{{else}}
+						<li><a href='{$blog->latestEntry()->url( "getPrefComment" )}#comments' title='{lang="see_comments_on_entry"}'>{lang="num_comments" pluralize="$blog->latestEntry()->num_comments"}</a></li>
+					{{endif}}
+				</ul>
+			</div>
+		{{endif}}
+	</li>
+{{endforeach}}

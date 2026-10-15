@@ -1,0 +1,17 @@
+<ips:template parameters="$topSolvedThisWeek, $limit, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_mostSolved"}</h3>
+{{$tabID = 'ipsTabs_mostSolved' . mt_rand();}}
+<i-tabs class='ipsTabs ipsTabs--small ipsTabs--stretch' id='{$tabID}' data-ipsTabBar data-ipsTabBar-updateURL='false' data-ipsTabBar-contentArea='#{$tabID}_content'>
+	<div role="tablist">
+		<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=mostSolved&time=week&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' id='{$tabID}_week' class='ipsTabs__tab' role="tab" aria-controls="{$tabID}_week_panel" aria-selected='true'>{lang="week"}</button>
+		<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=mostSolved&time=month&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' id='{$tabID}_month' class='ipsTabs__tab' role="tab" aria-controls="{$tabID}_month_panel" aria-selected='false'>{lang="month"}</button>
+		<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=mostSolved&time=year&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' id='{$tabID}_year' class='ipsTabs__tab' role="tab" aria-controls="{$tabID}_year_panel" aria-selected='false'>{lang="year"}</button>
+		<button type="button" data-taburl='{url="app=core&module=system&controller=ajax&do=mostSolved&time=all&limit={$limit}&layout={$layout}&isCarousel={$isCarousel}"}' id='{$tabID}_all' class='ipsTabs__tab' role="tab" aria-controls="{$tabID}_all_panel" aria-selected='false'>{lang="alltime"}</button>
+	</div>
+	{template="tabScrollers" app="core" group="global" location="global"}
+</i-tabs>
+<section id='{$tabID}_content' class='ipsTabs__panels ipsWidget__content'>
+	<div id="{$tabID}_week_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="{$tabID}_week">
+		{template="mostSolvedRows" group="widgets" app="core" params="$topSolvedThisWeek, 'week', $layout, $isCarousel"}
+	</div>
+</section>

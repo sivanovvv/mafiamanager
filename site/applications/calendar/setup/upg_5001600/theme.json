@@ -1,0 +1,44 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/browse\/calendarHeader",
+            "front\/browse\/calendarMonth",
+            "front\/browse\/calendarWeek",
+            "front\/events\/event",
+            "front\/events\/featuredEvent",
+            "front\/events\/nearMe",
+            "front\/events\/searchResultsWrapper",
+            "front\/global\/commentTableHeader",
+            "front\/global\/embedEvent",
+            "front\/global\/manageFollowRow",
+            "front\/global\/rows",
+            "front\/global\/subscribeMenu",
+            "front\/modcp\/approvalQueueItem",
+            "front\/overview\/header",
+            "front\/overview\/searchBar",
+            "front\/submit\/datesForm",
+            "front\/view\/comments",
+            "front\/view\/eventBlock",
+            "front\/view\/eventSidebar",
+            "front\/view\/eventStreamBlock",
+            "front\/view\/reminderButton",
+            "front\/view\/reviews",
+            "front\/view\/rsvpControls",
+            "front\/view\/view",
+            "front\/widgets\/recentReviews",
+            "front\/widgets\/upcomingEvents"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

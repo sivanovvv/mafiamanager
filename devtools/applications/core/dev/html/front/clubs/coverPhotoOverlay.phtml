@@ -1,0 +1,61 @@
+<ips:template parameters="$club, $position='full', $container=null" />
+
+{{$memberStatus = $club->memberStatus( \IPS\Member::loggedIn() );}}
+
+<div class="ipsCoverPhotoMeta">
+	{{if $position == 'full'}}
+		<div class='ipsCoverPhoto__avatar'>
+			{template="clubIcon" group="clubs" app="core" params="$club, 'fluid', ''"}
+			<!--
+			{{if $club->isLeader()}}
+				<a href='{$club->url()->setQueryString( 'do', 'editPhoto' )}' class='ipsButton' data-action='editPhoto' data-ipsDialog data-ipsDialog-forceReload='true' data-ipsDialog-modal='true' data-ipsDialog-title='{lang="club_profile_photo"}' title='{lang="club_profile_photo"}' data-ipsTooltip><i class='fa-regular fa-image' aria-hidden="true"></i></a>
+			{{endif}}
+			-->
+		</div>
+		<div class='ipsCoverPhoto__titles'>
+			<div class='ipsCoverPhoto__title'>
+				<h2>
+					<a href='{$club->url()}' title='{$club->name}'>{$club->name}</a>
+				</h2>
+				<div class='ipsBadges' data-ips-hook="badges">
+				    {{foreach $club->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</div>
+			</div>
+			<div class='ipsCoverPhoto__subTitle'>
+				<ul class='ipsList ipsList--sep' data-ips-hook="clubHeaderLinks">
+					<li>{lang="club_{$club->type}"}</li>
+					{{if $club->type !== $club::TYPE_PUBLIC}}
+						<li>{lang="club_members_count" pluralize="$club->members"}</li>
+					{{endif}}
+					{{if $club->isLeader() and $club->type === $club::TYPE_CLOSED and $pendingMembers = $club->members( array( $club::STATUS_REQUESTED ), NULL, NULL, 4 )}}
+						<li><a href='{$club->url()->setQueryString('do', 'members')->setQueryString('filter', 'requested')->setQueryString('filter', 'requested')}' class='i-color_issue'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> &nbsp;{lang="club_pending_members" pluralize="$pendingMembers"}</a></li>
+					{{endif}}
+					{{if $club->rules}}
+						<li><a href='{$club->url()->setQueryString('do', 'rules')}' data-ipsDialog data-ipsDialog-title='{lang="club_rules"}'>{lang="club_rules"}</a></li>
+					{{endif}}
+					{{if ( \in_array( $club->type, array( $club::TYPE_OPEN, $club::TYPE_CLOSED ) ) or ( $memberStatus = $club->memberStatus( \IPS\Member::loggedIn() ) and \in_array( $memberStatus, array( $club::STATUS_MEMBER, $club::STATUS_MODERATOR, $club::STATUS_LEADER, $club::STATUS_INVITED, $club::STATUS_INVITED_BYPASSING_PAYMENT, $club::STATUS_REQUESTED, $club::STATUS_EXPIRED, $club::STATUS_EXPIRED_MODERATOR ) ) ) ) and $priceBlurb = $club->priceBlurb()}}
+						<li>
+							<span>{$priceBlurb}</span>
+							{{if $club->isPaid() and $club->joiningFee() and \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+								<span class="i-font-size_-2">{lang="nexus_tax_explain_val"}</span>
+							{{endif}}
+						</li>
+					{{endif}}
+				</ul>
+			</div>
+		</div>
+	
+		<div class='ipsCoverPhoto__buttons cClubControls__moderate'>
+			<a href="#" data-action="saveClubmenu" class="ipsHide ipsButton ipsButton--small ipsButton--positive">{lang="save"}</a>
+			<ul class='ipsButtons'>
+			    {$club->menu( $container )|raw}
+			    {$club->buttons()->contentHtml()|raw}
+			</ul>
+		</div>
+	{{else}}
+		<!-- v5 todo: Remove this? -->
+		<div class='ipsCoverPhoto__avatar' hidden>
+			{template="clubIcon" group="clubs" app="core" params="$club, 'fluid'"}
+		</div>
+	{{endif}}
+</div>

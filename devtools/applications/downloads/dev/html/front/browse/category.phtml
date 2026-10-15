@@ -1,0 +1,60 @@
+<ips:template parameters="$category, $table" />
+
+{{if $club = $category->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $category"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<header class='ipsPageHeader ipsBox ipsBox--downloadsCategoryHeader ipsPull'>
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" data-ips-hook="title" class="ipsPageHeader__title">{$category->_title}</h1>
+			{{if $category->description}}
+				{template="richText" group="global" app="core" location="global" params="$category->description, array('ipsPageHeader__desc')"}
+			{{endif}}
+		</div>
+		<div data-ips-hook="headerButtons" class='ipsButtons'>
+            {{if \IPS\Application::appIsEnabled('cloud')}}
+                {template="analyticsButton" app="cloud" group="analytics" params="$category, $category->id"}
+            {{endif}}
+			{template="follow" app="core" group="global" params="'downloads', 'category', $category->_id, \IPS\downloads\File::containerFollowerCount( $category )"}
+		</div>
+	</div>
+</header>
+
+<div data-controller='downloads.front.downloads.browse' class='ipsBlockSpacer'>
+	<ul class="ipsButtons ipsButtons--main">
+		{{if $category->hasChildren()}}
+			<li class="ipsResponsive_hideDesktop">
+				<button type="button" id="elDownloadsCategories" popovertarget="elDownloadsCategories_menu" class='ipsButton ipsButton--inherit'><span>{lang="subcategory"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+			</li>
+		{{endif}}
+		{template="categoryButtons" group="browse" params="$category->can('add'), $category, FALSE"}
+	</ul>
+	{template="categoryMenu" group="browse" params="$category->children()"}
+
+	<div class='ipsBox ipsBox--downloadsCategoryTable ipsPull cDownloadsCategoryTable'>
+		{$table|raw}
+	</div>
+
+	{{if $category AND $category->last_file_id AND \IPS\Member::loggedIn()->member_id}}
+		<ul class="ipsButtons ipsButtons--main ipsResponsive_showPhone">
+			<li>
+				<a href="{$category->url()->setQueryString( array( 'do' => 'markRead' ) )->csrf()}" title='{lang="mark_category_read_title"}' class='ipsButton ipsButton--inherit' data-action='markCategoryRead'><i class="fa-solid fa-check" aria-hidden="true"></i><span>{lang="mark_category_read"}</span></a>
+			</li>
+		</ul>
+	{{endif}}
+
+</div>
+
+<div class='ipsBox ipsBox--padding ipsPull ipsResponsive_showPhone'>
+	<div class='ipsPageActions'>
+		{template="follow" app="core" group="global" params="'downloads', 'category', $category->_id, \IPS\downloads\File::containerFollowerCount( $category )"}
+	</div>
+</div>
+
+{{if $category->club()}}
+	</div>
+{{endif}}

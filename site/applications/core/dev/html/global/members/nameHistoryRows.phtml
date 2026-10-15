@@ -1,0 +1,13 @@
+<ips:template parameters="$table, $headers, $rows"/>
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+		<li class='ipsData__item'>
+			<div class="ipsData__main">
+		   		<h4 class='ipsData__title'>{datetime="$row['log_date']"}</h4>
+		   		<p class='ipsData__meta'>
+		      		{$row['log_data']['old']}<i class='fa-solid fa-angle-right i-margin-start_icon i-margin-end_icon' aria-hidden="true"></i> {$row['log_data']['new']}
+		      	</p>
+		   </div>
+		</li>
+	{{endforeach}}
+{{endif}}

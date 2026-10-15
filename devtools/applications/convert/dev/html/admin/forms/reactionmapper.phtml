@@ -1,0 +1,29 @@
+<ips:template parameters="$name, $value, $cReactions, $ipsReactions, $descriptions" />
+
+<div class="ipsSpanGrid ipsAttachment_fileList cReactionMapper">
+	{{foreach $cReactions as $id => $cReaction}}
+	<div class='ipsSpanGrid__2 ipsBox ipsAttach ipsImageAttach i-padding_2' data-controller="convert.admin.forms.reactionmapper" data-reactionid="{$id}">
+        {{if $cReaction['icon']}}
+        <div class='i-text-align_center i-padding-top_2 cReactionImage'>
+            <img src="{$cReaction['icon']}" alt='' class='ipsImage'>
+        </div>
+        {{endif}}
+        <div class="i-text-align_center i-padding_2">
+            <input type="hidden" value="0" name="{$name}[{$id}]" />
+            <p class='i-text-align_center'>{$cReaction['title']|raw}</p>
+            <div>
+                <button type="button" id="elReactionMapper{$id}" popovertarget="elReactionMapper{$id}_menu" class='ipsButton ipsButton--secondary ipsButton--small ipsButton--wide'><span class="elMenuSelect_replace">{lang="convert_reaction_choose"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+            </div>
+            <i-dropdown popover id="elReactionMapper{$id}_menu">
+                <div class="iDropdown">
+                    <ul class="iDropdown__items" role='menu'>
+                        {{foreach $ipsReactions as $reactionId => $reaction}}
+                            <li><button type="button" data-action="selectReaction" role='menuitem' data-id="{$reactionId}" {{if(isset($value[$id]) AND $value[$id] ==$reactionId)}}data-default="true"{{endif}}>{{if( !empty( $reaction ))}}<img src="{$reaction}" alt="" class="cReactionSmall"/> {{endif}}{$descriptions[ $reactionId ]}</button></li>
+                        {{endforeach}}
+                    </ul>
+                </div>
+            </i-dropdown>
+        </div>
+	</div>
+	{{endforeach}}
+</div>

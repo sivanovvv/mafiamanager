@@ -1,0 +1,8 @@
+<ips:template parameters="$author" />
+{{foreach $author->contentProfileFields() as $group => $fields}}
+	{{foreach $fields as $field => $value}}
+		<li data-el='{$field|raw}' data-role='custom-field'>
+			{$value|raw}
+		</li>
+	{{endforeach}}
+{{endforeach}}

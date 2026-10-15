@@ -1,0 +1,16 @@
+/* Featured content */
+.ipsData--featured-content{
+	--i-data--display-latest-photo: none;
+}
+.ipsData--featured-content .ipsData__desc{
+	--i-data--desc-truncate: 15;
+}
+
+/* Mini thumbnails in promoted content widget */
+.ipsGrid--widgets-promoted{
+	--i-basis: 40px;
+}
+
+.ipsData--mini-grid .ipsGrid--widgets-promoted{
+	--i-basis: 20px;
+}

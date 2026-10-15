@@ -1,0 +1,37 @@
+<ips:template parameters="$info, $blocks" />
+
+<div id='acpPageHeader' class='cDashboardHeader acpPageHeader_flex'>
+	<div>
+		<h1 class='ipsTitle ipsTitle--h3'>
+			{expression="\IPS\Output::i()->title"}
+			{{if \IPS\IN_DEV}}
+				{template="searchKeywords" group="global" app="core" params="'app=' . \IPS\Request::i()->app . '&module=' . \IPS\Request::i()->module . '&controller=' . \IPS\Request::i()->controller . ( ( isset( \IPS\Request::i()->do ) and \IPS\Request::i()->do != 'do' ) ? ( '&do=' . \IPS\Request::i()->do ) : '' ) . ( ( \IPS\Request::i()->controller == 'enhancements' and ( isset( \IPS\Request::i()->id ) ) ) ? ( '&id=' . \IPS\Request::i()->id ) : '' )"}
+			{{endif}}
+		</h1>
+		<p>
+			Invision Community {lang="acp_version_number" sprintf="\IPS\Application::load('core')->version"}
+		</p>
+	</div>
+
+	{{$unusedBlocks = 0;}}
+	{{foreach $info as $block}}
+		{{if !isset($blocks[ $block['key'] ]) }}
+			{{$unusedBlocks++;}}
+		{{endif}}
+	{{endforeach}}
+
+	<div class='acpToolbar'>
+		{template="pageButtons" group="global" app="core" location="admin" params="array( 'add' => array( 'primary' => true, 'icon' => 'plus', 'title' => 'add_button', 'id' => 'elAddWidgets', 'dropdown' => true, 'class' => ( $unusedBlocks > 0 ? '' : 'ipsButton--disabled' )))"}
+	</div>
+</div>
+<i-dropdown popover id="elAddWidgets_menu">
+	<div class="iDropdown">
+		<ul class="iDropdown__items">
+			{{foreach $info as $block}}
+				<li>
+					<button type="button" class='{{if isset($blocks[ $block['key'] ]) }}ipsHide{{endif}}' data-ipsMenuValue='{$block['key']}' data-widgetName='{$block['name']}'>{$block['name']}</button>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>
+</i-dropdown>

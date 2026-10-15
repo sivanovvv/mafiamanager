@@ -1,0 +1,5 @@
+<ips:template parameters="$image" />
+{$image->description|raw}
+<p>
+	<a href='{$image->url()}' title='{$image->caption}'><img src='{file="$image->masked_file_name" extension="gallery_Images"}' title="{$image->caption}" alt="{$image->caption}"></a>
+</p>

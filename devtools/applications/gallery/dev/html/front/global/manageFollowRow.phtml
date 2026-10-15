@@ -1,0 +1,65 @@
+<ips:template parameters="$table, $headers, $rows, $includeFirstCommentInCommentCount=TRUE" />
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+	{{$idField = $row::$databaseColumnId;}}
+		<li class="ipsData__item {{if $row->unread()}}ipsData__item--unread{{endif}} {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} {{if $row->hidden()}}ipsModerated{{endif}}" data-controller='core.front.system.manageFollowed' data-followID='{$row->_followData['follow_area']}-{$row->_followData['follow_rel_id']}' {{if $row->unread()}}data-ips-unread{{else}}data-ips-read{{endif}}>
+			<div class='ipsData__image'>
+				{{$image = \IPS\File::get( 'gallery_Images', $row->small_file_name )->url;}}
+				<img src="{$image}" alt='' loading='lazy'>
+			</div>
+			<div class='ipsData__content'>
+				<div class='ipsData__main'>
+					<div class='ipsData__title'>
+						<div class='ipsBadges'>
+							{{if $row->mapped('locked')}}
+								<span><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
+							{{endif}}
+
+							{{foreach $row->badges() as $badge}}{$badge|raw}{{endforeach}}
+							
+							{{if $row->prefix()}}
+								{template="prefix" group="global" app="core" params="$row->prefix( TRUE ), $row->prefix()"}
+							{{endif}}
+						</div>
+						
+						<h4>
+							<a href='{$row->url()}'>
+								{{if $row->mapped('title')}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}
+							</a>
+						</h4>
+					</div>
+					{{if method_exists( $row, 'tableDescription' )}}
+						<div class='ipsData__desc ipsTruncate_2'>
+							{$row->tableDescription()|raw}
+						</div>
+					{{else}}
+						<div class="ipsData__meta">
+							{lang="byline_name_date" htmlsprintf="$row->author()->link( $row->warningRef() ), \IPS\DateTime::ts( $row->__get( $row::$databaseColumnMap['date'] ) )->html(TRUE)"}
+							{lang="in"} <a href="{$row->container()->url()}">{$row->container()->_title}</a>
+						</div>				
+					{{endif}}
+					<ul class="ipsList ipsList--inline i-row-gap_0 i-margin-top_1 i-font-weight_500">
+						<li title='{lang="follow_when"}' data-role='followDate' hidden><i class='fa-regular fa-clock' aria-hidden="true"></i> {datetime="$row->_followData['follow_added']"}</li>
+						<li title='{lang="follow_how"}' data-role='followFrequency'>
+							{{if $row->_followData['follow_notify_freq'] == 'none'}}
+								<i class='fa-regular fa-bell-slash' aria-hidden="true"></i>
+							{{else}}
+								<i class='fa-regular fa-bell' aria-hidden="true"></i>
+							{{endif}} {lang="follow_freq_{$row->_followData['follow_notify_freq']}"}
+						</li>
+						<li data-role='followAnonymous' {{if !$row->_followData['follow_is_anon']}}hidden{{endif}}><i class="fa-regular fa-eye-slash" aria-hidden="true"></i> {lang="follow_is_anon"}</li>
+					</ul>
+				</div>
+				<div class='cFollowedContent_manage'>
+					{template="manageFollow" group="system" app="core" params="$row->_followData['follow_app'], $row->_followData['follow_area'], $row->_followData['follow_rel_id']"}
+				</div>
+			</div>
+			{{if $table->canModerate()}}
+				<label class="ipsData__mod">
+					<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+					<input type='checkbox' data-role='moderation' name="moderate[{$row->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{{if $row->tableStates()}}{$row->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+				</label>
+			{{endif}}
+		</li>
+	{{endforeach}}
+{{endif}}

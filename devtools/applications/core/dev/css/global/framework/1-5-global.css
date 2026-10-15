@@ -1,0 +1,304 @@
+/* 
+	Variable fonts:
+		- Downloaded from: https://fonts.google.com/
+		- Converted from TTF to WOFF2 at: https://cloudconvert.com/
+		- All font licenses allow distribution with commerical software
+		- Fonts should only be added if they're variable or support at least every 100 value of font-weight
+		- Font files are only downloaded if the font is actually used
+*/
+@font-face{
+	font-family: "Bitter";
+	src: url('{resource="fonts/Bitter.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Instrument Sans";
+	src: url('{resource="fonts/InstrumentSans.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Inter";
+	src: url('{resource="fonts/Inter.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Manrope";
+	src: url('{resource="fonts/Manrope.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Merriweather Sans";
+	src: url('{resource="fonts/MerriweatherSans.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Open Sans";
+	src: url('{resource="fonts/OpenSans.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Pathway Extreme";
+	src: url('{resource="fonts/PathwayExtreme.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Roboto Flex";
+	src: url('{resource="fonts/RobotoFlex.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Roboto Serif";
+	src: url('{resource="fonts/RobotoSerif.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Roboto Slab";
+	src: url('{resource="fonts/RobotoSlab.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+@font-face{
+	font-family: "Source Sans 3";
+	src: url('{resource="fonts/SourceSans3.woff2" inCss="true" app="core" location="front"}') format('woff2');
+	font-display: swap;
+	font-weight: 100 900;
+}
+
+/*
+	----------------
+	- Global
+	----------------
+*/
+
+/* Ensure anchored content appears below sticky header. By default, it'll match the height of the offset, but extra space can be added by defining --i-scroll-padding */
+html{
+	scroll-padding-top: calc(var(--i-sticky-offset) + var(--i-scroll-padding, 0px));
+	/* Ensure the mobile footer doesn't obscure keyboard focused content */
+	scroll-padding-bottom: calc(10px + var(--i-mobileFooter--he));
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+body{
+	background-color: var(--i-body--ba-co);
+	color: var(--i-co);
+	font-family: var(--i-font-family);
+	font-size: var(--i-font-size);
+	line-height: 1.52;
+	min-height: 100vh;
+}
+
+a{
+	color: var(--i-link--co, var(--i-co));
+	text-decoration: var(--i-link--te-de, none);
+}
+
+@media (any-hover:hover){
+	a:where(:hover){
+		color: var(--i-link-hover--co, var(--i-link--co, var(--i-co)));
+		text-decoration: var(--i-link-hover--te-de, var(--i-link--te-de, none));
+	}
+}
+
+
+/*
+	----------------
+	- Accessibility links
+	----------------
+*/
+
+/* Skip to content */
+.ipsSkipToContent:focus{
+	--i-outline-offset: 0px;
+	position: absolute;
+	top: 10px;
+	inset-inline-start: 10px;
+	z-index: 9999;
+	background: hsl(0 0% 0% / 70%);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	color: hsl(0 0% 100%);
+	border-radius: 6px;
+	padding: .8em 1.2em;
+}
+	.ipsSkipToContent:not(:focus){
+		position: absolute;
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		padding: 0;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+/*
+	----------------
+	- SVG
+	----------------
+*/
+
+.ipsSvg{
+	height: 1em;
+	width: auto;
+}
+
+/*
+	----------------
+	- Icons
+	----------------
+*/
+
+/* Reserve space for loading icons? */
+:where(.ipsLayout :is(.fa-regular, .fa-solid, .fa-brands)){
+	min-width: 1em;
+	text-align: center;
+}
+
+.fa-ips{
+	display: inline-block;
+	min-width: 1.2em;
+	text-align: center;
+	flex: 0 0 auto;
+	font-family: var(--i-font-awesome);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: auto;
+	font-style: normal;
+	font-weight: var(--icon--fo-we, 900);
+}
+
+	.fa-ips::before{
+		content: var(--icon, "\f1c5");
+	}
+
+.ipsEmoji,
+.ipsIcon--emoji {
+	font-weight: normal;
+	font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+}
+
+/* Resize classic emoticons since they're 2x */
+.ipsRichText .ipsEmoji img[src*="@2x.png"]{
+	width: 24px;
+	vertical-align: middle;
+}
+
+/* Flip the arrow direction in RTL */
+[dir="rtl"] .fa-angles-left{
+	--fa: "\f101";
+}
+[dir="rtl"] .fa-angles-right{
+	--fa: "\f100";
+}
+[dir="rtl"] .fa-angle-left{
+	--fa: "\f105";
+}
+[dir="rtl"] .fa-angle-right{
+	--fa: "\f104";
+}
+[dir="rtl"] .fa-arrow-left-long{
+	--fa: "\f178";
+}
+[dir="rtl"] .fa-arrow-right-long{
+	--fa: "\f177";
+}
+[dir="rtl"] .fa-arrow-left{
+	--fa: "\f061";
+}
+[dir="rtl"] .fa-arrow-right{
+	--fa: "\f060";
+}
+
+/*
+	----------------
+	- Dialogs
+	----------------
+*/
+
+dialog::backdrop{
+	background: hsl(210 20% 8% / .5);
+	-webkit-backdrop-filter: blur(1px);
+	backdrop-filter: blur(1px);
+}
+
+:where([data-ips-scheme="dark"]) dialog::backdrop{
+	background:hsl(210 10% 40% / .7);
+}
+
+
+/*
+	----------------
+	- PWA sticky fix
+	----------------
+*/
+
+/* This element improves the display of sticky elements in PWAs. It sits under the status bar when sticky elements are stuck */
+.ipsPwaStickyFix{
+	display: none;
+}
+
+@media (display-mode: standalone){
+	.ipsPwaStickyFix{
+		display: block;
+		position: sticky;
+		background-color: var(--i-background_1);
+		top: 0;
+		height: 0;
+		z-index: var(--i-z-index_sticky, 4);
+		border-top-left-radius: inherit;
+		border-top-right-radius: inherit;
+	}
+	.ipsPwaStickyFix::after{
+		content: "";
+		height: env(safe-area-inset-top);
+		top: 0; left: 0; right: 0;
+		position: absolute;
+		background: inherit;
+		border-top-left-radius: inherit;
+		border-top-right-radius: inherit;
+	}
+}
+
+/* PWA Loading indicator */
+i-pwa-loading{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+}
+i-pwa-loading::before{
+	content: "";
+	height: 6px;
+	display: block;
+	width: 50vw;
+	border-radius: 10px;
+	background: var(--i-primary);
+	animation-name: ipsPwaLoader;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	transform-origin: 0 0;
+}
+
+@keyframes ipsPwaLoader{
+	0%{
+		transform: translateX(-100%);
+	}
+	100%{
+		transform: translateX(100vw);
+	}
+}
+
+::highlight(search-results) {
+	/* The var is needed instead of currentColor due to #6939 */
+	background: color-mix(in hsl, var(--i-primary) 15%, transparent);
+	color: var(--i-color_primary);
+}

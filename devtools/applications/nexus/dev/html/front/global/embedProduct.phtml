@@ -1,0 +1,51 @@
+<ips:template parameters="$item, $renewalTerm=NULL, $url=NULL, $image=NULL" />
+
+{{$asNode = \IPS\nexus\Package::load( $item->id );}}
+<div class='ipsRichEmbed ipsRichEmbed--commerce-product cNexusEmbed'>
+	<div class='ipsRichEmbed_header'>
+		<div>
+			<p class='i-font-weight_600 i-color_hard ipsTruncate_1'>
+				<a href='{$item->url()}'>{lang="a_product_in_our_store"}</a>
+			</p>
+			<p class='i-color_soft i-link-color_inherit ipsTruncate_1'>
+				{$item->container()->_title}
+			</p>
+		</div>
+		<a href='{$item->url()}' class='ipsRichEmbed_openItem'><i class='fa-solid fa-arrow-up-right-from-square' aria-hidden="true"></i></a>
+	</div>
+	{{if $images = $item->images() and \count( $images )}}
+		{{foreach $images as $image}}
+			<a href='{$item->url()}' class='ipsRichEmbed_masthead' data-imageID='{$item->id}'>
+				<img src='{$image}' alt='{$item->mapped('title')}' loading="lazy">
+			</a>
+			{{break;}}	
+		{{endforeach}}
+	{{else}}
+		<div class='ipsRichEmbed_masthead'></div>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed_itemTitle ipsTruncate_1'>
+			<a href='{$item->url()}'>{$item->mapped('title')}</a>
+			{{if \IPS\IPS::classUsesTrait( $item, 'IPS\Content\Ratings' ) and $rating = $item->averageRating()}}
+				&nbsp;&nbsp;{template="rating" app="core" params="'large', $rating, 5" group="global"}
+			{{elseif isset( $item::$reviewClass ) AND $rating = $item->averageReviewRating()}}
+				&nbsp;&nbsp;{template="rating" app="core" params="'large', $rating, \IPS\Settings::i()->reviews_rating_out_of" group="global"}<span class='i-color_soft'>{{if $item->reviews}}({lang="from_num_reviews" pluralize="$item->reviews"}){{else}}{lang="no_reviews_yet"}{{endif}}</span>
+			{{endif}}
+		</div>
+		<div>
+			{template="packageBlockPrice" app="nexus" group="store" params="$asNode->fullPriceInfo()"}
+		</div>
+		{{if $asNode->stock === 0}}
+			<span class='ipsButton ipsButton--primary ipsButton--small ipsButton--wide ipsButton--disabled i-cursor_not-allowed'>{lang="out_of_stock"}</span>
+		{{else}}
+			<a href='{$asNode->url()->setQueryString( 'purchase', 1 )}' class='ipsButton ipsButton--primary ipsButton--wide ipsButton--small' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title='{lang="store_quick_view"}' data-ipsDialog-forceReload>
+				<i class='fa-solid fa-cart-shopping' aria-hidden="true"></i> {lang="add_to_cart"}
+			</a>
+		{{endif}}
+		{{if $desc = $item->truncated(TRUE)}}
+			<div class='ipsRichEmbed__snippet'>
+				{$desc|raw}
+			</div>
+		{{endif}}
+	</div>
+</div>

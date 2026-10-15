@@ -1,0 +1,8 @@
+<ips:template parameters="$page, $widgets" />
+<div>
+    {{if is_string(@$widgets['col1'])}}
+        {$widgets['col1']|raw}
+    {{else}}
+        {template="widgetContainer" group="pages" app="cms" params="'col1', $widgets, 'horizontal'"}
+    {{endif}}
+</div>

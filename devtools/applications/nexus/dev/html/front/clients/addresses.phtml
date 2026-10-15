@@ -1,0 +1,37 @@
+<ips:template parameters="$billingAddress=NULL, $otherAddresses=array()" />
+<div class="ipsBox ipsBox--commerceAddresses ipsPull">
+	<header class='ipsPageHeader'>
+		<div class="ipsPageHeader__row">
+			<div class="ipsPageHeader__primary">
+				<h1 class='ipsPageHeader__title'>{lang="address_book"}</h1>
+				<p class="ipsPageHeader__desc">{lang="address_book_info"}</p>
+			</div>
+			<a href='{url="app=nexus&module=clients&controller=addresses&do=form" seoTemplate="clientsaddresses"}' class='ipsButton ipsButton--primary' title="{lang="address_add_title"}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="address_add"}'>{lang="address_add"}</a>
+		</div>
+	</header>
+	
+	{{if $billingAddress}}
+		<div class='ipsGrid ipsGrid--lines ipsGrid--commerce-address ipsGrid--auto-fit i-basis_360'>
+			{{if $billingAddress}}
+				<div class='i-padding_3'>
+					<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_3'>{lang="address_default_billing"}</h2>
+					{template="address" group="clients" app="nexus" params="$billingAddress"}
+				</div>
+			{{endif}}
+		</div>
+	{{endif}}
+	
+	{{if \count( $otherAddresses )}}
+		<hr class='ipsHr'>
+		<div class='i-padding_3'>
+			<h2 class='ipsTitle ipsTitle--h3 i-margin-bottom_3'>{lang="address_other_addresses"}</h2>
+			<ul class='ipsGrid ipsGrid--lines ipsGrid--commerce-other-addresses ipsGrid--auto-fit i-basis_360'>
+				{{foreach $otherAddresses as $address}}
+					<li>
+						{template="address" group="clients" app="nexus" params="$address"}
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endif}}
+</div>

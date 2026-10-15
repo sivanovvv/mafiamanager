@@ -1,0 +1,17 @@
+<ips:template parameters="$admins" />
+{{if !empty( $admins )}}
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--online-admins">
+		{{foreach $admins as $admin }}
+			<li class='ipsData__item'>
+				<div class='ipsData__main'>
+					<h4 class='ipsData__title'><a href='{$admin['user']->url()}' target='_blank' rel="noopener">{$admin['user']->name}</a>{{if $admin['user'] != \IPS\Member::loggedIn() and $admin['session']['session_location'] != "app=core&module=system&controller=login"}} <a href='{expression="preg_replace( '/csrfKey=([a-zA-Z0-9]+?)&/', '&', $admin['session']['session_url'] )"}'><i class='fa-solid fa-arrow-right' aria-hidden="true"></i></a>{{endif}} </h4>
+					<p class='ipsData__meta'>
+						{datetime="$admin['session']['session_running_time']"}
+					</p>
+				</div>
+			</li>
+		{{endforeach}}
+		</ul>
+	</i-data>
+{{endif}}

@@ -1,0 +1,2 @@
+<ips:template parameters="$team" />
+<span class='ipsBadge ipsBadge--positive'>{lang="assignment_team"}</span> {{if \IPS\Member::loggedIn()->hasAcpRestriction( 'core', 'staff', 'teams_edit' )}}<a href='{$team->acpUrl()}'>{$team->name}</a>{{else}}{$team->name}{{endif}}

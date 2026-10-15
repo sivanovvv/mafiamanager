@@ -1,0 +1,279 @@
+/*
+	----------------
+	- Boxes
+	----------------
+*/
+
+/* Make box headers smaller */
+.ipsBox__header{
+	font-size: 1em;
+}
+/* Icons */
+.ipsBox__header-icon{
+	color: var(--i-color_soft);
+	font-size: .9em;
+}
+/* Faint secondary links */
+.ipsBox__header-secondary{
+	color: var(--i-color_soft);
+	font-size: inherit;
+}
+
+
+/* Dashboard: Collapse widgets */
+[data-widgetCollapse]{
+	cursor: pointer;
+}
+
+	[data-widgetCollapse] .fa-caret-down{
+		transition: .2s;
+		margin-inline-end: .4em;
+	}
+
+	.ipsBox:has([data-widgetcollapsed="true"]) [data-widgetCollapse] .fa-caret-down{
+		transform: rotate(-.25turn);
+	}
+
+/* Dashboard: Smart Community header */
+.ipsBox.ipsBox--smart-community-splash {
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+}
+	
+
+/* Table search */
+.acpTable_search {
+	flex: 1 1 auto;
+	display: grid;
+	grid-template-columns: 3em auto 40px;
+	width: 300px;
+	max-width: calc(100vw - 40px);
+}
+
+	.acpTable_search .fa-magnifying-glass{
+		grid-column: 1;
+		grid-row: 1;
+		z-index: 1;
+		place-self: center;
+		pointer-events: none;
+	}
+
+	.acpTable_search input{
+		--i-outline-color: var(--i-primary);
+		background: color-mix(in srgb, currentColor 12%, transparent);
+		color: var(--i-co);
+		padding: .8em 1.2em;
+		padding-inline-start: 3em;
+		border-radius: 5px;
+		grid-column: 1/-1;
+		grid-row: 1;
+	}
+
+	.acpTable_search:hover input{
+		background: color-mix(in srgb, currentColor 20%, transparent);
+	}
+
+	.acpTable_search ::placeholder{
+		opacity: 1;
+		text-transform: uppercase;
+	}
+
+	.acpWidgetSearch {
+		display: grid;
+		place-content: center;
+		color: var(--i-color_soft);
+		grid-column: 3;
+		grid-row: 1;
+	}
+
+		.acpWidgetSearch:hover {
+			color: var(--i-color_hard);
+		}
+
+/* Apple pie chart */
+.ipsPieBar__bar {
+	height: 38px;
+	background: #ddd;
+	overflow: hidden;
+	white-space: nowrap;
+	display: flex;
+	border-radius: 5px;
+	position: relative;
+}
+
+.ipsPieBar__barSegment {
+	height: 38px;
+}
+
+.ipsList--inline > .ipsPieBar__legendItem {
+	display: inline-flex;
+	align-items: center;
+}
+
+.ipsPieBar__barSegment:nth-child(10n-9),
+.ipsPieBar__legendItem:nth-child(10n-9) > .ipsPieBar__legendItemKey {
+	background: #10967e;
+}
+.ipsPieBar__barSegment:nth-child(10n-8),
+.ipsPieBar__legendItem:nth-child(10n-8) > .ipsPieBar__legendItemKey {
+	background: #ea7963;
+}
+.ipsPieBar__barSegment:nth-child(10n-7),
+.ipsPieBar__legendItem:nth-child(10n-7) > .ipsPieBar__legendItemKey {
+	background: #de6470;
+}
+.ipsPieBar__barSegment:nth-child(10n-6),
+.ipsPieBar__legendItem:nth-child(10n-6) > .ipsPieBar__legendItemKey {
+	background: #6b9dde;
+}
+.ipsPieBar__barSegment:nth-child(10n-5),
+.ipsPieBar__legendItem:nth-child(10n-5) > .ipsPieBar__legendItemKey {
+	background: #b09be4;
+}
+.ipsPieBar__barSegment:nth-child(10n-4),
+.ipsPieBar__legendItem:nth-child(10n-4) > .ipsPieBar__legendItemKey {
+	background: #eec766;
+}
+.ipsPieBar__barSegment:nth-child(10n-3),
+.ipsPieBar__legendItem:nth-child(10n-3) > .ipsPieBar__legendItemKey {
+	background: #9fc973;
+}
+.ipsPieBar__barSegment:nth-child(10n-2),
+.ipsPieBar__legendItem:nth-child(10n-2) > .ipsPieBar__legendItemKey {
+	background: #e291bf;
+}
+.ipsPieBar__barSegment:nth-child(10n-1),
+.ipsPieBar__legendItem:nth-child(10n-1) > .ipsPieBar__legendItemKey {
+	background: #55c1a6;
+}
+.ipsPieBar__barSegment:nth-child(10n),
+.ipsPieBar__legendItem:nth-child(10n) > .ipsPieBar__legendItemKey {
+	background: #5fb9da;
+}
+
+.ipsPieBar__legend {
+	text-align: start;
+    margin-top: 10px;
+}
+
+.ipsPieBar__legendItemKey {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	margin-inline-end: 4px;
+	border-radius: 5px;
+}
+
+/* Loading */
+.icon-spinner2:before,
+.ipsLoading:before{
+	border-color: var(--i-background_3);
+	border-top-color: var(--i-color_root);
+}
+
+/* Stats bar */
+.acpStatsBar {
+	height: 38px;
+	background: #ddd;
+	overflow: hidden;
+	white-space: nowrap;
+	display: flex;
+	border-radius: 5px;
+	position: relative;
+}
+
+	.acpStatsBar::after{
+		content: '';
+		position: absolute;
+		inset: 0;
+		border: 1px solid color-mix(in srgb, var(--i-color_hard) 15%, transparent);
+		border-radius: inherit;
+		pointer-events: none;
+	}
+
+	.acpStatsBar_segment,
+	.acpStatsBar_subsegment {
+		height: 38px;
+	}
+
+	.acpStatsBar_subsegment {
+		background: rgba(0,0,0,0.2);
+	}
+
+	.ipsList--inline > .acpStatsBar_legend{
+		display: inline-flex;
+		align-items: center;
+	}
+		
+	.acpStatsBar_segment:nth-child(10n-9),
+	.acpStatsBar_legend:nth-child(10n-9) > .acpStatsBar_preview {
+		background: #10967e;
+	}
+	.acpStatsBar_segment:nth-child(10n-8),
+	.acpStatsBar_legend:nth-child(10n-8) > .acpStatsBar_preview {
+		background: #ea7963;
+	}
+	.acpStatsBar_segment:nth-child(10n-7),
+	.acpStatsBar_legend:nth-child(10n-7) > .acpStatsBar_preview {
+		background: #de6470;
+	}
+	.acpStatsBar_segment:nth-child(10n-6),
+	.acpStatsBar_legend:nth-child(10n-6) > .acpStatsBar_preview {
+		background: #6b9dde;
+	}
+	.acpStatsBar_segment:nth-child(10n-5),
+	.acpStatsBar_legend:nth-child(10n-5) > .acpStatsBar_preview {
+		background: #b09be4;
+	}
+	.acpStatsBar_segment:nth-child(10n-4),
+	.acpStatsBar_legend:nth-child(10n-4) > .acpStatsBar_preview {
+		background: #eec766;
+	}
+	.acpStatsBar_segment:nth-child(10n-3),
+	.acpStatsBar_legend:nth-child(10n-3) > .acpStatsBar_preview {
+		background: #9fc973;
+	}
+	.acpStatsBar_segment:nth-child(10n-2),
+	.acpStatsBar_legend:nth-child(10n-2) > .acpStatsBar_preview {
+		background: #e291bf;
+	}
+	.acpStatsBar_segment:nth-child(10n-1),
+	.acpStatsBar_legend:nth-child(10n-1) > .acpStatsBar_preview {
+		background: #55c1a6;
+	}
+	.acpStatsBar_segment:nth-child(10n),
+	.acpStatsBar_legend:nth-child(10n) > .acpStatsBar_preview {
+		background: #5fb9da;
+	}
+
+	.acpStatsBar_preview {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		margin-inline-end: 4px;
+		border-radius: 5px;
+	}
+
+/* Widget layout options in the Developer Center */
+#form_dev_widget_layouts .ipsFieldList {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	flex-wrap: wrap;
+	justify-content: stretch;
+}
+
+#form_dev_widget_layouts .cBuilderSvg {
+	--i-svg--st-wi: 4;
+	--i-svg--co: var(--i-background_6);
+	--i-svg--st: color-mix(in srgb, var(--i-color_root) 90%, var(--i-background_6));
+	color: var(--i-svg--co);
+}
+
+#form_dev_widget_layouts .cBuilderSvg [data-role="outerborder"] {
+	stroke: var(--i-svg--st);
+}
+#form_dev_widget_layouts .cBuilderSvg [data-role="background"] {
+	fill: var(--i-background_2);
+}

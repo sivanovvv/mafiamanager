@@ -1,0 +1,10 @@
+<ips:template parameters="$output, $config" />
+{{$style = !empty( $config['style'] ) ? implode( " ", $config['style']) : '';}}
+{{$paddingClass = array( 'full' => 'ipsWidget__padding', 'half' => 'i-padding_2' )[ $config['padding'] ?? '' ] ?? '';}}
+{{$fontSizeClass = ( !empty( $config['fontsize'] ) and !in_array( @$config['fontsize'], [ 'inherit', 'custom' ] ) ) ? $config['fontsize'] : '';}}
+<div
+    class="ipsWidget__customStyles {$config['class']} {$paddingClass} {$fontSizeClass}"
+	style="{$style}"
+>
+	{$output|raw}
+</div>

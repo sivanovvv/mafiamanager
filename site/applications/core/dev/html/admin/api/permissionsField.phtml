@@ -1,0 +1,14 @@
+<ips:template parameters="$endpoints, $name, $value, $type=NULL" />
+
+<li class='ipsFieldRow'>
+	<div class='ipsFieldRow__label'>
+		{lang="api_permissions_endpoint"}
+	</div>
+	<div class='ipsFieldRow__content'>
+		<p class='i-margin-bottom_1'>
+			{lang="api_permissions_endpoint_desc"}
+		</p>
+
+		{template="permissionsFieldHtml" group="api" params="$endpoints, $name, $value, $type"}
+	</div>
+</li>

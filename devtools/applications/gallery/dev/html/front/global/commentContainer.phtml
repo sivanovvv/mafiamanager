@@ -1,0 +1,24 @@
+<ips:template parameters="$item, $comment" />
+{{$idField = $comment::$databaseColumnId;}}
+{{$itemClassSafe = str_replace( '\\', '_', mb_substr( $comment::$itemClass, 4 ) );}}
+{{if $comment->isIgnored()}}
+	<div class='ipsEntry ipsEntry--ignored' id='elIgnoreComment_{$comment->$idField}' data-ignoreCommentID='elComment_{$comment->$idField}' data-ignoreUserID='{$comment->author()->member_id}'>
+		<i class="fa-solid fa-user-slash" aria-hidden="true"></i> {lang="ignoring_content" sprintf="$comment->author()->name"} <button type="button" id="elIgnoreComment_{$comment->$idField}" popovertarget="elIgnoreComment_{$comment->$idField}_menu" data-action="ignoreOptions" title='{lang="see_post_ignore_options"}'>{lang="options"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+		<i-dropdown popover id="elIgnoreComment_{$comment->$idField}_menu">
+			<div class="iDropdown">
+				<ul class="iDropdown__items">
+					<li><button type="button" data-ipsMenuValue='showPost'>{lang="show_this_comment"}</button></li>
+					<li><hr></li>
+					<li><a href='{url="app=core&module=system&controller=ignore&do=remove&id={$comment->author()->member_id}" csrf="true" seoTemplate="ignore"}' data-ipsMenuValue='stopIgnoring'>{lang="stop_ignoring_posts_by" sprintf="$comment->author()->name"}</a></li>
+					<li><a href='{url="app=core&module=system&controller=ignore" seoTemplate="ignore"}'>{lang="change_ignore_preferences"}</a></li>
+				</ul>
+			</div>
+		</i-dropdown>
+	</div>
+{{endif}}
+
+<span id='findComment-{$comment->$idField}'></span>
+<span id='comment-{$comment->$idField}'></span>
+<article id='elComment_{$comment->$idField}' class="ipsEntry js-ipsEntry ipsEntry--simple ipsEntry--gallery-comment {{if ( \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and $comment->isHighlighted() ) OR $comment->isFeatured()}}ipsEntry--popular{{endif}} {{if $comment->isIgnored()}}ipsHide{{endif}} {{if $comment->author()->hasHighlightedReplies()}}ipsEntry--highlighted{{endif}} {{if $comment->hidden() OR $item->hidden() == -2}}ipsModerated{{endif}}" {{if $comment->author()->hasHighlightedReplies()}}data-memberGroup="{$comment->author()->member_group_id}"{{endif}}>
+	{template="comment" group="global" app="gallery" params="$item, $comment, $item::$formLangPrefix . 'comment', $item::$application, $item::$module, $itemClassSafe"}
+</article>

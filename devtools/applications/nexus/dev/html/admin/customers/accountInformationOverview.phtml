@@ -1,0 +1,73 @@
+<ips:template parameters="$customer, $sparkline, $primaryBillingAddress, $addressCount" />
+<div class="i-padding_3">
+    {{if $sparkline }}
+		<div id='elCustomerIncome'>{$sparkline|raw}</div>
+		<p class='i-color_soft i-font-size_-1 i-margin-top_1'>
+			{lang="revenue_past_12_months"}
+		</p>
+	{{endif}}
+
+	{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'nexus', 'customers', 'customers_view_credit' )}}
+		<div class="i-margin-top_4">
+			{{foreach \IPS\nexus\Money::currencies() as $currency}}
+				<div class='i-background_3{{if isset( $customer->cm_credits[ $currency ] ) && $customer->cm_credits[ $currency ]->amount->isGreaterThanZero()}}_positive{{endif}} i-padding_2 i-text-align_center i-font-size_2 cCustomerCredit i-border-radius_box'>
+					<h2 class='ipsMinorTitle'>{lang="client_credit"}</h2>
+					{{if isset( $customer->cm_credits[ $currency ] )}}
+						{$customer->cm_credits[ $currency ]}
+					{{else}}
+						{money="0" currency="$currency"}
+					{{endif}}
+					{{if member.hasAcpRestriction( 'nexus', 'customers', 'customers_edit_credit' )}}
+						<p><a href='{url="app=nexus&module=customers&controller=view&id={$customer->member_id}&do=credits"}' data-ipsDialog data-ipsDialog-title='{lang="edit_credit"}' data-ipsDialog-size='narrow' class='i-font-size_-1'>{lang="edit"}</a></p>
+					{{endif}}
+				</div>
+			{{endforeach}}
+		</div>
+	{{endif}}
+	
+	<div class="i-margin-top_4">
+		<h2 class='ipsTitle ipsTitle--h4'>{lang="primary_address"}</h2>
+		{{if $primaryBillingAddress}}
+			<p class='i-font-size_1 i-margin-top_1'>
+				{$primaryBillingAddress->toString('<br>')|raw}
+				{{if isset( $primaryBillingAddress->vat ) and $primaryBillingAddress->vat}}
+					<br>
+					{lang="cm_checkout_vat_number"}: {template="vatNumber" app="nexus" group="global" params="$primaryBillingAddress->vat"}
+				{{endif}}
+			</p>
+		{{else}}
+			<p class='i-font-size_1 i-margin-top_1 i-color_soft'>
+				{lang="no_primary_address"}
+			</p>
+		{{endif}}
+		<p>
+			<a href='{url="app=nexus&module=customers&controller=view&id={$customer->member_id}&do=addresses"}' data-ipsDialog data-ipsDialog-title='{lang="customer_addresses"}' class='i-font-size_-1'>{lang="edit_addresses_count" sprintf="$addressCount"}</a>
+		</p>
+	</div>
+	
+	{{if \count( \IPS\nexus\Customer\CustomField::roots() ) or member.hasAcpRestriction( 'nexus', 'customers', 'customers_edit_details' )}}
+		<div class="i-margin-top_4">
+			<h2 class='ipsTitle ipsTitle--h4 i-margin-bottom_1'>{lang="customer_information"}</h2>
+			{{if member.hasAcpRestriction( 'nexus', 'customers', 'customers_edit_details' )}}
+				<p class='i-margin-bottom_1'>
+					<a href='{url="app=nexus&module=customers&controller=view&id={$customer->member_id}&do=edit"}' class='i-font-size_-1' data-ipsDialog data-ipsDialog-title='{lang="edit_customer_info"}'>{lang="edit_information"}</a>
+				</p>
+			{{endif}}					
+			{{foreach \IPS\nexus\Customer\CustomField::roots() as $field}}
+				{{$column = $field->column;}}
+				{{if $displayValue = $field->displayValue( $customer->$column, TRUE )}}
+					<div class="i-margin-bottom_1">
+						<h2 class='ipsMinorTitle'>{$field->_title}</h2>
+						<p class='i-font-size_1'>
+							{$displayValue|raw}
+						</p>
+					</div>
+				{{endif}}
+			{{endforeach}}
+		</div>
+	{{endif}}
+
+	{{if member.hasAcpRestriction( 'nexus', 'customers', 'customers_void' )}}
+		<a href="{url="app=nexus&module=customers&controller=view&do=void&id={$customer->member_id}"}" class="i-margin-top_4 ipsButton ipsButton--negative ipsButton--wide" data-ipsDialog data-ipsDialog-title="{lang="void_account"}">{lang="void_account"}</a>
+	{{endif}}
+</div>

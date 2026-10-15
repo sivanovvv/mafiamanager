@@ -1,0 +1,16 @@
+{
+    "normal": {
+        "added": [],
+        "edited": [],
+        "removed": [
+            "calendar_delete_title",
+            "event_pending_approval",
+            "approve_title_event"
+        ]
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

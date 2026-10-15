@@ -1,0 +1,2 @@
+<ips:template parameters="$url, $params" />
+<div class='ipsEmbeddedVideo ipsEmbeddedVideo--youtube' contenteditable="false"><iframe id="ytplayer" type="text/html" {{foreach $params as $k => $v }}{$k}="{$v}" {{endforeach}} src="{$url}" loading='lazy'></iframe></div>

@@ -1,0 +1,178 @@
+{
+    "mafiamanager_forums": {
+        "name": "mafiamanager_forums",
+        "columns": {
+            "id": {
+                "allow_null": false,
+                "auto_increment": true,
+                "comment": "ID Number",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "id",
+                "type": "BIGINT",
+                "unsigned": true,
+                "values": []
+            },
+            "forum_id": {
+                "name": "forum_id",
+                "type": "INT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": true,
+                "default": "0",
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "enabled": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": "0",
+                "length": 0,
+                "name": "enabled",
+                "type": "TINYINT",
+                "unsigned": false,
+                "values": []
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "type": "primary",
+                "name": "PRIMARY",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "id"
+                ]
+            },
+            "unique_mafia_forum": {
+                "type": "unique",
+                "name": "unique_mafia_forum",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "forum_id"
+                ]
+            }
+        },
+        "collation": "utf8mb4_unicode_ci"
+    },
+    "mafiamanager_games": {
+        "name": "mafiamanager_games",
+        "columns": {
+            "id": {
+                "allow_null": false,
+                "auto_increment": true,
+                "comment": "ID Number",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "id",
+                "type": "BIGINT",
+                "unsigned": true,
+                "values": []
+            },
+            "topic_id": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "topic_id",
+                "type": "BIGINT",
+                "unsigned": true,
+                "values": []
+            },
+            "forum_id": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "forum_id",
+                "type": "INT",
+                "unsigned": true,
+                "values": []
+            },
+            "manager_id": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "manager_id",
+                "type": "BIGINT",
+                "unsigned": true,
+                "values": []
+            },
+            "voting_deadline": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "voting_deadline",
+                "type": "INT",
+                "unsigned": true,
+                "values": []
+            },
+            "status": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": "open",
+                "length": 20,
+                "name": "status",
+                "type": "VARCHAR",
+                "unsigned": false,
+                "values": []
+            },
+            "created_at": {
+                "allow_null": false,
+                "auto_increment": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 0,
+                "name": "created_at",
+                "type": "INT",
+                "unsigned": true,
+                "values": []
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "type": "primary",
+                "name": "PRIMARY",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "id"
+                ]
+            },
+            "unique_mafia_topic": {
+                "type": "unique",
+                "name": "unique_mafia_topic",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "topic_id"
+                ]
+            }
+        },
+        "collation": "utf8mb4_unicode_ci"
+    }
+}

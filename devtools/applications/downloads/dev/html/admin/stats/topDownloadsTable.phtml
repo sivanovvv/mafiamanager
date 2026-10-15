@@ -1,0 +1,33 @@
+<ips:template parameters="$downloads, $pagination" />
+
+{{if trim( $pagination )}}
+{$pagination|raw}
+<br><br>
+{{endif}}
+{{if \count( $downloads )}}
+<table class="ipsTable ipsTable_zebra">
+	<thead>
+	<tr>
+		<th>{lang="dfid"}</th>
+		<th>{lang="downloads"}</th>
+	</tr>
+	</thead>
+	<tbody>
+		{{foreach $downloads as $row}}
+		<tr>
+			<td>
+				{$row['file']|raw}
+			</td>
+			<td>
+				{$row['downloads']}
+			</td>
+		</tr>
+		{{endforeach}}
+	</tbody>
+</table>
+<br>
+
+{$pagination|raw}
+{{else}}
+<p class="i-padding_3">{lang="no_results"}</p>
+{{endif}}

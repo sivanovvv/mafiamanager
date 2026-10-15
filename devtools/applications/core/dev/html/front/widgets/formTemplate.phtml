@@ -1,0 +1,108 @@
+<ips:template parameters="$widget, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+{template="includeJS" app="core" group="global" location="global" params=""}
+{{$visibilityFields = array( 'show_on_all_devices', 'devices_to_show', 'clubs_visibility');}}
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--widget-template" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<h4 class='ipsTitle ipsTitle--h3 ipsTitle--padding'>{lang="editBlockSettings"}</h4>
+
+	{{$hasSettings = FALSE;}}
+	{{$showVisibility = false;}}
+	{{$showAdvanced = false;}}
+	{{foreach $elements as $collection}}
+		{{foreach $collection as $inputName => $input}}
+		    {{if \in_array( $inputName, $visibilityFields )}}
+		        {{$showVisibility = true;}}
+		    {{elseif mb_substr( $inputName, 0, 12 ) == 'widget_adv__' }}
+		        {{$showAdvanced = true;}}
+			{{else}}
+				{{$hasSettings = TRUE;}}
+			{{endif}}
+		{{endforeach}}
+	{{endforeach}}
+	
+	<i-tabs class='ipsTabs' id='ipsTabs_{$id}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{$id}_content'>
+		<div role='tablist'>
+			{{$checkedTab = NULL;}}
+			{{if $hasSettings}}
+				<button type="button" id='ipsTabs_{$id}_settings' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_{$id}_settings_panel" aria-selected="{{if !$checkedTab}}true{{$checkedTab = 'settings';}}{{else}}false{{endif}}">
+					{lang="settings"}
+				</button>
+			{{endif}}
+			{{if $showVisibility}}
+				<button type="button" id='ipsTabs_{$id}_visibility' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_{$id}_visibility_panel" aria-selected="{{if !$checkedTab}}true{{$checkedTab = 'visibility';}}{{else}}false{{endif}}">
+					{lang="visibility"}
+				</button>
+		    {{endif}}
+		    {{if $showAdvanced}}
+				<button type="button" id='ipsTabs_{$id}_advanced' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_{$id}_advanced_panel" aria-selected="false">
+					{lang="widget_tab_advanced"}
+				</button>
+			{{endif}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<div id='ipsTabs_{$id}_content' class='ipsTabs__panels'>
+	    {{if $hasSettings}}
+		<div id='ipsTabs_{$id}_settings_panel' class="{{if $widget->menuStyle !== 'modal'}}ipsMenu_innerContent{{endif}} ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_{$id}_settings" {{if $checkedTab != 'settings'}}hidden{{endif}}>
+			<ul class='ipsForm ipsForm--vertical ipsForm--widget-template'>
+				{{foreach $elements as $collection}}
+					{{foreach $collection as $inputName => $input}}
+						{{if \mb_substr( $inputName, 0, 12 ) != 'widget_adv__' and ! \in_array( $inputName, $visibilityFields, TRUE )}}
+							{{if \is_object( $input )}}
+								{$input->rowHtml($form)|raw}
+							{{else}}
+								{$input|raw}
+							{{endif}}
+						{{endif}}
+					{{endforeach}}
+				{{endforeach}}
+			</ul>
+		</div>
+		{{endif}}
+		{{if $showVisibility}}
+		<div id='ipsTabs_{$id}_visibility_panel' class="{{if $widget->menuStyle !== 'modal'}}ipsMenu_innerContent{{endif}} ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_{$id}_visibility" {{if $checkedTab != 'visibility'}}hidden{{endif}}>
+			<ul class='ipsForm ipsForm--vertical ipsForm--widget-template'>
+				{{foreach $elements as $collection}}
+					{{foreach $collection as $inputName => $input}}
+						{{if \is_object( $input ) and \in_array( $input->name, $visibilityFields, TRUE )}}
+							{$input->rowHtml($form)|raw}
+						{{elseif \in_array( $inputName, $visibilityFields, TRUE )}}
+							{$input|raw}
+						{{endif}}
+					{{endforeach}}
+				{{endforeach}}
+			</ul>
+		</div>
+		{{endif}}
+
+        {{if $showAdvanced}}
+		<div id='ipsTabs_{$id}_advanced_panel' class="{{if $widget->menuStyle !== 'modal'}}ipsMenu_innerContent{{endif}}ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_{$id}_advanced" hidden>
+			<ul class='ipsForm ipsForm--vertical ipsForm--widget-template'>
+				{{foreach $elements as $collection}}
+					{{foreach $collection as $inputName => $input}}
+						{{if \mb_substr( $inputName, 0, 12 ) == 'widget_adv__' and ! \in_array( $inputName, $visibilityFields, TRUE )}}
+							{{if \is_object( $input )}}
+								{$input->rowHtml($form)|raw}
+							{{else}}
+								{$input|raw}
+							{{endif}}
+						{{endif}}
+					{{endforeach}}
+				{{endforeach}}
+			</ul>
+		</div>
+		{{endif}}
+	</div>
+	<div class='ipsMenu_footerBar i-text-align_center'>
+		{{foreach $actionButtons as $button}}
+			{$button|raw}
+		{{endforeach}}
+	</div>
+</form>

@@ -1,0 +1,38 @@
+<ips:template parameters="" />
+
+data-ips-path="{expression="\IPS\Request::i()->url()->data['path']"}"
+data-ips-scheme='{theme="scheme"}'
+data-ips-scheme-active='{theme="scheme"}'
+data-ips-scheme-default='{theme="var.set__i-default-scheme"}'
+data-ips-theme="{theme="id"}"
+data-ips-scheme-toggle="{{if cssvar.set__i-change-scheme == "1"}}true{{else}}false{{endif}}"
+
+{{if \IPS\Member::loggedIn()->member_id }}
+    data-ips-member='{expression="member.member_id"}'
+    data-ips-member-group='{expression="member.member_group_id"}'
+    {{if \IPS\Member::loggedIn()->mgroup_others}}
+        data-ips-member-secondary-groups='{expression="str_replace(',', ' ', \IPS\Member::loggedIn()->mgroup_others)"}'
+    {{endif}}
+{{else}}
+    data-ips-guest
+{{endif}}
+
+data-ips-theme-setting-change-scheme='{theme="var.set__i-change-scheme"}'
+data-ips-theme-setting-link-panels='{theme="var.set__i-link-panels"}'
+data-ips-theme-setting-nav-bar-icons='{theme="var.set__i-nav-bar-icons"}'
+data-ips-theme-setting-mobile-icons-location='{theme="var.set__i-mobile-icons-location"}'
+data-ips-theme-setting-mobile-footer-labels='{theme="var.set__i-mobile-footer-labels"}'
+data-ips-theme-setting-sticky-sidebar='{theme="var.set__i-sticky-sidebar"}'
+data-ips-theme-setting-flip-sidebar='{theme="var.set__i-flip-sidebar"}'
+
+data-ips-layout='{theme="view.global_view_mode"}'
+
+{{if (int) settings.editor_paragraph_padding === 0}}
+	data-ips-setting-compact-richtext
+{{endif}}
+
+{{if \IPS\Member::loggedIn()->isEditingTheme()}}
+    data-theme-editor-active
+    data-theme-editorurl="{url="app=core&module=system&controller=themeeditor" seoTemplate="theme_editor"}"
+    data-layoutoptions='{expression="json_encode( \IPS\Theme::i()->getAvailableLayoutOptionsForThemeEditor() )" raw="true"}'
+{{endif}}

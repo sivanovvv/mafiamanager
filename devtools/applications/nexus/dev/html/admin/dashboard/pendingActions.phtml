@@ -1,0 +1,36 @@
+<ips:template parameters="$pendingTransactions, $pendingWithdrawals, $pendingAdvertisements" />
+
+<div class='ipsGrid i-basis_400'>
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--pending-transactions" id='elNexusActions'>
+			{{if $pendingTransactions !== NULL}}
+				<li class="ipsData__item">
+					<span class='cNexusActionBadge {{if $pendingTransactions < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingTransactions > 99}}99+{{else}}{number="$pendingTransactions"}{{endif}}</span>
+					<div class='ipsData__main'>
+						<a href="{url="app=nexus&module=payments&controller=transactions&filter=tstatus_hold" base="admin"}">{lang="pending_transactions"}</a>
+					</div>
+				</li>
+			{{endif}}
+			{{if $pendingWithdrawals !== NULL}}
+				<li class="ipsData__item">
+					<span class='cNexusActionBadge {{if $pendingWithdrawals < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingWithdrawals > 99}}99+{{else}}{number="$pendingWithdrawals"}{{endif}}</span>
+					<div class='ipsData__main'>
+						<a href="{url="app=nexus&module=payments&controller=payouts&filter=postatus_pend" base="admin"}">{lang="pending_widthdrawals"}</a>
+					</div>
+				</li>
+			{{endif}}
+		</ul>
+	</i-data>
+	<i-data>
+		<ul class="ipsData ipsData--table ipsData--pending-advertisements" id='elNexusActions'>
+			{{if $pendingAdvertisements !== NULL}}
+				<li class="ipsData__item">
+					<span class='cNexusActionBadge {{if $pendingAdvertisements < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingAdvertisements > 99}}99+{{else}}{number="$pendingAdvertisements"}{{endif}}</span>
+					<div class='ipsData__main'>
+						<a href="{url="app=core&module=promotion&controller=advertisements" base="admin"}">{lang="pending_advertisements"}</a>
+					</div>
+				</li>
+			{{endif}}
+		</ul>
+	</i-data>
+</div>

@@ -1,0 +1,745 @@
+/*
+	----------------
+	- Form
+	----------------
+*/
+
+.ipsFieldRow{
+	display: grid;
+	gap: .8em;
+	padding: 1.5em;
+	border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+}
+
+	.ipsFieldRow[style*="list-item"]{
+		display: grid !important;
+	}
+
+	.ipsFieldRow ~ li:has(> .ipsHr:only-child){
+		display: none;
+	}
+
+/* Form headers, eg in "Edit Profile" modal */
+.ipsFieldRow__section{
+	padding: 1em;
+	font-weight: 600;
+	color: var(--i-color_hard);
+	font-size: 1.2em;
+	border-bottom: 1px solid var(--i-background_3);
+}
+
+.ipsFieldRow__section:last-child, .ipsFieldRow:nth-last-child(1 of :not([hidden])){
+	border-bottom-width: 0;
+}
+
+
+/* Submit row */
+.ipsSubmitRow{
+	flex: 0 0 auto; /* Useful when in flex-direction:column layouts */
+	margin-top: auto; /* Push this bar down if its previous siblings don't have flex-grow: 1; */
+	background: var(--i-background_2);
+	padding: 1em;
+	border-top: 1px solid var(--i-background_4);
+	border-bottom-left-radius: var(--i-box--bo-ra);
+	border-bottom-right-radius: var(--i-box--bo-ra);
+	text-align: center;
+}
+/* Hide empty submit rows, eg. Notification settings */
+.ipsSubmitRow:not(:has(*)){
+	display: none;
+}
+/* Pull up submit row so it overlaps fieldRow border */
+.ipsFieldRow + .ipsSubmitRow{
+	margin-top: -1px;
+}
+/* Apply submit row styles to alternate HTML markup */
+.ipsFieldRow:has(> .ipsFieldRow__content > button:only-child){
+	background: var(--i-background_2);
+	padding: 1em;
+	border-top: 1px solid var(--i-background_4);
+	border-bottom-left-radius: var(--i-box--bo-ra);
+	border-bottom-right-radius: var(--i-box--bo-ra);
+	text-align: center;
+	margin-top: -1px; /* This prevents a double border */
+}
+
+
+/* Labels */
+.ipsFieldRow__label{
+	font-weight: 600;
+	font-size: 1.1em;
+	color: var(--i-color_hard);
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0em 2em;
+}
+
+	/* Potential fix for Opera Mobile, where labels and "Required" were wrapping prematurely */
+	.ipsFieldRow__label > *{
+		min-width: fit-content;
+	}
+
+	/* Hide labels on certain forms */
+	.ipsFieldRow--noLabel .ipsFieldRow__label,
+	.ipsForm--noLabels .ipsFieldRow:not(.ipsFieldRow--checkbox) .ipsFieldRow__label {
+		clip: rect(1px, 1px, 1px, 1px);
+		clip-path: inset(50%);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	/* ..or if they're empty */
+	.ipsFieldRow__label:has(span:only-child:empty){
+		display: none;
+	}
+	/* Hide empty labels, but keep parent visible incase it contains "Required". Topic content forms are an example */
+	.ipsFieldRow__label span:empty{
+		display: none;
+	}
+
+	/* Labels next to radios */
+	.ipsFieldList--radio label{
+		font-weight: 500;
+		color: var(--i-color_hard);
+	}
+
+	/* Underline links */
+	.ipsFieldRow__label a{
+		text-decoration: underline;
+	}
+
+.ipsFieldRow__required {
+	font-size: max(.7em, 10px);
+	text-transform: uppercase;
+	color: var(--if-light, hsl(0 78% 37%)) var(--if-dark, hsl(0 89% 70%));
+	margin-inline-start: auto;
+}
+
+/* Language labels (with flags) */
+.ipsFieldRow__languages{
+	display: grid;
+	gap: 2em;
+}
+.ipsFieldRow__language{
+	font-weight: 500;
+	color: var(--i-color_hard);
+	margin-bottom: .5em;
+}
+.ipsFieldRow__language .ipsFlag{
+	margin-inline-end: .3em;
+}
+
+/* Descriptions */
+.ipsFieldRow__desc {
+	font-size: 0.9em;
+	margin-top: .75em;
+	color: var(--i-color_soft);
+}
+	.ipsFieldRow__label ~ .ipsFieldRow__desc{
+		margin-top: 0;
+	}
+
+	/* Remove margin from radio option descriptions */
+	.ipsFieldList--radio .ipsFieldRow__desc{
+		margin-top: 0;
+	}
+
+	/* Underline links in form descriptions */
+	.ipsFieldRow__desc a{
+		text-decoration: underline;
+	}
+
+/* Warning */
+.ipsFieldRow__warning{
+	color: var(--i-color_warning);
+	background: color-mix(in srgb, var(--i-color_warning) 15%, transparent);
+	border: 1px solid color-mix(in srgb, var(--i-color_warning) 40%, transparent);
+	padding: 0.8em 1em;
+	border-radius: 5px;
+	font-weight: 500;
+	margin-top: 1em;
+	font-size: .9em;
+}
+
+	.ipsFieldRow__warning .fa-circle-exclamation{
+		margin-inline-end: .4em;
+	}
+
+	.ipsFieldRow__warning:empty{
+		display: none;
+	}
+
+
+/* Horizontal UI */
+@media (min-width: 700px){
+	.ipsForm--horizontal  .ipsFieldRow{
+		display: flex;
+		align-items: flex-start;
+	}
+	.ipsForm--horizontal .ipsFieldRow[style*="list-item"]{
+		display: flex !important;
+	}
+	.ipsForm--horizontal .ipsFieldRow__required{
+		flex: 1 1 100%;
+	}	
+	.ipsForm--horizontal .ipsFieldRow__label{
+		flex: 1 1 20em;
+		display: grid;
+		text-align: end;
+		place-items: end;
+	}
+	.ipsForm:not(.ipsForm--horizontal) .ipsFieldRow--fullWidth > *{
+		flex: 1 1 100%;
+		max-width: none;
+	}
+}
+
+/* Adjust the padding of the review form, since the parent wrapper already has padding */
+.ipsForm--review > .ipsFieldRow:first-child{
+	padding-top: 0;
+}
+
+.ipsForm--review .ipsFieldRow{
+	border-width: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.ipsForm--review .ipsSubmitRow{
+	padding-bottom: 0;
+	border-width: 0;
+	background: transparent;
+}
+
+
+
+
+
+
+
+.ipsFieldRow--checkbox{
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+
+/* Follow pop-up menu */
+.ipsForm--notifications-follow .ipsFieldRow:has([name="follow_public_checkbox"]){
+	display: flex;
+	align-items: center;
+}
+
+/* Vertically stack question and options */
+.ipsPollList--questions .ipsFieldRow{
+	display: grid;
+}
+
+/* Fix Safari alignment bug */
+.ipsPollList--questions .ipsFieldList{
+	align-self: start;
+}
+
+.ipsFieldRow__content{
+	flex: 999 1 55%;
+}
+
+/* Inline checkboxes */
+.ipsFieldRow__content--checkboxes{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em 2em;
+}
+
+	.ipsFieldRow__inlineCheckbox,
+	.ipsFieldRow__content--checkboxes > *{
+		display: flex;
+		align-items: center;
+		gap: .5em;
+	}
+
+	.ipsFieldRow__inlineCheckbox{
+		display: inline-flex;
+	}
+
+/* Stacked form: Used for addresses, poll options, etc */
+.ipsFieldListParent{
+	display: grid;
+	gap: 2em;
+}
+
+	.ipsFieldList > *{
+		display: flex;
+		align-items: center;
+		gap: .8em;
+		padding: .4em;
+	}
+
+	.ipsFieldList > input{
+		flex: 0 0 auto;
+		align-self: baseline;
+		margin-top: .2em;
+	}
+
+	.ipsFieldList__content{
+		flex: 1 1 auto;
+	}
+
+	.ipsFieldRow label[for],
+	:where(label:has(input)){
+		cursor: pointer;
+	}
+
+	/* Remove cursor if the field is an autocomplete, since clicking the label does nothing */
+	.ipsFieldRow label[for]:has(~ [data-controller="core.global.core.optionalAutocomplete"]){
+		cursor: default;
+	}
+
+	/* Highlight code tags (ACP > Content Discovery > Search) */
+	.ipsFieldList__content code{
+		background: var(--i-background_5);
+		color: var(--i-color_hard);
+		border-radius: 4px;
+		padding: .3em;
+		display: inline-block;
+	}
+
+/* Full width inputs */
+:is(.ipsFieldRow--fullWidth, .ipsForm--fullWidth) :is(select, textarea, input:not([type="radio"], [type="checkbox"]), .ipsField_autocomplete, .ipsSelectTree), .ipsInput--wide{
+	width: 100%;
+	max-width: none;
+}
+
+/* Select menus: If they're followed by a label, set their width to auto */
+.ipsFieldRow__content select:has(+ span){
+	width: auto;
+	margin-inline-end: .6em;
+}
+
+
+/* Date fields in "New" form */
+.cCreateTopic_date{
+	display: grid;
+	gap: .5em;
+}
+
+/* Stacks */
+.ipsFieldRow:not(.ipsFieldRow--fullWidth) .ipsField_stack { 
+	max-width: 350px;
+}
+
+.ipsField_stackItem[style*="absolute"]{
+	background: var(--i-background_2);
+}
+
+.ipsField_stackItem{
+	display: flex;
+	gap: .4em;
+	padding: .4em 0;
+	position: relative;
+	min-height: 54px;
+}
+
+	.ipsField_stackDrag{
+		cursor: move;
+		display: grid;
+		place-content: center;
+		padding: 0 1em;
+		flex: 0 0 auto;
+		color: var(--i-color_soft);
+	}
+
+	/* Sometimes the data-action attribute is added to divs instead of the drag handle */
+	[data-action="stackDrag"]{
+		cursor: move;
+	}
+
+	.ipsField_stackItem_keyValue{
+		display: flex;
+		gap: .5em;
+	}
+
+	.ipsField_stackDelete{
+		flex: 0 0 auto;
+		order: 1;
+		cursor: pointer;
+		color: var(--i-color_soft);
+		font-weight: 500;
+		padding: 0 1em;
+		display: grid;
+		place-content: center;
+		border-radius: 6px;
+	}
+		.ipsField_stackDelete:hover{
+			background: var(--i-background_2);
+		}
+
+.ipsField_stackAdd{
+	margin-inline-start: 5em;
+}
+
+[data-ipsstack-wrapper] {
+	flex: 1 1 auto;
+}
+
+/*
+	----------------
+	- Translatable inputs
+	----------------
+*/
+
+.ipsForm--translatable{
+	display: grid;
+	gap: 1em;
+}
+
+.ipsForm--translatable .ipsFieldRow{
+	padding: 0;
+	border-width: 0;
+}
+
+/*
+	----------------
+	- Polls
+	----------------
+*/
+
+/* Polls have parent and child .ipsFieldRows, which doubles up on padding/borders. This fixes that */
+.ipsTabs__panel[class*="_pollTab"] > .ipsForm > .ipsFieldRow{
+	display: contents;
+}
+
+/* Poll forms */
+[data-role="pollContainer"]{
+	display: grid;
+	gap: 1em;
+	padding: 1em;
+}
+	[data-role="pollContainer"] [data-role="question"]{
+		background: var(--i-background_2);
+		padding: 1.5em;
+		border-radius: var(--i-box--bo-ra);
+	}
+
+/* Draggable */
+@media (hover: none){
+	.ipsAttachment_supportDrag {
+		display: none;
+	}
+}
+
+/* Loading attachments */
+.ipsAttachment_loading.ipsLoading--small {
+	font-size: 30px;
+	margin-top: 2px;
+	margin-inline-end: 6px;
+}
+	.ipsAttachment_loading.ipsAttachment_loading_editor {
+		margin-top: -2px;
+	}
+
+
+/* Content item */
+.ipsContentItemSelector > *{
+	margin-top: 10px;
+}
+
+.ipsContentItemSelector > :first-child {
+	margin-top: 5px;
+}
+
+.ipsContentItemSelector [data-role="contentItemRow"]{
+	padding-inline-start: 5px;
+}
+
+.cContentItem_delete {
+	height: 18px;
+	line-height: 18px;
+	background: var(--i-primary);
+	color: var(--i-primary-contrast);
+	display: inline-block;
+	font-size: 13px;
+	border-radius: 12px;
+	padding: 0 .85em;
+	cursor: pointer;
+	margin: 1px 5px !important;
+	margin-inline-start: 0 !important;
+	float: inline-start;
+}
+
+/* Select tree */
+.ipsSelectTree {
+	display: flex;
+	align-items: center;
+	min-height: 2.7em;
+	min-width: min(350px, 100%);
+	width: fit-content;
+	padding: 0 1em;
+	position: relative;
+	cursor: pointer;
+	background-color: var(--i-input--ba-co);
+	background-clip: padding-box;
+	border-color: var(--i-input--bo-co);
+	border-radius: var(--i-input--bo-ra);
+	border-style: var(--i-input--bo-st, solid);
+	border-width: var(--i-input--bo-wi);
+	box-shadow: var(--i-input--bo-sh, none);
+	color: var(--i-co);
+}
+
+	.ipsSelectTree:not(.ipsSelectTree_active):hover{
+		border-color: var(--i-input-hover--bo-co);
+	}
+
+	.ipsSelectTree_active{
+		border-color: var(--i-input-active--bo-co);
+	}
+	
+	.ipsSelectTree.ipsSelectTree_disabled {
+		opacity: .4;
+		background-color: var(--i-background_3);
+		font-style: italic;
+		pointer-events: none;
+	}
+
+	.ipsSelectTree_value{
+		margin-inline-end: 1em;
+	}
+
+	.ipsSelectTree_expand {
+		margin-inline-start: auto;
+		opacity: .3;
+		flex: 0 0 auto;
+	}
+
+	.ipsSelectTree [data-role="tokenList"]{
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0.5em 0;
+	}
+		
+	.ipsSelectTree [data-role="tokenList"] li {
+		line-height: 1;
+		margin-inline-end: 5px;
+	}
+
+		.ipsSelectTree [data-role="tokenList"] .cToken {
+			background: var(--i-primary);
+			color: var(--i-primary-contrast);
+			margin-bottom: 4px;
+		}
+
+.ipsSelectTree_nodes {
+	width: 100%;
+	background: var(--i-dropdown--ba-co);
+}
+
+	i-dropdown .ipsSelectTree_nodes {
+		padding-inline-start: 0.5em;
+		border-inline-start: 1px solid var(--i-box--bo-co);
+	}
+
+		i-dropdown .ipsSelectTree_nodes > i-tabs {
+			padding-block-start: 0;
+		}
+
+		i-dropdown .ipsSelectTree_nodes--auto-expanded {
+			padding-inline-start: 0;
+			border-inline-start: 0;
+			min-height: var(--i-nodes-min-height, 100px); /* Prevent layout shifts on mobile */
+		}
+		i-dropdown .ipsSelectTree_nodes--auto-expanded > *:not(.x) {
+			padding-inline: 0;
+		}
+		i-dropdown .ipsSelectTree:has(+ .ipsSelectTree_nodes--auto-expanded) > .ipsSelectTree_expand {
+			display:none;
+		}
+
+
+		/* Prevent layout shifts with a fixed height and overflow */
+		@media(max-width: 499px) {
+			i-dropdown .ipsSelectTree_nodes > [data-role="nodeList"] {
+				height: 300px;
+				overflow-y: scroll;
+			}
+		}
+
+		.ipsSelectTree_nodes--collapsed {
+			height: 0;
+			overflow: hidden;
+		}
+		i-dropdown .ipsSelectTree_nodes:not(.ipsSelectTree_nodes--collapsed) {
+			margin-block-start: 0.5em;
+		}
+
+	.ipsSelectTree_nodes:not(i-dropdown *) {
+		position: absolute;
+		top: 100%;
+		inset-inline-start: -1px;
+		min-width: max(100%, 300px);
+		width: max-content;
+		max-width: 450px;
+		box-shadow: var(--i-dropdown--bo-sh);
+		border-radius: var(--i-input--bo-ra);
+	}
+
+	/* Use position:fixed and anchor so the tree is displayed outside of ipsDialog_content (with overflow:auto) */
+	@supports (anchor-name: --x){
+		.ipsDialog .ipsSelectTree{
+			anchor-name: --ipsSelectTree;
+		}
+		.ipsDialog .ipsSelectTree_nodes{
+			position: fixed;
+			position-anchor: --ipsSelectTree;
+			top: anchor(bottom) !important;
+			left: anchor(left);
+			right: anchor(right);
+			bottom: auto !important;
+			width: auto;
+			min-width: 0;
+		}
+	}
+
+	/* For older browsers, display the tree below the toggle */
+	@supports not (anchor-name: --x){
+		.ipsDialog .ipsSelectTree{
+			flex-wrap: wrap;
+		}
+		.ipsDialog .ipsSelectTree_nodes{
+			position: relative;
+			top: auto !important;
+			bottom: auto !important;
+			left: auto;
+			right: auto;
+			margin: 5px -10px;
+			/* Occupy the same width as .ipsSelectTree */
+			width: min-content;
+			flex: 999 1 100%;
+		}
+
+		/* Preserve height for placeholders since they'll otherwise become squashed */
+		.ipsDialog .ipsSelectTree_value{
+			min-height: 2.7em;
+			align-content: center;
+		}
+	}
+
+	.ipsSelectTree_nodes.ipsSelectTree_bottom {
+		margin-top: 5px;
+	}
+	.ipsSelectTree_nodes.ipsSelectTree_top {
+		margin-bottom: 5px
+	}
+	
+	.ipsSelectTree_nodes [data-role="nodeList"] {
+		max-height: 300px;
+		overflow: auto;
+		padding: .4em;
+	}
+
+			.ipsSelectTree_item{
+				border-radius: min(var(--i-design-radius), 5px);
+				display: flex;
+				align-items: center;
+				gap: .5em;
+				padding: .7em 1em;
+				padding-inline-start: 1.5em;
+			}
+
+				/* Reduce padding on collapsible headers since they include an icon */
+				.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item.ipsSelectTree_withChildren {
+					padding-inline-start: .3em;
+				}
+
+				.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item:not(.ipsSelectTree_itemDisabled, .ipsSelectTree_selected):hover {
+					background: color-mix(in srgb, currentColor 8%, transparent);
+				}
+
+			.ipsSelectTree_nodes [data-role="nodeList"] li [data-role="childWrapper"] {
+				margin-inline-start: 12px;
+				padding-inline-start: 4px;
+				border-inline-start: 1px dashed;
+				border-color: color-mix(in srgb, currentColor 20%, transparent);
+			}
+
+			.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_toggle {
+				flex: 0 0 auto;
+				width: 1.3em;
+				display: grid;
+				place-content: center;
+				color: inherit;
+			}
+
+				.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item > .ipsSelectTree_toggle::before {
+					content: '\f054';
+					font-family: var(--i-font-awesome);
+					-webkit-font-smoothing: antialiased;
+					text-rendering: auto;
+					font-weight: 900;
+					font-size: .8em;
+					transition: .2s;
+				}
+
+					.ipsSelectTree_nodes [data-role="nodeList"] li .ipsSelectTree_item.ipsSelectTree_itemOpen > .ipsSelectTree_toggle::before {
+						transform: rotate(90deg);
+					}
+
+		.ipsSelectTree_nodes .ipsSelectTree_loadMore {
+			text-align: center;
+			padding: 7px 0px 0px;
+		}
+
+			.ipsSelectTree_nodes .ipsSelectTree_loadMore .ipsLoading {
+				margin-inline-end: 4px;
+			}
+
+.ipsSelectTree_selected {
+	background: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+	
+	.ipsSelectTree_selected::after {
+		content: '\f00c';
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		margin-inline-start: auto;
+	}
+
+.ipsSelectTree_itemDisabled > [data-role="nodeTitle"] {
+	opacity: .5;
+	cursor: default;
+}
+
+.ipsSelectTree_placeholder {
+	opacity: .6;
+}
+
+.ipsSelectTree_search {
+	margin-top: 7px;
+	position: relative;
+}
+
+	.ipsApp .ipsSelectTree_search input {
+		border: 1px solid;
+		border-color: color-mix(in srgb, currentColor 10%, transparent);
+		font-size: .9em;
+		padding-inline-start: 26px;
+	}
+
+	.ipsSelectTree_search::after {
+		content: '\f002';
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		position: absolute;
+		top: 7px;
+		inset-inline-start: 7px;
+	}

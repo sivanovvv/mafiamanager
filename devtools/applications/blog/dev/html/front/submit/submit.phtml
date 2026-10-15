@@ -1,0 +1,20 @@
+<ips:template parameters="$form, $blog=NULL" />
+
+{{if $blog and $club = $blog->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $blog"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+{template="pageHeader" if="!\IPS\Request::i()->isAjax()" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack( 'create_blog_entry' )"}
+{{$guestPostBeforeRegister = ( !\IPS\Member::loggedIn()->member_id ) ? !$blog->can( 'add', \IPS\Member::loggedIn(), FALSE ) : FALSE;}}
+{{$modQueued = \IPS\blog\Entry::moderateNewItems( \IPS\Member::loggedIn(), $blog, $guestPostBeforeRegister );}}
+{{if $guestPostBeforeRegister or $modQueued}}
+	{template="postingInformation" app="core" group="forms" params="$guestPostBeforeRegister, $modQueued, TRUE"}
+{{endif}}
+{$form|raw}
+
+{{if $blog and $blog->club()}}
+	</div>
+{{endif}}

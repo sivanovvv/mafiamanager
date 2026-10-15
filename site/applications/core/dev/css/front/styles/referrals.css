@@ -1,0 +1,21 @@
+/* Referral banners */
+.cReferralsGrid__image {
+	background-image: var(--_referralBanner, none);
+	background-size: cover;
+	background-position: 50%;
+}
+	.cReferralsGrid__image img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: 50%;
+		backdrop-filter: blur(20px);
+		background-image: linear-gradient(color-mix(in hsl, var(--i-background_1) 70%, transparent) 0 0);
+	}
+
+/* Referral URL inputs */
+.cReferralLinks [type="text"] {
+	font-family: "Courier New", monospace;
+	-webkit-user-select: all;
+	user-select: all;
+}

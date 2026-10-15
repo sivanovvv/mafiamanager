@@ -1,0 +1,12 @@
+<ips:template parameters="$purchase, $invoice, $email" />
+
+{$email->language->addToStack("email_purchase_notify_plain", FALSE, array( 'htmlsprintf' => array( $purchase->member->cm_name, $purchase->name ) ) )}
+
+-- {setting="board_name"}
+
+=====
+{$email->language->addToStack("email_purchase_information", FALSE)}
+
+{$email->language->addToStack("email_invoice_number", FALSE)}: {$invoice->id}
+{$email->language->addToStack("email_purchase_date", FALSE)}: {$invoice->date->localeDate( $email->language )}
+{$email->language->addToStack("email_order_total", FALSE)}: {$invoice->total->toString( $email->language )}

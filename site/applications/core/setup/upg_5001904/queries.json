@@ -1,0 +1,20 @@
+{
+    "1": {
+        "method": "addIndex",
+        "params": [
+            "core_search_index",
+            {
+                "type": "key",
+                "name": "index_search_created",
+                "columns": [
+                    "index_hidden",
+                    "index_date_created"
+                ],
+                "length": [
+                    null,
+                    null
+                ]
+            }
+        ]
+    }
+}

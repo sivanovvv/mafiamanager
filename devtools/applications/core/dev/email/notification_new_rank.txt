@@ -1,0 +1,4 @@
+<ips:template parameters="$rank, $member, $email" />
+{$email->language->addToStack( "notification__new_rank", FALSE, array( 'sprintf' => array( $email->language->addToStack( "core_member_rank_" . $rank->id ) ) ) )}
+
+-- {setting="board_name"}

@@ -1,0 +1,24 @@
+<ips:template parameters="$subResult" />
+
+<li class='cSearchSubResult ipsPhotoPanel ipsPhotoPanel--tiny'>
+	{template="userPhoto" group="global" app="core" params="$subResult->author(), 'tiny'"}
+	<div>
+		<p>
+			{{if $subResult instanceof \IPS\Content\Review}}
+				<a href='{$subResult->url()}' title='{lang="go_to_this_review"}'>
+					<strong>{lang="search_user_reviewed" sprintf="$subResult->author()->name"} &nbsp;<span class='i-color_soft i-font-weight_normal'>{datetime="$subResult->mapped('date')"}</span></strong>
+				</a>
+			{{else}}
+				<a href='{$subResult->url()}' title='{lang="go_to_this_post"}'>
+					<strong>{lang="search_user_commented" sprintf="$subResult->author()->name"} &nbsp;<span class='i-color_soft i-font-weight_normal'>{datetime="$subResult->mapped('date')"}</span></strong>
+				</a>
+			{{endif}}
+		</p>
+		{{if $subResult instanceof \IPS\Content\Review}}
+			{template="rating" group="global" app="core" params="'tiny', $subResult->mapped('rating'), \IPS\Settings::i()->reviews_rating_out_of"}
+		{{endif}}
+		<div class='ipsRichText ipsTruncate_2'>
+			{$subResult->truncated()|raw}
+		</div>
+	</div>
+</li>

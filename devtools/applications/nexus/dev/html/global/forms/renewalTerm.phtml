@@ -1,0 +1,62 @@
+<ips:template parameters="$name, $value, $options" />
+{{$term = ( $value and $value->interval ) ? $value->getTerm() : NULL;}}
+{{if $options['nullLang']}}
+	<div class="i-margin-block_2">
+		<input type="checkbox" role="checkbox" name="{$name}[null]" id="{$name}_null" data-control="unlimited" {{if $value === NULL}}checked{{endif}} aria-labelledby="{$name}_null_label" class="ipsInput ipsInput--toggle">
+		<label for="{$name}_null" id="{$name}_null_label" class="ipsField_unlimited">{lang="$options['nullLang']"}</label>
+		&nbsp;{lang="or"}
+	</div>
+{{endif}}
+{{if !isset( $options['lockPrice'] ) or !$options['lockPrice']}}
+<div class='cNexusStack cNexusStack_usergroup' id="{$name}_stack">
+	<ol>
+		<li data-step='{lang="price"}'>
+			{{if $options['allCurrencies']}}
+				{{foreach \IPS\nexus\Money::currencies() as $currency}}
+					<input type="number" name="{$name}[amount_{$currency}]" size="4" data-decimals="2" data-decpoint="{expression="\IPS\Member::loggedIn()->language()->locale['decimal_point']"}" data-thousandsseparator="{expression="\IPS\Member::loggedIn()->language()->locale['thousands_sep']"}" step="0.01" value="{{if $value AND isset( $value->cost[ $currency ]->amount )}}{$value->cost[ $currency ]->amount}{{endif}}" class="ipsInput ipsInput--text ipsField_short ipsField_stackItemNoMargin"> {$currency}<br>
+				{{endforeach}}
+			{{else}}
+				<input type="number" name="{$name}[amount]" size="4" data-decimals="2" data-decpoint="{expression="\IPS\Member::loggedIn()->language()->locale['decimal_point']"}" data-thousandsseparator="{expression="\IPS\Member::loggedIn()->language()->locale['thousands_sep']"}" step="0.01" value="{{if $value}}{$value->cost->amountAsString()}{{endif}}" class="ipsInput ipsInput--text ipsField_short ipsField_stackItemNoMargin">
+				{{if \count( \IPS\nexus\Money::currencies() ) === 1}}
+					{{if $value}}{$value->cost->currency}{{else}}{expression="\IPS\nexus\Money::currencies()[0]"}{{endif}}
+				{{else}}
+					<select class="ipsInput ipsInput--select" name="{$name}[currency]">
+						{{foreach \IPS\nexus\Money::currencies() as $currency}}
+							<option value="{$currency}" {{if $value AND $currency === $value->cost->currency}}selected{{endif}}>{$currency}</option>
+						{{endforeach}}
+					</select>
+				{{endif}}
+			{{endif}}
+		</li>
+		<li data-step="{{if $options['initialTerm']}}{lang="for"}{{else}}{lang="every"}{{endif}}" data-role="unlimitedCatch">
+{{endif}}
+			<input type="number" name="{$name}[term]" size="4" value="{{if $term}}{$term['term']}{{else}}1{{endif}}" class="ipsInput ipsInput--text ipsField_tiny ipsField_stackItemNoMargin"  {{if $options['lockTerm']}}disabled{{endif}}>
+			<select class="ipsInput ipsInput--select" name="{$name}[unit]" {{if $options['lockTerm']}}disabled{{endif}}>
+				<option value="d" {{if $term and $term['unit'] === 'd'}}selected{{endif}}>{lang="days"}</option>
+				<option value="m" {{if !$term or $term['unit'] === 'm'}}selected{{endif}}>{lang="months"}</option>
+				<option value="y" {{if $term and $term['unit'] === 'y'}}selected{{endif}}>{lang="years"}</option>
+			</select>
+			{{if $options['initialTerm']}}
+				&nbsp;{lang="or"}&nbsp;
+				<input type="checkbox"
+					role="checkbox"
+					data-control="unlimited {{if $options['unlimitedTogglesOn'] or $options['unlimitedTogglesOff']}}toggle{{endif}}"
+					{{if $options['unlimitedTogglesOn']}}data-togglesOn="{expression="implode( ',', $options['unlimitedTogglesOn'] )"}"{{endif}}
+					{{if $options['unlimitedTogglesOff']}}data-togglesOff="{expression="implode( ',', $options['unlimitedTogglesOff'] )"}"{{endif}}
+					name="{$name}[unlimited]" id="{$name}_unlimited"
+					{{if ( $value or $options['lockPrice'] ) and !$term}}checked{{endif}}
+					aria-labelledby="{$name}_unlimited_label"
+					class="ipsInput ipsInput--toggle"
+				>
+				<label for="{$name}_unlimited" id="{$name}_unlimited_label" class="ipsField_unlimited">{lang="$options['initialTermLang']"}</label>
+			{{endif}}
+{{if !isset( $options['lockPrice'] ) or !$options['lockPrice']}}
+		</li>
+		{{if $options['addToBase']}}
+			<li data-step='{lang="and"}'>
+				<input type="checkbox" name="{$name}[add]" id="{$name}_add" {{if $value and $value->addToBase}}checked{{endif}}> {lang="add_to_purchase_price"}<br>
+			</li>
+		{{endif}}
+	</ol>
+</div>
+{{endif}}

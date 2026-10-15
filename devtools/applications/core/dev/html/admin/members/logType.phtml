@@ -1,0 +1,12 @@
+<ips:template parameters="$type" />
+{{if $type === 'display_name'}}
+	<i class="fa-solid fa-user" aria-hidden="true"></i>
+{{elseif $type === 'email_change'}}
+	<i class="fa-regular fa-envelope" aria-hidden="true"></i>
+{{elseif $type === 'password_change'}}
+	<i class="fa-solid fa-key" aria-hidden="true"></i>
+{{elseif $type === 'mfa'}}
+	<i class="fa-solid fa-lock" aria-hidden="true"></i>
+{{else}}
+	{$type}
+{{endif}}

@@ -1,0 +1,92 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class="ipsData__item {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} {{if !$row->enabled}}ipsModerated{{endif}}">
+		<a href='#' class="ipsLinkPanel" aria-hidden="true" tabindex="-1" data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-content='#alertContent_{$row->id}' data-ipsDialog-title='{$row->mapped('title')}'><span>{$row->mapped('title')}</span></a>
+		<div class='ipsData__icon'>{template="userPhoto" app="core" group="global" params="$row->author(), 'fluid'"}</div>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<div class='ipsData__title'>
+					<h4><a href='#' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-content='#alertContent_{$row->id}' data-ipsDialog-title='{$row->mapped('title')}'>{$row->mapped('title')}</a></h4>
+	                <div class="ipsBadges">
+		                {{if $row->anonymous}}
+		                   <span class='ipsBadge ipsBadge--neutral ipsBadge--icon'><i class="fa-solid fa-eye" data-ipstooltip="" _title="{lang="alert_anon"}" aria-hidden="true"></i></span>
+		                {{else}}
+		                    {{if $row->reply == \IPS\core\Alerts\Alert::REPLY_OPTIONAL}}
+		                        <span class='ipsBadge ipsBadge--neutral ipsBadge--icon'><i class="fa-regular fa-envelope" data-ipstooltip="" _title="{lang="alert_can_reply"}" aria-hidden="true"></i></span>
+		                    {{endif}}
+		                    {{if $row->reply == \IPS\core\Alerts\Alert::REPLY_REQUIRED}}
+		                         <span class='ipsBadge ipsBadge--neutral ipsBadge--icon'><i class="fa-solid fa-envelope" data-ipstooltip="" _title="{lang="alert_must_reply"}" aria-hidden="true"></i></span>
+		                    {{endif}}
+		                {{endif}}
+		                {{if $row->recipient_type == 'user'}}
+		                   <span class='ipsBadge ipsBadge--neutral ipsBadge--icon'><i class="fa-solid fa-user" data-ipstooltip="" _title="{lang="alert_tooltip_member" sprintf="$row->memberName()"}" aria-hidden="true"></i></span>
+		                {{else}}
+		                    {{$names = \IPS\Member::loggedIn()->language()->formatList( $row->groupNames() );}}
+		                    <span class='ipsBadge ipsBadge--neutral ipsBadge--icon'><i class="fa-solid fa-users" data-ipstooltip="" _title="{lang="alert_tooltip_groups" htmlsprintf="$names"}" aria-hidden="true"></i></span>
+		                {{endif}}
+		                {{if $row->enabled}}
+							<span class='ipsBadge ipsBadge--positive'>{lang="active"}</span>
+						{{else}}
+							<span class='ipsBadge ipsBadge--negative'>{lang="inactive"}</span>
+						{{endif}}
+		                {{if $row->author()->member_id === member.member_id AND $row->reply > 0 and ( $count = $row->membersRepliedCount() )}}
+		                    <span class='ipsBadge ipsBadge--positive'><a href="{url="app=core&module=system&controller=alerts&do=viewReplies&id={$row->id}" seoTemplate="alert" csrf="true"}">{lang="alert_users_have_replied" sprintf="$count" pluralize="$count"}</a></span>
+		                {{endif}}
+	                </div>
+				</div>
+				<div class="ipsData__meta">
+					<ul class='ipsList ipsList--sep'>
+						<li>{{if ! $row->viewed}}{lang="alert_not_viewed"}{{else}}{lang="alert_viewed_times" sprintf="$row->viewed" pluralize="$row->viewed"}{{endif}}</li>
+						<li>{lang="byline_name_date" htmlsprintf="$row->author()->name, \IPS\DateTime::ts( $row->start )->localeDate()"}{{if $row->end}} - {datetime="$row->end" dateonly="true"}{{endif}}</li>
+					</ul>
+				</div>
+				<div hidden>
+					<div id='alertContent_{$row->id}' class="i-padding_3">
+						{template="richText" group="global" app="core" location="global" params="$row->content()"}
+					</div>
+				</div>
+			</div>
+			{{if $table->canModerate()}}
+				<div class=''>
+					<button type="button" id="elAlert{$row->id}" popovertarget="elAlert{$row->id}_menu" class='i-color_soft'>
+						<i class='fa-solid fa-gear' aria-hidden="true"></i> <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+						<span class="ipsInvisible">{lang="edit"}</span>
+					</button>
+					<i-dropdown popover id="elAlert{$row->id}_menu">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								<li>
+									<a href='{$row->url('status')->csrf()}' title='{lang="announce_toggle"}'>
+										<span data-role="ipsMenu_selectedText">{{if $row->enabled}}{lang="announce_mark_inactive"}{{else}}{lang="announce_mark_active"}{{endif}}</span>
+									</a>
+								</li>
+								<li>
+									<a href='{$row->url('create')}' title='{lang="edit_alert"}' data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-destructOnClose='true' data-ipsDialog-title='{lang="edit_alert"}'>
+										<span data-role="ipsMenu_selectedText">{lang="edit"}</span>
+									</a>
+								</li>
+								<li>
+									<a href='{$row->url('changeAuthor')}' title='{lang="edit_alert_author"}' data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-destructOnClose='true' data-ipsDialog-title='{lang="edit_alert_author"}'>
+										<span data-role="ipsMenu_selectedText">{lang="alert_change_author"}</span>
+									</a>
+								</li>
+								<li><hr></li>
+								<li>
+									<a href='{$row->url('delete')->csrf()}' data-confirm title='{lang="alert_delete"}'>
+										{lang="delete"}
+									</a>
+								</li>
+							</ul>
+						</div>
+					</i-dropdown>
+				</div>
+			{{endif}}
+		</div>
+		{{if $table->canModerate()}}
+			<label class="ipsData__mod">
+				<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+				<input type='checkbox' data-role='moderation' name="moderate[{$row->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{$row->tableStates()}' class='ipsInput ipsInput--toggle'>
+			</label>
+		{{endif}}
+	</li>
+{{endforeach}}

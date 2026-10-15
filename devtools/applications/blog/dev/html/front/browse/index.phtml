@@ -1,0 +1,31 @@
+<ips:template parameters="$table, $featured, $blogs=array(), $viewMode=NULL, $category=NULL" />
+<header class="ipsPageHeader ipsPageHeader--blogs-index {{if $category !== null}}ipsBox ipsPull{{endif}}">
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" class='ipsPageHeader__title'>{{if $category !== null}}{$category->_title}{{else}}{lang="blogs"}{{endif}}</h1>
+		</div>
+		{{if $category === null and ( \count( $blogs ) || \IPS\blog\Blog::canCreate() )}}
+			<div data-ips-hook="buttons">
+				{template="indexButtons" group="browse" params="$blogs, $viewMode, FALSE, $category"}
+			</div>
+		{{endif}}
+	</div>
+</header>
+
+{{if $category !== null and ( \count( $blogs ) || \IPS\blog\Blog::canCreate() )}}
+    <div data-ips-hook="buttons" class='ipsBlockSpacer'>
+		{template="indexButtons" group="browse" params="$blogs, $viewMode, FALSE, $category"}
+	</div>
+{{endif}}
+
+{{if \count( $featured )}}
+	{template="featuredEntries" group="browse" params="$featured"}
+{{endif}}
+{{if \count( $blogs ) || \IPS\blog\Blog::canCreate()}}
+	<div class="ipsResponsive_showPhone">
+		{template="indexButtons" group="browse" params="$blogs, $viewMode, TRUE, $category"}
+	</div>
+{{endif}}
+<div class='ipsBox ipsBox--blogIndex ipsPull'>
+	{$table|raw}
+</div>

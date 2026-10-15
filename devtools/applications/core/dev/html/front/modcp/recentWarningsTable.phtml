@@ -1,0 +1,21 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+<div class=''>
+	<h2 class='ipsTitle ipsTitle--h4 ipsTitle--padding'>{lang="modcp_recent_warnings"}</h2>
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			<div class="ipsButtonBar__pagination">{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}</div>
+		</div>
+	{{endif}}
+	<i-data>
+		<ul class='ipsData ipsData--table ipsData--recent-warnings'>
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+		</ul>
+	</i-data>
+
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--bottom">
+			<div class="ipsButtonBar__pagination">{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}</div>
+		</div>
+	{{endif}}
+</div>

@@ -1,0 +1,22 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<form accept-charset='utf-8' class="ipsForm {$class} ipsForm--filters-form" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<div class="ipsForm__filtering" {{if isset( $elements['']['groups'] )}}data-controller='core.admin.stats.filtering'{{endif}}>
+
+		{$elements['']['date']->html()|raw}
+
+		{{if isset( $elements['']['groups'] )}}
+			<span class='i-font-size_-1'><a href='#' data-role='toggleGroupFilter'>{lang="filter_stats_by_group"}</a></span>
+
+			<div id='elGroupFilter' class='ipsHide' data-hasGroupFilters="{{if \count( $elements['']['groups']->value ) != \count( \IPS\Member\Group::groups( TRUE, FALSE ) )}}true{{else}}false{{endif}}">{$elements['']['groups']->html()|raw}</div>
+		{{endif}}
+			<button type="submit" class="ipsButton ipsButton--primary">{lang="go"}</button>
+	</div>
+</form>

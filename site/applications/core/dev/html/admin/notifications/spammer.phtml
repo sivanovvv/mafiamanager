@@ -1,0 +1,22 @@
+<ips:template parameters="$users, $notification, $more" />
+<div class="ipsGrid i-basis_400">
+	{{foreach $users as $user}}
+		<div class='ipsBox i-flex i-padding_2'>
+			<div class='ipsPhotoPanel ipsPhotoPanel_mini'>
+				{template="userPhoto" app="core" group="global" params="$user['member'], 'mini'"}
+				<div>
+					<h4 class='ipsPhotoPanel__primary'><strong><a href='{$user['member']->acpUrl()}' data-role="userName">{$user['member']->name}</a></strong> &nbsp;&nbsp;<span class='i-color_soft i-font-weight_normal'>({$user['member']->email})</span></h4>
+					<p class="ipsPhotoPanel__secondary">{$user['blurb']}</p>
+				</div>
+			</div>
+		</div>
+	{{endforeach}}
+	{{if $more > 1}}
+		<div class='ipsBox i-flex i-align-items_center i-justify-content_center i-padding_2 i-text-align_center'>
+			<h4 class='i-font-size_2'><strong><a href='{url="app=core&module=members&controller=members&filter=members_filter_spam"}'>{lang="acp_notification_NewRegComplete_more" pluralize="$more"}</a></strong></h4>
+		</div>
+	{{endif}}
+</div>
+<div class="i-color_soft">
+	<span class="i-font-size_-1"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {lang="acp_notification_Spammer_desc" sprintf="$notification->id"}</span>
+</div>

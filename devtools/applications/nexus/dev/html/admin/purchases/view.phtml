@@ -1,0 +1,173 @@
+<ips:template parameters="$purchase, $customer, $children, $customFields" />
+{{if $billingAgreement = $purchase->billing_agreement AND !$purchase->billing_agreement->canceled}}
+	<p class="ipsMessage ipsMessage--info">{lang="billing_agreement_purchase_info" sprintf="$billingAgreement->acpUrl()"}</p>
+{{endif}}
+<div class="ipsSpanGrid" data-ips-template="view">
+	<div class='ipsSpanGrid__4'>		
+		{{if $purchase->cancelled}}
+			<p class='i-background_negative i-padding_3 i-text-align_center i-margin-bottom_3'>
+				<span class='ipsTitle ipsTitle--h3'><i class='fa-solid fa-xmark-circle' aria-hidden="true"></i> {lang="purchase_canceled"}</span>
+				<br>
+				{{if $purchase->can_reactivate}}
+					{lang="purchase_canceled_ra"}
+				{{else}}
+					{lang="purchase_canceled_no_ra"}
+				{{endif}}
+			</p>
+		{{elseif !$purchase->active}}
+			<p class='i-background_3 i-padding_3 i-text-align_center i-margin-bottom_3'>
+				<span class='ipsTitle ipsTitle--h3'><i class='fa-solid fa-circle-exclamation' aria-hidden="true"></i> {lang="purchase_expired"}</span>
+			</p>
+		{{elseif $purchase->expire}}
+			{{if $purchase->grace_period and $purchase->expire->getTimestamp() < time()}}
+				<p class='i-background_3 i-padding_3 i-text-align_center i-margin-bottom_3'>
+					<span class='ipsTitle ipsTitle--h3'><i class='fa-regular fa-clock' aria-hidden="true"></i> {lang="purchase_in_grace_period"}</span>
+				</p>
+			{{else}}
+				<p class='i-background_positive i-padding_3 i-text-align_center i-margin-bottom_3'>
+					<span class='ipsTitle ipsTitle--h3'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="purchase_active"}</span>
+				</p>
+			{{endif}}
+		{{endif}}
+
+		<div class="ipsBox">
+			<h2 class='ipsBox__header'>{lang="purchase_details"}</h2>
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--purchase-details">
+					<li class="ipsData__item">
+						<span class="i-basis_120">
+							<strong>{lang="ps_start"}</strong>
+						</span>
+						<span class="">
+							{$purchase->start->localeDate()}
+						</span>
+					</li>
+					{{if $purchase->expire}}
+						<li class="ipsData__item">
+							<span class="i-basis_120">
+								<strong>{lang="ps_expire"}</strong>
+							</span>
+							<span class="">
+								{$purchase->expire->localeDate()}
+							</span>
+						</li>
+					{{endif}}
+					{{if $purchase->grace_period}}
+						<li class="ipsData__item">
+							<span class="i-basis_120">
+								<strong>{lang="p_grace_period"}</strong>
+							</span>
+							<span class="">
+								{{$grace = new \DateInterval( 'PT' . $purchase->grace_period . 'S' );}}
+								{expression="\IPS\DateTime::formatInterval( \IPS\DateTime::create()->diff( \IPS\DateTime::create()->add( $grace ) ), 0 )"}
+								{{if $purchase->expire}}
+									<span class="i-color_soft i-font-size_-1">{$purchase->expire->add( $grace )->localeDate()}</span>
+								{{endif}}
+							</span>
+						</li>
+					{{endif}}
+					{{if $purchase->renewals}}
+						<li class="ipsData__item">
+							<span class="i-basis_120">
+								<strong>{lang="ps_renewals"}</strong>
+							</span>
+							<span class="">
+								{$purchase->renewals}{{if $purchase->renewals->tax}}{lang="plus_tax_rate" sprintf="$purchase->renewals->tax->_title"}{{endif}} {{if $purchase->grouped_renewals}}({lang="purchase_grouped"}){{endif}}
+								{{if $purchase->pay_to and $purchase->commission < 100}}
+									<br>
+									{{if $purchase->fee}}
+										{lang="purchase_renewal_commission_fee" htmlsprintf="100 - $purchase->commission, $purchase->fee, $purchase->pay_to->link()"}
+									{{else}}
+										{lang="purchase_renewal_commission" htmlsprintf="100 - $purchase->commission, $purchase->pay_to->link()"}
+									{{endif}}
+								{{endif}}
+							</span>
+						</li>
+						{{if $purchase->billing_agreement}}
+							<li class="ipsData__item">
+								<span class="i-basis_120">
+									<strong>{lang="ps_billing_agreement"}</strong>
+								</span>
+								<span class="">
+									<a href="{$purchase->billing_agreement->acpUrl()}">{$purchase->billing_agreement->gw_id}</a>
+									{{if $purchase->billing_agreement->canceled}}
+										({lang="billing_agreement_canceled"})
+									{{endif}}
+								</span>
+							</li>
+						{{endif}}
+					{{endif}}
+					{{if $parent = $purchase->parent()}}
+						<li class="ipsData__item">
+							<span class="i-basis_120">
+								<strong>{lang="ps_parent"}</strong>
+							</span>
+							<span class="">
+								<a href="{$parent->acpUrl()}">{$parent->name}</a>
+							</span>
+						</li>
+					{{endif}}
+				</ul>
+			</i-data>
+		</div>
+		<br>
+		
+		<div class="ipsBox">
+			<h2 class="ipsBox__header">{lang="purchase_customer_info"}</h2>
+			{{if $customer}}
+				<div class='i-padding_3 ipsPhotoPanel ipsPhotoPanel_small'>
+					<a href="{$purchase->member->acpUrl()}"><img src='{$purchase->member->photo}' class='ipsUserPhoto ipsUserPhoto--small' loading="lazy" alt=""></a>
+					<div>
+						<h3 class='i-font-size_2 i-link-color_inherit'><strong><a href="{$purchase->member->acpUrl()}">{$purchase->member->cm_name}</a></strong></h3>
+						{$purchase->member->email}<br>
+						{lang="transaction_customer_since" sprintf="$purchase->member->joined->localeDate()"}<br>
+						{lang="transaction_spent" sprintf="$purchase->member->totalSpent()"}
+					</div>
+				</div>
+			{{else}}
+				<div class='i-padding_3'>
+					<p class="ipsMessage ipsMessage--error">{lang="purchase_no_member"}</p>
+				</div>
+			{{endif}}
+		</div>
+		<br><br>
+	</div>
+	<div class='ipsSpanGrid__8'>
+		{{if $content = $purchase->acpPage()}}
+			{$content|raw}
+		{{endif}}
+		
+		{{if \count( $customFields )}}
+			<div class="ipsBox i-margin-bottom_1">
+				<h2 class='ipsBox__header'>{lang="p_custom_fields"}</h2>
+				<i-data>
+					<ul class="ipsData ipsData--table ipsData--customfields">
+						{{foreach $customFields as $k => $v}}
+							<li class="ipsData__item">
+								<span class="i-basis_120">
+									<strong>{lang="nexus_pfield_{$k}"}</strong>
+								</span>
+								<span class="">
+									{$v|raw}
+								</span>
+							</li>
+						{{endforeach}}
+					</ul>
+				</i-data>
+			</div>
+		{{endif}}
+		
+		{{if $purchase->childrenCount()}}
+		<div class='ipsBox i-margin-bottom_1'>
+			<h2 class="ipsBox__header">{lang="child_purchases"}</h2>
+			{$children|raw}
+		</div>
+		{{endif}}
+
+		<div data-controller='core.admin.members.lazyLoadingProfileBlock' data-url='{url="app=nexus&module=customers&controller=purchases&do=showInvoices&id="}{$purchase->id}'>
+			<div class="i-margin-bottom_1 i-text-align_center">
+				<img src="{resource="tiny_loading.gif" app="core"}">
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,23 @@
+<ips:template parameters="$data" />
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--compact ipsData--dashboard-overview">
+		{{foreach $data as $k => $v}}
+			<li class="ipsData__item">
+				<span class="i-basis_180">
+					<strong>{lang="$k"}</strong>
+				</span>
+				<span class="">
+					{{if $k === 'total_disk_spaceg'}}
+						{filesize="$v"}
+					{{elseif $k === 'largest_image'}}
+						<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->caption}</a> <span class="i-color_soft">({filesize="$v->file_size"})</span>
+					{{elseif $k === 'most_viewed_image'}}
+						<a href='{$v->url()}' target='_blank' rel='noopener'>{$v->caption}</a> <span class="i-color_soft">({lang="num_views_with_number" pluralize="$v->views"})</span>
+					{{else}}
+						{$v}
+					{{endif}}
+				</span>
+			</li>
+		{{endforeach}}
+	</ul>
+</i-data>

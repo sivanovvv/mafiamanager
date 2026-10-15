@@ -1,0 +1,158 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div data-baseurl="{$table->baseUrl}" data-resort='{$table->resortKey}' data-controller="core.global.core.table( file.moderate ),core.front.core.moderation">
+	{template="buttons" params="$table->rootButtons, ''" group="global" app="core" if="isset( $headers['_buttons'] )"}
+	<div class="ipsBox">
+		{{if $quickSearch !== NULL or $table->advancedSearch or !empty( $table->filters )}}
+			<div data-role="tableSortBar">
+				<div class='ipsButtonBar ipsButtonBar--top'>
+					<div data-role="tablePagination" class='ipsButtonBar__pagination {{if $table->pages <= 1}}ipsHide{{endif}}'>
+						{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+					</div>
+					<div class='ipsButtonBar__end'>
+						<ul class='ipsDataFilters'>
+							{{if !empty( $table->filters )}}
+								<li>
+									<button type="button" id="elFilterMenu" popovertarget="elFilterMenu_menu" class='ipsDataFilters__button' data-role="tableFilterMenu">{lang="filter"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+									<i-dropdown popover id="elFilterMenu_menu" data-i-dropdown-selectable="radio">
+										<div class="iDropdown">
+											<ul class="iDropdown__items">
+												<li><a href="{$table->baseUrl->setQueryString( array( 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )->setPage( 'page', 1 )}" data-ipsMenuValue='' {{if !array_key_exists( $table->filter, $table->filters )}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="all"}</a></li>
+												{{foreach $table->filters as $k => $q}}
+													<li><a href="{$table->baseUrl->setQueryString( array( 'filter' => $k, 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )->setPage( 'page', 1 )}" {{if $k === $table->filter}}aria-selected="true"{{endif}} data-action="tableFilter" data-ipsMenuValue='{$k}'><i class="iDropdown__input" aria-hidden="true"></i>{lang="$k"}</a></li>
+												{{endforeach}}
+											</ul>
+										</div>
+									</i-dropdown>
+								</li>
+							{{endif}}
+							<li>
+								<button type="button" id="elSortMenu" popovertarget="elSortMenu_menu" class='ipsDataFilters__button'>{lang="sort_by"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+								<i-dropdown popover id="elSortMenu_menu" data-i-dropdown-selectable="radio">
+									<div class="iDropdown">
+										<ul class="iDropdown__items">
+											{{foreach $headers as $k => $header}}
+												{{if $header !== '_buttons' && !\in_array( $header, $table->noSort )}}
+													<li>
+														<a 
+															{{if $header == $table->sortBy and $table->sortDirection == 'desc'}}
+																href='{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $header, 'sortdirection' => 'desc' ) )}'
+															{{else}}
+																href='{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $header, 'sortdirection' => 'asc' ) )}'
+															{{endif}}
+															{{if $header == $table->sortBy}}aria-selected="true"{{endif}} data-ipsMenuValue='{$header}'>
+														<i class="iDropdown__input" aria-hidden="true"></i>{lang="{$table->langPrefix}{$header}"}
+														</a>
+													</li>
+												{{endif}}
+											{{endforeach}}
+										</ul>
+									</div>
+								</i-dropdown>
+							</li>
+							<li>
+								<button type="button" id="elOrderMenu" popovertarget="elOrderMenu_menu" class='ipsDataFilters__button'>{lang="order_by"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+								<i-dropdown popover id="elOrderMenu_menu" data-i-dropdown-selectable="radio">
+									<div class="iDropdown">
+										<ul class="iDropdown__items">
+											<li>
+												<a href='{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $table->sortBy, 'sortdirection' => 'asc' ) )}' {{if $table->sortDirection == 'asc'}}aria-selected="true"{{endif}} data-ipsMenuValue='asc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="ascending"}</a>
+											</li>
+											<li>
+												<a href='{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $table->sortBy, 'sortdirection' => 'desc' ) )}' {{if $table->sortDirection == 'desc'}}aria-selected="true"{{endif}} data-ipsMenuValue='desc'><i class="iDropdown__input" aria-hidden="true"></i>{lang="descending"}</a>
+											</li>
+										</ul>
+									</div>
+								</i-dropdown>
+							</li>
+							<li>
+								<button type="button" id="elCheck" popovertarget="elCheck_menu" class="ipsDataFilters__button" data-ipstooltip='{lang="select_rows_tooltip"}' data-ipsAutoCheck data-ipsAutoCheck-context="#elFileResults">
+									<span class="ipsInvisible">{lang="{$table->langPrefix}select_rows_tooltip"}</span>
+									<span class="cAutoCheckIcon"><i class="fa-regular fa-square" aria-hidden="true"></i></span> <i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+									<span class='ipsNotification' data-role='autoCheckCount'>0</span>
+								</button>
+								<i-dropdown popover id="elCheck_menu">
+									<div class="iDropdown">
+										<ul class="iDropdown__items">
+											<li class="iDropdown__title">{lang="select_rows"}</li>
+											<li><button type="button" data-ipsMenuValue="all">{lang="all"}</button></li>
+											<li><button type="button" data-ipsMenuValue="none">{lang="none"}</button></li>
+										</ul>
+									</div>
+								</i-dropdown>
+							</li>
+						</ul>
+						<!-- Search -->
+						{{if $quickSearch !== NULL or $table->advancedSearch}}
+							<div class="acpTable_search">
+								{{if $quickSearch !== NULL}}
+									<input type='text' data-role='tableSearch' results placeholder="{{if \is_string( $quickSearch )}}{lang="search_prefix" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $table->langPrefix . $quickSearch )"}{{else}}{lang="search"}{{endif}}" value="{expression="\IPS\Request::i()->quicksearch?:''"}">
+								{{endif}}
+								{{if $table->advancedSearch}}
+									<a class='acpWidgetSearch' data-ipsTooltip aria-label='{lang="search"}' href='{$table->baseUrl->setQueryString( array( 'advancedSearchForm' => '1', 'filter' => $table->filter, 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )}' data-ipsDialog data-ipsDialog-title='{lang="search"}'><i class='fa-solid fa-gear' aria-hidden="true"></i></a>
+								{{endif}}
+							</div>
+						{{endif}}
+					</div>
+				</div>
+			</div>
+		{{endif}}
+
+		<div data-role="extraHtml">{$table->extraHtml|raw}</div>
+		<form action="{$table->baseUrl->csrf()->setQueryString('do','multimod')}" method="post" data-role='moderationTools' data-ipsPageAction>
+			<div class="ipsTableScroll">
+				<table class='ipsTable ipsTable_zebra {{foreach $table->classes as $class}}{$class} {{endforeach}}' data-role="table" data-ipsKeyNav data-ipsKeyNav-observe='e d return'>
+					<thead>
+						<tr class='i-background_3'>
+							{{foreach $headers as $k => $header}}
+								{{if $header != 'attach_id'}}
+									{{if $header !== '_buttons'}}
+										<th class='
+										{{if !\in_array( $header, $table->noSort )}}ipsTable_sortable {{if $table->sortBy AND $header == ( mb_strrpos( $table->sortBy, ',' ) !== FALSE ? trim( mb_substr( $table->sortBy, mb_strrpos( $table->sortBy, ',' ) + 1 ) ) : $table->sortBy )}}ipsTable_sortableActive ipsTable_sortable{{if $table->sortDirection == 'asc'}}Asc{{else}}Desc{{endif}} {{else}}ipsTable_sortableAsc{{endif}}{{endif}} {{if array_key_exists( $header, $table->classes )}}{$table->classes[ $header ]}{{endif}}' data-key="{$header}" {{if !\in_array( $header, $table->noSort )}}data-action="tableSort" {{if $table->sortBy AND $header == ( mb_strrpos( $table->sortBy, ',' ) !== FALSE ? trim( mb_substr( $table->sortBy, mb_strrpos( $table->sortBy, ',' ) + 1 ) ) : $table->sortBy )}}aria-sort="{{if $table->sortDirection == 'asc'}}ascending{{else}}descending{{endif}}"{{endif}}{{endif}} {{if isset( $table->widths[ $header ] )}}style="width: {$table->widths[ $header ]}%"{{endif}}>
+										{{if !\in_array( $header, $table->noSort )}}
+											{{if $header == $table->sortBy and $table->sortDirection == 'desc'}}
+												<a href='{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $header, 'sortdirection' => 'asc' ) )}'>
+											{{else}}
+												<a href='{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $header, 'sortdirection' => 'desc' ) )}'>
+											{{endif}}
+											{lang="{$table->langPrefix}{$header}"}
+											<i class="fa-solid fa-caret-down ipsTable_sortable__icon" aria-hidden="true"></i>
+											</a>
+										{{else}}
+											{lang="{$table->langPrefix}{$header}"}
+										{{endif}}
+										</th>
+									{{else}}
+										<th>&nbsp;</th>
+									{{endif}}
+								{{endif}}
+							{{endforeach}}
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody data-role="tableRows" id="elFileResults" data-controller='ips.admin.files.multimod'>
+						{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+					</tbody>
+					<tfoot class="i-background_3 ipsJS_hide" data-role="pageActionOptions">
+						<tr>
+							<td colspan="8">
+								<div>
+									<select class="ipsInput ipsInput--select" name="modaction" data-role="moderationAction">
+										{{if \IPS\Member::loggedIn()->hasAcpRestriction( 'core', 'overview', 'files_delete')}}
+											<option value="delete" data-icon="trash">{lang="delete"}</option>
+										{{endif}}
+									</select>
+									<button type="submit" class="ipsButton ipsButton--secondary ipsButton--tiny">{lang="submit"}</button>
+								</div>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</form>
+		<div class='ipsButtonBar ipsButtonBar--bottom'>
+			<div data-role="tablePagination" class='ipsButtonBar__pagination {{if $table->pages <= 1}}ipsHide{{endif}}'>
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,109 @@
+/*
+	----------------
+	- Breadcrumb
+	----------------
+*/
+
+.ipsBreadcrumb{
+	flex: 1 1 auto;
+	display: flex;
+	gap: 1em 2em;
+	font-weight: 600;
+	font-size: .9em;
+}
+
+	.ipsBreadcrumb::-webkit-scrollbar {
+		-webkit-appearance: none;
+		height: 0px;
+		display: none;
+	}
+
+	.ipsHeaderExtra .ipsBreadcrumb{
+		color: var(--i-color_contrast, currentColor);
+	}
+
+	.ipsBreadcrumb--bottom{
+		color: var(--i-color_contrast, currentColor);
+		margin-top: var(--i-sp_block);
+		margin-bottom: 0;
+	}
+
+	.ipsBreadcrumb__feed{
+		flex: 0 0 auto;
+		display: flex;
+		margin-inline-start: auto;
+	}
+
+	.ipsBreadcrumb--top .ipsBreadcrumb__feed,
+	.ipsBreadcrumb--mobile .ipsBreadcrumb__feed{
+		display: none;
+	}
+
+	.ipsBreadcrumb__list{
+		display: flex;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+
+	.ipsBreadcrumb li{
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+	}
+
+	.ipsBreadcrumb__list li:not(:last-child)::after{
+		content: "\f054";
+		/* We use opacity since we can't use color-mix(currentColor) since it crashes Safari 16.4 + 16.5 */
+		opacity: .8;
+		color: color-mix(in hsl, var(--i-co) 80%, transparent);
+		font-size: .8em;
+		font-weight: 900;
+		font-family: var(--i-font-awesome);
+		min-width: 2.6em;
+		text-align: center;
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+	}
+	:where([dir="rtl"]) .ipsBreadcrumb__list li:not(:last-child)::after{
+		content: "\f053";
+	}
+
+	.ipsBreadcrumb a{
+		color: inherit;
+		display: block;
+		padding: .8em 0;
+		outline-width: 0;
+	}
+
+	.ipsBreadcrumb a:focus-visible span{
+		outline: 2px solid;
+		outline-offset: 2px;
+	}
+
+	.ipsBreadcrumb .fa-solid,
+	.ipsBreadcrumb .fa-regular{
+		margin-inline-end: .3em;
+		min-width: 1.2em;
+	}
+
+	.ipsBreadcrumb__list li > span{
+		opacity: .8;
+		display: block;
+		padding: .8em 0;
+	}
+
+	.ipsBreadcrumb--mobile{
+		flex: 0 0 auto; /* Prevent breadcrumbs from stretching to a tall height on mobiles */
+		color: var(--i-color_contrast, currentColor);
+	}
+
+		.ipsBreadcrumb--mobile .ipsBreadcrumb__list{
+			padding: .5em var(--i-layout-gutter);
+		}
+
+@media (max-width: 979px){
+	/* Hide the bottom breadcrumb on mobiles since it exists in the navigation offcanvas menu */
+	.ipsBreadcrumb--bottom{
+		display: none;
+	}
+}

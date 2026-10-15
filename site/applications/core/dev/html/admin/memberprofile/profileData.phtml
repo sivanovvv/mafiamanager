@@ -1,0 +1,69 @@
+<ips:template parameters="$member, $fields" />
+<div class=''>
+	{{if $member->rank['title'] || $member->rank['image'] || settings.profile_birthday_type != 'none' || settings.signatures_enabled}}
+		<div>
+			<h2 class="ipsTitle ipsTitle--h4 i-background_2 i-padding_2">{lang="profile_about" sprintf="$member->name"}</h2>
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--compact ipsData--profile-data">
+					{{if settings.profile_birthday_type != 'none'}}
+						<li class='ipsData__item'>
+							<div class="ipsData__content">
+								<div class="ipsData__main">
+									<div class='ipsData__title'>{lang="bday"}</div>
+									<div class="ipsData__desc ipsData__desc--all">
+										{{if $member->birthday}}
+											{$member->birthday}
+										{{else}}
+											<em class="i-color_soft">{lang="no_value"}</em>
+										{{endif}}
+									</span>
+								</div>
+							</div>
+						</li>
+					{{endif}}
+					{{if settings.signatures_enabled}}
+						<li class='ipsData__item'>
+							<div class="ipsData__content">
+								<div class="ipsData__main">
+									<div class='ipsData__title'>{lang="signature"}</div>
+									<div class='ipsData__desc ipsData__desc--all ipsRichText'>
+										{{if $member->signature}}
+											{$member->signature|raw}
+										{{else}}
+											<em class="i-color_soft">{lang="no_value"}</em>
+										{{endif}}
+									</div>
+								</div>
+							</div>
+						</li>
+					{{endif}}
+				</ul>
+			</i-data>
+		</div>
+	{{endif}}
+	{{foreach $fields as $groupKey => $values}}
+		<div>
+			<h2 class="ipsTitle ipsTitle--h4 i-background_2 i-padding_2">{lang="$groupKey"}</h2>
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--compact ipsData--profile-custom">
+					{{foreach $values as $k => $v}}
+						<li class='ipsData__item'>
+							<div class="ipsData__content">
+								<div class="ipsData__main">
+									<div class="ipsData__title">{lang="$k"}</div>
+									<div class='ipsData__desc ipsData__desc--all'>
+										{{if (string) $v === ''}}
+											<em class="i-color_soft">{lang="no_value"}</em>
+										{{else}}
+											<div>{$v|raw}</div>
+										{{endif}}
+									</div>
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		</div>
+	{{endforeach}}
+</div>

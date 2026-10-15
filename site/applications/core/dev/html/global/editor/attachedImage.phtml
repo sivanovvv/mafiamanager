@@ -1,0 +1,2 @@
+<ips:template parameters="$url, $thumbnail, $title, $id, $width, $height, $altText=NULL" />
+<p><img class="ipsImage ipsImage_thumbnailed ipsRichText__align--block" data-fileid="{$id}" data-full-image="<fileStore.core_Attachment>/{$url}" src="<fileStore.core_Attachment>/{$thumbnail}" height="{$height}" width="{$width}" alt="{{if $altText}}{$altText}{{else}}{$title}{{endif}}" loading='lazy'></p>

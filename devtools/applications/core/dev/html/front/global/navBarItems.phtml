@@ -1,0 +1,53 @@
+<ips:template parameters="$roots, $subBars=NULL, $parent=0, $clone=FALSE, $firstHiddenLink=FALSE" />
+{{$initiallyHidden = FALSE;}}
+{{foreach $roots as $id => $item}}
+	{{if ( $item->canView() and $item->isAvailableFor( \IPS\Theme::i()->getLayoutValue('global_view_mode') === 'side' ? 'sidebar' : 'header' ) )}}
+		{{$active = $item->activeOrChildActive();}}
+		{{if $active}}
+			{{\IPS\core\FrontNavigation::i()->activePrimaryNavBar = $item->id;}}
+		{{endif}}
+		{{if $firstHiddenLink == $item->id}}
+			{{$initiallyHidden = TRUE;}}
+		{{endif}}
+		<li {{if !$clone && $initiallyHidden}}data-initially-hidden{{endif}} data-id="{$item->id}" {{if $active}}data-active{{endif}} data-navApp="{expression="mb_substr( \get_class( $item ), 4, mb_strpos( \get_class( $item ), '\\', 4 ) - 4 )"}" data-navExt="{expression="mb_substr( \get_class( $item ), mb_strrpos( \get_class( $item ), '\\' ) + 1 )"}" {$item->attributes()|raw}>
+			{{$children = $item->children();}}
+			{{if $children || ($subBars && isset( $subBars[ $id ] ) && \count( $subBars[ $id ] ))}}
+				<button popovertarget="elNavSecondary_{$item->id}" type="button" class="ipsNavBar__item">
+					<span class="ipsNavBar__icon" aria-hidden="true">
+						{{if $item->getIconData()}}
+							{$item->getIconData()|raw}
+						{{else}}
+							<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+						{{endif}}
+					</span>
+					<span class="ipsNavBar__text">
+						<span class="ipsNavBar__label">{$item->title()}</span>
+						<i class="fa-solid fa-angle-down" aria-hidden="true"></i>
+					</span>
+				</button>
+				{{if !$clone}}
+					<ul class='ipsNav__dropdown' id='elNavSecondary_{$item->id}' popover>
+						{{if $children}}
+							{template="navBarChildren" app="core" group="global" location="front" params="$children"}
+						{{else}}
+							{template="navBarChildren" app="core" group="global" location="front" params="$subBars[ $id ]"}
+						{{endif}}
+					</ul>
+				{{endif}}
+			{{else}}
+				<a href="{{if $item->link()}}{$item->link()}{{else}}#{{endif}}" {{if method_exists( $item, 'target' ) AND $item->target()}}target='{$item->target()}'{{if $item->target() == '_blank'}} rel="noopener"{{endif}}{{endif}} data-navItem-id="{$item->id}" {{if $active}}aria-current="page"{{endif}}>
+					<span class="ipsNavBar__icon" aria-hidden="true">
+						{{if $item->getIconData()}}
+							{$item->getIconData()|raw}
+						{{else}}
+							<i class="fa-solid" style="--icon:'{$item->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+						{{endif}}
+					</span>
+					<span class="ipsNavBar__text">
+						<span class="ipsNavBar__label">{$item->title()}</span>
+					</span>
+				</a>
+			{{endif}}
+		</li>
+	{{endif}}
+{{endforeach}}

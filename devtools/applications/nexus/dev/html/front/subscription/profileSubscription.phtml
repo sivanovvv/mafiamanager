@@ -1,0 +1,12 @@
+<ips:template parameters="$member" />
+{{if $subscription = \IPS\nexus\Subscription::loadActiveByMember( $member )}}
+	<div class='ipsProfileWidget'>
+		<a href='{url="app=nexus&module=subscriptions&controller=subscriptions" seoTemplate="nexus_subscriptions"}' class='cProfileSubscription {{if $subscription->package->_image}}cProfileSubscription--with-image{{else}}cProfileSubscription--no-image{{endif}}'>
+			{{if $subscription->package->_image}}
+				<img src="{expression="str_replace( array( '(', ')' ), array( '\(', '\)' ), $subscription->package->_image->url )"}" loading='lazy' alt=''>
+				<div class='cProfileSubscription__gradient'></div>
+			{{endif}}
+			<span class='cProfileSubscription__text'><i class="fa-solid fa-award" aria-hidden="true"></i> {lang="nexus_subs_subscriber" sprintf="$subscription->package->_title"}</span>
+		</a>
+	</div>
+{{endif}}

@@ -1,0 +1,6 @@
+<ips:template parameters="$item, $comment, $replies, $email" />
+
+
+{$email->language->addToStack("mail_solved_reengagement", FALSE, array( 'htmlsprintf' => array( $item->definiteArticle( $email->language ), $item->url(), $item->mapped('title') ) ) )}
+
+-- {setting="board_name"}

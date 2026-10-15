@@ -1,0 +1,37 @@
+<ips:template parameters="$currentCategory=NULL" />
+{{$categories = $currentCategory ? $currentCategory->children() : \IPS\gallery\Category::roots();}}
+{{if \count($categories)}}
+<div id='elGalleryCategories' class='i-margin-top_3'>
+	<h3 class='ipsBox__header'>{{if $currentCategory}}{lang="subcategories"}{{else}}{lang="categories"}{{endif}}</h3>
+	<div class='ipsSideMenu ipsSideMenu--truncate'>
+		<ul class='ipsSideMenu__list'>
+			{{foreach $categories as $category}}
+				<li>
+					<a href="{$category->url()}" class='ipsSideMenu_item'>
+						<strong class='ipsSideMenu__text'>{$category->_title}</strong>
+						<span class='ipsBadge ipsBadge--soft cGalleryCategoryCount'>{expression="\IPS\gallery\Image::contentCount( $category )"}</span>
+					</a>
+					{{if $category->hasChildren()}}
+						<ul class="ipsSideMenu__list">
+							{{foreach $category->children() as $idx => $subcategory}}
+								<li>
+									{{if $idx >= 5}}
+										<a href='{$category->url()}' class='ipsSideMenu_item'><span class='i-color_soft i-font-size_-2'>{lang="and_x_more" pluralize="\count( $category->children() ) - 5"}</span></a>
+										{{break;}}
+									{{else}}
+										<a href="{$subcategory->url()}" class='ipsSideMenu_item'>
+											<span class='ipsSideMenu__text'>{$subcategory->_title}</span>
+											<strong class='i-font-size_-2 cGalleryCategoryCount'>{expression="\IPS\gallery\Image::contentCount( $subcategory )"}</strong>
+										</a>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+					{{endif}}
+				</li>
+			{{endforeach}}
+		</ul>
+		<a href='{url="app=gallery&module=gallery&controller=browse&do=categories" seoTemplate="gallery_categories"}' class='ipsButton ipsButton--wide ipsButton--small ipsButton--soft'>{lang="browse_categories"} <i class='fa-solid fa-caret-right' aria-hidden="true"></i></a>
+	</div>
+</div>
+{{endif}}

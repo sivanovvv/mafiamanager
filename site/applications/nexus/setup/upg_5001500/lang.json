@@ -1,0 +1,15 @@
+{
+    "normal": {
+        "added": [
+            "product_lc",
+            "product_reviews_lc"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

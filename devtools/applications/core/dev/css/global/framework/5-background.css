@@ -1,0 +1,56 @@
+/*
+	----------------
+	- Surfaces
+	----------------
+*/
+
+.i-background_1{ background-color: var(--i-background_1); }
+.i-background_2{ background-color: var(--i-background_2); }
+.i-background_3{ background-color: var(--i-background_3); }
+.i-background_4{ background-color: var(--i-background_4); }
+.i-background_5{ background-color: var(--i-background_5); }
+.i-background_6{ background-color: var(--i-background_6); }
+
+.i-background_dark{
+	background-color: var(--i-background_dark);
+	color: var(--i-color_background-dark-contrast);
+}
+.i-background_dark .i-color_soft{
+	color: color-mix(in srgb, var(--i-color_background-dark-contrast) 80%, transparent);
+}
+.i-background_dark .i-color_hard{
+	color: var(--i-color_background-dark-contrast);
+}
+
+.i-background_moderated{
+	background-color: var(--i-background_moderated);
+	color: var(--i-color_moderated);
+}
+.i-background_moderated .i-color_soft{
+	color: color-mix(in srgb, var(--i-color_moderated) 80%, transparent);
+}
+.i-background_moderated .i-color_hard{
+	color: var(--i-color_moderated);
+}
+
+.i-background_positive{
+	background-color: var(--i-background_positive);
+	color: var(--i-color_positive-soft);
+}
+.i-background_positive .i-color_soft{
+	color: color-mix(in srgb, var(--i-color_positive-soft) 80%, transparent);
+}
+.i-background_positive .i-color_hard{
+	color: var(--i-color_positive-soft);
+}
+
+.i-background_negative{
+	background-color: var(--i-background_negative);
+	color: var(--i-color_negative-soft);
+}
+.i-background_negative .i-color_soft{
+	color: color-mix(in srgb, var(--i-color_negative-soft) 80%, transparent);
+}
+.i-background_negative .i-color_hard{
+	color: var(--i-color_negative-soft);
+}

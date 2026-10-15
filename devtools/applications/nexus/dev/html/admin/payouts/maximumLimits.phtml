@@ -1,0 +1,9 @@
+<ips:template parameters="$amount, $periodValue, $periodType" />
+{$amount|raw}
+{lang="every"} &nbsp;
+<input name="nexus_payout_maximum[0]" size="5" class="ipsInput ipsField_short ipsField_tiny" min="1" step="any" type="number" value='{$periodValue}'>
+<select class="ipsInput ipsInput--select" name='nexus_payout_maximum[1]'>
+	<option value='day'{{if $periodType == 'day'}} selected{{endif}}>{lang="days"}</option>
+	<option value='week'{{if $periodType == 'week'}} selected{{endif}}>{lang="weeks"}</option>
+	<option value='month'{{if $periodType == 'month'}} selected{{endif}}>{lang="months"}</option>
+</select>

@@ -1,0 +1,14 @@
+<ips:template parameters="" />
+
+{{if \count( \IPS\Output::i()->rssFeeds )}}
+	<button type="button" id="elRSS" popovertarget="elRSS_menu" title='{lang="available_rss"}' data-ipsTooltip><i class="fa-solid fa-rss" aria-hidden="true"></i> RSS</button>
+	<i-dropdown popover id="elRSS_menu">
+		<div class="iDropdown">
+			<ul class="iDropdown__items">
+				{{foreach \IPS\Output::i()->rssFeeds as $title => $url}}
+					<li><a title="{lang="$title"}" href="{$url}">{lang="$title"}</a></li>
+				{{endforeach}}
+			</ul>
+		</div>
+	</i-dropdown>
+{{endif}}

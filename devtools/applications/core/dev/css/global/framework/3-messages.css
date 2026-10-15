@@ -1,0 +1,330 @@
+.ipsMessage{
+	--i-co: hsl(0 0% 100%);
+	--i-color_soft: color-mix(in srgb, var(--i-co) 80%, transparent);
+	--_ba-co: var(--i-background_dark);
+	--_pa: 18px;
+	--_icon-size: var(--_pa);
+	padding: var(--_pa);
+	padding-inline-start: calc(var(--_icon-size) + var(--_pa) * 2);
+	border-radius: var(--i-box--bo-ra);
+	color: var(--i-co);
+	background-color: var(--_ba-co);
+	display: block;
+	position: relative;
+}
+
+[data-ips-scheme="dark"] .ipsMessage{
+	box-shadow: inset hsl(0 0% 100% / .2) 0px 1px 0px;
+}
+
+	.ipsMessage > .ipsUserPhoto{
+		position: absolute;
+		width: calc(var(--_icon-size) + 10px);
+  		inset-inline-start: calc(var(--_pa) - 5px);
+	}
+
+	.ipsMessage::before,
+	.ipsMessage__icon{
+		position: absolute;
+		inset-inline-start: 0;
+		top: 0;
+		bottom: 0;
+		display: grid;
+		place-content: center;
+		width: calc(var(--_icon-size) + var(--_pa) * 2);
+		line-height: 1lh;
+		font-size: var(--_icon-size);
+		text-align: center;
+		opacity: .7;
+	}
+
+	.ipsMessage::before{
+		content: var(--_icon, "\f05a");
+		font-weight: var(--_icon--fo-we, 900);
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+	}
+
+	/* If a user photo or custom icon exists, hide the pseudo element */
+	.ipsMessage:has( > .ipsUserPhoto, .ipsMessage__icon)::before{
+		display: none;
+	}
+
+	/* Hide the icons in older browsers since we rely on :has() */
+	@supports not selector(a:has(b)){
+		.ipsMessage{
+			padding-inline-start: var(--_pa);
+		}
+		.ipsMessage::before,
+		.ipsMessage__icon,
+		.ipsMessage > .ipsUserPhoto{
+			display: none !important;
+		}
+	}
+
+/* Restyle message buttons */
+.ipsMessage--withButtons{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1em;
+}
+.ipsMessage--withButtons > *{
+	flex: 9999 1 500px;
+}
+.ipsMessage--withButtons > .ipsButtons{
+	flex: 0 1 auto;
+}
+/* Smaller buttons since regular seemed too large */
+.ipsMessage .ipsButton{
+	--i-button--pa-bl: .8em;
+	--i-button--pa-in: 1.2em;
+	--i-button--fo-si: .85em;
+}
+/* Add faint background to unstyled buttons */
+.ipsMessage .ipsButton:not([class*="ipsButton--"]){
+	--i-button--ba-co: hsl(0 0% 0% / .15);
+	--i-button-hover--ba-co: hsl(0 0% 0% / .25);
+}
+
+/* Add a margin to space apart consecutive messages */
+.ipsMessage + .ipsMessage{
+	margin-top: .5em;
+}
+/* Reduce gap size when messages already have bottom margins */
+.ipsBlockSpacer > .ipsMessage + .ipsMessage{
+	margin-top: calc(var(--i-sp_block) * -1 + 5px);
+}
+
+:where(.ipsMessage) a{
+	color: inherit;
+	text-decoration: underline;
+}
+
+	.ipsMessage__title{
+		font-weight: 500;
+		font-size: 1.1em;
+	}
+
+		.ipsMessage__title:only-child{
+			font-size: 1em;
+		}
+
+	/* Warning messages in forms can sometimes use .ipsRichText. This fixes their color */
+	.ipsMessage.ipsRichText,
+	.ipsMessage .ipsRichText{
+		color: color-mix(in srgb, var(--i-co) 80%, transparent);
+	}
+
+		.ipsMessage .ipsRichText a{
+			color: inherit;
+			text-decoration: underline;
+			text-underline-offset: 0.5ex;
+			text-decoration-color: color-mix(in srgb, var(--i-co) 40%, transparent);
+		}
+
+		.ipsMessage .ipsButtons{
+			justify-content: flex-start;
+		}
+
+		.ipsMessage .ipsButton--inherit{
+			--i-button--co: var(--i-co);
+		}
+
+		.ipsMessage:where(:not(.ipsMessage--neutral)) .ipsButton--primary{
+			--i-button--ba-co: hsl(0 0% 100%);
+			--i-button-hover--ba-co: hsl(0 0% 100%);
+			--i-button--co: hsl(0 0% 10%);
+		}
+
+.ipsMessage__close {
+	display: grid;
+	place-content: center;
+	width: 2.4em;
+	height: 2.4em;
+	color: #fff;
+	opacity: 0.8;
+	background: hsl(0 0% 0% / .4);
+	border-radius: 50%;
+	text-decoration: none;
+	text-align: center;
+}
+	.ipsMessage__close:hover {
+		background: hsl(0 0% 0% / .6);
+	}
+
+.ipsMessage [data-mentionid]{
+	background: hsl(0 0% 0% / .3);
+}
+
+.ipsMessage .ipsBadge{
+	background: hsl(0 0% 0% / .3);
+	color: hsl(0 0% 100%);
+}
+
+.ipsMessage--form{
+	border-radius: 0;
+}
+
+/* Announcements */
+.ipsAnnouncements{
+	border-radius: var(--i-box--bo-ra);
+	overflow: hidden;
+}
+.ipsAnnouncements--sidebar{
+	margin-bottom: var(--i-sp_block);
+}
+/* Hide announcement wrappers when no active announcements exist (otherwise they have a margin applied) */
+.ipsAnnouncements:not(:has(.ipsAnnouncement:not([hidden]))){
+	display: none;
+}
+
+.ipsAnnouncements--top {
+	border-radius: 0;
+}
+
+.ipsAnnouncement {
+	--i-co: hsl(0 0% 100%);
+	--_ba-co: var(--i-background_dark);
+	color: var(--i-co);
+	background-color: var(--_ba-co);
+	display: flex;
+	font-weight: 500;
+}
+
+	.ipsAnnouncement--error + .ipsAnnouncement--error,
+	.ipsAnnouncement--warning + .ipsAnnouncement--warning,
+	.ipsAnnouncement--success + .ipsAnnouncement--success,
+	.ipsAnnouncement--info + .ipsAnnouncement--info,
+	.ipsAnnouncement--general + .ipsAnnouncement--general,
+	.ipsAnnouncement--none + .ipsAnnouncement--none{
+		border-top: 1px dashed color-mix(in srgb, var(--i-co) 20%, transparent);
+	}
+
+	.ipsAnnouncement a {
+		color: inherit;
+	}
+
+	.ipsAnnouncement__text,
+	.ipsAnnouncement__link{
+		flex: 1 1 auto;
+		padding: 1.2em;
+	}
+
+	.ipsAnnouncement__link:hover{
+		background: hsl(0 0% 100% / .12);
+	}
+
+	.ipsAnnouncement__icon{
+		margin-inline-end: .8em;
+		opacity: .6;
+	}
+
+/* Top announcements are 100% width, so we use .ipsWidth to neatly align the content */
+.ipsAnnouncements--top .ipsWidth{
+	flex: 1 1 100%;
+	display: flex;
+	max-width: var(--i-layout-width);
+}
+
+/* Dismiss */
+.ipsAnnouncement [data-role="dismissAnnouncement"] {
+	flex: 0 0 auto;
+	padding: 0 1.2em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+	.ipsAnnouncement [data-role="dismissAnnouncement"]:hover{
+		background: hsl(0 0% 100% / .12);
+	}
+
+/* Modifiers */
+.ipsMessage--error,
+.ipsAnnouncement--error{
+	--_ba-co: hsl(0 61% 48%);
+	--_icon: "\f071";
+}
+
+.ipsMessage--warning,
+.ipsAnnouncement--warning{
+	--_ba-co: hsl(20 61% 45%);
+	--_icon: "\f071";
+}
+
+.ipsMessage--success,
+.ipsAnnouncement--success{
+	--_ba-co: hsl(150 82% 29%);
+	--_icon: "\f058";
+	--_icon--fo-we: 400;
+}
+
+.ipsMessage--info,
+.ipsMessage--general,
+.ipsAnnouncement--info,
+.ipsAnnouncement--general{
+	--_ba-co: var(--i-background_dark);
+	--_icon: "\f05a";
+}
+
+.ipsMessage--neutral,
+.ipsMessage--none,
+.ipsAnnouncement--none{
+	--_ba-co: var(--i-background_1);
+	--i-co: var(--i-color_root);
+}
+
+/* Add a box-shadow to .ipsMessage--none, since this message basically looks like .ipsBox */
+.ipsMessage--none{
+	background-color: var(--i-box--ba-co);
+	border-radius: var(--i-box--bo-ra);
+	box-shadow: var(--i-box--bo-sh);
+	border-width: var(--i-box--bo-wi);
+	border-style: var(--i-box--bo-st);
+	border-color: var(--i-box--bo-co);
+}
+
+.ipsMessage--transparent{
+	background: none;
+	/* border: 1px solid var(--i-background_3);
+	border-color: color-mix(in srgb, var(--i-co) 15%, transparent);
+	border-width: 1px 0; */
+	border-radius: 0;
+	--i-co: var(--i-color_root);
+}
+
+/* Styles code displayed in some messages */
+.ipsMessage_code {
+	padding: .5em .7em;
+	display: inline-block;
+	background: hsl(0 0% 0% / .2);
+	border-radius: 6px;
+	color: hsl(0 0% 100% / .8);
+}
+
+/* Push notifications message */
+.ipsPushNotificationsPrompt{
+	display: block;
+}
+
+.ipsPushNotificationsPrompt__button{
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: .5em 1em;
+	font-weight: 500;
+	color: var(--i-color_soft);
+	background: color-mix(in hsl, currentColor 10%, transparent);
+	padding: .8em 1em;
+	border-radius: min(var(--i-design-radius, 5px));
+}
+
+.ipsPushNotificationsPrompt__button:hover{
+	background: color-mix(in hsl, currentColor 18%, transparent);
+}
+
+[data-permission="granted"] .ipsPushNotificationsPrompt__button{
+	color: var(--i-color_positive);
+}

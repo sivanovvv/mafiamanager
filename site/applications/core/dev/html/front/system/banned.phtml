@@ -1,0 +1,13 @@
+<ips:template parameters="$message, $warnings, $banEnd" />
+<section class='i-text-align_center i-padding_3 ipsBox'>
+	<i class='ipsLargeIcon fa-solid fa-lock' aria-hidden="true"></i>
+	<h1 class='ipsTitle ipsTitle--h2'>{{if $banEnd instanceof \IPS\DateTime}}{lang="suspended"}{{else}}{lang="banned"}{{endif}}</h1>
+	<p class='i-font-size_2'>
+		{lang="$message"}
+	</p>
+</section>
+
+{{if $warnings}}
+	<h2 class='ipsBox__header'>{lang="warnings"}</h2>
+	{$warnings|raw}
+{{endif}}

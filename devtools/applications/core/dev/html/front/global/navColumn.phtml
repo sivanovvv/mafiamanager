@@ -1,0 +1,12 @@
+<ips:template parameters="$preview=FALSE" />
+<ul class='ipsNavPanel__nav' data-ips-hook="navigationColumn">
+	{{if ( \IPS\Settings::i()->site_online || \IPS\Member::loggedIn()->group['g_access_offline'] ) }}
+		<li>
+			{{/*}}<!-- This div is needed to ensure the search button doesn't inherit any of the "li > button" styles -->{{*/}}
+			<div>
+				<button class='ipsNavPanel__search' command="show-modal" commandfor="ipsSearchDialog" type="button"><span class="ipsNavPanel__icon" aria-hidden="true"><i class="fa-ips fa-ips--nav-panel"></i></span>{lang="search"}</button>
+			</div>
+		</li>
+	{{endif}}
+	{template="navColumnItems" app="core" group="global" location="front" params="\IPS\core\FrontNavigation::i()->roots( $preview ), \IPS\core\FrontNavigation::i()->subBars( $preview ), 0, $preview"}
+</ul>

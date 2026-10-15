@@ -1,0 +1,85 @@
+<ips:template parameters="$member, $messengerCount, $messengerPercent, $attachmentStorage, $attachmentPercent, $viewAttachmentsLink" />
+{{if $member->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging', 'front' ) ) or $attachmentStorage !== NULL}}
+	{{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging', 'front' ) )}}
+	<div class='ipsAcpProfile__half acpMemberView_quota ipsBox' data-ips-template="quotas">
+		<h2 class='ipsBox__header'>
+			<i class="fa-solid fa-envelope ipsBox__header-icon" aria-hidden="true"></i>
+			{lang="messenger_quota_header"}
+			{{if $member->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging', 'front' ) ) and member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( !$member->isAdmin() or member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) )}}
+				{{if $messengerCount === NULL}}
+					<a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\Quotas&id={$member->member_id}&enable=1" csrf="true"}" class="ipsBox__header-secondary" data-confirm>
+						{lang="admin_enable_messenger"}
+					</a>
+				{{else}}
+					<a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\Quotas&id={$member->member_id}" csrf="true"}" class="ipsBox__header-secondary" data-confirm data-confirmType="verify" data-confirmIcon="question" data-confirmMessage="{lang="admin_disable_messenger"}" data-confirmSubMessage="{lang="admin_disable_messenger_confirm"}" data-confirmButtons='{expression="json_encode( array( 'yes' => \IPS\Member::loggedIn()->language()->addToStack('no'), 'no' => \IPS\Member::loggedIn()->language()->addToStack('yes'), 'cancel' => \IPS\Member::loggedIn()->language()->addToStack('cancel') ) )" raw="true"}'>
+						{lang="admin_disable_messenger"}
+					</a>
+				{{endif}}
+			{{endif}}
+		</h2>
+		<div class='i-padding_3'>
+			{{if $messengerCount !== NULL}}
+				{{if $messengerPercent !== NULL}}
+					<meter class='ipsMeter i-margin-bottom_1' max='100' high='90' value='{{if $messengerPercent > 100}}100{{else}}{$messengerPercent}{{endif}}'></meter>
+				{{endif}}
+				
+				<div class="i-flex i-margin-top_1">
+					<div class="i-flex_11">
+						<span class='acpMemberView_quotaNumber i-font-size_2'>{number="$messengerCount"}</span><br>
+						{{if $member->group['g_max_messages'] > 0}}
+							<span class='i-font-size_1 i-color_soft'>{lang="quota_allowance" sprintf="\IPS\Member::loggedIn()->language()->formatNumber( $member->group['g_max_messages'] )"}</span>
+						{{else}}
+							<span class='i-font-size_1 i-color_soft'>{lang="quota_allowance_unlimited"}</span>
+						{{endif}}
+					</div>
+					{{if $messengerPercent !== NULL}}
+						<span class='acpMemberView_percentage i-opacity_4 i-color_soft'>{number="$messengerPercent"}%</span>
+					{{endif}}
+				</div>
+
+			{{else}}
+				<div class="i-font-size_1 i-color_soft">
+					{{if $member->members_disable_pm == 1}}
+						{lang="messenger_quota_disabled_self"}
+					{{elseif $member->members_disable_pm == 2}}
+						{lang="messenger_quota_disabled_admin"}
+					{{else}}
+						{lang="messenger_quota_disabled_group"}
+					{{endif}}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+	{{endif}}
+	<div class='ipsAcpProfile__half acpMemberView_quota ipsBox' data-ips-template="quotas">
+		<h2 class='ipsBox__header'>
+			<i class="fa-solid fa-paperclip ipsBox__header-icon" aria-hidden="true"></i>
+			{lang="my_attachment_quota"}
+			{{if $viewAttachmentsLink}}
+				<a href="{$viewAttachmentsLink}" class="ipsBox__header-secondary">{lang="view_attachments"}</a>
+			{{endif}}
+		</h2>
+		<div class='i-padding_3'>
+			{{if $attachmentStorage !== NULL}}
+				{{if $attachmentPercent !== NULL}}
+					<meter class='ipsMeter i-margin-bottom_1' max='100' high='90' value='{{if $attachmentPercent > 100}}100{{else}}{$attachmentPercent}{{endif}}'></meter>
+				{{endif}}
+				<div class="i-flex i-margin-top_1">
+					<div class="i-flex_11">
+						<span class='acpMemberView_quotaNumber i-font-size_2'>{filesize="$attachmentStorage"}</span><br>
+						{{if $member->group['g_attach_max'] > 0}}
+							<span class='i-font-size_1 i-color_soft'>{lang="quota_allowance" sprintf="\IPS\Output\Plugin\Filesize::humanReadableFilesize( $member->group['g_attach_max'] * 1024 )"}</span>
+						{{else}}
+							<span class='i-font-size_1 i-color_soft'>{lang="quota_allowance_unlimited"}</span>
+						{{endif}}
+					</div>
+					{{if $attachmentPercent !== NULL}}
+						<span class='acpMemberView_percentage i-opacity_4 i-color_soft'>{number="$attachmentPercent"}%</span>
+					{{endif}}
+				</div>
+			{{else}}
+				<div class="i-font-size_1 i-color_soft">{lang="quota_allowance_disabled"}</div>
+			{{endif}}
+		</div>
+	</div>
+{{endif}}

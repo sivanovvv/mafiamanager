@@ -1,0 +1,23 @@
+<ips:template parameters="$tag" />
+<div class="ipsPageHeader__row">
+	<div class="ipsPageHeader__primary">
+		<div class="i-flex i-flex-wrap_wrap i-gap_2 i-align-items_center">
+			<div class='ipsPageHeader__title'>
+				<h2 class="i-flex i-flex-wrap_wrap i-gap_3 i-row-gap_0 ipsPageHeader__tagHeader">
+					{{if $tag->_title}}
+						<span class="ipsPageHeader__tagTitle">{$tag->_title}</span>
+						<span class="ipsPageHeader__tagHash i-color_soft">#{$tag->text}</span>
+					{{else}}
+						<span class="ipsPageHeader__tagHash"><span class="i-color_soft">#</span> {$tag->text}</span>
+					{{endif}}
+				</h2>
+			</div>
+			<div class="i-flex_00 i-margin-start_auto">
+				{template="follow" app="core" group="global" params="'core','tag', $tag->id, $tag->followersCount()"}
+			</div>
+		</div>
+		{{if $tag->description}}
+			<div class="ipsPageHeader__desc i-margin-top_2">{$tag->description}</div>
+		{{endif}}
+	</div>
+</div>

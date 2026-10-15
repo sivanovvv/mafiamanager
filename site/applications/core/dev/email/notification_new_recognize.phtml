@@ -1,0 +1,24 @@
+<ips:template parameters="$member, $recognize, $email" />
+{$email->language->addToStack( 'notification_new_recognized_mail', FALSE, [ 'sprintf' => [ $recognize->content()->url() ] ] )}
+{{if $recognize->message}}
+    <p style='padding: 15px 0px'>
+        <strong><em>{$recognize->message}</em></strong>
+        {{if $awardedBy = $recognize->awardedBy()}}
+            <br>- <a href="{$awardedBy->url()}">{$awardedBy->name}</a>
+        {{endif}}
+    </p>
+{{endif}}
+{{if $recognize->points}}
+    <p>{$email->language->addToStack("recognize_points_awarded", NULL, [ 'sprintf' => [ $recognize->points ] ] )}</p>
+{{endif}}
+{{if $badge = $recognize->badge()}}
+    {$email->language->addToStack("recognize_badge_awarded", NULL, [ 'sprintf' => [ $badge->_title ] ] )}
+    <br><br>
+    {$email->language->addToStack("notification_email_check_it_out")}
+    <br><br>
+    <strong>{$badge->_title}</strong>
+    <br><br>
+    <img src='{{if $badge->badge_use_image}}{file="$badge->image" extension="core_Badges"}{{else}}{$badge->_icon}{{endif}}' alt="">
+{{endif}}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

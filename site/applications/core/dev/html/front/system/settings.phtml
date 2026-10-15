@@ -1,0 +1,37 @@
+<ips:template parameters="$activeTab, $output, $tabs" />
+{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack('settings'), \IPS\Member::loggedIn()->language()->addToStack('settings_blurb')"}
+<div id='elSettingsTabs' data-ipsTabBar data-ipsTabBar-contentArea='#elSettingsTabContent' data-ipsTabBar-itemSelector='[data-ipsSideMenu] .ipsSideMenu_item' data-ipsTabBar-activeClass='ipsSideMenu_itemActive'>
+	<div class='ipsColumns ipsColumns--stack ipsBox ipsColumns--lines ipsPull'>
+		<div class='ipsColumns__secondary i-basis_320 i-padding_2'>			
+			<div class='ipsSideMenu' data-ipsSideMenu>
+				<h3 class="ipsSideMenu__view">
+					<a href="#modcp_menu" data-action="openSideMenu">
+						<i class="fa-solid fa-bars" aria-hidden="true"></i><span>{lang="settings_area"}</span>
+					</a>
+				</h3>
+				<div class="ipsSideMenu__menu">
+					<ul class="ipsSideMenu__list">
+						{{foreach $tabs as $key => $tab}}
+						<li>
+							<a href="{{if isset( $tab['url'] )}}{$tab['url']}{{else}}{url="app=core&module=system&controller=settings&area={$key}" seoTemplate="settings_custom"}{{endif}}" id='settings_{$key}' class='ipsSideMenu_item {{if $activeTab === $key}}ipsSideMenu_itemActive{{endif}}' title='{{if isset( $tab['title'] )}}{lang="$tab['title']"}{{else}}{lang="$key"}{{endif}}' role="tab" aria-selected="{{if $activeTab === $key}}true{{else}}false{{endif}}">
+								{{if isset( $tab['image'] )}}<div class="cLoginServiceIcon">{{if $tab['image']}}<img src="{$tab['image']}" alt="" loading="lazy">{{endif}}</div>{{elseif isset($tab['icon'])}}<i class="fa-solid fa-{$tab['icon']}" aria-hidden="true"></i>{{else}}<i class="fa-solid fa-square" aria-hidden="true"></i>{{endif}}
+								<span>{{if isset( $tab['title'] )}}{lang="$tab['title']"}{{else}}{lang="$key"}{{endif}}</span>
+								{{if isset( $tab['warning'] ) AND $tab['warning']}}
+									<span class="ipsSideMenu_itemCount"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>
+								{{endif}}
+							</a>
+						</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class='ipsColumns__primary'>
+			<section id='elSettingsTabContent'>
+				<div id="ipsTabs_elSettingsTabs_setting_{$activeTab}_panel" class="ipsTabs__panel" aria-labelledby="setting_overview" aria-hidden="false">
+					{$output|raw}
+				</div>
+			</section>
+		</div>
+	</div>
+</div>

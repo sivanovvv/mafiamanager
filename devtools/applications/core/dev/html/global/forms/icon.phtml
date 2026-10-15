@@ -1,0 +1,24 @@
+<ips:template parameters="$name, $value, $required, $maxIcons=null, $disabled=FALSE, $htmlId=NULL, $allowedTypes=['fa', 'emoji'], $svgIcons=false" />
+<div
+    id="elInput_{{if ! empty($htmlId)}}{$htmlId}{{else}}{$name}{{endif}}"
+    class="ipsInputIcon"
+    data-controller="core.global.editor.icon"
+    data-allowed-icon-types="{expression='implode(",", $allowedTypes)'}"
+    {{if $disabled}}data-input-disabled{{endif}}
+    {{if is_int( $maxIcons )}}data-max-icons="{$maxIcons}"{{endif}}
+    {{if $svgIcons}}data-svg-icons{{endif}}
+>
+    <input
+            class="ipsHide"
+            type="text"
+            name="{$name}"
+            value="{expression='json_encode($value ?: [])'}"
+            data-ips-icon-picker-input
+            {{if $required === TRUE}}aria-required='true'{{endif}}
+            {{if $disabled}}disabled aria-disabled='true'{{endif}}
+    />
+
+    <button data-role="launcher" class="ipsButton ipsButton--primary" type="button">{{if $maxIcons === null or $maxIcons > 1}}{lang="form_icon_choose_icons"}{{else}}{lang="form_icon_choose_icon"}{{endif}}</button>
+    <button data-role="clear" class="ipsButton ipsButton--negative {{if !empty( $value )}}ipsHide{{endif}}" type="button">{lang="form_icon_clear_icon"}</button>
+    <ul data-role="selectedicons" class="ipsIconPicker__selectedIcons"></ul>
+</div>

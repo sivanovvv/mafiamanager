@@ -1,0 +1,115 @@
+#acpLiveSearchResults {
+	--_offset: 10px;
+	width: min(100vw - 10px - var(--_offset), 750px);
+	top: 70px;
+	inset-inline-start: var(--_offset);
+	position: fixed;
+	background: var(--i-background_1);
+	border-radius: 5px;
+	box-shadow: 0px 10px 40px rgba(0,0,0,0.2);
+}
+
+/* Reposition dropdown on larger screens */
+@media (min-width: 980px){
+	#acpLiveSearchResults {
+		--_offset: 280px;
+	}
+}
+@media (min-width: 1900px){
+	#acpLiveSearchResults {
+		--_offset: 530px;
+	}
+}
+
+	.cAcpSearch_areas,
+	.cAcpSearch_results {
+		padding: 6px;
+	}
+
+		.cAcpSearch_areas a{
+			border-radius: 4px;
+		}
+
+		.cAcpSearch_results [data-role="result"]:not([class]) a,
+		.cAcpSearch_results [data-role="result"][class=""] a{
+			display: block;
+			padding: .7em 1em;
+			border-radius: 5px;
+			color: var(--i-color_hard);
+		}
+
+			.cAcpSearch_results [data-role="result"]:not([class]) a:hover,
+			.cAcpSearch_results [data-role="result"][class=""] a:hover{
+				background: var(--i-background_2);
+			}
+
+	#acpLiveSearchResults [data-role="searchMenu"] {
+		background: var(--i-background_2);
+		border-inline-end: 1px solid var(--i-background_4);
+		border-start-start-radius: 5px;
+		border-end-start-radius: 5px;
+	}
+
+#acpLiveSearchResults::before {
+	content: '';
+	display: block;
+	border-width: 7px;
+	border-style: solid;
+	border-color: transparent;
+	border-bottom-color: var(--i-background_2);
+	position: absolute;
+	top: -14px;
+	inset-inline-start: 23px;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+}
+
+#acpLiveSearchResults [data-resultsSection],
+#acpLiveSearchResults [data-role="searchResults"] {
+	overflow: auto;
+	height: 100%;
+}
+
+#acpLiveSearchResults .ipsPadding_top {
+	padding-top: 2px;
+}
+
+.cAcpSearch_areas .ipsSideMenu_item:not(.ipsSideMenu_itemActive) .ipsSideMenu_itemCount{
+	background: var(--i-background_4);
+	color: inherit;
+}
+
+/* Hide "No results" message when results are visible */
+.cAcpSearch_results [data-resultssection]:not([style*="none"]) ~ .cAcpSearch_none{
+	display: none;
+}
+
+@media (max-width: 519px){
+	.cAcpSearch{
+		max-height: calc(100vh - 80px);
+		max-height: calc(100svh - 80px);
+		overflow: auto;
+	}
+	/* Inlined categories */
+	.cAcpSearch_areas .ipsSideMenu_list{
+		display: flex;
+		flex-wrap: wrap;
+	}
+	/* Hide inactive categories */
+	.cAcpSearch_areas .ipsSideMenu_itemDisabled{
+		display: none;
+	}
+}
+
+@media (min-width: 520px){
+	.cAcpSearch{
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		max-height: 600px;
+		height: 80vh;
+	}
+	.cAcpSearch > *{
+		overflow: auto;
+	}
+}

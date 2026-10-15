@@ -1,0 +1,45 @@
+<ips:template parameters="$member, $secondaryGroups" />
+<div class='acpMemberView_groups ipsBox' data-ips-template="groups">
+	<h2 class='ipsBox__header'>
+		<i class="fa-solid fa-users ipsBox__header-icon" aria-hidden="true"></i>
+		{lang="groups"}
+		{{if member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( !$member->isAdmin() or ( member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) and  member.hasAcpRestriction( 'core', 'members', 'member_move_admin1' ) ) )}}
+			<a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\Groups&id={$member->member_id}"}" class="ipsBox__header-secondary" data-ipsDialog data-ipsDialog-title="{lang="groups"}">{lang="edit"}</a>
+		{{endif}}
+	</h2>
+	<div class='ipsBox__content'>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--acpProfileGroups">
+				<li class="ipsData__item">
+					<div class="ipsData__main">
+						<h3 class='ipsData__title'>{lang="primary_group"}</h3>
+						<p class="ipsData__desc">
+							<a href="{url="app=core&module=members&controller=members&advanced_search_submitted=1&members_member_group_id={$member->group['g_id']}&noColumn=1" csrf="true"}">
+								{$member->groupName|raw}
+							</a>
+						</p>
+					</div>
+					{{if $member->group['g_icon'] }}
+						<div class="i-basis_120">
+							<img src='{file="$member->group['g_icon']" extension="core_Theme"}' alt='' loading="lazy"  {{if $width = $member->group['g_icon_width']}}width="{$width}"{{endif}}>
+						</div>
+					{{endif}}
+				</li>
+				{{if $secondaryGroups}}
+					<li class="ipsData__item">
+						<div class="ipsData__main">
+							<h3 class='ipsData__title'>{lang="secondary_groups"}</h3>
+							<ul class="ipsData__desc">
+								{{foreach $secondaryGroups as $group}}
+									<li>
+										<a href="{url="app=core&module=members&controller=members&advanced_search_submitted=1&members_member_group_id={$group->g_id}&noColumn=1" csrf="true"}" class="i-font-size_1 i-link-color_inherit">{$group->formattedName|raw}</a>
+									</li>
+								{{endforeach}}
+							</ul>
+						</div>
+					</li>
+				{{endif}}
+			</ul>
+		</i-data>
+	</div>
+</div>

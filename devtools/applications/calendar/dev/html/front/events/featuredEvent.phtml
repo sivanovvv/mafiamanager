@@ -1,0 +1,117 @@
+<ips:template parameters="$event, $idx = 0" />
+
+{{$image = FALSE;}}
+{{$coverPhoto = $event->coverPhoto();}}
+{{if $coverPhoto->file}}
+	{{$image = $coverPhoto->file;}}
+{{elseif $event->container()->club() !== NULL && $event->container()->club()->cover_photo}}
+	{{$image = \IPS\File::get('core_Clubs', $event->container()->club()->cover_photo );}}
+{{else}}
+    {{$image = $event->primaryImage();}}
+{{endif}}
+
+<li class="ipsData__item {$event->ui('css')}" {$event->ui('dataAttributes')}>
+	<a href="{$event->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$event->title}</span></a>
+	<div class="ipsData__image" aria-hidden="true" data-ips-hook='image'>
+		{{if $image}}
+			<img src='{$image->url}' alt='{$event->title}' loading="lazy">
+		{{else}}
+			<i aria-hidden="true"></i>
+		{{endif}}
+	</div>
+	<div class="ipsData__content">
+		<div class='ipsData__main' data-ips-hook='main'>
+			<div class='ipsCalendarDate' data-ips-hook='date'>
+				{{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+					<span class='ipsCalendarDate__month'>{lang="_date_month_short" pluralize="$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format( 'n' )"}</span>
+					<span class='ipsCalendarDate__date'>{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format( 'd' )}</span>
+				{{else}}
+					<span class='ipsCalendarDate__month'>{lang="_date_month_short" pluralize="$event->lastOccurrence( 'startDate' )->format( 'n' )"}</span>
+					<span class='ipsCalendarDate__date'>{$event->lastOccurrence( 'startDate' )->format('d')}</span>
+				{{endif}}
+			</div>
+			{{if $event->_happening}}
+				<div class='ipsBadge'>{$event->_happening}</div>
+			{{endif}}
+			<h3 class='ipsData__title' data-ips-hook='title'>
+				<a href="{$event->url()}">{$event->title}</a>
+			</h3>
+			<p class='i-font-weight_500 i-font-size_-2 i-text-transform_uppercase' data-ips-hook='metadata'>
+				<time datetime='{expression="$event->_start_date->format( 'Y-m-d' )"}'>
+					{{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+						<span data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+							{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->calendarDate()}{{if !$event->all_day}}, {{endif}}
+						</span>
+						{{if !$event->all_day}}
+							<span data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+								{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->localeTime( FALSE )}
+							</span>
+						{{endif}}
+						{{else}}
+							<span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+								{$event->lastOccurrence( 'startDate' )->calendarDate()}{{if !$event->all_day}}, {{endif}}
+							</span>
+							{{if !$event->all_day}}
+							<span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+								{$event->lastOccurrence( 'startDate' )->localeTime( FALSE )}
+							</span>
+						{{endif}}
+					{{endif}}
+				</time>
+	
+				{{if $event->_end_date}}
+					&nbsp;-&nbsp;
+					<time datetime='{expression="$event->_end_date->format( 'Y-m-d' )"}'>
+						{{$sameDay = FALSE;}}
+						{{if $event->_end_date}}
+							{{$sameDay = !( ($event->_start_date->mday != $event->_end_date->mday) or ($event->_start_date->mon != $event->_end_date->mon) or ($event->_start_date->year != $event->_end_date->year) );}}
+						{{endif}}
+						{{if $endDate = $event->nextOccurrence( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: \IPS\calendar\Date::getDate(), 'endDate' )}}
+						{{if !$sameDay}}
+							<span data-controller="core.global.core.datetime" data-time="{$endDate->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+								{$endDate->calendarDate()}{{if !$event->all_day}}, {{endif}}
+							</span>
+						{{endif}}
+							{{if !$event->all_day}}
+								<span data-controller="core.global.core.datetime" data-time="{$endDate->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+									{$endDate->localeTime( FALSE )}
+								</span>
+							{{endif}}
+						{{else}}
+							<span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'endDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+								{$event->lastOccurrence( 'endDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'endDate' )->localeTime( FALSE )}{{endif}}
+							</span>
+						{{endif}}
+					</time>
+				{{endif}}
+			</p>
+			<p class='ipsData__desc'>{$event->truncated(TRUE, 400)}</p>
+		</div>
+		{{if ($event->club_associations && \count( $event->getAssociatedClubs() )) || $event->venue || $event->location}}
+			<ul class='ipsList ipsList--icons ipsList--inline i-margin-top_2' data-ips-hook='details'>
+				{{if $event->club_associations && \count( $event->getAssociatedClubs() )}}
+					{{$clubNames = [];}}
+					{{foreach $event->getAssociatedClubs() as $club}}
+						{{$clubNames[] = $club->name;}}
+					{{endforeach}}
+					{{shuffle( $clubNames );}}
+					<li>
+						<i class='fa-solid fa-earth-americas' aria-hidden="true"></i> {expression="implode(', ', $clubNames )"}
+					</li>
+				{{elseif $event->container()->club() !== NULL}}
+					<li>
+						<i class='fa-solid fa-earth-americas' aria-hidden="true"></i> {$event->container()->club()->name}
+					</li>
+				{{endif}}
+				{{if $event->venue || $event->location}}
+					{{if $event->venue}}
+						<li><i class='fa-solid fa-location-dot' aria-hidden="true"></i> {lang="calendar_venue_{$event->venue()->id}" escape="true"}</li>
+					{{elseif $event->location}}
+						{{$location = \IPS\GeoLocation::buildFromjson( $event->location );}}
+						<li><i class='fa-solid fa-location-dot' aria-hidden="true"></i> {$location->toString()}</li>
+					{{endif}}
+				{{endif}}
+			</ul>
+		{{endif}}
+	</div>
+</li>

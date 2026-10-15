@@ -1,0 +1,43 @@
+<ips:template parameters="$package, $hasCustomFields=FALSE" />
+
+<li class='ipsData__item {$package->ui( 'css' )}' {$package->ui( 'dataAttributes' )}>
+	<a href='{$package->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$package->_title}</span></a>
+	<a href='{$package->url()}' class='ipsData__image cNexusProduct_image' aria-hidden="true" tabindex="-1">
+		{{if $package->image}}
+			<img src="{$package->image}" alt="{$package->_title}" loading="lazy">
+		{{else}}
+			<span class='ipsIcon ipsIcon--fa' aria-hidden="true"><i class="fa-solid fa-box-open" aria-hidden="true"></i></span>
+		{{endif}}
+	</a>
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			<div class='ipsData__title'>
+				<h2><a href="{$package->url()}">{$package->_title}</a></h2>
+				{{if $package->featured}}<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="featured"}'><i class='fa-solid fa-star' aria-hidden="true"></i></span>{{endif}}
+			</div>
+			{template="packageBlockPrice" app="nexus" group="store" params="$package->fullPriceInfo()"}
+			<div class="ipsData__desc">{$package->description}</div>
+			{{if $package->reviewable}}
+				<div class='i-margin-top_2'>
+					{template="rating" group="global" app="core" params="'large', $package->item()->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $package->item()->memberReviewRating()"} <span class='i-color_soft'>({lang="num_reviews" pluralize="$package->item()->reviews"})</span>
+				</div>
+			{{endif}}
+		</div>
+		<div class="i-flex_00">
+			{{if $package->stock === 0}}
+				<span class='ipsButton ipsButton--primary' aria-disabled="true">{lang="out_of_stock"}</span>
+			{{else}}
+				<a href='{$package->url()->setQueryString( 'purchase', 1 )}' class='ipsButton ipsButton--primary' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title='{lang="store_quick_view"}' data-ipsDialog-forceReload data-ipsDialog-destructOnClose='true'>
+					<i class='fa-solid fa-cart-shopping' aria-hidden="true"></i>
+					<span>
+						{{if $hasCustomFields}}
+							{lang="add_and_choose_options"}
+						{{else}}
+							{lang="add_to_cart"}
+						{{endif}}
+					</span>
+				</a>
+			{{endif}}
+		</div>
+	</div>
+</li>

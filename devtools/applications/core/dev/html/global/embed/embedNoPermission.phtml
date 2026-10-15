@@ -1,0 +1,14 @@
+<ips:template parameters="" />
+
+<div class='ipsRichEmbed ipsRichEmbed--no-permission'>
+	<div class='i-text-align_center i-color_soft i-padding_3'>
+		<i class='fa-regular fa-face-frown i-font-size_6 i-color_soft' aria-hidden="true"></i>
+		<p class='i-padding_3'>
+			{{if \IPS\Member::loggedIn()->member_id}}
+				{lang="embed_no_perm_desc"}
+			{{else}}
+				{lang="embed_no_perm_desc_log_in"}
+			{{endif}}
+		</p>
+	</div>
+</div>

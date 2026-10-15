@@ -1,0 +1,28 @@
+<ips:template parameters="$app, $area, $id, $count" />
+{{if member.member_id}}
+	{{if member.following( $app, $area, $id )}}
+		<div data-ips-hook="following" class="ipsButton ipsButton--follow ipsButton--follow-active" data-role="followButton" data-following="true">
+			<a href="{url="app=core&module=system&controller=notifications&do=follow&follow_app={$app}&follow_area={$area}&follow_id={$id}"}" rel="nofollow" title="{lang="following_this_content"}" data-ipsTooltip data-ipsHover data-ipsHover-cache='false' data-ipsHover-onClick><i class="fa-solid fa-bell" aria-hidden="true"></i><span class="ipsButton__label">{lang="following_this"}</span><i class='ipsMenuCaret' aria-hidden="true"></i></a>
+			{{if \IPS\Member::loggedIn()->group['g_view_followers']}}
+			<a class='ipsButton__segment' href='{url="app=core&module=system&controller=notifications&do=followers&follow_app={$app}&follow_area={$area}&follow_id={$id}"}' rel="nofollow" title='{lang="followers_tooltip"}' data-ipsTooltip data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="who_follows_this"}'>{number="$count" format="short"}</a>
+			{{endif}}
+		</div>
+	{{else}}	
+		<div data-ips-hook="notfollowing" class="ipsButton ipsButton--follow" data-role="followButton" data-following="false">
+			<a href="{url="app=core&module=system&controller=notifications&do=follow&follow_app={$app}&follow_area={$area}&follow_id={$id}"}" rel="nofollow" title="{lang="follow_this_content"}" data-ipsTooltip data-ipsHover data-ipsHover-cache='false' data-ipsHover-onClick><i class="fa-regular fa-bell" aria-hidden="true"></i><span class="ipsButton__label">{lang="follow"}</span><i class='ipsMenuCaret' aria-hidden="true"></i></a>
+			{{if $count > 0 and \IPS\Member::loggedIn()->group['g_view_followers']}}
+				<a class='ipsButton__segment' href='{url="app=core&module=system&controller=notifications&do=followers&follow_app={$app}&follow_area={$area}&follow_id={$id}"}' rel="nofollow" title='{lang="followers_tooltip"}' data-ipsTooltip data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="who_follows_this"}'>{number="$count" format="short"}</a>
+			{{endif}}
+		</div>
+	{{endif}}
+{{else}}
+	<a data-ips-hook="guest" href='{url="app=core&module=system&controller=login" seoTemplate="login"}' rel="nofollow" class="ipsButton ipsButton--follow" data-role="followButton" data-ipsTooltip title='{lang="follow_sign_in"}'>
+		<span>
+			<i class="fa-regular fa-bell" aria-hidden="true"></i>
+			<span class="ipsButton__label">{lang="followers"}</span>
+		</span>
+		{{if $count > 0 and \IPS\Member::loggedIn()->group['g_view_followers']}}
+			<span class='ipsButton__segment'>{number="$count" format="short"}</span>
+		{{endif}}
+	</a>
+{{endif}}

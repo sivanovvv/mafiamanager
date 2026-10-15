@@ -1,0 +1,77 @@
+<ips:template parameters="$clubs, $myClubsActivity=NULL, $myClubsInvites=NULL" />
+
+{{if member.member_id and member.group['g_create_clubs']}}
+	<div><a class="ipsButton ipsButton--large ipsButton--primary i-width_100p" href="{url="app=core&module=clubs&controller=directory&do=create" seoTemplate="clubs_list"}" data-ipsDialog data-ipsDialog-title="{lang="create_club"}"><i class="fa-solid fa-users" aria-hidden="true"></i><span>{lang="create_club"}</span></a></div>
+{{endif}}
+
+{{if \count( $myClubsInvites )}}
+	<div id='elMyClubsInvites' class="ipsWidget ipsWidget--vertical">
+		<h2 class="ipsWidget__header">{lang="my_clubs_invites"}</h2>
+		<section class="ipsWidget__content">
+			<i-data>
+				<ul class='ipsData ipsData--table ipsData--my-clubs-sidebar'>
+					{{foreach $myClubsInvites as $club}}
+					<li class='ipsData__item'>
+						<div class='ipsData__icon'>{template="clubIcon" group="clubs" app="core" params="$club, 'fluid'"}</div>
+						<div class='ipsData__main'>
+							<h3 class='ipsData__title'><a href='{$club->url()}'>{$club->name}</a></h3>
+							<div class='ipsData__meta'>
+								<ul class='ipsList ipsList--sep'>
+									<li>{lang="club_{$club->type}"}</li>
+									{{if $club->type !== $club::TYPE_PUBLIC}}
+										<li>{lang="club_members_count" pluralize="$club->members"}</li>
+									{{endif}}
+								</ul>
+							</div>
+						</div>
+						<div class="ipsButtons i-gap_1">
+							<a class="ipsButton ipsButton--inherit ipsButton--small i-color_negative" data-ipstooltip title='{{if $club->status !== $club::STATUS_REQUESTED}}{lang="club_decline_invite"}{{else}}{lang="club_cancel_request"}{{endif}}' href="{$club->url()->setQueryString('do', 'leave')->csrf()}" data-confirm>
+								<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+							</a>
+							{{if $club->status !== $club::STATUS_REQUESTED}}
+								<a class="ipsButton ipsButton--positive ipsButton--small" data-ipstooltip title='{lang="club_join"}' href="{$club->url()->setQueryString('do', 'join')->csrf()}" {{if $club->isPaid() and $club->status !== $club::STATUS_INVITED_BYPASSING_PAYMENT}}data-confirm data-confirmIcon="info" data-confirmMessage="{lang="club_membership_item"}" data-confirmSubmessage="{$club->memberFeeMessage()}"{{endif}}>
+									<i class="fa-solid fa-check" aria-hidden="true"></i>
+								</a>
+							{{endif}}
+						</div>
+					</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		</section>
+	</div>
+{{endif}}
+
+<div id='elMyClubs' class="ipsWidget ipsWidget--vertical">
+	<h2 class="ipsWidget__header">{lang="my_clubs"}</h2>
+	{{if \count( $clubs )}}
+		{template="clubs" group="widgets" params="$clubs"}
+	{{else}}
+		<section class="ipsWidget__content ipsWidget__padding">
+			<p class='i-color_soft i-font-weight_500 i-text-align_center'>
+				{lang="my_clubs_empty"}
+			</p>
+		</section>
+	{{endif}}
+</div>
+
+<div id='elMyClubsActivity' class="ipsWidget ipsWidget--vertical">
+	<h2 class="ipsWidget__header">{lang="clubs_recent_activity"}</h2>
+	{{if !\count( $myClubsActivity )}}
+		<div class='ipsWidget__content ipsWidget__padding'>
+			<p class='i-color_soft i-font-weight_500 i-text-align_center'>
+				{lang="clubs_no_recent_activity"}
+			</p>
+		</div>
+	{{else}}
+		<div class='ipsWidget__content'>
+			<ol class="ipsStream">
+				{{foreach $myClubsActivity as $result}}
+					{{if $result !== NULL}}
+						{$result->html()|raw}
+					{{endif}}
+				{{endforeach}}
+			</ol>
+		</div>
+	{{endif}}
+</div>

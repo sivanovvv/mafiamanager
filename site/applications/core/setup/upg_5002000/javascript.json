@@ -1,0 +1,29 @@
+{
+    "files": {
+        "added": [
+            "core\/front\/controllers\/submit\/ips.submit.titleSuggest.js"
+        ],
+        "edited": [
+            "global\/framework\/common\/components\/card.js",
+            "global\/framework\/common\/components\/dropdown.js",
+            "global\/framework\/common\/components\/themeEditor.js",
+            "global\/framework\/common\/ui\/ips.ui.dialog.js",
+            "global\/framework\/common\/ui\/ips.ui.infiniteScroll.js",
+            "global\/framework\/common\/ui\/ips.ui.map.js",
+            "global\/front\/controllers\/core\/ips.core.comment.js",
+            "core\/front\/controllers\/core\/ips.core.followForm.js",
+            "core\/admin\/controllers\/customization\/ips.customization.media.js",
+            "global\/framework\/controllers\/editor\/ips.editor.censorBlock.js",
+            "core\/front\/controllers\/messages\/ips.messages.list.js",
+            "core\/front\/controllers\/messages\/ips.messages.main.js",
+            "core\/front\/controllers\/search\/ips.search.main.js",
+            "global\/admin\/mixins\/ips.core.table.js"
+        ],
+        "removed": []
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

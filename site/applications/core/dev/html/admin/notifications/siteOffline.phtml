@@ -1,0 +1,9 @@
+<ips:template parameters="" />
+<div class="ipsRichText">
+	<p>
+		{lang="offline_message_desc"}
+		{{if settings.task_use_cron == 'normal' AND !\IPS\CIC}}
+			{lang="dasbhoard_tasks_site_offline_desc"}
+		{{endif}}
+	</p>
+</div>

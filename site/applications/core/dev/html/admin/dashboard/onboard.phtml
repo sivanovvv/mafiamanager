@@ -1,0 +1,87 @@
+<ips:template parameters="" />
+
+<div class='ipsBox i-padding_4 cOnboardBox cOnboardBox--nextSteps'>
+	<h1 class='ipsTitle ipsTitle--h3'>{lang="onboard_complete"}</h1>
+	<p class="i-font-size_2 i-color_soft i-font-weight_500">{lang="onboard_next_steps_subtitle"}</p>
+	<hr class='ipsHr'>
+
+	<div class="ipsRichText i-font-size_2 i-color_soft i-font-weight_500">
+		<p>{lang="onboard_next_steps_intro"}</p>
+		<p>{lang="onboard_next_steps_intro2"}</p>
+	</div>
+
+	<hr class='ipsHr'>
+
+
+	{{if \IPS\Application::appIsEnabled( 'forums' )}}
+		<div class='cOnboardBox__item'>
+			<div class='cOnboardBox__stepIcon'>
+				<i class='fa-solid fa-comments' aria-hidden="true"></i>
+			</div>
+			<div>
+				<h2 class='i-font-weight_600 i-font-size_3 i-color_hard i-margin-bottom_1'>{lang="onboard_next_forums_title"}</h2>
+				<p class="i-color_soft">{lang="onboard_next_forums"}</p>
+				<div class='ipsButtons ipsButtons--start i-margin-top_2'>
+					<a class="ipsButton ipsButton--inherit ipsButton--small" href='{url="app=forums&module=forums&controller=forums"}'>{lang="onboard_takeme"}</a>
+				</div>
+			</div>
+		</div>
+	{{endif}}
+
+	<div class='cOnboardBox__item'>
+			<div class='cOnboardBox__stepIcon'>
+			<i class='fa-solid fa-user-group' aria-hidden="true"></i>
+		</div>
+		<div>
+			<h2 class='i-font-weight_600 i-font-size_3 i-color_hard i-margin-bottom_1'>{lang="onboard_next_groups_title"}</h2>
+			<p class="i-color_soft">{lang="onboard_next_groups"}</p>
+			<div class='ipsButtons ipsButtons--start i-margin-top_2'>
+				<a class="ipsButton ipsButton--inherit ipsButton--small" href='{url="app=core&module=members&controller=groups"}'>{lang="onboard_takeme"}</a>
+			</div>
+		</div>
+	</div>
+
+	<div class='cOnboardBox__item'>
+			<div class='cOnboardBox__stepIcon'>
+			<i class='fa-solid fa-unlock' aria-hidden="true"></i>
+		</div>
+		<div>
+			<h2 class='i-font-weight_600 i-font-size_3 i-color_hard i-margin-bottom_1'>{lang="onboard_next_staff_title"}</h2>
+			<p class="i-color_soft">{lang="onboard_next_staff"}</p>
+			<div class='ipsButtons ipsButtons--start i-margin-top_2'>
+				<a class="ipsButton ipsButton--inherit ipsButton--small sm:i-margin-bottom_2" href='{url="app=core&module=staff&controller=admin"}'>{lang="onboard_takeme_admins"}</a>
+				<a class="ipsButton ipsButton--inherit ipsButton--small" href='{url="app=core&module=staff&controller=moderators"}'>{lang="onboard_takeme_mods"}</a>
+			</div>
+		</div>
+	</div>
+
+	<div class='cOnboardBox__item'>
+			<div class='cOnboardBox__stepIcon'>
+			<i class='fa-solid fa-paintbrush' aria-hidden="true"></i>
+		</div>
+		<div>
+			<h2 class='i-font-weight_600 i-font-size_3 i-color_hard i-margin-bottom_1'>{lang="onboard_next_themes_title"}</h2>
+			<p class="i-color_soft">{lang="onboard_next_themes"}</p>
+			<div class='ipsButtons ipsButtons--start i-margin-top_2'>
+				<a class="ipsButton ipsButton--inherit ipsButton--small" href='{url="app=core&module=customization&controller=themes"}'>{lang="onboard_takeme"}</a>
+			</div>
+		</div>
+	</div>
+
+	{{if \IPS\Application::appIsEnabled( 'nexus' )}}
+
+		<div class='cOnboardBox__item'>
+			<div class='cOnboardBox__stepIcon'>
+				<i class='fa-solid fa-dollar-sign' aria-hidden="true"></i>
+			</div>
+			<div>
+				<h2 class='i-font-weight_600 i-font-size_3 i-color_hard i-margin-bottom_1'>{lang="onboard_next_nexus_title"}</h2>
+				<p class="i-color_soft">{lang="onboard_next_nexus"}</p>
+				<div class='ipsButtons ipsButtons--start i-margin-top_2'>
+					<a class="ipsButton ipsButton--inherit ipsButton--small" href='{url="app=nexus&module=subscriptions&controller=subscriptions"}'>{lang="onboard_takeme_subs"}</a>
+					<a class="ipsButton ipsButton--inherit ipsButton--small" href='{url="app=nexus&module=store&controller=packages"}'>{lang="onboard_takeme_packages"}</a>
+				</div>
+			</div>
+		</div>
+	{{endif}}
+</div>

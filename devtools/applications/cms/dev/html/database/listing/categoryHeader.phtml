@@ -1,0 +1,47 @@
+<ips:template parameters="$category, $table, $activeFilters" />
+
+{{if !\IPS\Request::i()->advancedSearchForm}}
+	<header class="ipsPageHeader ipsBox ipsPull ipsPageHeader--database-category">
+		<div class="ipsPageHeader__row">
+			<div class='ipsPageHeader__primary'>
+				<h1 class='ipsPageHeader__title'>{$category->_title}</h1>
+				<div class='ipsPageHeader__desc'>{$category->_description|raw}</div>
+			</div>
+			<div class="ipsButtons">
+				{template="follow" app="core" group="global" params="'cms','categories' . $category->database_id, $category->_id, \IPS\cms\Records::containerFollowerCount( $category )"}
+			</div>
+		</div>
+	</header>
+{{endif}}
+
+{{if $category->hasChildren() AND ! isset( \IPS\Request::i()->advancedSearchForm )}}
+	<div class="ipsBox ipsBox--cmsSubCategories ipsPull i-margin-bottom_3">
+		<h2 class='ipsBox__header'>{lang="content_subcategories_title"}</h2>
+		<i-data>
+			<ol class="ipsData {{if $category::database()->display_settings['categories']['layout'] != 'custom'}}ipsData--{$category::database()->display_settings['categories']['layout']}{{else}}ipsData--table{{endif}} ipsData--category ipsData--database-listing">
+				{{foreach $category->children() as $cat}}
+					{template="categoryRow" group="category_index" location="database" app="cms" params="$cat"}
+				{{endforeach}}
+			</ol>
+		</i-data>
+	</div>
+{{endif}}
+
+{{if ! \IPS\Request::i()->isAjax() AND ! isset( \IPS\Request::i()->advancedSearchForm ) AND $category->show_records}}
+	<ul class="ipsButtons ipsButtons--main">
+		{{if \IPS\Member::loggedIn()->member_id}}
+			<li>
+				<a class="ipsButton ipsButton--text" href="{$category->url()->setQueryString( 'do', 'markRead' )->csrf()}"><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="cms_mark_read"}</a>
+			</li>
+		{{endif}}
+		{{if $category->can('add')}}
+			<li>
+				<a class="ipsButton ipsButton--primary" href="{$category->url()->setQueryString( array( 'do' => 'form', 'd' => \IPS\cms\Databases\Dispatcher::i()->databaseId ) )}">{lang="cms_add_new_record_button" sprintf="\IPS\cms\Databases::load( $category->database_id )->recordWord( 1 )"}</a>
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}
+
+{{if \count( $activeFilters )  AND ! isset( \IPS\Request::i()->advancedSearchForm )}}
+	{template="filterMessage" group="listing" location="database" app="cms" params="$activeFilters, $category"}
+{{endif}}

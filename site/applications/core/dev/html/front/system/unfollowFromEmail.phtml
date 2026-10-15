@@ -1,0 +1,28 @@
+<ips:template parameters="$title, $member, $form, $choice" />
+{{if $choice}}
+	<div class='ipsBox ipsBox--unfollowFromEmail'>
+		<p class='i-text-align_center i-font-size_6'>
+			<i class='fa-solid fa-envelope' aria-hidden="true"></i>
+		</p>
+
+		<h1 class='i-font-size_6 i-text-align_center'>{lang="follow_guest_unfollow_title"}</h1>
+
+		<div class='i-font-size_2 i-text-align_center ipsRichText'>
+			{{if $choice == 'single'}}
+				{lang="follow_guest_unfollowed_thing" sprintf="$title"}
+			{{elseif $choice == 'all'}}
+				{lang="follow_guest_unfollowed_all"}
+			{{endif}}
+		</div>
+		<br>
+		<p class='i-text-align_center'>
+			<a href='{url="/"}' class='ipsButton ipsButton--secondary ipsButton--small'>{lang="go_community_home"}</a>
+		</p>
+	</div>
+{{else}}
+	<div class='i-padding_3'>
+		<h2 class='ipsTitle ipsTitle--h3'>{lang="follow_guest_unfollow_title"}</h2>
+		<p class='i-color_soft'>{lang="follow_guest_followed_by" sprintf="$member->name, $member->name"}</p>
+		{$form|raw}
+	</div>
+{{endif}}

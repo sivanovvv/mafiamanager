@@ -1,0 +1,15 @@
+<ips:template parameters="$menu"/>
+
+{{if $menu->hasContent()}}
+	<i-dropdown popover id="{$menu->id}_menu" data-menu-width="{$menu->menuType}">
+		<div class="iDropdown">
+			<ul class="iDropdown__items">
+				{$menu->extraHtmlBeforeLinks|raw}
+				{{foreach $menu->elements as $key => $linkData}}
+					{$linkData|raw}
+				{{endforeach}}
+				{$menu->extraHtmlAfterLinks|raw}
+			</ul>
+		</div>
+	</i-dropdown>
+{{endif}}

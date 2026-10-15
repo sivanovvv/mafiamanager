@@ -1,0 +1,241 @@
+<ips:template parameters="$name, $value, $minimize, $maxFileSize, $maxFiles, $maxChunkSize, $totalMaxSize, $allowedFileTypes, $pluploadKey, $multiple=FALSE, $editor=FALSE, $forceNoscript=FALSE, $template='core.attachments.fileItem', $existing=array(), $default=NULL, $supportsDelete = TRUE, $allowStockPhotos=FALSE" />
+<input name="{$name}" type="hidden" value="{$pluploadKey}">
+{{if $forceNoscript}}
+	<input name="{$name}_noscript[]" type="file" {{if $multiple}}multiple{{endif}}>
+{{else}}
+	<noscript>
+		<input name="{$name}_noscript[]" type="file" {{if $multiple}}multiple{{endif}}>
+		<span class="i-color_soft i-font-size_-2">
+			{{if $allowedFileTypes !== NULL}}
+				<strong>{lang="form_upload_accepted"}</strong>
+				{expression="implode( ', ', $allowedFileTypes )"}
+			{{endif}}
+			{{if $multiple and $totalMaxSize}}
+				{{if $allowedFileTypes !== NULL}}
+					&middot;
+				{{endif}}
+				<strong>{lang="form_upload_total_max"}</strong>
+				{filesize="$totalMaxSize * 1048576"}
+			{{endif}}
+			{{if !$multiple or !$totalMaxSize or $maxChunkSize < $totalMaxSize}}
+				{{if $allowedFileTypes !== NULL or ( $multiple and $totalMaxSize )}}
+					&middot;
+				{{endif}}
+				<strong>{lang="form_upload_max"}</strong>
+				{$maxChunkSize}MB
+			{{endif}}
+			{{if $maxFiles}}
+				<br>{lang="form_upload_max_files" pluralize="$maxFiles"}
+			{{endif}}
+		</span>
+	</noscript>
+	{{if $value}}
+		{{foreach $value as $id => $file}}
+			<input type="hidden" name="{$name}_existing[{$id}]" value="">
+		{{endforeach}}
+	{{endif}}
+	<div data-ipsEditor-toolList>
+		{{$editorName = preg_replace( "/(.+?)_(\d+?)_$/", "$1[$2]", mb_substr( $name, 0, -7 ) );}}
+		<div data-role='attachmentArea' data-controller='core.global.editor.uploader, core.global.editor.insertable' data-editorID='{$editorName}' class='ipsComposeArea_attachments ipsUploader ipsUploader--withBorder ipsUploader--insertable' id="{$name}_drop_{expression="md5( mt_rand() )"}" data-ipsUploader data-ipsUploader-dropTarget='#elEditorDrop_{$name}' data-ipsUploader-button='[data-action="browse"]' {{if $maxFileSize}}data-ipsUploader-maxFileSize="{expression="number_format( $maxFileSize, 3, '.', '' )"}"{{endif}} data-ipsUploader-maxChunkSize="{expression="number_format( $maxChunkSize, 3, '.', '' )"}" {{if $allowedFileTypes}}data-ipsUploader-allowedFileTypes='{expression="json_encode( $allowedFileTypes )"}'{{endif}} data-ipsUploader-name="{$name}" data-ipsUploader-key="{$pluploadKey}" {{if $multiple}}data-ipsUploader-multiple {{if $totalMaxSize}}data-ipsUploader-maxTotalSize="{expression="$totalMaxSize"}"{{endif}}{{endif}} {{if $minimize}}data-ipsUploader-minimized{{endif}} data-ipsUploader-insertable data-ipsUploader-postkey="{$editor}" data-ipsUploader-template='core.editor.attachments' {{if $value}}data-ipsUploader-existingFiles='{expression="json_encode( $existing )"}'{{endif}} {{if isset( $default )}}data-ipsUploader-default='{$default}'{{endif}} {{if $allowStockPhotos}}data-ipsUploader-allowStockPhotos="{$allowStockPhotos}"{{endif}}>
+			<div class="ipsComposeArea_dropZone" id='elEditorDrop_{$name}'>
+				<i class='fa-solid fa-paperclip ipsUploader__icon' aria-hidden="true"></i>
+				<div>
+					<ul class='i-flex i-align-items_center i-flex-wrap_wrap'>
+						<li class="i-flex_00 ipsAttachment_loading ipsLoading--small ipsAttachment_loading_editor ipsHide"><i class='fa-solid fa-circle-notch fa-spin fa-fw' aria-hidden="true"></i></li>
+						<li class='i-flex_91' data-action='browse' data-supports-drag="{expression='isset(cookie.editor_supports_drag) and cookie.editor_supports_drag ?: "true"'}">
+							<div class='ipsAttachment__desc ipsResponsive_showPhone'>
+								{lang="editor_attach_desc_small"}
+							</div>
+							<div class='ipsAttachment__desc ipsResponsive_hidePhone'>
+								{lang="editor_attach_desc_large"}
+							</div>
+						</li>
+                        <li class="ipsComposeArea__media-other">
+                            <a
+                                href='#'
+                                data-ipsDialog
+                                data-ipsDialog-forceReload
+                                data-ipsDialog-destructOnClose
+                                data-ipsDialog-remoteSubmit='false'
+                                data-ipsDialog-remoteVerify='false'
+                                data-ipsDialog-title='{lang="editor_insert_existing_file"}'
+                                data-ipsDialog-url='{url="app=core&module=system&controller=editor&do=myMedia&postKey={$editor}&editorId={$editorName}" csrf="1"}'
+                                data-ipsTooltip=""
+                                title='{lang="editor_insert_existing_file"}'
+                            >
+								<i class="fa-regular fa-folder-open" aria-hidden="true"></i>
+								<span class="ipsInvisible">{lang="editor_insert_existing_file"}</span>
+                            </a>
+                        </li>
+                        {{if $allowStockPhotos}}
+                            <li class="ipsComposeArea__media-other">
+                                <a
+                                    href='#'
+                                    data-action='stockPhoto'
+                                    title='{lang="form_upload_stockart_choose_editor"}'
+                                    data-ipstooltip=''
+                                >
+                                    <i class="fa-regular fa-images" aria-hidden="true"></i>
+									<span class="ipsInvisible">{lang="form_upload_stockart_choose_editor"}</span>
+                                </a>
+                            </li>
+                        {{endif}}
+					</ul>
+					{{if $allowedFileTypes !== NULL || $maxFileSize || $totalMaxSize}}
+						<ul class='i-flex i-flex-wrap_wrap i-gap_3 i-row-gap_1 i-color_soft'>
+							{{if $allowedFileTypes !== NULL}}
+								<li>
+									<strong>{lang="form_upload_accepted"}:</strong>
+									{expression="implode( ', ', $allowedFileTypes )"}
+								</li>
+							{{endif}}
+							{{if $multiple and $totalMaxSize}}
+								<li>
+									<strong>{lang="form_upload_total_max"}:</strong>
+									{filesize="$totalMaxSize * 1048576"}
+								</li>
+							{{endif}}
+							{{if $maxFileSize and ( !$multiple or !$totalMaxSize or $maxFileSize < $totalMaxSize )}}
+								<li>
+									<strong>{lang="form_upload_max"}:</strong>
+									{expression="round($maxFileSize,2)"}MB
+								</li>
+							{{endif}}
+							{{if $maxFiles}}
+								<li>{lang="form_upload_max_files" pluralize="$maxFiles"}</li>
+							{{endif}}
+						</ul>
+					{{endif}}
+					<div data-role='fileList' class='ipsComposeArea_attachmentsInner {{if \count($value) == 0}}ipsHide{{endif}}'>
+						<div data-role='files' class='ipsHide ipsComposeArea_attachmentsContainer'>
+							<h4 class='ipsTitle ipsTitle--hr i-margin-top_3 i-font-weight_600 i-text-transform_uppercase i-font-size_-1'>{lang="editor_uploaded_files"}</h4>
+							<div class='ipsUploader__container ipsUploader__container--files' data-role='fileContainer'>
+								{{foreach $value as $attachID => $file}}
+									{{if $file->mediaType() === 'file'}}
+										<div class='ipsUploader__row ipsUploader__row--insertable ipsAttach ipsAttach_done' id='elAttach_{$attachID}' data-role='file' data-fileid='{$attachID}' data-filesize='{$file->filesize()}'{{if $file->securityKey}} data-filekey='{$file->securityKey}'{{endif}}>
+											<div class='ipsUploader__rowPreview' data-role='preview' data-action='insertFile'>
+												<div class='ipsUploader__rowPreview__generic'>
+													<i class='fa-solid fa-{expression="\IPS\File::getIconFromName( $file->originalFilename )"}' aria-hidden="true"></i> 
+												</div>
+											</div>
+											<div class='ipsUploader_rowMeta' data-action='insertFile'>
+												<h2 class='ipsUploader_rowTitle' data-role='title'>{$file->originalFilename}</h2>
+												<p class='ipsUploader_rowDesc'>
+													{filesize="$file->filesize()"}
+												</p>
+												<div data-role='insert' class='ipsUploader__rowInsert'>
+													<a href='#' data-ipsTooltip title='{lang="insert_into_post"}'>
+														{lang="editor_insert"}
+													</a>
+												</div>
+											</div>
+											<div data-role='deleteFileWrapper'>
+												<a href='#' data-role='deleteFile' class='ipsUploader__rowDelete' data-ipsTooltip title='{lang="editor_media_remove"}'>
+													&times;
+												</a>
+											</div>
+										</div>
+									{{endif}}
+								{{endforeach}}
+							</div>
+						</div>
+						<div data-role='images' class='ipsHide ipsComposeArea_attachmentsContainer'>
+							<h4 class='ipsTitle ipsTitle--hr i-margin-top_3 i-font-weight_600 i-text-transform_uppercase i-font-size_-1'>{lang="editor_uploaded_images"}</h4>
+							<div class='ipsUploader__container ipsUploader__container--images' data-role='fileContainer'>
+								{{foreach $value as $attachID => $file}}
+									{{if $file->mediaType() === 'image'}}
+										<div class='ipsUploader__row ipsUploader__row--insertable ipsAttach ipsAttach_done' id='elAttach_{$attachID}' data-role='file' data-fileid='{$attachID}' data-fullsizeurl='{$file->url}' data-thumbnailurl='{$file->attachmentThumbnailUrl}' data-fileType="image">
+											<div class='ipsUploader__rowPreview' data-role='preview' data-action='insertFile'>
+												<img src='{$file->url}' alt=''>
+											</div>
+											<div class='ipsUploader_rowMeta' data-action='insertFile'>
+												<h2 class='ipsUploader_rowTitle' data-role='title'>{$file->originalFilename}</h2>
+												<p class='ipsUploader_rowDesc'>
+													{filesize="$file->filesize()"}
+												</p>
+												<div data-role='insert' class='ipsUploader__rowInsert'>
+													<a href='#' data-ipsTooltip title='{lang="insert_into_post"}'>
+														{lang="editor_insert"}
+													</a>
+												</div>
+											</div>
+											<div data-role='deleteFileWrapper'>
+												<a href='#' data-role='deleteFile' class='ipsUploader__rowDelete' data-ipsTooltip title='{lang="editor_media_remove"}'>
+													&times;
+												</a>
+											</div>
+										</div>
+									{{endif}}
+								{{endforeach}}
+							</div>
+						</div>
+						<div data-role='videos' class='ipsHide ipsComposeArea_attachmentsContainer'>
+							<h4 class='ipsTitle ipsTitle--hr i-margin-top_3 i-font-weight_600 i-text-transform_uppercase i-font-size_-1'>{lang="editor_uploaded_videos"}</h4>
+							<div class='ipsUploader__container ipsUploader__container--images' data-role='fileContainer'>
+								{{foreach $value as $attachID => $file}}
+									{{if $file->mediaType() === 'video'}}
+										<div class='ipsUploader__row ipsUploader__row--image ipsUploader__row--insertable ipsAttach ipsAttach_done' id='elAttach_{$attachID}' data-role='file' data-fileid='{$attachID}' data-fullsizeurl='{$file->url}' data-thumbnailurl='{$file->attachmentThumbnailUrl}' data-fileType="video" data-mimeType="{expression="\IPS\File::getMimeType( $file->originalFilename )"}">
+											<div class='ipsUploader__rowPreview__generic' data-role='preview' data-action='insertFile'>
+												<video>
+													 <source src="{$file->url}" type="{expression="\IPS\File::getMimeType( $file->originalFilename )"}">
+												</video>
+											</div>
+											<div class='ipsUploader_rowMeta' data-action='insertFile'>
+												<h2 class='ipsUploader_rowTitle' data-role='title'>{$file->originalFilename}</h2>
+												<p class='ipsUploader_rowDesc'>
+													{filesize="$file->filesize()"}
+												</p>
+												<div data-role='insert' class='ipsUploader__rowInsert'>
+													<a href='#' data-ipsTooltip title='{lang="insert_into_post"}'>
+														{lang="editor_insert"}
+													</a>
+												</div>
+											</div>
+											<div data-role='deleteFileWrapper'>
+												<a href='#' data-role='deleteFile' class='ipsUploader__rowDelete' data-ipsTooltip title='{lang="editor_media_remove"}'>
+													&times;
+												</a>
+											</div>
+										</div>
+									{{endif}}
+								{{endforeach}}
+							</div>
+						</div>
+						<div data-role='audio' class='ipsHide ipsComposeArea_attachmentsContainer'>
+							<h4 class='ipsTitle ipsTitle--hr i-margin-top_3 i-font-weight_600 i-text-transform_uppercase i-font-size_-1'>{lang="editor_uploaded_audio"}</h4>
+							<div class='ipsUploader__container ipsUploader__container--files' data-role='fileContainer'>
+								{{foreach $value as $attachID => $file}}
+									{{if $file->mediaType() === 'audio'}}
+										<div class='ipsUploader__row ipsUploader__row--insertable ipsAttach ipsAttach_done' id='elAttach_{$attachID}' data-role='file' data-fileid='{$attachID}' data-fullsizeurl='{$file->url}' data-thumbnailurl='{$file->attachmentThumbnailUrl}' data-fileType="audio" data-mimeType="{expression="\IPS\File::getMimeType( $file->originalFilename )"}">
+											<div class='ipsUploader__rowPreview' data-role='preview' data-action='insertFile'>
+												<div class='ipsUploader__rowPreview__generic'>
+													<i class='fa-solid fa-{expression="\IPS\File::getIconFromName( $file->originalFilename )"}' aria-hidden="true"></i> 
+												</div>
+											</div>
+											<div class='ipsUploader_rowMeta' data-action='insertFile'>
+												<h2 class='ipsUploader_rowTitle' data-role='title'>{$file->originalFilename}</h2>
+												<p class='ipsUploader_rowDesc'>
+													{filesize="$file->filesize()"}
+												</p>
+												<div data-role='insert' class='ipsUploader__rowInsert'>
+													<a href='#' data-ipsTooltip title='{lang="insert_into_post"}'>
+														{lang="editor_insert"}
+													</a>
+												</div>
+											</div>
+											<div data-role='deleteFileWrapper'>
+												<a href='#' data-role='deleteFile' class='ipsUploader__rowDelete' data-ipsTooltip title='{lang="editor_media_remove"}'>
+													&times;
+												</a>
+											</div>
+										</div>
+									{{endif}}
+								{{endforeach}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+{{endif}}

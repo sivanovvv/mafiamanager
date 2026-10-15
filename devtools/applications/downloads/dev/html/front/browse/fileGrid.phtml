@@ -1,0 +1,79 @@
+<ips:template parameters="$file, $table" />
+<!-- v5 todo: This needs modernizing. Is it used? -->
+<style>*{ color: #40d31a !important; }</style>
+<div class="ipsInnerBox {$file->ui( 'css' )}" {$file->ui( 'dataAttributes' )}>
+	{{if $table AND method_exists( $table, 'canModerate' ) AND $table->canModerate()}}
+	<label class="ipsData__mod">
+		<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+        <input type='checkbox' data-role='moderation' name="moderate[{$file->id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $file ) )"}" data-state='{{if $file->tableStates()}}{$file->tableStates()}{{endif}}' class="ipsInput ipsInput--toggle">
+	</label>
+	{{endif}}
+	{template="thumbImage" group="global" app="core" params="$file->primary_screenshot_thumb, $file->name, 'medium', '', 'view_this', $file->url( 'getPrefComment' ), 'downloads_Screenshots', '', true"}
+	<h4 class='ipsData__title' data-ips-hook='title'>
+		{{if $file->unread()}}
+			<span class='ipsIndicator' data-ipsTooltip title='{{if $file->unread() === -1}}{lang="new"}{{else}}{lang="updated"}{{endif}}'></span>
+		{{endif}}
+
+		{{foreach $file->badges() as $badge}}{$badge|raw}{{endforeach}}
+
+		{{if $file->prefix()}}
+			{template="prefix" group="global" app="core" params="$file->prefix( TRUE ), $file->prefix()"}
+		{{endif}}
+
+		<a href='{$file->url( "getPrefComment" )}' title='{lang="view_this_file" sprintf="$file->name"} {{if $file->canEdit()}}{lang="click_hold_edit"}{{endif}}' {{if $file->canEdit()}}data-role="editableTitle"{{endif}}>{$file->name}</a>
+	</h4>
+	<p class='i-color_soft i-link-color_inherit'>
+		{lang="byline_nodate" htmlsprintf="$file->author()->link( NULL, NULL, $file->isAnonymous() )"}
+		{{if \IPS\Request::i()->app != 'downloads'}}
+		{lang="in"} <a href="{$file->container()->url()}">{$file->container()->_title}</a>
+		{{endif}}
+	</p>
+	<div class='i-basis_220' data-ips-hook='metadata'>
+		<p><strong>{{if $file->updated == $file->submitted}}{lang="submitted"} {datetime="$file->submitted" lowercase="true"}{{else}}{lang="updated"} {datetime="$file->updated" lowercase="true"}{{endif}}</strong></p>
+	</div>
+
+	<!-- Rating -->
+	{{if $file->container()->bitoptions['reviews']}}
+		{template="rating" group="global" location="front" app="core" params="'large', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $file->memberReviewRating()"} <span class='i-color_soft'>({lang="num_reviews" pluralize="$file->reviews"})</span>
+	{{endif}}
+
+	<!-- Comments -->
+	{{if $file->container()->bitoptions['comments']}}
+	<p data-ips-hook='stats'>
+		{{if $file->comments}}
+		<a href='{$file->url()->setQueryString( 'tab', 'comments' )->setFragment('replies')}'>
+		{{endif}}
+		<i class='fa-solid fa-comment' aria-hidden="true"></i> {lang="num_comments" pluralize="$file->comments"}
+		{{if $file->comments}}
+		</a>
+		{{endif}}
+	</p>
+	{{endif}}
+	<!-- Price -->
+	{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+	<p class='i-font-size_2 i-text-align_center i-margin-top_2'>
+		<span class='cFilePrice'>
+			{{if $file->isPaid()}}
+				{{if $price = $file->priceToDisplay()}}
+					{$price|raw}
+				{{endif}}
+			{{else}}
+				{lang="file_free"}
+			{{endif}}
+		</span>
+	</p>
+	<!-- Purchase Count -->
+	<p>
+		{{if $file->isPaid() and !$file->nexus and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) )}}
+		<span {{if !$file->purchaseCount()}}class='i-color_soft'{{endif}}><i class='fa-solid fa-cart-shopping' aria-hidden="true"></i> {lang="x_purchases" pluralize="$file->purchaseCount()"}</span>&nbsp;&nbsp;
+		{{endif}}
+		{{if !$file->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) )}}
+		<span {{if !$file->downloads}}class='i-color_soft'{{endif}}><i class='fa-solid fa-circle-arrow-down' aria-hidden="true"></i> {lang="num_downloads" pluralize="$file->downloads"}</span>
+		{{endif}}
+	</p>
+	{{endif}}
+    <!-- Tags -->
+	{{if \count( $file->tags() )}}
+		{template="tags" group="global" app="core" params="$file->tags(), TRUE"}
+	{{endif}}
+</div>

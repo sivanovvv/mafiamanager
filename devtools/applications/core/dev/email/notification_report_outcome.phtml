@@ -1,0 +1,13 @@
+<ips:template parameters="$reportIndex, $reportType, $userReport, $email" />
+{{if ! empty( $userReport['guest_name'] )}}
+    <strong>{$userReport['guest_name']}</strong>
+    <br><br>
+{{endif}}
+{{$date = \IPS\DateTime::ts( $userReport['date_reported'] )->localeDate();}}
+{$email->language->addToStack("report_outcome_email_blurb", FALSE, array( 'sprintf' => array( $date, $reportIndex->mapped('title'), $reportType->_title ) ) )}
+<br><br>
+{$email->language->addToStack("report_outcome_email_prelude")}
+<br><br>
+{$reportIndex->getReportOutcomeBlurb( $userReport['id'] )}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

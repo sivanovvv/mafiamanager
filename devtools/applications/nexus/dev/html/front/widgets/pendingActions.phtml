@@ -1,0 +1,40 @@
+<ips:template parameters="$pendingTransactions, $pendingWithdrawals, $pendingAdvertisements, $layout='table', $isCarousel=false" />
+
+<h3 class="ipsWidget__header">{lang="block_pendingActions"}</h3>
+<i-data>
+	{{if $pendingTransactions OR $pendingWithdrawals OR $pendingAdvertisements}}
+		<ul class="ipsData ipsData--table ipsData--pending-actions" id='elNexusActions'>
+			{{if $pendingTransactions !== NULL}}
+				<li class="ipsData__item">
+					<a href="{url="app=nexus&module=payments&controller=transactions&filter=tstatus_hold" base="admin"}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="pending_transactions"}</span></a>
+					<span class='cNexusActionBadge {{if $pendingTransactions < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingTransactions > 99}}99+{{else}}{number="$pendingTransactions"}{{endif}}</span>
+					<div class='ipsData__main'>
+						{lang="pending_transactions"}
+					</div>
+				</li>
+			{{endif}}
+			{{if $pendingWithdrawals !== NULL}}
+				<li class="ipsData__item">
+					<a href="{url="app=nexus&module=payments&controller=payouts&filter=postatus_pend" base="admin"}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="pending_widthdrawals"}</span></a>
+						<span class='cNexusActionBadge {{if $pendingWithdrawals < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingWithdrawals > 99}}99+{{else}}{number="$pendingWithdrawals"}{{endif}}</span>
+						<div class='ipsData__main'>
+							{lang="pending_widthdrawals"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+			{{if $pendingAdvertisements !== NULL}}
+				<li class="ipsData__item">
+					<a href="{url="app=core&module=promotion&controller=advertisements" base="admin"}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="pending_advertisements"}</span></a>
+						<span class='cNexusActionBadge {{if $pendingAdvertisements < 1}}cNexusActionBadge_off{{endif}}'>{{if $pendingAdvertisements > 99}}99+{{else}}{number="$pendingAdvertisements"}{{endif}}</span>
+						<div class='ipsData__main'>
+							{lang="pending_advertisements"}
+						</div>
+					</a>
+				</li>
+			{{endif}}
+		</ul>
+	{{else}}
+		<p class="ipsEmpty">{lang="no_pending_items"}</p>
+	{{endif}}
+</i-data>

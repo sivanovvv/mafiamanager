@@ -1,0 +1,72 @@
+<ips:template parameters="$invoice, $amountToPay, $showSubmitButton, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+
+<form accept-charset='utf-8' class="ipsForm {$class} ipsForm--payment" action="{$action}" method="post" {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm data-role="paymentForm">
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	
+	{{if $form->error}}
+		<div class="ipsMessage ipsMessage--error">
+			{$form->error}
+		</div>
+	{{endif}}
+
+	{{foreach $elements as $collection}}
+		{{foreach $collection as $inputName => $input}}
+			{{if $inputName == 'payment_method'}}
+				<div class='ipsFieldRow'>
+					<label class='ipsFieldRow__label' for='elInput_{$input->htmlId}'>
+						<span class='ipsTitle ipsTitle--h3'>{lang="$inputName"}</span>
+					</label>
+					<div class='ipsFieldRow__content'>
+						{{if $invoice->canSplitPayment()}}
+							<div class='i-flex i-align-items_center i-flex-wrap_wrap i-gap_2'>
+								<a href="{$invoice->checkoutUrl()->setQueryString( 'do', 'split' )}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title="{lang="split_payment"}" data-ipsTooltip title='{lang="split_payment_title"}'>{lang="split_payment"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></a>
+						{{endif}}
+						<ul class='ipsFieldRow__content--checkboxes i-flex_11'>
+							{{foreach $input->options['options'] as $k => $v}}
+								<li>
+									<input type="radio" {{if (string) $input->value == (string) $k or ( isset( $input->options['userSuppliedInput'] ) and !\in_array( $input->value, array_keys( $input->options['options'] ) ) and $k == $input->options['userSuppliedInput'] )}}checked{{endif}} {{if $input->required === TRUE}}required{{endif}} {{if $input->disabled === TRUE or ( \is_array( $input->disabled ) and \in_array( $k, $input->disabled ) )}}disabled{{endif}} {{if isset( $input->options['toggles'][ $k ] ) and !empty( $input->options['toggles'][ $k ] )}}data-control="toggle" data-toggles="{expression="implode( ',', $input->options['toggles'][ $k ] )"}"{{endif}} id="elRadio_{$input->name}_{$k}" name="{$input->name}" value="{$k}" class="ipsInput ipsInput--toggle">
+									<label for='elRadio_{$input->name}_{$k}' id='elField_{$input->name}_label'>{$v|raw}</label>
+								</li>
+							{{endforeach}}
+						</ul>
+						{{if $invoice->canSplitPayment()}}
+							</div>
+						{{endif}}
+					</div>
+				</div>
+			{{else}}
+				<ul>
+					{$input->rowHtml()|raw}
+				</ul>
+			{{endif}}
+		{{endforeach}}
+	{{endforeach}}
+	
+	{{if $showSubmitButton}}
+		<div class="ipsSubmitRow" id="paymentMethodSubmit">
+			<button type='submit' class='ipsButton ipsButton--primary ipsButton--wide'>
+				<i class='fa-solid fa-check-circle' aria-hidden="true"></i>
+				{{if $amountToPay->amount->isZero()}}
+					{lang="confirm_and_no_pay"}
+				{{elseif $amountToPay->amount->compare( $invoice->total->amount ) !== 0}}
+					{lang="confirm_and_pay_split" sprintf="$amountToPay"}
+				{{else}}
+					{lang="confirm_and_pay"}
+				{{endif}}
+			</button>
+		</div>
+	{{endif}}
+</form>

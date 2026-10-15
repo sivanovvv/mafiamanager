@@ -1,0 +1,39 @@
+<ips:template parameters="$title, $data, $layout='table', $isCarousel=false" />
+{{if (count( $data ) < 2) & $isCarousel}}
+	{{ $soloTag = 'widget-tags_' . mt_rand(); }}
+{{else}}
+	{{ $soloTag = false; }}
+{{endif}}
+<header class='ipsWidget__header'>
+	<h3>{$title}</h3>
+	{{if $soloTag && $isCarousel}}
+		{template="carouselNavigation" group="global" app="core" params="$soloTag"}
+	{{endif}}
+</header>
+{{$key = md5( uniqid( microtime() ) );}}
+<div class='ipsWidget__content'>
+    {{if count( $data ) > 1}}
+	<i-tabs class='ipsTabs ipsTabs--stretch' id='ipsTabs_{$key}' data-ipsTabBar data-ipsTabBar-updateURL='false' data-ipsTabBar-contentArea='#ipsTabs_{$key}_content'>
+		<div role="tablist">
+			{{$checked = NULL;}}
+		    {{foreach $data as $tag => $items}}
+				{{$tabId = \preg_replace('/[^a-zA-Z0-9\-]/', '', $tag);}}
+				<button type="button" id='ipsTabs_{$key}_{$tabId}' class='ipsTabs__tab' role="tab" aria-controls="ipsTabs_{$key}_{$tabId}_panel" aria-selected="{{if !$checked}}true{{$checked = $tabId;}}{{else}}false{{endif}}">{$tag}</button>
+			{{endforeach}}
+		</div>
+		{template="tabScrollers" app="core" group="global" location="global"}
+	</i-tabs>
+	<section id='ipsTabs_{$key}_content' class='ipsTabs__panels'>
+	    {{foreach $data as $tag => $items}}
+			{{$tabId = \preg_replace('/[^a-zA-Z0-9\-]/', '', $tag);}}
+			<div id="ipsTabs_{$key}_{$tabId}_panel" class='ipsTabs__panel' role="tabpanel" aria-labelledby="ipsTabs_{$key}_{$tabId}" {{if $checked != $tabId}}hidden{{endif}}>
+				{template="tagRows" group="widgets" app="core" params="$items, $layout, $isCarousel, $soloTag"}
+			</div>
+		{{endforeach}}
+	</section>
+	{{else}}
+	    {{foreach $data as $tag => $items}}
+	        {template="tagRows" group="widgets" app="core" params="$items, $layout, $isCarousel, $soloTag"}
+        {{endforeach}}
+	{{endif}}
+</div>

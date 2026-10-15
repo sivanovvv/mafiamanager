@@ -1,0 +1,57 @@
+<ips:template parameters="$file" />
+
+<div class='ipsBox ipsBox--commercePurchasedFile i-margin-bottom_2'>
+	<i-data>
+		<ul class="ipsData ipsData--table">
+			<li class='ipsData__item'>
+				<a href="{$file->url()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$file->name}</span></a>
+				<div class='ipsData__image'>
+					{{if $screenshot = $file->primary_screenshot_thumb}}
+						<img src='{$screenshot->url}' alt='' loading='lazy'>
+					{{else}}
+						<i aria-hidden="true"></i>
+					{{endif}}
+				</div>
+				<div class="ipsData__content">
+					<div class='ipsData__main'>
+						<h4 class='ipsData__title'>
+							{{if $file->prefix()}}
+								{template="prefix" group="global" app="core" location="front" params="$file->prefix( TRUE ), $file->prefix()"}
+							{{endif}}
+							<a href='{$file->url()}' title='{lang="view_this_file" sprintf="$file->name"}'>{$file->name}</a>
+						</h4>
+						<p class='ipsData__meta'>
+							{lang="byline_nodate" htmlsprintf="$file->author()->link()"}
+							{{if \IPS\Request::i()->app != 'downloads'}}
+								{lang="in"} <a href="{$file->container()->url()}">{$file->container()->_title}</a>
+							{{endif}}
+						</p>
+						<div class='ipsData__desc ipsRichText ipsTruncate_2'>
+							{$file->truncated()|raw}
+						</div>
+						{{if $file->container()->bitoptions['reviews']}}
+							{template="rating" group="global" location="front" app="core" params="'large', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $file->memberReviewRating()"}&nbsp;&nbsp; <span class='i-color_soft'>({lang="num_reviews" pluralize="$file->reviews"})</span>
+						{{endif}}
+					</div>
+					<div class='ipsData__extra'>
+						<ul class='ipsData__stats'>
+							{{if $file->container()->bitoptions['comments']}}
+								{{if $file->comments}}
+									<li data-stattype="comments">
+										<span class='ipsData__stats-icon' data-stat-value='{$file->comments}' aria-hidden="true" data-ipstooltip title='{lang="num_comments" pluralize="$file->comments"}'></span>
+										<span class='ipsData__stats-label'>
+											<a href='{$file->url()->setQueryString( 'tab', 'comments' )->setFragment('replies')}'>{lang="num_comments" pluralize="$file->comments"}</a>
+										</span>
+									</li>
+								{{endif}}
+							{{endif}}
+							<li>
+								{{if $file->updated == $file->submitted}}{lang="submitted"} {datetime="$file->submitted"}{{else}}{lang="updated"} {datetime="$file->updated"}{{endif}}
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</i-data>
+</div>

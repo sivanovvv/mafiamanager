@@ -1,0 +1,16 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if !empty( $rows )}}
+    {{foreach $rows as $row}}
+        {{$row = \IPS\core\Approval::constructFromData( $row );}}
+        {{if $row->item()}}
+        <li class="ipsEntry ipsEntry--simple ipsEntry--approvalQueue" data-role="approvalItem">
+            {expression="$row->html()" raw="true"}
+        </li>
+        {{endif}}
+    {{endforeach}}
+{{else}}
+    <div class="ipsEmpty">
+        <i class="fa-solid fa-check" aria-hidden="true"></i>
+        <p>{lang="approval_queue_empty"}</p>
+    </div>
+{{endif}}

@@ -1,0 +1,15 @@
+{
+    "normal": {
+        "added": [
+            "queue_fixing_image_titles",
+            "image_title_default_filename"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

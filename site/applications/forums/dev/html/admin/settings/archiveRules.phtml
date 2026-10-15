@@ -1,0 +1,11 @@
+<ips:template parameters="$form, $totalTopics, $existingCount, $existingPercentage" />
+<div data-controller="forums.admin.settings.archiveRules">
+	<div class="i-padding_3">{lang="archiving_blurb"}</div>
+	<div class="i-position_sticky-top i-padding_2 i-background_1 i-text-align_center">
+		<strong>{lang="archive_rules_effects"}</strong>
+		{{$progressId = 'ipsProgress-' . mt_rand();}}
+		<p class="i-color_soft" id="{$progressId}"><span data-role="percentage">{$existingPercentage}</span>% (<span data-role="number">{$existingCount}</span>/{$totalTopics})</p>
+		<progress aria-labelledby="{$progressId}" class="ipsProgress" value='{$existingPercentage}' max="100"></progress>
+	</div>
+	{$form|raw}
+</div>

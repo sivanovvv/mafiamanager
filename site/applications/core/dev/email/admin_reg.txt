@@ -1,0 +1,13 @@
+<ips:template parameters="$member, $forcePass, $passSetKey, $email" />
+{expression="$email->language->addToStack( 'email_admin_reg', FALSE, array( 'htmlsprintf' => array( \IPS\Settings::i()->board_name ) ) )" raw="true"}
+
+=====
+{{if $member->name}}{$email->language->addToStack("username", FALSE)}: {$member->name}{{endif}}
+{{if $member->email}}{$email->language->addToStack("email_address", FALSE)}: {$member->email}{{endif}}
+=====
+
+{{if $forcePass}}{$email->language->addToStack("set_password", FALSE)}: {url="app=core&module=system&controller=register&do=setPassword&mid={$member->member_id}&key={$passSetKey}" base="front"}{{endif}}
+
+{expression="$email->language->addToStack( 'email_go_to_site', FALSE, array( 'htmlsprintf' => array( \IPS\Settings::i()->board_name ) ) )" raw="true"}: {setting="base_url"}
+
+-- {setting="board_name"}

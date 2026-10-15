@@ -1,0 +1,167 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{$rowIds = array();}}
+{{foreach $rows as $row}}
+	{{$idField = $row::$databaseColumnId;}}
+	{{$rowIds[] = $row->$idField;}}
+{{endforeach}}
+{{if \count( $rows )}}
+	{{$rowCount=0;}}
+	{{foreach $rows as $row}}
+		{{if $advertisement = \IPS\core\Advertisement::loadByLocation( 'ad_forum_listing', $rowCount )}}
+			<li class="ipsData__item ipsData__item--advertisement">
+				{$advertisement|raw}
+			</li>
+		{{endif}}
+		{{$rowCount++;}}
+		{{$idField = $row::$databaseColumnId;}}
+		{{if $row->mapped('moved_to')}}
+			{{if $movedTo = $row->movedTo() AND $movedTo->container()->can('view')}}
+				<li class="ipsData__item ipsData__item--moved">
+					<a href='{$movedTo->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row->mapped('title')}</span></a>
+					<div class='ipsData__icon ipsData__icon--indicator'>
+						<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+					</div>
+					<div class='ipsData__content'>
+						<div class='ipsData__main'>
+							<div class='ipsData__title'>
+								<h4>
+									<a href='{$movedTo->url()}' title='{lang="go_to_new_location"}'>{$row->mapped('title')}</a>
+								</h4>
+							</div>
+							<p class='ipsData__meta'>
+								{{if isset( $row::$databaseColumnMap['status'] )}}
+									{{$statusField = $row::$databaseColumnMap['status'];}}
+									{{if $row->$statusField == 'merged'}}
+										{lang="topic_merged_to" sprintf="$movedTo->url( 'getPrefComment' ), $movedTo->mapped('title')"}
+									{{else}}
+										{lang="topic_moved_to" sprintf="$movedTo->container()->url(), $movedTo->container()->_title"}
+									{{endif}}
+								{{else}}
+									{lang="topic_moved_to" sprintf="$movedTo->container()->url(), $movedTo->container()->_title"}
+								{{endif}}
+							</p>
+						</div>
+					</div>
+					{{if $table->canModerate()}}
+						<label class="ipsData__mod">
+							<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+							<input type='checkbox' data-role='moderation' name="moderate[{$row->$idField}]" data-actions="{{if $row->mapped('featured')}}unfeature{{endif}} {{if $row->mapped('pinned')}}unpin{{endif}} delete" data-state='{{if $row->mapped('pinned')}}pinned{{endif}} {{if $row->mapped('featured')}}featured{{endif}}' class="ipsInput ipsInput--toggle">
+						</label>
+					{{endif}}
+				</li>
+			{{endif}}
+		{{else}}
+			<li data-ips-hook="topicRow" class="ipsData__item {{if $row->groupsPosted}}ipsData__item--highlighted{{endif}} {{if method_exists( $row, 'tableClass' ) && $row->tableClass()}}ipsData__item--{$row->tableClass()}{{endif}} {{if $row->hidden() or $row->isFutureDate()}}ipsModerated{{endif}} {{if $row->isFutureDate()}}ipsModerated--future{{endif}} {$row->ui( 'css' )} {{if $row->isAssignedToMember()}}ipsData__item--assigned{{endif}}" data-rowID='{$row->$idField}' data-location='{{if isset($row->locationHash)}}{$row->locationHash}{{endif}}' {{if \IPS\Platform\Bridge::i()->featureIsEnabled( 'live_full' )}}data-controller='cloud.front.realtime.forumsTopicRow'{{endif}} {{if $row->unread()}}data-ips-unread{{else}}data-ips-read{{endif}} {$row->ui( 'dataAttributes' )}>
+				{{if $row->mapped('title') or $row->mapped('title') == 0}}<a href='{$row->url( "getPrefComment" )}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$row->mapped('title')}</span></a>{{endif}}
+				{{if member.member_id and $row->unread()}}
+					<a href='{$row->url( "getNewComment" )}' class="ipsData__icon" data-ipsTooltip='{lang="first_unread_post"}' data-ips-hook="unreadIcon">
+						<span class="ipsUserPhoto">
+							<img src="{$row->author()->photo}" alt="" loading="lazy">
+						</span>
+						{{if $row->author() != \IPS\Member::loggedIn() and  \in_array( $row->$idField, $table->contentPostedIn )}}
+							<span class="ipsUserPhoto">
+								<img src='{expression="\IPS\Member::loggedIn()->photo"}' alt='' loading="lazy">
+							</span>
+						{{endif}}
+						<span class="ipsInvisible">{lang="first_unread_post"}</span>
+					</a>
+				{{else}}
+					<div class="ipsData__icon">
+						<span class="ipsUserPhoto">
+							<img src="{$row->author()->photo}" alt="" loading="lazy">
+						</span>
+						{{if $row->author() != \IPS\Member::loggedIn() and \in_array( $row->$idField, $table->contentPostedIn )}}
+							<span class="ipsUserPhoto">
+								<img src='{expression="\IPS\Member::loggedIn()->photo"}' alt='' loading="lazy">
+							</span>
+						{{endif}}
+					</div>
+				{{endif}}
+				<div class='ipsData__content'>
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>
+							{{if member.member_id}}
+								{{if $row->unread() or \in_array( $row->$idField, $table->contentPostedIn )}}
+									<a href='{$row->url( "getNewComment" )}' class="ipsIndicator {{if \in_array( $row->$idField, $table->contentPostedIn )}}ipsIndicator--participated{{endif}}" aria-label='{{if $row->unread()}}{lang="first_unread_post"}{{else}}{lang="participated_in_content"}{{endif}}' data-ipsTooltip data-ips-hook="topicIcon"></a>
+								{{endif}}
+							{{endif}}
+							{{if $row->prefix()}}
+								{template="prefix" group="global" app="core" params="$row->prefix( TRUE ), $row->prefix()"}
+							{{endif}}
+							<h4 data-ips-hook="title">
+								<a href='{$row->url( "getPrefComment" )}' {{if $row->canEdit()}}{lang="click_hold_edit"}{{endif}}' {{if $row->tableHoverUrl and $row->canView()}} data-ipsHover data-ipsHover-target='{$row->url()->setQueryString('preview', 1)}' data-ipsHover-timeout='1.0'{{endif}}{{if $row->canEdit()}} data-role="editableTitle"{{endif}}>
+									<span>
+										{{if $row->mapped('title') or $row->mapped('title') == 0}}{$row->mapped('title')}{{else}}<em class="i-color_soft">{lang="content_deleted"}</em>{{endif}}
+									</span>
+								</a>
+							</h4>
+							{{if $row->commentPageCount() > 1}}
+								{$row->commentPagination( array(), 'miniPagination' )|raw}
+							{{endif}}
+							{template="assignmentBadge" app="core" group="global" params="$row, ''"}
+							<div class="ipsBadges">{{foreach $row->badges() as $badge}}{$badge|raw}{{endforeach}}</div>
+						</div>
+						<div class='ipsData__meta'>
+							{lang="byline_nodate" htmlsprintf="$row->author()->link( NULL, NULL, $row->isAnonymous() )"}, 
+							<a href='{$row->url()}'>{datetime="$row->mapped('date')"}</a>
+							{{if !\in_array( \IPS\Dispatcher::i()->controller, array( 'forums', 'index' ) )}}
+								{lang="in"} <a href="{$row->container()->url()}">{$row->container()->_title}</a>
+							{{endif}}
+						</div>
+						{{if \count( $row->tags() )}}
+							{template="tags" group="global" app="core" params="$row->tags(), true"}
+						{{endif}}
+					</div>
+					<span data-role="activeUsers"></span>
+					{{if $row->groupsPosted}}
+						{template="groupPostedBadges" group="global" app="core" location="front" params="$row->groupsPosted, 'topic_posted_in_groups'"}
+					{{endif}}
+					<div class="ipsData__extra">
+						<ul data-ips-hook="stats" class='ipsData__stats'>
+							{{foreach $row->stats(FALSE) as $k => $v}}
+								<li {{if $k == 'num_views'}} {{elseif \in_array( $k, $row->hotStats )}}class="ipsData__stats-hot" data-text='{lang="hot_item"}' data-ipsTooltip title='{lang="hot_item_desc"}'{{endif}} data-statType='{$k}' {{if $v === 0}}data-v="0"{{endif}}>
+									<span class='ipsData__stats-icon' data-stat-value='{number="$v" format="short"}' aria-hidden="true" data-ipstooltip title='{number="$v" format="short"} {lang="{$k}" pluralize="$v" format="short"}'></span>
+									<span class='ipsData__stats-label'>{number="$v" format="short"} {lang="{$k}" pluralize="$v" format="short"}</span>
+									{{if ( $k == 'forums_comments' OR $k == 'answers_no_number' ) && \IPS\forums\Topic::modPermission( 'unhide', NULL, $row->container() ) AND $unapprovedComments = $row->mapped('unapproved_comments')}}
+										<a href='{$row->url()->setQueryString( 'queued_posts', 1 )}' class='i-color_warning i-font-size_-2' data-ipsTooltip title='{lang="queued_posts_badge" pluralize="$row->topic_queuedposts"}'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i> <strong>{$unapprovedComments}</strong></a>
+									{{endif}}
+								</li>
+							{{endforeach}}
+						</ul>
+						<div data-ips-hook="latestData" class="ipsData__last">
+							{{if $row->mapped('num_comments')}}
+								{template="userPhoto" app="core" group="global" params="$row->lastCommenter(), 'fluid'"}
+							{{else}}
+								{template="userPhoto" app="core" group="global" params="$row->author(), 'fluid'"}
+							{{endif}}
+							<div class="ipsData__last-text">
+								<div class="ipsData__last-primary">
+									{{if $row->mapped('num_comments')}}
+										{{if $row->mapped('last_comment_anon')}}
+											{template="userLink" app="core" group="global" params="$row->author(), NULL, NULL, TRUE"}
+										{{else}}
+											{$row->lastCommenter()->link()|raw}
+										{{endif}}
+									{{else}}
+										{$row->author()->link( NULL, NULL, $row->isAnonymous() )|raw}
+									{{endif}}
+								</div>
+								<div class="ipsData__last-secondary">
+									{{if ! \IPS\Output::i()->reduceLinks()}}<a href='{$row->url( 'getLastComment' )}' title='{lang="get_last_post"}'>{{endif}}
+										{{if $row->mapped('last_comment')}}{datetime="$row->mapped('last_comment')"}{{else}}{datetime="$row->mapped('date')"}{{endif}}
+									{{if ! \IPS\Output::i()->reduceLinks()}}</a>{{endif}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{if $table->canModerate()}}
+					<label class="ipsData__mod">
+						<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+						<input type='checkbox' id='mod-checkbox-{$row->$idField}' class='ipsInput ipsInput--toggle' data-role='moderation' name="moderate[{$row->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='{{if $row->tableStates()}}{$row->tableStates()}{{endif}}'>
+					</label>
+				{{endif}}
+			</li>
+		{{endif}}
+	{{endforeach}}
+{{endif}}

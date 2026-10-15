@@ -1,0 +1,15 @@
+<ips:template parameters="$html" />
+{{if !\IPS\Request::i()->isAjax()}}
+    <html lang="{expression="\IPS\Member::loggedIn()->language()->bcp47()"}" dir="{{if member.language()->isrtl}}rtl{{else}}ltr{{endif}}" {{if isset(\IPS\Request::i()->cookie['acptheme']) AND \IPS\Request::i()->cookie['acptheme'] == 'dark'}}data-ips-scheme="dark"{{elseif !isset(\IPS\Request::i()->cookie['acptheme']) AND isset(\IPS\Request::i()->cookie['acpthemedefault']) AND \IPS\Request::i()->cookie['acpthemedefault'] == 'dark'}}data-ips-scheme="dark"{{else}}data-ips-scheme="light"{{endif}}>
+        <head>
+            <meta charset="utf-8">
+            {template="includeCSS" app="core" group="global" location="global" params=""}
+        </head>
+        <body>
+            {$html|raw}
+            {template="includeJS" app="core" group="global" location="global" params=""}
+        </body>
+    </html>
+{{else}}
+    {$html|raw}
+{{endif}}

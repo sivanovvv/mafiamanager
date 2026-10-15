@@ -1,0 +1,15 @@
+<ips:template parameters="$files, $pagination, $url" />
+{{if empty($files)}}
+	<div class='ipsEmptyMessage'>
+		{lang="no_results"}
+	</div>
+{{else}}
+	<div class="ipsAttachment_fileList ipsAttachment_fileList--grid">
+		{{foreach $files as $url => $file}}
+			{template="uploadFile" group="forms" location="global" params="preg_replace( '/' . preg_quote( \IPS\Settings::i()->base_url . 'applications/core/interface/file/attachment.php?id=', '/' ) . '(\d+)(&key=[a-z0-9]+)?/i', '$1', $url ), $file, NULL, TRUE, TRUE, $url"}
+		{{endforeach}}
+	</div>
+	<div class="i-font-size_-2 i-padding_1">
+		{$pagination|raw}
+	</div>
+{{endif}}

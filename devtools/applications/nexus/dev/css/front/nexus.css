@@ -1,0 +1,127 @@
+/* Category thumbnails */
+.ipsData--commerceCategories{
+	--i-data--basis: 320px;
+	--i-data--wallpaper-height: calc((16 / 10) * 100% - 100%);
+	text-align: center;
+}
+
+.cNexusPrice {
+	font-weight: 500;
+}
+
+	.cNexusPrice s {
+		color: var(--i-color_soft);
+		font-weight: normal;
+	}
+
+.cPayment {
+	display: inline-block;
+	width: 66px;
+	height: 42px;
+	border: 1px solid;
+	border-color: color-mix(in srgb, currentColor 10%, transparent);
+	background-color: var(--i-background_3);
+	background-size: cover;
+	background-position: 50%;
+}
+
+.cPayment_visa { background-image: url('{resource="cards/visa@2x.png" inCss="true" app="nexus" location="front" noprotocol="true"}'); }
+.cPayment_mastercard { background-image: url('{resource="cards/mastercard@2x.png" inCss="true"  app="nexus" location="front" noprotocol="true"}'); }
+.cPayment_american_express { background-image: url('{resource="cards/amex@2x.png" inCss="true"  app="nexus" location="front" noprotocol="true"}'); }
+.cPayment_discover { background-image: url('{resource="cards/discover@2x.png" inCss="true"  app="nexus" location="front" noprotocol="true"}'); }
+.cPayment_diners_club {	background-image: url('{resource="cards/dinersclub@2x.png" inCss="true"  app="nexus" location="front" noprotocol="true"}'); }
+.cPayment_jcb {	background-image: url('{resource="cards/jcb@2x.png" app="nexus" inCss="true"  location="front" noprotocol="true"}'); }
+.cPayment_paypal {	background-image: url('{resource="cards/paypal@2x.png" app="nexus" inCss="true"  location="front" noprotocol="true"}'); }
+.cPayment_venmo {	background-image: url('{resource="cards/venmo.svg" app="nexus" inCss="true"  location="front" noprotocol="true"}'); background-size: 80% auto; }
+
+.cNexusCard_expiry select {
+	width: 45%;
+}
+
+.cNexusPaymentLog .ipsData__icon {
+	font-size: 30px;
+}
+
+/* ORDERS */
+.cNexusOrderList .cNexusOrderBadge {
+	margin-inline-end: 15px;
+}
+
+.cNexusOrderBadge {
+	display: inline-block;
+	padding: 0 10px;
+	border-radius: 4px;
+	vertical-align: middle;
+	font-size: 12px;
+	line-height: 20px;
+	font-weight: 500;
+	color: #fff;
+	background: #000;
+}
+
+	.cNexusOrderBadge.cNexusOrderBadge_paid {
+		background: #7e9e64;
+	}
+
+	.cNexusOrderBadge.cNexusOrderBadge_expd {
+		background: #c8c9c1;
+	}
+
+	.cNexusOrderBadge.cNexusOrderBadge_pend {
+		background: #7C6146;
+	}
+
+
+
+/* v5 todo: The below code is for v5. Above is v4. */
+.ipsCommercePrices:not(:last-child){
+	margin-bottom: 1em;
+}
+.ipsCommercePrice{
+	font-weight: 600;
+	font-size: 1.1em;
+	color: var(--i-color_primary);
+}
+
+	.ipsCommercePrices small{
+		color: var(--i-color_soft);
+		font-size: inherit;
+	}
+
+	.ipsCommercePrices s{
+		filter: grayscale(1) opacity(.4);
+	}
+
+.ipsCommerceStock--in{
+	font-weight: 600;
+}
+.ipsCommerceStock--out{
+	font-weight: 500;
+	color: var(--i-color_negative);
+}
+
+
+/* Remove isolation from cart rows since it breaks the "Change quantity" menus while viewing the cart */
+.ipsData--cart-contents .ipsData__item{
+	isolation: auto;
+}
+
+.ipsStreamItem .cNexusPrice {
+	color: var(--i-color_primary);
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+	.ipsStreamItem .cNexusPrice s {
+		color: color-mix(in srgb, var(--i-color_soft) 70%, transparent);
+		font-weight: normal;
+	}
+
+	.ipsStreamItem .cNexusPrice :is(small, s) {
+		font-size: max(.8em, 11px);
+	}
+
+
+[data-role="paymentMethodForm"] .ipsInput--dummy:not(#x) {
+	display: block;
+}

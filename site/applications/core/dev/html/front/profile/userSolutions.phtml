@@ -1,0 +1,46 @@
+<ips:template parameters="$member, $types, $currentType, $table, $solutions" />
+{{if !\IPS\Request::i()->isAjax()}}
+<div class="ipsProfileContainer" data-controller='core.front.profile.main'>
+	{template="profileHeader" app="core" location="front" group="profile" params="$member, true, $solutions"}
+	<div data-role="profileContent">
+{{endif}}
+		<div class="ipsProfile ipsProfile--solutions">
+			<aside class="ipsProfile__aside">
+				<div class="ipsProfile__sticky-outer">
+					<div class="ipsProfile__sticky-inner">
+						<div class='ipsWidget'>
+							<div class='cProfileRepScore i-padding_2 cProfileRepScore--solutions'>
+								<h2 class='ipsMinorTitle i-color_inherit i-opacity_5'>{lang="profile_solutions"}</h2>
+								<span class='cProfileRepScore__points'>{number="$solutions"}</span>
+							</div>
+						</div>
+						{{if \count( $types ) > 1}}
+							<div class='i-padding_2 ipsBox'>
+								<div class="ipsSideMenu" data-ipsTabBar data-ipsTabBar-contentArea='#elUserSolutions' data-ipsTabBar-itemselector=".ipsSideMenu_item" data-ipsTabBar-activeClass="ipsSideMenu_itemActive" data-ipsSideMenu>
+									<h3 class="ipsSideMenu__view">
+										<a href="#user_solutions" data-action="openSideMenu"><i class="fa-solid fa-bars" aria-hidden="true"></i><span>{lang="user_content_type"}</span></a>
+									</h3>
+									<div class="ipsSideMenu__menu">
+										<ul class="ipsSideMenu__list">
+										{{foreach $types as $key => $type}}
+											<li><a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=solutions&type={$key}&change_section=1" seoTemplate="profile_solutions" seoTitle="$member->members_seo_name"}" class="ipsSideMenu_item {{if $currentType == $key}}ipsSideMenu_itemActive{{endif}}">{lang="{$type::$title}_pl"}</a></li>
+										{{endforeach}}
+										</ul>
+									</div>
+								</div>
+							</div>
+						{{endif}}
+					</div>
+				</div>
+			</aside>
+			<section class="ipsProfile__main ipsBox ipsPull">
+				<h2 class='ipsBox__header'>{lang="profile_solutions"}</h2>
+				<div id='elUserSolutions'>
+					{template="userSolutionsSection" group="profile" app="core" params="$table"}
+				</div>
+			</section>
+		</div>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+</div>
+{{endif}}	

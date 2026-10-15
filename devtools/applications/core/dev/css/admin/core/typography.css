@@ -1,0 +1,130 @@
+/* Pretty print and code */
+.ipsCode {
+	background: var(--i-background_2);
+	border-color: var(--i-background_5) !important;
+}
+[data-ips-scheme="dark"] .ipsApp .CodeMirror{
+	background: var(--i-background_1);
+	color: var(--i-color_hard);
+	border-color: var(--i-background_5);
+}
+    [data-ips-scheme="dark"] .CodeMirror-gutters{
+        border-color: var(--i-background_3);
+        background: var(--i-background_1);
+    }
+    [data-ips-scheme="dark"] .CodeMirror-linenumber{
+        color: var(--i-background_5);
+    }
+    [data-ips-scheme="dark"] .diffDeleted{
+        background: #673f3f;
+        color: #fff;
+    }
+    [data-ips-scheme="dark"] .diffInserted{
+        background: #52613f;
+        color: #fff;
+    }
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-merge-l-chunk {
+        background: var(--i-background_5);
+    }
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-merge-gap {
+        background: var(--i-background_6);
+    }
+
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-meta{ color: #a5acbd; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-tag { color: #a0dd96; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-attribute { color: #bdbdf9; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-string { color: #f9e1a8; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-comment { color: #fdc389; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-error { color: #d56262; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-qualifier { color: #86c1ab; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-atom { color: #f9d88a; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-number { color: #f7ca90; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-def { color: #a9a9ff; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-variable-3, 
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-type { color: #e3fbf2; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-keyword { color: #ffa1a1; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-variable-2{ color: #94c0ec; }
+    [data-ips-scheme="dark"] .ipsApp .cm-s-default .cm-builtin{ color: #b89cf9; }
+
+    [data-ips-scheme="dark"] .CodeMirror-selected { background: rgba(255,255,255,0.25); }
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-focused .CodeMirror-selected { background: rgba(255,255,255,0.25); }
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-line::selection, 
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-line > span::selection, 
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-line > span > span::selection { background: rgba(255,255,255,0.25); }
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-line::-moz-selection, 
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-line > span::-moz-selection, 
+    [data-ips-scheme="dark"] .ipsApp .CodeMirror-line > span > span::-moz-selection { background: rgba(255,255,255,0.25); }
+
+    [data-ips-scheme="dark"] .pln{
+    color: #fff
+}
+@media screen{
+    [data-ips-scheme="dark"] .str{
+        color:#f9e1a8
+    }
+    [data-ips-scheme="dark"] .kwd{
+        color:#ffa1a1
+    }
+    [data-ips-scheme="dark"] .com{
+        color:#fdc389
+    }
+    [data-ips-scheme="dark"] .typ{
+        color:#aeecd5
+    }
+    [data-ips-scheme="dark"] .lit{
+        color:#a9a9ff
+    }
+    [data-ips-scheme="dark"] .pun,
+    [data-ips-scheme="dark"] .opn,
+    [data-ips-scheme="dark"] .clo{
+        color:#f9d88a
+    }
+    [data-ips-scheme="dark"] .tag{
+        color:#a0dd96
+    }
+    [data-ips-scheme="dark"] .atn{
+        color:#d56262
+    }
+    [data-ips-scheme="dark"] .atv{
+        color:#a0dd96
+    }
+    [data-ips-scheme="dark"] .dec,
+    [data-ips-scheme="dark"] .var{
+        color:#d56262
+    }
+    [data-ips-scheme="dark"] .fun{
+        color: #ffa1a1
+    }
+}
+[data-ips-scheme="dark"] li.L1,
+[data-ips-scheme="dark"] li.L3,
+[data-ips-scheme="dark"] li.L5,
+[data-ips-scheme="dark"] li.L7,
+[data-ips-scheme="dark"] li.L9{
+    background: var(--i-background_2);
+}
+
+[data-ips-scheme="dark"] code [style*="color: #000000"]{
+	color: #fff !important;
+}
+[data-ips-scheme="dark"] code [style*="color: #0000BB"]{
+	color: #a9a9ff !important;
+}
+[data-ips-scheme="dark"] code [style*="color: #007700"]{
+	color: #a0dd96 !important;
+}
+[data-ips-scheme="dark"] code [style*="color: #DD0000"]{
+	color: #d67979 !important;
+}
+
+[data-ips-scheme="dark"] .CodeMirror-cursor{
+    border-color: #fff;
+}
+
+/* Export diff template names */
+.acpBlock_title{
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--i-color_hard);
+    padding: 1em;
+}

@@ -1,0 +1,5 @@
+<?php
+
+return <<<'VALUE'
+{"SSO":[],"Loader":[],"UINode":{"mafiamanager_MafiaForum":"IPS\\mafiamanager\\extensions\\core\\UINode\\MafiaForum"},"LiveSearch":{"core_Settings":"IPS\\core\\extensions\\core\\LiveSearch\\Settings","core_Clubs":"IPS\\core\\extensions\\core\\LiveSearch\\Clubs","core_Groups":"IPS\\core\\extensions\\core\\LiveSearch\\Groups","core_Members":"IPS\\core\\extensions\\core\\LiveSearch\\Members","forums_Forums":"IPS\\forums\\extensions\\core\\LiveSearch\\Forums"},"ContentRouter":{"core_Clubs":"IPS\\core\\extensions\\core\\ContentRouter\\Clubs","forums_Topics":"IPS\\forums\\extensions\\core\\ContentRouter\\Topics"},"Permissions":{"core_Permissions":"IPS\\core\\extensions\\core\\Permissions\\Permissions","forums_Permissions":"IPS\\forums\\extensions\\core\\Permissions\\Permissions"},"MFAHandler":[],"LoginHandler":[],"SearchContent":{"forums_Posts":"IPS\\forums\\extensions\\core\\SearchContent\\Posts"},"UIItem":{"mafiamanager_MafiaVoting":"IPS\\mafiamanager\\extensions\\core\\UIItem\\MafiaVoting"},"UserMenu":[],"ShareServices":[],"UIComment":[]}
+VALUE;

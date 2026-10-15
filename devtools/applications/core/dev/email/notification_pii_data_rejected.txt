@@ -1,0 +1,4 @@
+<ips:template parameters="$request, $email" />
+{$email->language->addToStack('email_notification_pii_data_rejected')}
+
+-- {setting="board_name"}

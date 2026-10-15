@@ -1,0 +1,26 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class=''" />
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--file-comment" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}}>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	<div class='i-background_2 i-padding_3'>
+		<h2 class='ipsTitle ipsTitle--h3'>{lang="write_review"}</h2>
+		<ul class='ipsForm ipsForm--vertical ipsForm--file-comment'>
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $input}}
+					{$input|raw}
+				{{endforeach}}
+			{{endforeach}}
+			<li class='ipsFieldRow'>
+				<div class='ipsFieldRow__content'>
+					<button type='submit' class='ipsButton ipsButton--primary'>{lang="add_review"}</button>
+				</div>
+			</li>
+		</ul>
+	</div>
+</form>

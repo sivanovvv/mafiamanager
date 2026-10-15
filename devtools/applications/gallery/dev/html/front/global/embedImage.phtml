@@ -1,0 +1,74 @@
+<ips:template parameters="$item, $url, $image=NULL" />
+
+<div class='ipsRichEmbed ipsRichEmbed--gallery-image'>
+	{template="embedHeader" group="embed" app="core" params="$item, $item->mapped('title'), $item->mapped('date'), $url"}
+	<div {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+		<figure class='ipsFigure ipsFigure--contain' {{if !$item->media }}style="--_backdrop:url('{file="$item->masked_file_name" extension="gallery_Images"}')"{{endif}}>
+			{{if $item->media }}
+				<div class='ipsFigure__main'>
+					<video data-controller="core.global.core.embeddedvideo" id="elGalleryVideo" data-role="video" controls preload="metadata" {{if $item->masked_file_name }} poster="{file="$item->masked_file_name" extension="gallery_Images"}"{{endif}}>
+						<source src="{file="$item->original_file_name" extension="gallery_Images"}" type='{$item->file_type}' />
+						<embed wmode="opaque" autoplay="true" showcontrols="true" showstatusbar="true" showtracker="true" src="{file="$item->original_file_name" extension="gallery_Images"}" width="480" height="360" type='{$item->file_type}' />
+					</video>
+				</div>
+			{{else}}
+				<a href='{$item->url()}' title='{lang="view_this_image" sprintf="$item->caption"}' class='ipsFigure__main'>
+					<img src='{file="$item->masked_file_name" extension="gallery_Images"}' alt="{$item->caption}" loading="lazy">
+				</a>
+			{{endif}}
+            {template="nsfwOverlay" app="gallery" location="front" group="global" params="$item, FALSE"}
+		</figure>
+	</div>
+	<div class='ipsRichEmbed__content'>
+		{{if $desc = $item->truncated(TRUE)}}
+			<div class='ipsRichEmbed__snippet'>
+				{$desc|raw}
+			</div>
+		{{endif}}
+		{{if $item->copyright}}
+			<p class='i-color_soft i-margin-top_2'>
+				&copy; {$item->copyright}
+			</p>
+		{{endif}}
+		{template="embedItemStats" group="embed" app="core" params="$item"}
+	</div>
+
+	{{if $item->directContainer() instanceof \IPS\gallery\Album}}
+		<div class='ipsRichEmbed_moreInfo'>
+			<h3 class='ipsMinorTitle ipsTruncate_1'>{lang="from_the_album"} "<a href='{$item->directContainer()->url()}'>{$item->directContainer()->_title}</a>"</h3>
+			{{$images = \IPS\Gallery\Image::getItemsWithPermission( array( array( 'image_album_id=?', $item->album_id ) ), ( $item->directContainer()->sort_options == 'title' ) ? 'image_caption ASC' : $item::$databasePrefix . $item::$databaseColumnMap[ $item->directContainer()->sort_options ] . ' DESC', 9 );}}
+
+			{{if \count( $images )}}
+				<ul class='cGalleryEmbed_albumStrip cGalleryEmbed_albumStrip_mini'>
+					{{foreach $images as $albumImage}}
+						<li>
+							<figure class='ipsFigure ipsFigure--ratio'>
+								<a href='{$albumImage->url()}' class='ipsFigure__main'>
+									{{if $albumImage->masked_file_name}}
+										<img src='{file="$albumImage->masked_file_name" extension="gallery_Images"}' loading="lazy" alt=''>
+									{{elseif $albumImage->media}}
+										<video preload="metadata" loading="lazy">
+											<source src="{file="$albumImage->original_file_name" extension="gallery_Images"}" type='{$albumImage->file_type}' />
+										</video>
+										<i class="ipsFigure__play" aria-hidden="true"></i>
+									{{else}}
+										<i class="ipsFigure__icon" aria-hidden="true"></i>
+									{{endif}}
+								</a>
+								{template="nsfwOverlay" app="gallery" location="front" group="global" params="$albumImage, FALSE"}
+							</figure>
+						</li>
+					{{endforeach}}
+
+					{{if $item->directContainer()->count_imgs > 9}}
+						<li>
+							<figure class='ipsFigure ipsFigure--ratio'>
+								<a href='{$item->directContainer()->url()}' class='ipsFigure__main'><span>+{expression="$item->directContainer()->count_imgs - 9"}</span></a>
+							</figure>
+						</li>
+					{{endif}}
+				</ul>
+			{{endif}}
+		</div>
+	{{endif}}
+</div>

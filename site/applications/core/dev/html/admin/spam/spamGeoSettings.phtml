@@ -1,0 +1,7 @@
+<ips:template parameters="$matrix" />
+
+{{if !\in_array( \IPS\Login::registrationType(), array( 'normal', 'full' ) ) OR !\IPS\Settings::i()->ipsgeoip}}
+<p class='ipsMessage ipsMessage--warning i-margin_1'>{lang="geolocation_settings_requirements"}</p>
+{{endif}}
+<p class='ipsMessage ipsMessage--info i-margin_1'>{lang="geolocation_settings_desc"}</p>
+{$matrix|raw}

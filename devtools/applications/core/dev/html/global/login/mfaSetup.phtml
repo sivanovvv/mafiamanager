@@ -1,0 +1,38 @@
+<ips:template parameters="$acceptableHandlers, $member, $url" />
+<div id='elTwoFactorAuthentication' class='ipsModal' data-controller='core.global.core.2fa'>
+	<div>
+		<form action="{$url}" method="post" accept-charset='utf-8' data-ipsForm class="ipsForm ipsForm--fullWidth">
+			<input type="hidden" name="mfa_setup" value="1">
+			<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+			{{$checked = NULL;}}
+			{{if \count( $acceptableHandlers ) > 1}}
+				<div class='i-background_2 i-text-align_center'>
+					<div class='i-padding_3'>
+						<h1 class='i-text-align_center ipsTitle ipsTitle--h3'>{lang="mfa_popup_setup_title"}</h1>
+						<p class='i-margin-top_2 i-margin-inline_auto ipsRichText c2FA_info'>
+							{lang="mfa_setup_multiple"}
+						</p>
+					</div>
+					<i-tabs class='ipsTabs ipsTabs--small ipsTabs--stretch i-background_2' id='ipsTabs_2fa' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_2fa_content'>
+						<div role='tablist'>
+							{{foreach $acceptableHandlers as $key => $handler}}
+								<button type="button" id='ipsTabs_2fa_{$key}' class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_2fa_{$key}_panel" aria-selected="{{if !$checked}}true{{$checked = $key;}}{{else}}false{{endif}}">
+									<input class='ipsJS_hide' type="radio" name="mfa_method" value="{$key}" id="el2FARadio_{$key}" {{if $checked == $key}}checked{{endif}}>
+									{lang="mfa_{$key}_title"}
+								</button>
+							{{endforeach}}						
+						</div>
+						{template="tabScrollers" app="core" group="global" location="global"}
+					</i-tabs>
+				</div>
+			{{endif}}
+			<div id='ipsTabs_2fa_content' class='ipsTabs__panels'>
+				{{foreach $acceptableHandlers as $key => $handler}}
+					<div id='ipsTabs_2fa_{$key}_panel' class="ipsTabs__panel" role="tabpanel" aria-labelledby="ipsTabs_2fa_{$key}" {{if $checked and $checked != $key}}hidden{{endif}}>
+						{$handler->configurationScreen( $member, ( \count( $acceptableHandlers ) > 1 ), $url )|raw}
+					</div>
+				{{endforeach}}
+			</div>
+		</form>
+	</div>
+</div>

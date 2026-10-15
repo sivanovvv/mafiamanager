@@ -1,0 +1,108 @@
+<ips:template parameters="$package, $active, $expiredRenewable, $expredNonRenewable, $canceledCanBeReactivated, $canceledCannotBeReactivated, $upgradeTo" />
+<p class="ipsMessage ipsMessage--error i-font-size_2">{lang="product_delete_blurb"}</p>
+<div class="ipsBox" data-ips-template="productDeleteWarning">
+	<h2 class="ipsBox__header">
+		{lang="product_delete_review"}
+	</h2>
+	<div class="i-padding_3">
+		<p>{lang="product_delete_review_desc"}</p>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--delete-review i-margin-top_1">
+				<li class="ipsData__item">
+					{{if $active}}
+						<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-xmark" aria-hidden="true"></i></div>
+						<div class="i-color_warning">
+					{{else}}
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">
+					{{endif}}
+						{{if $expiredRenewable or $expredNonRenewable or $package->renew_options}}
+							{lang="product_count_active" pluralize="$active"}
+						{{else}}
+							{lang="product_count_purchases" pluralize="$active"}
+						{{endif}}
+					</div>
+				</li>
+				{{if $expiredRenewable or $expredNonRenewable}}
+					<li class="ipsData__item">
+						{{if $expiredRenewable}}
+							<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-xmark" aria-hidden="true"></i></div>
+							<div class="i-color_warning">
+						{{else}}
+							<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+							<div class="i-color_positive">
+						{{endif}}
+						{lang="product_count_expired_split" pluralize="$expiredRenewable, $expredNonRenewable"}
+						</div>
+					</li>
+				{{endif}}
+				{{if $canceledCanBeReactivated or $canceledCannotBeReactivated}}
+					<li class="ipsData__item">
+						{{if $canceledCanBeReactivated}}
+							<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-xmark" aria-hidden="true"></i></div>
+							<div class="i-color_warning">
+						{{else}}
+							<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+							<div class="i-color_positive">
+						{{endif}}
+						{lang="product_count_canceled_split" pluralize="$canceledCanBeReactivated, $canceledCannotBeReactivated"}
+						</div>
+					</li>
+				{{endif}}
+			</ul>
+		</i-data>
+		<div class="i-margin-top_1">
+			<a href="{url="app=nexus&module=store&controller=packages&do=massManagePurchases&id={$package->_id}"}" class="ipsButton ipsButton--primary" data-ipsDialog data-ipsDialog-title="{$package->_title}">{lang="mass_change_all_purchases"}</a>
+			<a href="{url="app=nexus&module=store&controller=packages&do=viewPurchases&id={$package->_id}"}" class="ipsButton ipsButton--secondary">{lang="view_purchases"}</a>
+		</div>
+		<p class="i-margin-top_1">{lang="product_delete_review_complete"}</p>
+	</div>
+</div>
+<div class="ipsBox i-margin-top_1">
+	<h2 class="ipsBox__header">
+		{lang="product_delete_hide"}
+	</h2>
+	<div class="i-padding_3">
+		<p>{lang="product_delete_hide_desc"}</p>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--hide-product i-margin-top_1">
+				<li class="ipsData__item">
+					{{if $package->store}}
+						<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-xmark" aria-hidden="true"></i></div>
+						<div class="i-color_warning">
+					{{else}}
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">
+					{{endif}}
+						{lang="product_delete_hide_1"}
+					</div>
+				</li>
+				<li class="ipsData__item">
+					{{if $package->reg}}
+						<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-xmark" aria-hidden="true"></i></div>
+						<div class="i-color_warning">
+					{{else}}
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">
+					{{endif}}
+						{lang="product_delete_hide_2"}
+					</div>
+				</li>
+				<li class="ipsData__item">
+					{{if $upgradeTo}}
+						<div class="ipsData__icon i-color_warning i-font-size_2"><i class="fa-solid fa-xmark" aria-hidden="true"></i></div>
+						<div class="i-color_warning">
+					{{else}}
+						<div class="ipsData__icon i-color_positive i-font-size_2"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+						<div class="i-color_positive">
+					{{endif}}
+						{lang="product_delete_hide_3"}
+					</div>
+				</li>
+			</ul>
+		</i-data>
+		<div class="i-margin-top_1">
+			<a href="{url="app=nexus&module=store&controller=packages&subnode=1&do=form&id={$package->_id}"}" target="_blank" class="ipsButton ipsButton--primary">{lang="product_delete_edit"}</a>
+		</div>
+	</div>
+</div>

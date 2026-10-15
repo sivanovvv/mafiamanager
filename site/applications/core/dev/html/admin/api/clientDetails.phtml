@@ -1,0 +1,8 @@
+<ips:template parameters="$val, $agent=NULL" />
+{{if $agent}}
+	<span data-ipsTooltip title="{$val}">{lang="mobile_app_user_agent" sprintf="$agent->browserVersion, $agent->platform"}</span>
+{{elseif mb_strlen( $val ) > 40}}
+	<code title="{$val}">{expression="mb_substr( $val, 0, 37 )"}...</code>
+{{else}}
+	<code>{$val}</code>
+{{endif}}

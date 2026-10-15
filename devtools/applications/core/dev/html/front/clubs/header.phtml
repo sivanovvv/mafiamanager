@@ -1,0 +1,96 @@
+<ips:template parameters="$club, $container=NULL, $position='full', $page=NULL" />
+
+{{\IPS\Output::i()->cssFiles = array_merge( \IPS\Output::i()->cssFiles, \IPS\Theme::i()->css( 'styles/clubs.css', 'core', 'front' ) );}}
+
+{{$memberStatus = $club->memberStatus( \IPS\Member::loggedIn() );}}
+
+{{if $position == 'full'}}
+	<!-- FULL CLUB HEADER -->
+	<div id="elClubHeader" class='ipsPageHeader ipsBox ipsBox--clubHeader cClubHeader cClubHeader--main i-margin-bottom_block'>
+		{$club->coverPhoto(TRUE, 'full', ( $container ?? $page ) )|raw}
+		<div id='elClubControls'>
+			<div class='cClubControls__tabs'>
+				<i-tabs class='ipsTabs ipsTabs--stretch' id='ipsTabs_club' data-ipsTabBar data-ipsTabBar-disableNav data-controller="core.front.clubs.navbar" data-clubID="{$club->id}">
+					<div role='tablist' data-club-menu>
+						{{foreach $club->tabs( $container ) as $id => $tab}}
+							<a href="{$tab['href']}" class="ipsTabs__tab" role="tab" aria-controls="ipsTabs_club_{$id}_panel" aria-selected="{{if isset( $tab['isActive'] ) AND $tab['isActive']}}true{{else}}false{{endif}}" data-tab="{$id}">{$tab['title']}</a>
+						{{endforeach}}
+					</div>
+					{template="tabScrollers" app="core" group="global" location="global"}
+				</i-tabs>
+				<div id='elClubTabs_tab_content' class='ipsTabs__panels ipsHide'>
+					{{foreach $club->tabs( $container ) as $id => $tab}}
+						<div id="ipsTabs_club_{$id}_panel" class="ipsTabs__panel" role="tabpanel" hidden></div>
+					{{endforeach}}
+				</div>
+			</div>
+		</div>
+	</div>
+
+{{else}}
+	<!-- SIDEBAR CLUB HEADER -->
+	<div id="elClubHeader_small" class='cClubHeader cClubHeader--sidebar ipsWidget ipsWidget--vertical'>
+		{$club->coverPhoto(TRUE, 'sidebar' )|raw}
+		<div class='ipsWidget__padding' data-controller="core.front.clubs.navbar" data-clubID="{$club->id}">
+
+			<div class='i-flex i-align-items_center i-gap_2'>
+				<div class='i-flex_00 i-basis_50'>
+					{template="clubIcon" group="clubs" app="core" params="$club, 'fluid'"}
+				</div>
+				<div class='i-flex_11'>
+					<p class='i-font-weight_600 i-font-size_-1 i-color_soft'>{lang="club_currently_viewing"}</p>
+					<h1 class='ipsTitle ipsTitle--h3' data-ips-hook="badges">
+					    {{foreach $club->badges() as $badge}}{$badge|raw}{{endforeach}}
+						<a href='{$club->url()}'>{$club->name}</a>
+					</h1>
+				</div>
+			</div>
+
+			<ul class='ipsList ipsList--sep i-justify-content_center i-font-weight_600 i-color_soft i-margin-top_2 i-padding-top_2 i-border-top_2'>
+				<li>{lang="club_{$club->type}"}</li>
+				{{if $club->type !== $club::TYPE_PUBLIC}}
+					<li>{lang="club_members_count" pluralize="$club->members"}</li>
+				{{endif}}
+				{{if $club->isLeader() and $club->type === $club::TYPE_CLOSED and $pendingMembers = $club->members( array( $club::STATUS_REQUESTED ), NULL, NULL, 4 )}}
+					<li><a href='{$club->url()->setQueryString('do', 'members')->setQueryString('filter', 'requested')->setQueryString('filter', 'requested')}' class='i-color_issue'><i class='fa-solid fa-circle-info i-margin-end_icon' aria-hidden="true"></i>{lang="club_pending_members" pluralize="$pendingMembers"}</a></li>
+				{{endif}}
+			</ul>
+			
+
+			{{if $club->type !== \IPS\Member\Club::TYPE_PUBLIC and $club->type !== $club::TYPE_READONLY and $club->canJoin() and request.do != 'rules'}}
+				<a class="ipsButton ipsButton--primary i-width_100p i-margin-top_2" href="{$club->url()->setQueryString('do', 'join')->csrf()->addRef( \IPS\Request::i()->url() ) }" {{if $club->isPaid() and $memberStatus !== $club::STATUS_INVITED_BYPASSING_PAYMENT}}data-confirm data-confirmIcon="info" data-confirmMessage="{lang="club_membership_item"}" data-confirmSubmessage="{$club->memberFeeMessage()}"{{endif}}>{lang="club_join"}</a>
+			{{endif}}
+
+			{$club->menu( $container ?? $page )|raw}
+			<a href="#" data-action="saveClubmenu" class="ipsButton ipsButton--positive i-width_100p ipsHide i-margin-top_2">{lang="save"}</a>
+
+			<div class='ipsSideMenu i-margin-top_2'>
+				<ul class='ipsSideMenu__list' data-club-menu>
+					{{foreach $club->tabs( $container ) as $id => $tab}}
+						<li data-tab="{$id}">
+							<a href="{$tab['href']}" class="ipsSideMenu_item {{if isset( $tab['isActive'] ) AND $tab['isActive']}}ipsSideMenu_itemActive{{endif}}" role="tab"> {$tab['title']}</a>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+			
+			<div class='ipsResponsive_showPhone i-margin-top_2'>
+				<button type="button" id="elBrowseClub" popovertarget="elBrowseClub_menu" class='ipsButton ipsButton--inherit i-width_100p'><span>{lang="browse_club"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<i-dropdown popover id="elBrowseClub_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							<li class='iDropdown__title'>{lang="browse_club"}</li>
+							{{foreach $club->tabs( $container ) as $id => $tab}}
+								<li><a href="{$tab['href']}"> {$tab['title']}</a></li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</i-dropdown>
+			</div>
+
+			<ul class='ipsButtons i-margin-top_2'>
+				{$club->buttons()->contentHtml()|raw}
+			</ul>
+		</div>
+	</div>
+{{endif}}

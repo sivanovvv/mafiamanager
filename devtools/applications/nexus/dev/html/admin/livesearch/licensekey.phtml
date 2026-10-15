@@ -1,0 +1,7 @@
+<ips:template parameters="$lkey" />
+<li class='ipsPhotoPanel ipsPhotoPanel_mini i-padding_2' data-role='result'>
+	<div class="ipsPhotoPanel__text">
+		<h2 class='ipsPhotoPanel__primary'><a href='{$lkey->purchase->acpUrl()}'>{$lkey->key}</a></h2>
+		<p class='ipsPhotoPanel__secondary'>{$lkey->purchase->name} &middot; {lang="purchase_number" sprintf="$lkey->purchase->id"} &middot; {$lkey->purchase->member->cm_name}</p>
+	</div>
+</li>

@@ -1,0 +1,178 @@
+<ips:template parameters="$form, $category, $terms, $newSubmission=TRUE, $bulk=0, $postingInformation='', $versioning=0" />
+
+{{$nonInfoFields = array('files', 'import_files', 'url_files', 'screenshots', 'url_screenshots');}}
+{{$step = 1;}}
+
+{{if $newSubmission}}
+	{{if $bulk}}
+	{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack( 'submit_form_desc_bulk', TRUE, array( 'sprintf' => $category->_title ) )"}
+	{{else}}
+	{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack( 'submit_form_desc', TRUE, array( 'sprintf' => $category->_title ) )"}
+	{{endif}}
+{{else}}
+	{{if $versioning and !member.group['idm_bypass_revision']}}
+	{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack( 'upload_new_version' ), \IPS\Member::loggedIn()->language()->addToStack( 'new_version_versioning' )"}
+	{{else}}
+	{template="pageHeader" group="global" app="core" params="\IPS\Member::loggedIn()->language()->addToStack( 'upload_new_version' )"}
+	{{endif}}
+{{endif}}
+
+{{if $postingInformation}}
+{$postingInformation|raw}
+{{endif}}
+
+{{if $form->error}}
+<div class="ipsMessage ipsMessage--error">
+	{$form->error}
+</div>
+{{endif}}
+
+<form accept-charset='utf-8' method="post" action="{$form->action}" id='elDownloadsSubmit' enctype="multipart/form-data" {{if $category->bitoptions['allowss'] AND $category->bitoptions['reqss']}}data-screenshotsReq='1'{{endif}} {{if $bulk}}data-bulkUpload='1'{{endif}} {{if $category->multiple_files}}data-multipleFiles='true'{{endif}} {{if !$newSubmission}}data-newVersion='true'{{endif}} data-ipsForm data-ipsFormSubmit data-controller='downloads.front.submit.main'>
+	<input type="hidden" name="{$form->id}_submitted" value="1">
+	{{foreach $form->hiddenValues as $k => $v}}
+	<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+
+	<div class='ipsBox ipsBox--downloadsSubmit1 ipsPull i-margin-bottom_block'>
+		<h3 class='ipsBox__header'>{$step}{{$step++;}}. {{if $category->multiple_files}}{lang="select_your_files"}{{else}}{lang="select_your_file"}{{endif}}</h3>
+		<div class='i-padding_3'>
+			{{if isset( $form->elements['']['import_files'] ) || isset( $form->elements['']['url_files'] )}}
+			<ul class='ipsButtons ipsButtons--end i-margin-bottom_2'>
+				{{if isset( $form->elements['']['url_files'] )}}
+				<li>
+					<button type="button" id="elURLFiles" popovertarget="elURLFiles_menu" class='ipsButton ipsButton--soft ipsButton--small'>
+						<i class='fa-solid fa-earth-americas' aria-hidden="true"></i> {lang="add_files_by_url"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+						<span class='ipsNotification {{if !\count( $form->elements['']['url_files']->value )}}ipsHide{{endif}}' data-role='fileCount'>{expression="\count( $form->elements['']['url_files']->value )"}</span>
+					</button>
+					<i-dropdown popover id="elURLFiles_menu">
+						<div class="iDropdown">
+							<ul class='ipsForm ipsForm--fullWidth'>
+								{$form->elements['']['url_files']|raw}
+								<li class="ipsSubmitRow">
+									<button type="button" class='ipsButton ipsButton--wide ipsButton--primary' data-action='confirmUrls'>{lang="submit_menu_confirm"}</button>
+								</li>
+							</ul>
+						</div>
+					</i-dropdown>
+				</li>
+				{{endif}}
+				{{if isset( $form->elements['']['import_files'] )}}
+				<li>
+					<button type="button" id="elImportFiles" popovertarget="elImportFiles_menu" class='ipsButton ipsButton--soft ipsButton--small'>
+						<i class='fa-solid fa-folder' aria-hidden="true"></i> {lang="add_files_by_path"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+						<span class='ipsNotification {{if !\count( $form->elements['']['import_files']->value )}}ipsHide{{endif}}' data-role='fileCount'>{expression="\count( $form->elements['']['import_files']->value )"}</span>
+					</button>
+					<i-dropdown popover id="elImportFiles_menu">
+						<div class="iDropdown">
+							<ul class='ipsForm ipsForm--fullWidth'>
+								{$form->elements['']['import_files']|raw}
+								<li class="ipsSubmitRow">
+									<button type="button" class='ipsButton ipsButton--wide ipsButton--primary' data-action='confirmImports'>{lang="submit_menu_confirm"}</button>
+								</li>
+							</ul>
+						</div>
+					</i-dropdown>
+				</li>
+				{{endif}}
+			</ul>
+			{{endif}}
+			<div id='elDownloadsSubmit_progress' class="i-margin-bottom_2">
+				<div class='ipsProgress ipsProgress--animated' >
+					<div class='ipsProgress__progress' data-progress='0%'></div>
+				</div>
+			</div>
+			<div id='elDownloadsSubmit_uploader'>
+				{$form->elements['']['files']->html( $form )|raw}
+				{{if $category->multiple_files}}
+					<button type='button' class='ipsButton ipsButton--soft ipsButton--small ipsHide i-margin-top_3' data-action='uploadMore'>{lang="upload_more_files"}</button>
+				{{endif}}
+			</div>
+		</div>
+	</div>
+
+	{{if !$bulk }}
+	{{if $category->bitoptions['allowss'] }}
+		<div id='elDownloadsSubmit_screenshots'>
+			<div class='ipsBox ipsBox--downloadsSubmit2 ipsPull i-margin-bottom_block'>
+				<h3 class='ipsBox__header'>{$step}{{$step++;}}. {lang="add_screenshots"}</h3>
+				<div class='i-padding_3'>
+					{{if isset( $form->elements['']['url_screenshots'] )}}
+					<ul class='ipsButtons ipsButtons--end i-margin-bottom_2'>
+						<li>
+							<button type="button" id="elURLScreenshots" popovertarget="elURLScreenshots_menu" class='ipsButton ipsButton--soft ipsButton--small'>
+								<i class='fa-solid fa-earth-americas' aria-hidden="true"></i> {lang="add_screenshots_by_url"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+								<span class='ipsNotification {{if !isset( $form->elements['']['url_screenshots']->value['values'] ) OR !\count( $form->elements['']['url_screenshots']->value['values'] )}}ipsHide{{endif}}' data-role='fileCount'>{expression="\count( $form->elements['']['url_screenshots']->value['values'] ?? array() )"}</span>
+							</button>
+							<i-dropdown popover id="elURLScreenshots_menu">
+								<div class="iDropdown">
+									<ul class="ipsForm ipsForm--vertical">
+										{$form->elements['']['url_screenshots']|raw}
+										<li class="ipsSubmitRow">
+											<button type="button" class='ipsButton ipsButton--wide ipsButton--primary' data-action='confirmScreenshotUrls'>{lang="submit_menu_confirm"}</button>
+										</li>
+									</ul>
+								</div>
+							</i-dropdown>
+						</li>
+					</ul>
+					{{endif}}
+					{{if isset( $form->elements['']['screenshots'] )}}
+					<div id='elDownloadsSubmit_screenshots'>
+						{$form->elements['']['screenshots']->html( $form )|raw}
+					</div>
+					{{endif}}
+				</div>
+			</div>
+		</div>
+	{{endif}}
+
+	<div id='elDownloadsSubmit_otherinfo'>
+		<div class='ipsBox ipsBox--downloadsSubmit3 ipsPull i-margin-bottom_block'>
+			<h3 class='ipsBox__header'>{$step}{{$step++;}}. {{if $newSubmission}}{lang="submit_file_information"}{{else}}{lang="new_version_details"}{{endif}}</h3>
+			<ul class='ipsForm ipsForm--vertical ipsForm--submit-file'>
+				{{foreach $form->elements as $collection}}
+				{{foreach $collection as $fieldName => $input}}
+				{{if !\in_array( $fieldName, $nonInfoFields )}}
+				{$input|raw}
+				{{endif}}
+				{{endforeach}}
+				{{endforeach}}
+			</ul>
+		</div>
+
+		{{if $terms}}
+			<div class='ipsBox  ipsBox--downloadsSubmit4 ipsPull i-margin-bottom_block'>
+				<h3 class='ipsBox__header'>{$step}{{$step++;}}. {lang="csubmissionterms_placeholder"}</h3>
+				<div class='i-padding_3 ipsRichText'>
+					{$terms|raw}
+				</div>
+			</div>
+		{{endif}}
+	</div>
+	{{elseif $terms}}
+		<div class='ipsBox  ipsBox--downloadsSubmit5 ipsPull i-margin-bottom_block'>
+			<h3 class='ipsBox__header'>{$step}{{$step++;}}. {lang="csubmissionterms_placeholder"}</h3>
+			<div class='i-padding_3 ipsRichText'>
+				{$terms|raw}
+			</div>
+		</div>
+	{{endif}}
+
+	<div class='ipsBox ipsBox--downloadsSubmit6 ipsPull i-padding_2 i-text-align_center'>
+		<button type='submit' class='ipsButton ipsButton--primary' data-role='submitForm'>
+			{{if $bulk}}
+				{lang="continue"}
+			{{else}}
+				{{if $newSubmission}}
+					{{if $category->multiple_files}}
+						{lang="save_and_submit_files"}
+					{{else}}
+						{lang="save_and_submit_file"}
+					{{endif}}
+				{{else}}
+					{lang="save_and_submit_new_version"}
+				{{endif}}
+			{{endif}}
+		</button>
+	</div>
+</form>

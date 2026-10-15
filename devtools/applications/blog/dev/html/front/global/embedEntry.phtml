@@ -1,0 +1,25 @@
+<ips:template parameters="$entry, $blog, $url" />
+
+<div class='ipsRichEmbed ipsRichEmbed--blog-entry'>
+	{template="embedHeader" group="embed" app="core" params="$entry, $entry->mapped('title'), $entry->mapped('date'), $url"}
+	{{if $entry->coverPhoto() && $entry->coverPhoto()->file}}
+		{{$photo = $entry->coverPhoto()->file;}}
+		<a href='{$entry->url( "getPrefComment" )}' title='{$entry->_title}' class='ipsRichEmbed_masthead'>
+			<img src='{$photo->url}' alt='{$entry->_title}' loading="lazy">
+		</a>
+	{{elseif $blog->coverPhoto() && $blog->coverPhoto()->file}}
+		{{$photo = $blog->coverPhoto()->file;}}
+		<a href='{$blog->url()}' title='{$blog->_title}' class='ipsRichEmbed_masthead'>
+			<img src='{$photo->url}' alt='{$blog->_title}' loading="lazy">
+		</a>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+		<div>
+			{template="embedEntryItemSnippet" group="global" app="blog" params="$blog"}
+			<div class='ipsRichEmbed__snippet'>
+				{$entry->truncated(TRUE)|raw}
+			</div>
+		</div>
+		{template="embedItemStats" group="embed" app="core" params="$entry"}
+	</div>
+</div>

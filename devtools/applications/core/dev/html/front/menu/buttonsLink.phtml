@@ -1,0 +1,9 @@
+<ips:template parameters="$element"/>
+<li {{foreach $element->wrapperDataAttributes as $attributeKey => $attributeValue}}	{$attributeKey}="{$attributeValue}"	{{endforeach}}>
+	<a data-id="{$element->id}" href="{$element->url}" class="{$element->css}"
+			{{foreach $element->dataAttributes as $attributeKey => $attributeValue}}
+				{$attributeKey}="{$attributeValue}"
+			{{endforeach}}>
+		{{if $element->icon}}<i class="{$element->icon}" aria-hidden="true"></i>{{endif}} <span>{lang="$element->title"}</span> {{if $element->notificationIcon}}<span class='ipsNotification'><i class="{$element->notificationIcon}" aria-hidden="true"></i></span>{{endif}}
+	</a>
+</li>

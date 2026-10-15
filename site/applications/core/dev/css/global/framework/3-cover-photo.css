@@ -1,0 +1,328 @@
+/*
+	----------------
+	- Cover photos
+	----------------
+*/
+
+.ipsCoverPhoto {
+	display: grid;
+}
+
+.ipsPageHeader .ipsCoverPhoto{
+	padding: 8px;
+	padding-bottom: 0;
+}
+
+.ipsCoverPhoto > *{
+	grid-area: 1/1;
+}
+
+	.ipsCoverPhoto__container {
+		background-color: var(--i-background_6);
+		aspect-ratio: 4;
+		position: relative;
+		overflow: hidden;
+		border-radius: inherit;
+		transition-property: aspect-ratio;
+		transition-duration: .3s;
+		transition-timing-function: ease-in-out;
+		border-radius: var(--i-box--bo-ra);
+		min-height: 160px;
+		max-width: 100%;
+	}
+
+	.ipsCoverPhoto__container::after{
+		content: '';
+		position: absolute;
+		inset: 0;
+		border: 1px solid currentColor;
+		opacity: .3;
+		border-radius: inherit;
+		pointer-events: none;
+	}
+
+	/* Shorter cover photos */
+	.ipsCoverPhoto--minimal .ipsCoverPhoto__container {
+		aspect-ratio: 10;
+	}
+
+	/* Expanded */
+	.ipsCoverPhoto--expanded .ipsCoverPhoto__container{
+		aspect-ratio: var(--coverPhoto--ratio, auto);
+		min-height: 0;
+	}
+
+	/* Expand cursors */
+	.ipsCoverPhoto__image[data-action="toggleCoverPhoto"]{
+		cursor: zoom-in;
+	}
+	.ipsCoverPhoto--expanded .ipsCoverPhoto__image[data-action="toggleCoverPhoto"]{
+		cursor: zoom-out;
+	}
+
+	/* Cover Photo dropdown menu items: The JS requires clicks on 'a', not 'span' or FA icon */
+	.ipsMenu--coverPhoto :is(span, i){
+		pointer-events: none;
+	}
+
+/* Remove edit button from widgets */
+.cWidgetContainer .ipsCoverPhoto [id^="elEditPhoto_"]{
+	display: none;
+}
+
+	.ipsCoverPhoto__image {
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		object-position: 50% calc(clamp(0, var(--offset), 100) * 1%);
+		user-select: none;
+	}
+
+	/* Editing using scroll */
+	.ipsCoverPhoto--editing .ipsCoverPhoto__container{
+		overflow-y: auto;
+		cursor: ns-resize;
+		overscroll-behavior: contain;
+		scrollbar-width: none;
+	}
+
+	.ipsCoverPhoto--editing .ipsCoverPhoto__container::-webkit-scrollbar {
+		-webkit-appearance: none;
+		width: 0px;
+	}
+
+	.ipsCoverPhoto--editing .ipsCoverPhoto__container::after{
+		content: none;
+	}
+
+	.ipsCoverPhoto--editing .ipsCoverPhoto__image{
+		position: static;
+		display: block;
+		height: auto;
+		min-height: 100%; /* Ensure wide and short images work on mobile */
+		pointer-events: none;
+	}	
+
+	.ipsCoverPhoto--editing [data-hideoncoveredit]{
+		display: none;
+	}
+
+	.ipsCoverPhoto__overlay-buttons {
+		place-self: start end;
+		margin: 10px;
+		transition: opacity .3s linear;
+		position: relative;
+		display: flex;
+		gap: 8px;
+	}
+
+	.ipsCoverPhoto--expanded .ipsCoverPhoto__overlay-buttons{
+		opacity: 0;
+		pointer-events: none;
+	}
+
+/* Editing tooltip */
+.ipsCoverPhoto__tooltip{
+	align-self: start;
+	justify-self: center;
+	transform: translateY(calc(-100% - 10px));
+
+	background: var(--i-tooltip--ba-co);
+	color: hsl(0 0% 100%);
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	font-size: 13px;
+	line-height: 1.6;
+	font-weight: 500;
+	padding: .5em 1em;
+	border-radius: 6px;
+	box-shadow: 0 2px 6px hsl(0 0% 0% / 0.1);
+	max-width: min(100% - 40px, 30em);
+	text-align: center;
+	transition-property: display, opacity, translate;
+	transition-behavior: allow-discrete;
+	transition-duration: .3s;
+
+	opacity: 0;
+	translate: 0 20px;
+}
+
+.ipsCoverPhoto__tooltip:not([hidden]) {
+	opacity: 1;
+	translate: 0 0;
+}
+
+@starting-style {
+	.ipsCoverPhoto__tooltip:not([hidden]) {
+		opacity: 0;
+		translate: 0 20px;
+	}
+}
+
+
+
+
+
+
+
+
+
+/* Coverphoto Footers */
+.ipsCoverPhotoMeta{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1em;
+	padding: 1em 2em;
+}
+
+/* Hide empty cover photo footers. These can occur if no footer is specified, since the wrapper still exists. Page Records are an example */
+.ipsCoverPhotoMeta:not(:has(*)){
+	display: none;
+}
+
+	.ipsCoverPhoto__avatar{
+		flex: 0 0 50px;
+		position: relative;
+	}
+
+.ipsCoverPhoto__buttons{
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-inline-start: auto;
+}
+
+	.ipsCoverPhoto__buttons > *,
+	.ipsCoverPhoto__buttons .ipsButton{
+		flex-grow: 1;
+	}
+.ipsCoverPhoto__title{
+	font-size: 1.6em;
+	font-weight: 700;
+}
+
+	.ipsCoverPhoto__title :is(h1, h2, h3, h4){
+		color: var(--i-color_hard);
+		line-height: 1.2;
+	}
+
+	.ipsCoverPhoto__title a:not(.ipsBadge){
+		color: inherit;
+	}
+
+	.ipsCoverPhoto__title :is(h1, h2, h3, h4):not(:only-child){
+		display: inline;
+	}
+
+	:where(.ipsCoverPhoto__title > *){
+		margin-inline-end: .3em;
+	}
+
+	.ipsCoverPhoto__title-icon{
+		font-size: max(11px, .6em);
+		margin-top: calc(1ex - 1cap);
+	}
+
+.ipsCoverPhoto__subTitle{
+	font-weight: 500;
+	color: var(--i-color_soft);
+}
+
+.ipsCoverPhoto__stats{
+	display: flex;
+	flex-wrap: wrap;
+	white-space: nowrap;
+	gap: 1px;
+	overflow: hidden;
+}
+
+.ipsCoverPhoto__stats li{
+	flex: 1 1 auto;
+	position: relative;
+	padding: .5em clamp(1em, 3vw, 2.5em);
+	outline: 1px solid var(--i-background_3);
+}
+
+.ipsCoverPhoto__stats li:has(.ipsCoverPhoto__link):hover{
+	background: var(--i-background_2);
+}
+
+	.ipsCoverPhoto__statTitle{
+		font-weight: 600;
+		color: var(--i-color_hard);
+	}
+
+	/* Capitalize the first letter since some language strings are lowercase (Blogs) */
+	.ipsCoverPhoto__statTitle:first-letter{
+		text-transform: capitalize;
+	}
+
+	.ipsCoverPhoto__statValue{
+		color: var(--i-color_root);
+		font-weight: 500;
+	}
+
+	.ipsCoverPhoto__statValue a{
+		color: inherit;
+	}
+
+	/* Always show long dates */
+	.ipsCoverPhoto__statValue .ipsTime__long{
+		display: revert;
+	}
+	.ipsCoverPhoto__statValue .ipsTime__short{
+		display: none;
+	}
+
+	.ipsCoverPhoto__link{
+		position: absolute;
+		inset: 0;
+	}
+
+@media (max-width: 979px){
+	.ipsCoverPhotoMeta{
+		padding: 1em;
+	}
+	.ipsCoverPhoto__titles{
+		flex: 999 1 auto;
+	}
+	.ipsCoverPhoto__buttons{
+		flex: 1 1 auto;
+	}
+	.ipsCoverPhoto__stats{
+		order: 1;
+		flex: 1 1 100%;
+		text-align: center;
+		border: 1px solid var(--i-background_3);
+		border-width: 1px 0 0 0;
+		margin: 0 -1em -1em;
+	}
+}
+
+@media (min-width: 980px){
+	.ipsCoverPhoto__avatar{
+		flex-basis: 120px;
+		margin-bottom: -.5em;
+		margin-inline-start: -.5em;
+		margin-inline-end: .5em;
+		align-self: flex-end;
+		transition: flex-basis .3s linear;
+	}
+	.ipsCoverPhoto--expanded ~ .ipsCoverPhotoMeta .ipsCoverPhoto__avatar{
+		flex-basis: 70px;
+	}
+	.ipsCoverPhoto__avatar .ipsUserPhoto{
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		border: 3px solid var(--i-background_1);
+	}
+	.ipsCoverPhoto__titles{
+		margin-inline-end: 1.5em;
+	}
+	.ipsCoverPhoto__stats{
+		border-inline-start: 1px solid var(--i-background_3);
+	}
+}

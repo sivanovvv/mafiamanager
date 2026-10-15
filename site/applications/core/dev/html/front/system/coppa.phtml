@@ -1,0 +1,20 @@
+<ips:template parameters="$form, $postBeforeRegister" />
+
+<section class='i-padding_3 i-text-align_center'>
+	{{if $postBeforeRegister}}
+		<h1 class='ipsTitle ipsTitle--h2'>{lang="post_before_register_headline"}</h1>
+		<p class='i-font-size_2 i-color_soft i-font-weight_500 i-margin-top_1'>{lang="post_before_register_subtext"}</p>
+	{{else}}
+		<h1 class='ipsTitle ipsTitle--h2'>{lang='sign_up'}</h1>
+		<p class='i-font-size_2 i-color_soft i-font-weight_500 i-margin-top_1'>{lang="existing_user"} <a href='{url="app=core&module=system&controller=login" seoTemplate="login"}'>{lang="sign_in_short"}</a></p>
+	{{endif}}
+	<div data-role='registerForm'>
+		<section class='i-margin-top_3'>
+			<p class='i-font-size_2'><strong>{lang="coppa_verify"}</strong></p>
+			<p class='i-color_soft i-margin-bottom_3'>
+				{lang="coppa_verification_only"} {{if \IPS\Settings::i()->privacy_type != "none"}} <a href='{{if \IPS\Settings::i()->privacy_type == "internal"}}{url="app=core&module=system&controller=privacy" seoTemplate="privacy"}{{else}}{setting="privacy_link"}{{endif}}'>{lang="privacy"}</a>.{{endif}}
+			</p>
+			{$form->customTemplate( array( \IPS\Theme::i()->getTemplate( 'system', 'core', 'front' ), 'coppaForm' ) )|raw}
+		</section>
+	</div>
+</section>

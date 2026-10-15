@@ -1,0 +1,13 @@
+<ips:template parameters="$idx, $data, $layout='table', $isCarousel=false" />
+<div class="ipsPhotoPanel">
+	{template="userPhoto" app="core" group="global" params="$data['member'], 'fluid'"}
+	<div class='ipsPhotoPanel__text'>
+		<p class='ipsPhotoPanel__primary'>
+			<a href='{url="app=core&module=members&controller=profile&id={$data['member']->member_id}&do=content&type=downloads_file" base="front" seoTitles="$data['member']->members_seo_name" seoTemplate="profile_content"}'>{$data['member']->name}</a>
+		</p>
+		<div class='ipsPhotoPanel__secondary i-flex i-gap_2'>
+			<div data-ipsTooltip title='{lang="top_avg_rating"}'>{template="rating" group="global" location="front" app="core" params="'small', $data['rating'], \IPS\Settings::i()->reviews_rating_out_of"}</div>
+			{lang="download_file_count" pluralize="$data['files']"}
+		</div>
+	</div>
+</div>

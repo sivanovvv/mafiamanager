@@ -1,0 +1,18 @@
+<ips:template parameters="$item, $url" />
+<div class='ipsRichEmbed ipsRichEmbed--forum-topic'>
+	{template="embedHeader" group="embed" app="core" params="$item, $item->mapped('title'), $item->mapped('date'), $url"}
+	{{if $contentImage = $item->contentImages(1)}}
+		{{$attachType = key( $contentImage[0] );}}
+		{{$firstPhoto = \IPS\File::get( $attachType, $contentImage[0][ $attachType ] );}}
+		<a href='{$url}' class='ipsRichEmbed_masthead'>
+			<img src='{$firstPhoto->url}' alt='' loading="lazy">
+		</a>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+		<div class='ipsRichEmbed__snippet'>
+			{$item->truncated(TRUE)|raw}
+		</div>
+
+		{template="embedItemStats" group="embed" app="core" params="$item"}
+	</div>
+</div>

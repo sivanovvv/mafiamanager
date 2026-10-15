@@ -1,0 +1,11 @@
+<ips:template parameters="$author, $id, $type = NULL, $anonymous=false, $solvedCount=null, $remoteLoading=false" />
+<!-- Mini profile -->
+{{if $author?->member_id}}
+	<div id='mini-profile-{{if $type}}{$type}-{{endif}}{$id}' data-ips-hidden-animation="slide-fade" hidden class="ipsEntry__profile-row {{if $remoteLoading}}ipsLoading ipsLoading--small{{endif}}">
+        {{if $remoteLoading}}
+            <ul class='ipsEntry__profile'></ul>
+        {{else}}
+            {template="miniProfile" app="core" location="front" group="global" params="$author, $anonymous, $solvedCount"}
+        {{endif}}
+	</div>
+{{endif}}

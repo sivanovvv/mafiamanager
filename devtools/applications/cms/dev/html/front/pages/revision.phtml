@@ -1,0 +1,10 @@
+<ips:template parameters="$version" />
+{{if $version}}
+{{$url = $version->page->url()->setQueryString( [ 'do' => 'revertToVersion', 'version' => $version->id ] )->csrf();}}
+<div class='ipsMessage ipsMessage--info i-position_sticky-top'>
+    <div class="i-flex i-align-items_center i-justify-content_space-between">
+        <div>{lang="viewing_page_revision"}</div>
+        <div><a href='{$url}' data-confirm class='ipsButton ipsButton--primary ipsButton--small'>{lang="page_version_use"}</a></div>
+    </div>
+</div>
+{{endif}}

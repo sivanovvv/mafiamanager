@@ -1,0 +1,260 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class='', $attributes=array(), $sidebar=NULL, $form=NULL" />
+<div data-controller='core.front.streams.form'>
+	<form accept-charset='utf-8' class="ipsForm ipsForm--vertical ipsForm--filter-inline-form" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} data-ipsForm id='elFilterForm'>
+		<input type="hidden" name="{$id}_submitted" value="1">
+		{{foreach $hiddenValues as $k => $v}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endforeach}}
+		{{if $uploadField}}
+			<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+			<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+		{{endif}}
+		<div class='' id='elStreamFilterForm' data-ips-hidden-animation="slide" hidden>
+			<ul class='cStreamFilter ipsJS_show' data-role="filterBar">
+				<li data-filter='stream_include_comments'>
+					<button type="button" id="elStreamShowMe" popovertarget="elStreamShowMe_menu" class="cStreamFilter__toggle">
+						<i class='ipsMenuCaret' aria-hidden="true"></i>
+						<span class='cStreamFilter__title'>{lang="stream_include_comments"}</span>
+						<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+					</button>
+				</li>
+				<li data-filter='stream_classes'>
+					<button type="button" id="elStreamContentTypes" popovertarget="elStreamContentTypes_menu" class="cStreamFilter__toggle">
+						<i class='ipsMenuCaret' aria-hidden="true"></i>
+						<span class='cStreamFilter__title'>{lang="stream_classes_type"}</span>
+						<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+					</button>
+				</li>
+				{{if \IPS\Member::loggedIn()->member_id}}
+					{{if isset( $elements['']['stream_read'] )}}
+					<li data-filter='stream_read'>
+						<button type="button" id="elStreamReadStatus" popovertarget="elStreamReadStatus_menu" class="cStreamFilter__toggle">
+							<i class='ipsMenuCaret' aria-hidden="true"></i>
+							<span class='cStreamFilter__title'>{lang="stream_read"}</span>
+							<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+						</button>
+					</li>
+					{{endif}}
+                    {{if isset( $elements['']['stream_solved'] )}}
+                    <li data-filter='stream_solved'>
+                        <button type="button" id="elStreamSolvedStatus" popovertarget="elStreamSolvedStatus_menu" class="cStreamFilter__toggle">
+							<i class='ipsMenuCaret' aria-hidden="true"></i>
+                            <span class='cStreamFilter__title'>{lang="stream_solved"}</span>
+                            <span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+						</button>
+                    </li>
+                    {{endif}}
+					{{if isset( $elements['']['stream_ownership'] )}}
+					<li data-filter='stream_ownership'>
+						<button type="button" id="elStreamOwnership" popovertarget="elStreamOwnership_menu" class="cStreamFilter__toggle">
+							<i class='ipsMenuCaret' aria-hidden="true"></i>
+							<span class='cStreamFilter__title'>{lang="stream_ownership"}</span>
+							<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+						</button>
+					</li>
+					{{endif}}
+					{{if isset( $elements['']['stream_follow'] )}}
+					<li data-filter='stream_follow'>
+						<button type="button" id="elStreamFollowStatus" popovertarget="elStreamFollowStatus_menu" class="cStreamFilter__toggle">
+							<i class='ipsMenuCaret' aria-hidden="true"></i>
+							<span class='cStreamFilter__title'>{lang="stream_follow"}</span>
+							<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+						</button>
+					</li>
+					{{endif}}
+				{{endif}}
+				{{if isset( $elements['']['stream_date_type'] )}}
+				<li data-filter='stream_date_type'>
+					<button type="button" id="elStreamTimePeriod" popovertarget="elStreamTimePeriod_menu" class="cStreamFilter__toggle">
+						<i class='ipsMenuCaret' aria-hidden="true"></i>
+						<span class='cStreamFilter__title'>{lang="stream_date_type"}</span>
+						<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+					</button>
+				</li>
+				{{endif}}
+				<li data-filter='stream_sort'>
+					<button type="button" id="elStreamSortEdit" popovertarget="elStreamSortEdit_menu" class="cStreamFilter__toggle">
+						<i class='ipsMenuCaret' aria-hidden="true"></i>
+						<span class='cStreamFilter__title'>{lang="stream_sorting"}</span>
+						<span class='cStreamFilter__blurb' data-role='filterOverview'></span>
+					</button>
+				</li>
+			</ul>
+			{{if \IPS\Member::loggedIn()->member_id }}
+				<div data-role="saveButtonContainer" class="ipsHide">
+					<ul class='i-flex i-justify-content_end i-gap_1 i-flex-wrap_wrap i-align-items_center i-background_2 i-padding_1 '>
+						<li><strong>{lang="stream_save_changes"}</strong></li>
+						<li><button type="button" class='ipsButton ipsButton--negative' data-action='dismissSave'><i class="fa-solid fa-trash-can" aria-hidden="true"></i>{lang="stream_save_dismiss"}</button></li>
+						<li>
+							<button type="button" id="elSaveNewStream" popovertarget="elSaveNewStream_menu" class='ipsButton ipsButton--positive' data-action='saveNewStream'><i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i>{lang="stream_button_save_as_new"}<i class="ipsMenuCaret" aria-hidden="true"></i></button>
+						</li>
+						{{if isset( $hiddenValues['__stream_owner'] ) and $hiddenValues['__stream_owner'] === \IPS\Member::loggedIn()->member_id}}
+							<li>
+								<button type='button' class='ipsButton ipsButton--primary' data-action='saveStream' id='elSaveStream'><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>{lang="stream_button_save"}</button>
+							</li>
+						{{endif}}
+					</ul>
+				</div>
+			{{endif}}
+
+			<i-dropdown popover id="elStreamSortEdit_menu" data-i-dropdown-persist>
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						<li>
+							<label>
+								<input type="radio" name="stream_sort" value="newest" {{if (string) $elements['']['stream_sort']->value == 'newest'}}checked{{endif}} id="elRadio_stream_sort_newest">
+								{lang="stream_sort_newest"}
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="radio" name="stream_sort" value="oldest" {{if (string) $elements['']['stream_sort']->value == 'oldest'}}checked{{endif}} id="elRadio_stream_sort_oldest">
+								{lang="stream_sort_oldest"}
+							</label>
+						</li>
+					</ul>
+				</div>
+			</i-dropdown>
+
+			<!-- Show me menu -->
+			<i-dropdown popover id="elStreamShowMe_menu" data-i-dropdown-persist>
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						{{foreach $elements['']['stream_include_comments']->options['options'] as $k => $v}}
+							<li>
+								<label>
+									<input type="radio" name="stream_include_comments" value="{$k}" {{if (string) $elements['']['stream_include_comments']->value == $k}}checked{{endif}} id="stream_ownership_{$k}">
+									{lang="$v"}
+								</label>
+							</li>
+						{{endforeach}}
+					</ul>
+					{{if isset( $elements['']['stream_tags'] )}}
+						<!-- Tags menu -->
+						<div class='i-padding_2'>
+							<input type="hidden" name="stream_tags_type" value="custom">
+							<h3 class='i-padding-bottom_2 i-font-weight_500 i-color_hard'>{lang="stream_tagged_with"}</h3>
+							<div class='ipsFieldRow--fullWidth'>
+								{$elements['']['stream_tags']->html()|raw}
+								<p class='i-font-size_-2 i-color_soft i-margin-top_1'>{lang="tags_desc"}</p>
+							</div>
+						</div>
+					{{endif}}
+				</div>
+			</i-dropdown>
+
+			<!-- Content types menu -->
+			<i-dropdown popover id="elStreamContentTypes_menu" data-i-dropdown-persist>
+				<div class="iDropdown">
+					<div class="i-padding_2">
+						{template="filterFormShowMe" group="streams" params="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class, $attributes, $sidebar, $form, FALSE"}
+					</div>
+				</div>
+			</i-dropdown>
+
+			{{if \IPS\Member::loggedIn()->member_id}}
+				<!-- Read Status menu -->
+				<i-dropdown popover id="elStreamReadStatus_menu" data-i-dropdown-persist>
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{foreach $elements['']['stream_read']->options['options'] as $k => $v}}
+								<li>
+									<label>
+										<input type="radio" name="stream_read" value="{$k}" {{if (string) $elements['']['stream_read']->value == $k}}checked{{endif}} id="elRadio_stream_read_{$k}">
+										<div>
+											{lang="$v"}
+											{{if $k == 'unread'}}
+												<span class="iDropdown__minor">
+													{lang="stream_read_unread_desc"}
+												</span>
+											{{endif}}
+										</div>
+									</label>
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</i-dropdown>
+				<!-- Ownership menu -->
+				<i-dropdown popover id="elStreamOwnership_menu" data-i-dropdown-persist>
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{foreach $elements['']['stream_ownership']->options['options'] as $k => $v}}
+								<li>
+									<label>
+										<input type="radio" name="stream_ownership" value="{$k}" {{if (string) $elements['']['stream_ownership']->value == $k}}checked{{endif}} id="stream_ownership_{$k}">
+										{lang="$v"}
+									</label>
+								</li>
+							{{endforeach}}
+						</ul>
+						<ul>
+							{template="filterFormOwnership" group="streams" params="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class, $attributes, $sidebar, $form, FALSE"}
+						</ul>
+					</div>
+				</i-dropdown>
+				<!-- Follow status menu -->
+				<i-dropdown popover id="elStreamFollowStatus_menu" data-i-dropdown-persist>
+					<div class="iDropdown">
+						<input type='hidden' name='stream_follow' value='{$elements['']['stream_follow']->value}'>
+						<ul class="iDropdown__items">
+							{{foreach $elements['']['stream_followed_types']->options['options'] as $type => $lang}}
+								<li>
+									<label>
+										<input type='checkbox' name='stream_followed_types[{$type}]' value='1' {{if $elements['']['stream_followed_types']->value !== 0 && \in_array( $type, $elements['']['stream_followed_types']->value ) !== FALSE && (string) $elements['']['stream_follow']->value !== 'all'}}checked{{endif}}>
+										{lang="$lang"}
+									</label>
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				</i-dropdown>
+			{{endif}}
+            <!-- Solved Status menu -->
+			<i-dropdown popover id="elStreamSolvedStatus_menu" data-i-dropdown-persist>
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						{{foreach $elements['']['stream_solved']->options['options'] as $k => $v}}
+						<li>
+							<label>
+								<input type="radio" name="stream_solved" value="{$k}" {{if (string) $elements['']['stream_solved']->value == $k}}checked{{endif}} id="elRadio_stream_solved_{$k}">
+								{lang="$v"}
+							</label>
+						</li>
+						{{endforeach}}
+					</ul>
+				</div>
+			</i-dropdown>
+			<!-- Time Period menu -->
+			<i-dropdown popover id="elStreamTimePeriod_menu" data-i-dropdown-persist>
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						{{foreach $elements['']['stream_date_type']->options['options'] as $k => $v}}
+							<li>
+								<label>
+									<input type="radio" name="stream_date_type" value="{$k}" {{if (string) $elements['']['stream_date_type']->value == $k}}checked{{endif}} id="stream_date_type_{$k}">
+									{lang="$v"}
+								</label>
+							</li>
+						{{endforeach}}
+					</ul>
+					<ul>
+						{template="filterFormTimePeriod" group="streams" params="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class, $attributes, $sidebar, $form, FALSE"}
+					</ul>
+				</div>
+			</i-dropdown>
+		</div>
+		<i-dropdown popover id="elSaveNewStream_menu">
+			<div class="iDropdown">
+				<ul class="ipsForm ipsForm--vertical">
+					<li class='ipsFieldRow'>
+						<input type='text' name='stream_title' value='{{if isset( $elements['']['stream_title'] )}}{$elements['']['stream_title']->value}{{endif}}' placeholder='{lang="stream_title"}' class='ipsInput ipsInput--text ipsInput--wide' {{if !empty($elements['']['stream_title']->options['maxLength'])}}maxLength="{$elements['']['stream_title']->options['maxLength']}"{{endif}}>
+					</li>
+					<li class='ipsSubmitRow'>
+						<button type='submit' data-action='newStream' class='ipsButton ipsButton--primary ipsButton--wide'>{lang="stream_new_stream"}</button>
+					</li>
+				</ul>
+			</div>
+		</i-dropdown>
+	</form>
+</div>

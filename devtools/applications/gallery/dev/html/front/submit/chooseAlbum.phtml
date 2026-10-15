@@ -1,0 +1,56 @@
+<ips:template parameters="$category, $createAlbumForm, $canCreateAlbum, $maximumAlbums, $existingAlbumForm" />
+
+<div class='cGalleryChooseAlbum_wrap' data-controller='gallery.front.submit.chooseCategory'>
+	<div data-role='chooseAlbumType' class='cGalleryChooseAlbum_list'>
+		<ul>
+			{{if $category->allow_albums != 2}}
+				<li>
+					<a href='#' class='cGalleryChooseAlbum_listItem' data-type='category'>
+						<h2 class='ipsTitle ipsTitle--h3'>{lang="use_no_album"}</h2>
+						<p class='i-color_soft'>{lang="submit_directly_to" sprintf="$category->_title"}</p>
+					</a>
+					<form action="{url="app=gallery&module=gallery&controller=submit&category={$category->_id}&noAlbum=1" seoTemplate="gallery_submit"}" class='ipsHide'>
+						<button type="submit" class="ipsButton ipsButton--primary">{lang="use_no_album"} <i class='fa-solid fa-caret-right' aria-hidden="true"></i></button>	
+					</form>
+				</li>
+			{{endif}}
+			<li>
+				<a href='#' class='cGalleryChooseAlbum_listItem' data-type='createAlbum' {{if !$canCreateAlbum || !$createAlbumForm}}data-disabled{{endif}}>
+					<h2 class='ipsTitle ipsTitle--h3'>{lang="create_new_album"}</h2>
+					<p class='i-color_soft'>
+						{{if $createAlbumForm}}
+							{lang="submit_new_album"}
+						{{elseif !$canCreateAlbum}}
+							{lang="cannot_create_album"}
+						{{else}}
+							{lang="used_max_albums" sprintf="$maximumAlbums"}
+						{{endif}}
+					</p>
+				</a>
+			</li>
+			<li>
+				<a href='#' class='cGalleryChooseAlbum_listItem' data-type='existingAlbum' {{if !$existingAlbumForm}}data-disabled{{endif}}>
+					<h2 class='ipsTitle ipsTitle--h3'>{lang="choose_existing_album"}</h2>
+					<p class='i-color_soft'>
+						{{if $existingAlbumForm}}
+							{lang="choose_existing_album_desc"}
+						{{else}}
+							{lang="no_existing_albums"}
+						{{endif}}
+					</p>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	{{if $createAlbumForm}}
+		<div data-role='createAlbumForm' hidden>
+			{$createAlbumForm|raw}
+		</div>
+	{{endif}}
+	{{if $existingAlbumForm}}
+		<div data-role='existingAlbumForm' hidden>
+			{$existingAlbumForm|raw}
+		</div>
+	{{endif}}
+</div>

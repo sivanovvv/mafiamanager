@@ -1,0 +1,34 @@
+<ips:template parameters="$members, $memberCount, $layout='table', $isCarousel=false" />
+<div style="border-radius:inherit">
+    <h3 class='ipsWidget__header'>
+        {{if \IPS\Dispatcher::i()->application->directory !== 'core'}}
+            <span>{lang="block_activeUsers"}</span>
+        {{else}}
+            <span>{lang="block_activeUsers_noApp"}</span>
+        {{endif}}
+        <span class='ipsWidget__header-secondary i-color_soft' data-memberCount="{$memberCount}" data-ipsTooltip title='{lang="block_user_online_info" pluralize="$memberCount"}'><i class="fa-regular fa-user i-margin-end_icon" aria-hidden="true"></i>{$memberCount}</span>
+    </h3>
+    <div class='ipsWidget__content ipsWidget__padding'>
+        <ul class='ipsList ipsList--csv'>
+            {{if $memberCount}}
+            {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members' ) ) }}
+                {{foreach $members as $row}}
+                    <li data-memberId="{$row['member_id']}"><a href="{url="app=core&module=members&controller=profile&id={$row['member_id']}" seoTemplate="profile" seoTitle="$row['seo_name']"}" data-ipsHover data-ipsHover-target='{url="app=core&module=members&controller=profile&id={$row['member_id']}&do=hovercard" seoTemplate="profile" seoTitle="$row['seo_name']"}' {{if $row['in_editor']}}data-ipsTooltip="{lang="block_user_in_editor"}"{{else}}title="{lang="view_user_profile" sprintf="$row['member_name']"}"{{endif}}>{{if $row['in_editor']}}<em>{{endif}}{expression="\IPS\Member\Group::load( $row['member_group'] )->formatName( $row['member_name'] )" raw="true"}{{if $row['in_editor']}}</em>{{endif}}</a></li>
+                {{endforeach}}
+            {{else}}
+                {{foreach $members as $row}}
+                    <li data-memberId="{$row['member_id']}">{{if $row['in_editor']}}<i class="fa-solid fa-circle-notch fa-spin" data-ipsTooltip="{lang="block_user_in_editor"}" aria-hidden="true"></i>{{endif}}
+                        {expression="\IPS\Member\Group::load( $row['member_group'] )->formatName( $row['member_name'] )" raw="true"}</li>
+                {{endforeach}}
+            {{endif}}
+            {{else}}
+                <li class='i-color_soft i-font-weight_500' data-noneOnline>{lang="active_users_empty"}</li>
+            {{endif}}
+        </ul>
+        {{if $memberCount > 60 && $orientation == 'vertical'}}
+            <p class='i-margin-top_2 i-font-weight_500'>
+                <a href='{url="app=core&module=online&controller=online" seoTemplate="online"}' class='i-color_soft'>{lang="and_x_others" pluralize="$memberCount - 60"}</a>
+            </p>
+        {{endif}}
+    </div>
+</div>

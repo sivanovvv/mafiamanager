@@ -1,0 +1,16 @@
+<ips:template parameters="$position" />
+<a href='{setting="base_url"}' data-ips-hook="logo" class='ipsLogo ipsLogo--{$position}'>
+	{{if $position === 'desktop' or $position === 'side'}}
+		{template="logoImg" group="global" app="core" params="'front', 'light', 'logo-light', 'desktop'"}
+		{template="logoImg" group="global" app="core" params="'front-dark', 'dark', 'logo-dark', 'desktop'"}
+	{{else}}
+		{template="logoImg" group="global" app="core" params="'mobile', 'light', 'mobile-logo-light', 'mobile'"}
+		{template="logoImg" group="global" app="core" params="'mobile-dark', 'dark', 'mobile-logo-dark', 'mobile'"}
+	{{endif}}
+  	<div class='ipsLogo__text'>
+		<span class='ipsLogo__name' data-ips-theme-text='set__i-logo-text'>{theme="var.set__i-logo-text"}</span>
+		{{if cssvar.set__i-logo-slogan != " " or \IPS\Member::loggedIn()->isEditingTheme()}}
+			<span class='ipsLogo__slogan' data-ips-theme-text='set__i-logo-slogan'>{theme="var.set__i-logo-slogan"}</span>
+		{{endif}}
+	</div>
+</a>

@@ -1,0 +1,86 @@
+<ips:template parameters="$member, $small=FALSE, $solutions=FALSE" />
+{{$coverPhoto = $member->coverPhoto();}}
+<header class="ipsPageHeader ipsBox ipsBox--profileHeader ipsPull i-margin-bottom_block" data-ips-hook="profileHeader" data-role="profileHeader">
+	<div class='ipsCoverPhoto ipsCoverPhoto--profile {{if $small === true}}ipsCoverPhoto--minimal{{endif}}' id='elProfileHeader' data-controller='core.global.core.coverPhoto' data-url="{$member->url()->csrf()}" data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}'>
+		{{if $coverPhoto->file}}
+			<div class='ipsCoverPhoto__container'>
+				<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' data-action="toggleCoverPhoto" alt='' loading='lazy'>
+			</div>
+		{{else}}
+			<div class='ipsCoverPhoto__container'>
+				<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$member->coverPhotoBackgroundColor()};"></div>
+			</div>
+		{{endif}}
+		{{if \IPS\Member::loggedIn()->modPermission('can_modify_profiles') or ( \IPS\Member::loggedIn()->member_id == $member->member_id )}}
+			<div class="ipsCoverPhoto__overlay-buttons" data-hideoncoveredit data-ips-hook="profileHeaderMenu">{expression="$member->menu( 'profile' )" raw="true"}</div>
+		{{endif}}
+	</div>
+	<div class="ipsCoverPhotoMeta">
+		<div class='ipsCoverPhoto__avatar' id='elProfilePhoto'>
+			{{if $member->pp_main_photo and ( mb_substr( $member->pp_photo_type, 0, 5 ) === 'sync-' or $member->pp_photo_type === 'custom' )}}
+				<a href='{file="$member->pp_main_photo" extension="core_Profile"}' data-ipsLightbox class='ipsUserPhoto'>
+					<img src='{$member->photo}' alt='' loading='lazy'>
+				</a>
+			{{else}}
+				<span class='ipsUserPhoto'>
+					<img src='{$member->photo}' alt='' loading='lazy'>
+				</span>
+			{{endif}}
+		</div>
+		<div class='ipsCoverPhoto__titles'>
+			<div class='ipsCoverPhoto__title'>
+				<h1>{$member->name}</h1>
+				{{if \IPS\Member::loggedIn()->group['g_view_displaynamehistory'] AND $member->hasNameChanges()}}
+					<a href='{$member->url()->setQueryString( 'do', 'namehistory' )}' class='ipsCoverPhoto__title-icon' title='{lang="membername_history"}' data-ipsTooltip data-ipsDialog data-ipsDialog-modal='true' data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="membername_history"}'>
+						<i class='fa-solid fa-clock-rotate-left' aria-hidden="true"></i>
+					</a>
+				{{endif}}
+				{{if \IPS\Member::loggedIn()->member_id AND \IPS\Member::loggedIn()->member_id === $member->member_id AND $member->isOnlineAnonymously()}}
+					<span class='ipsCoverPhoto__title-icon' title='{lang="member_is_currently_anon"}' data-ipsTooltip>
+						<i class='fa-solid fa-eye-slash' aria-hidden="true"></i>
+					</span>
+				{{endif}}
+			</div>
+			<div class='ipsCoverPhoto__desc'>
+				{expression="\IPS\Member\Group::load( $member->member_group_id )->formattedName" raw="true"}
+			</div>
+		</div>
+		<ul class="ipsCoverPhoto__stats" data-ips-hook="profileHeaderStats">
+			<li>
+				<h4 class='ipsCoverPhoto__statTitle'>{lang="joined"}</h4>
+				<span class='ipsCoverPhoto__statValue'>{datetime="$member->joined"}</span>
+			</li>
+			{{if ( !$member->isOnlineAnonymously() ) OR ( $member->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() )}}
+				<li>
+					<h4 class='ipsCoverPhoto__statTitle'>{lang="members_last_visit"}</h4>
+					<span class='ipsCoverPhoto__statValue'>
+						{{if $member->last_activity}}{datetime="$member->last_activity"}{{else}}{lang="never"}{{endif}}
+						{{if $member->isOnline() AND ( !$member->isOnlineAnonymously() OR ( $member->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) )}}
+							<i class="ipsOnline" data-ipsTooltip title='{{if $member->isOnlineAnonymously()}}{lang="online_now_anon" sprintf="$member->name"}{{elseif $member->isOnline()}}{lang="online_now" sprintf="$member->name"}{{endif}}' aria-hidden="true"></i>
+						{{endif}}
+					</span>
+				</li>
+			{{endif}}
+			{{if $member->isOnline() AND ( !$member->isOnlineAnonymously() OR ( $member->isOnlineAnonymously() AND \IPS\Member::loggedIn()->isAdmin() ) ) AND $member->location}}
+				<li>
+					<h4 class='ipsCoverPhoto__statTitle'>{lang="online_users_location_lang"}</h4>
+					<span class='ipsCoverPhoto__statValue'>{$member->location()|raw}</span>
+				</li>
+			{{endif}}
+		</ul>
+		<div class='ipsCoverPhoto__buttons' data-ips-hook="profileHeaderButtons">
+			{{if \IPS\Member::loggedIn()->member_id != $member->member_id}}
+				{{if \IPS\Member::loggedIn()->member_id != $member->member_id and ( !$member->members_bitoptions['pp_setting_moderate_followers'] or \IPS\Member::loggedIn()->following( 'core', 'member', $member->member_id ) )}}
+					{template="memberFollow" app="core" group="profile" params="'core', 'member', $member->member_id, $member->followersCount()"}
+				{{endif}}
+				{{if \IPS\Member::loggedIn()->member_id && !$member->members_disable_pm and !\IPS\Member::loggedIn()->members_disable_pm and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+					<a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$member->member_id}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}" class='ipsButton ipsButton--inherit'><i class='fa-solid fa-envelope' aria-hidden="true"></i><span>{lang="message_send"}</span></a>
+				{{endif}}
+			{{endif}}
+
+			<a href='{$member->url()}' class='ipsButton ipsButton--primary' data-action="goToProfile" data-type='full' title="{lang="members_profile" sprintf="$member->name"}"><i class="fa-regular fa-circle-user" aria-hidden="true"></i><span>{lang="profile_view_profile"}</span></a>
+
+			<a href="{url="app=core&module=members&controller=profile&do=content&id={$member->member_id}" base="front" seoTemplate="profile_content" seoTitle="$member->members_seo_name"}" rel="nofollow" class='ipsButton ipsButton--primary' data-action="browseContent" data-type='full' title="{lang="members_content" sprintf="$member->name"}"><i class="fa-regular fa-file-lines" aria-hidden="true"></i><span>{{if member.member_id === $member->member_id}}{lang="profile_browse_my_content"}{{else}}{lang="profile_browse_content"}{{endif}}</span></a>
+		</div>
+	</div>
+</header>

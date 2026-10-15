@@ -1,0 +1,10 @@
+<ips:template parameters="$number" />
+{{if $details = \IPS\nexus\Tax::validateVAT( $number )}}
+	{{if $details['address']}}
+		<span title="{$details['name']}, {$details['address']}" data-ipsTooltip class="cVatNumber">{$details['countryCode']}{$details['vatNumber']}</span>
+	{{else}}
+		{$details['countryCode']}{$details['vatNumber']}
+	{{endif}}
+{{else}}
+	{$number}
+{{endif}}

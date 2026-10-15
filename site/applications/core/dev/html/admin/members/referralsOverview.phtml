@@ -1,0 +1,11 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+{{if \count( $rows )}}
+	<i-data>
+		<ul class='ipsData ipsData--table ipsData--referralsOverview'>
+			{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+		</ul>
+	</i-data>
+{{else}}
+	<p class='ipsEmptyMessage'>{lang="no_referrals"}</p>
+{{endif}}

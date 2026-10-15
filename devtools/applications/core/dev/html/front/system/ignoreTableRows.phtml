@@ -1,0 +1,43 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if empty($rows)}}
+	<li class='ipsEmptyMessage'>
+		<div class=''>{lang="no_results"}</div>
+	</li>
+{{else}}
+	{{foreach $rows as $r}}
+		<li class='ipsData__item' id='elIgnoreRow{$r['ignore_ignore_id']}' data-role="ignoreRow" data-ignoreUserID='{$r['ignore_ignore_id']}' data-controller='core.front.ignore.existing'>
+			<div class='ipsData__icon'>
+				{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $r['ignore_ignore_id'] ), 'fluid'"}
+			</div>
+			<div class="ipsData__content">
+				<div class='ipsData__main'>
+					<h4 class='ipsData__title' data-role="ignoreRowName">{member="name" id="$r['ignore_ignore_id']"}</h4>
+					<ul class='ipsList ipsList--inline i-margin-top_1 i-gap_2'>
+						{{foreach \IPS\core\Ignore::types() as $t}}
+							{{if $r["ignore_{$t}"]}}
+								<li><i class="fa-solid fa-ban i-font-size_-2 i-opacity_5" aria-hidden="true"></i> {lang="ignore_$t"}</li>
+							{{endif}}
+						{{endforeach}}
+						<li>
+							<button type="button" id="elUserIgnore{$r['ignore_ignore_id']}" popovertarget="elUserIgnore{$r['ignore_ignore_id']}_menu" data-action='ignoreMenu'>
+								<i class='fa-solid fa-gear' aria-hidden="true"></i> <i class='fa-solid fa-caret-down' aria-hidden="true"></i>
+							</button>
+						</li>
+					</ul>
+					<i-dropdown popover id="elUserIgnore{$r['ignore_ignore_id']}_menu">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								<li>
+									<a href='{url="app=core&module=system&controller=ignore&do=edit&id={$r['ignore_ignore_id']}"}' data-ipsMenuValue='edit' data-ipsDialog data-ipsDialog-remoteSubmit data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="edit_ignore_for" sprintf="\IPS\Member::load( $r['ignore_ignore_id'] )->name"}'>{lang="change_ignored_content"}</a>
+								</li>
+								<li>
+									<a href='{url="app=core&module=system&controller=ignore&do=remove&id={$r['ignore_ignore_id']}" csrf="true"}' data-ipsMenuValue='remove'>{lang="stop_ignoring_user"}</a>
+								</li>
+							</ul>
+						</div>
+					</i-dropdown>
+				</div>
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

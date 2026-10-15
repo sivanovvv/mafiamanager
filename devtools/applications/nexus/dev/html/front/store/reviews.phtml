@@ -1,0 +1,58 @@
+<ips:template parameters="$item" />
+
+<div data-controller='core.front.core.commentFeed' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-baseURL='{$item->url()}' {{if $item->isLastPage('reviews')}}data-lastPage{{endif}} data-feedID='{$item->reviewFeedId}' id='reviews'>
+	{{if $item->reviewForm()}}
+		<div id='elProductReviewForm'>
+			{$item->reviewForm()|raw}
+		</div>
+	{{else}}
+		{{if $item->hasReviewed()}}
+			<!-- Already reviewed -->
+		{{elseif \IPS\Member::loggedin()->restrict_post}}
+			{{if \IPS\Member::loggedIn()->restrict_post == -1}}
+				{template="reviewUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment'"}
+			{{else}}
+				{template="reviewUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment', \IPS\Member::loggedIn()->warnings(5,NULL,'rpa'), \IPS\Member::loggedIn()->restrict_post"}
+			{{endif}}
+		{{elseif \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+			{template="reviewUnavailable" group="forms" location="front" app="core" params="'unacknowledged_warning_cannot_post', \IPS\Member::loggedIn()->warnings( 1, FALSE )"}
+		{{endif}}
+	{{endif}}
+	{{if $reviews = $item->reviews( NULL, NULL, NULL, 'desc', NULL, NULL, NULL, NULL, isset( \IPS\Request::i()->showDeleted ) ) AND \count( $reviews )}}
+		{{if !$item->hasReviewed()}}<hr class='ipsHr'>{{endif}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			{{if $item->reviewPageCount() > 1}}
+				<div class="ipsButtonBar__pagination">
+					{$item->reviewPagination( array( 'tab', 'sort' ) )|raw}
+				</div>
+			{{endif}}
+			<div class='ipsButtonBar__end'>
+				{template="commentMultimodHeader" app="core" group="global" params="$item, '#reviews', 'review'"}
+				<ul class='ipsDataFilters'>
+					<li data-action="tableFilter">
+						<a href="{$item->url()->setQueryString( array( 'tab' => 'reviews', 'sort' => 'helpful' ) )->setPage('page',1)}" class="ipsDataFilters__button {{if !isset( request.sort ) or request.sort != 'newest'}}ipsDataFilters__button--active{{endif}}" data-action="filterClick">{lang="most_helpful"}</a>
+					</li>
+					<li data-action="tableFilter">
+						<a href="{$item->url()->setQueryString( array( 'tab' => 'reviews', 'sort' => 'newest' ) )->setPage('page',1)}" class="ipsDataFilters__button {{if isset( request.sort ) and request.sort == 'newest'}}ipsDataFilters__button--active{{endif}}" data-action="filterClick">{lang="newest"}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div data-role='commentFeed' data-controller='core.front.core.moderation'>
+			<form action="{$item->url()->csrf()->setQueryString( 'do', 'multimodReview' )->setPage('page',\IPS\Request::i()->page)}" method="post" data-ipsPageAction data-role='moderationTools'>
+				{{foreach $reviews as $review}}
+					{$review->html()|raw}
+				{{endforeach}}
+				{template="commentMultimod" app="core" group="global" params="$item, 'review'"}
+			</form>
+		</div>
+		{{if $item->reviewPageCount() > 1}}
+			<div>
+				{$item->reviewPagination( array( 'tab', 'sort' ) )|raw}
+			</div>
+		{{endif}}
+	{{elseif !$item->canReview()}}
+		<p class="ipsEmptyMessage" data-role="noReviews">{lang="no_reviews"}</p>
+	{{endif}}
+</div>

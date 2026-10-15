@@ -1,0 +1,28 @@
+<ips:template parameters="$name, $value, $required, $options, $multiple=FALSE, $class='', $disabled=FALSE, $toggles=array(), $id=NULL, $unlimited=NULL, $unlimitedLang='all', $unlimitedToggles=array(), $toggleOn=TRUE, $descriptions=array(), $impliedUnlimited=FALSE" />
+{{if $multiple}}
+<input type="hidden" name="{$name}[__EMPTY]" value="__EMPTY">
+{{endif}}
+
+<div data-control="granularCheckboxset" data-count="{expression="\count( $options )"}">
+
+<div data-role="checkboxsetGranular" class=" ">
+
+    <div class="ipsSpanGrid">
+        {{foreach $options as $k => $v}}
+       <div class="ipsSpanGrid__4">
+					<span class=''>
+						<input type="checkbox" {{if $class}}class="{$class}"{{endif}} name="{$name}[{$k}]" value="1" {{if ( $unlimited !== NULL AND $unlimited === $value ) or ( \is_array( $value ) AND \in_array( $k, $value ) )}}checked{{endif}} {{if $disabled === TRUE or ( \is_array( $disabled ) and \in_array( $k, $disabled ) )}}disabled{{endif}} {{if isset( $toggles[ $k ] ) and !empty( $toggles[ $k ] )}}data-control="toggle" {{if $toggleOn === FALSE}}data-togglesOff{{else}}data-togglesOn{{endif}}="{expression="implode( ',', $toggles[ $k ] )"}"{{endif}} id="elCheckbox_{$name}_{$k}">
+                        <span class="ipsFieldRow_label">     <label for='elCheckbox_{$name}_{$k}' id='elField_{$name}_label' data-role="label">{$k|raw}</label>
+                        </span>
+                         {{if isset( $descriptions[ $k ] )}}
+                        <div class="ipsFieldList__content">
+                            {$descriptions[ $k ]|raw}
+                        </div>
+                        {{endif}}
+					</span>
+
+       </div>
+        {{endforeach}}
+    </div>
+</div>
+</div>

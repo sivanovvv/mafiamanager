@@ -1,0 +1,26 @@
+<ips:template parameters="$value, $previousValue=NULL, $nodes=array()" />
+	<div>
+		<span class='cStat__number cStat__number--medium' data-number='{$value}'>{expression="\IPS\DateTime::roundedDiffFromSeconds( (int) $value )"}</span>
+		{{if isset( $previousValue )}}
+			<p class='cStat__change cStat__change--large {{if $previousValue < $value}}i-color_negative{{elseif $previousValue > $value}}i-color_positive{{else}}i-color_soft{{endif}}' data-ipsTooltip title="{lang="previous_period"} {expression="\IPS\DateTime::roundedDiffFromSeconds( (int) $previousValue )"}">
+				{{if $previousValue > $value}}
+					-{expression="round( 100 - ( $value / $previousValue * 100 ), 2 )"}%
+				{{elseif $previousValue < $value}}
+					{{if $previousValue}}+{expression="round( ( ( $value - $previousValue ) / $previousValue ) * 100, 2 )"}%{{else}}+ ∞{{endif}}
+				{{else}}
+					&mdash;
+				{{endif}}
+			</p>
+		{{endif}}
+
+		{{if \count( $nodes )}}
+			<hr class='ipsHr'>
+			<div class='i-flex'>
+				<div class='cStatTile__split'>
+					<p class='cStat__change cStat__change--small'>
+						{lang="overview_stats_curfilter" list="$nodes"}
+					</p>
+				</div>
+			</div>
+		{{endif}}
+	</div>

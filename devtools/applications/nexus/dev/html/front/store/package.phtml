@@ -1,0 +1,109 @@
+<ips:template parameters="$package, $item, $purchaseForm, $inCart, $renewalTerm, $initialTerm" />
+
+<div class='ipsBox ipsBox--commercePackage ipsPull'>
+	<section class='cNexusProduct_header ipsFluid i-basis_400 i-gap_lines' data-controller='nexus.front.store.packagePage' data-itemTitle="{$package->_title}">
+		{{if $images = $item->images() and \count( $images )}}
+			<div class='i-background_2'>
+				{{$donePrimary = false;}}
+				{{foreach $images as $image}}
+					{{if !$donePrimary}}
+						<a href='{$image}' class='cNexusProduct_primaryImage' data-ipsLightbox data-ipsLightbox-group='product' style='background-image:url("{$image}")'><img src='{$image}' alt=''></a>
+						{{$donePrimary = true;}}
+					{{endif}}
+				{{endforeach}}
+				<div class='cNexusProduct_images'>
+					<ul class='ipsCarousel ipsCarousel--images ipsCarousel--commerce-product-images' id="carousel--commerce-product-images" tabindex="0">
+						{{foreach $images as $image}}
+							<li>
+								<a href='{$image}' data-action='toggleImage'><img src='{$image}' alt='' loading='lazy'></a>
+							</li>
+						{{endforeach}}
+					</ul>
+					{template="carouselNavigation" group="global" app="core" params="'carousel--commerce-product-images'"}
+				</div>
+			</div>
+		{{endif}}
+		<div class='i-padding_3'>
+			<div class='i-flex i-align-items_center i-justify-content_space-between i-flex-wrap_wrap i-gap_2'>
+				<h1 class='ipsTitle ipsTitle--h1'>{$item->mapped('title')}</h1>
+				{{if $package->reviewable}}
+					<div>
+						{template="rating" group="global" app="core" params="'large', $item->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of, $item->memberReviewRating()"} <span class='i-color_soft'>({lang="num_reviews" pluralize="$item->reviews"})</span>
+					</div>
+				{{endif}}
+			</div>
+			
+			{{$priceDetails = $package->fullPriceInfo();}}
+			{{if $priceDetails === NULL}}
+				<div>
+					<em class='cNexusPrice_tax i-color_soft'>{lang="nexus_no_price_info_desc"}</em>
+				</div>
+			{{elseif $priceDetails['initialTerm']}}
+				<ul class='i-flex i-align-items_center i-flex-wrap_wrap i-gap_3'>
+					<li>
+	                    <div><span data-role="initialTerm">{lang="package_initial_term_title" sprintf="$priceDetails['initialTerm']"}</span></div>
+						<span class="cNexusPrice">
+							<span data-role="price">
+								{$priceDetails['primaryPrice']}
+								{{if $priceDetails['primaryPriceDiscountedFrom']}}
+									<s>{$priceDetails['primaryPriceDiscountedFrom']}</s>
+								{{endif}}
+							</span>
+						</span>
+						{{if !$priceDetails['primaryPriceIsZero'] and \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax i-color_soft'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+					</li>
+	                {{if $priceDetails['renewalPrice']}}
+	                    <li>
+	                        <div>{lang="package_subsequent_term_title"}</div>
+	                        <span class="cNexusPrice">
+	                            <span data-role="renewalTerm">
+	                                {$priceDetails['renewalPrice']}
+	                            </span>
+	                        </span>
+	                        {{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax i-color_soft'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+	                    </li>
+	                {{endif}}
+				</ul>
+			{{else}}
+				<span class="cNexusPrice">
+					{{if $priceDetails['renewalPrice']}}
+						<span data-role="renewalTerm">
+							{$priceDetails['renewalPrice']}
+						</span>
+					{{else}}
+						<span data-role="price">
+							{$priceDetails['primaryPrice']}
+							{{if $priceDetails['primaryPriceDiscountedFrom']}}
+								<s>{$priceDetails['primaryPriceDiscountedFrom']}</s>
+							{{endif}}
+						</span>
+					{{endif}}
+				</span>
+				{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}<span class='cNexusPrice_tax i-color_soft'>{lang="nexus_tax_explain_val"}</span>{{endif}}
+			{{endif}}
+			
+			{{if settings.nexus_show_stock and $package->stock != -1}}
+				<br><span data-role="stock">{{if $package->stock == -2}}{{else}}{lang="x_in_stock" pluralize="$package->stock - $inCart"}{{endif}}</span>
+			{{endif}}
+
+			{template="richText" group="global" app="core" location="global" params="$package->description, array('i-margin-top_3')"}
+			
+			<div class='i-background_2 i-border-radius_box i-margin-block_3'>
+				{$purchaseForm|raw}
+			</div>
+
+			{{if \count( $item->shareLinks() )}}
+				{template="shareButton" app="core" group="sharelinks" params="$item"}
+			{{endif}}
+		</div>
+	</section>
+</div>
+
+{{if $package->reviewable}}
+	<section class="ipsBox ipsBox--packageReviews ipsPull">
+		<h2 class="ipsBox__header">{lang="product_reviews_pl"}</h2>
+		<div class="ipsBox__content">
+			{template="reviews" group="store" app="nexus" params="$item"}
+		</div>
+	</section>
+{{endif}}

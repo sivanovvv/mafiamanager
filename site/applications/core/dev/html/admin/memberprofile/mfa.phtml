@@ -1,0 +1,44 @@
+<ips:template parameters="$member, $configuredHandlers, $hasSecurityQuestions, $showEditButton" />
+<div class='acpMemberView_2fa ipsBox'>
+	<h2 class='ipsBox__header' data-ips-template="mfa">
+		<i class="fa-solid fa-lock ipsBox__header-icon" aria-hidden="true"></i>
+		{lang="member__core_SecurityAnswers"}
+		{{if $showEditButton and member.hasAcpRestriction( 'core', 'members', 'member_edit' ) and ( !$member->isAdmin() or member.hasAcpRestriction( 'core', 'members', 'member_edit_admin' ) )}}
+			<a href="{url="app=core&module=members&controller=members&do=editBlock&block=IPS\\core\\extensions\\core\\MemberACPProfileBlocks\\MFA&id={$member->member_id}"}" class="ipsBox__header-secondary" data-ipsDialog data-ipsDialog-title="{lang="member__core_SecurityAnswers"}">{lang="edit"}</a>
+		{{endif}}
+	</h2>
+	<div class='i-padding_3'>
+		{{if $member->members_bitoptions['security_questions_opt_out'] and settings.mfa_required_groups != '*' and !$member->inGroup( explode( ',', settings.mfa_required_groups ) )}}
+			<div class="i-color_negative ipsType_sectionHead">
+				<i class="fa-solid fa-xmark-circle" aria-hidden="true"></i> &nbsp; {lang="mfa_opted_out"}
+			</div>
+		{{else}}
+			{{foreach $configuredHandlers as $key => $handler}}
+				<div class="i-color_positive i-margin-top_1 ipsType_sectionHead">
+					<i class="fa-solid fa-check-circle" aria-hidden="true"></i> &nbsp; {lang="mfa_method_enabled" sprintf="\IPS\Member::loggedIn()->language()->addToStack( 'mfa_' . $key . '_title' )"}
+				</div>
+			{{endforeach}}
+			{{if !\count( $configuredHandlers ) and !$hasSecurityQuestions}}
+				<div class="i-color_soft">
+					{lang="no_mfa_methods_enabled"}
+				</div>
+			{{endif}}
+			{{if settings.security_questions_enabled and $hasSecurityQuestions}}
+				{{if \count( $configuredHandlers )}}
+					<hr class='ipsHr'>
+				{{endif}}
+				{{$answers = $member->securityAnswers();}}
+				{{if \count( $answers )}}
+					{{foreach $answers as $questionId => $answer}}
+						<div class="i-margin-bottom_1">
+							<h2 class='ipsMinorTitle'>{lang="security_question_{$questionId}"}</h2>
+							<p class='i-font-size_1'>
+								{expression="\IPS\Text\Encrypt::fromTag( $answer )->decrypt()"}
+							</p>
+						</div>
+					{{endforeach}}
+				{{endif}}
+			{{endif}}
+		{{endif}}
+	</div>
+</div>

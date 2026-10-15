@@ -1,0 +1,62 @@
+<ips:template parameters="$details" />
+<div class='ipsCommercePrices'>
+	{{if $details === NULL}}
+		<div hidden>
+			<small class='ipsCommercePrice__tax'>{lang="nexus_no_price_info"}</small>
+		</div>
+
+	{{elseif $details['primaryPriceIsZero'] AND $details['initialTerm']}}
+
+		<div>
+			{{if isset($details['renewalOptionsDisplay'])}}
+				{{foreach $details['renewalOptionsDisplay'] as $renewalOption}}
+					<p class="ipsCommercePrice">{$renewalOption}</p>
+				{{endforeach}}
+			{{else}}
+				<span class="ipsCommercePrice">{$details['renewalPrice']}</span>
+			{{endif}}
+			{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+				<small class='ipsCommercePrice__tax'>{lang="nexus_tax_explain_val"}</small>
+			{{endif}}
+		</div>
+		<div>
+			{$details['primaryPrice']}
+			{{if $details['initialTerm']}}
+			{lang="package_initial_term" sprintf="$details['initialTerm']"}
+			{{endif}}
+		</div>
+
+	{{else}}
+
+		<div>
+			{{if isset( $details['renewalOptionsDisplay'] )}}
+				{{foreach $details['renewalOptionsDisplay'] as $renewalOption}}
+					<p class="ipsCommercePrice">{$renewalOption}</p>
+				{{endforeach}}
+			{{else}}
+				<span class="ipsCommercePrice">
+					{$details['primaryPrice']}
+					{{if $details['primaryPriceDiscountedFrom']}}
+						<s>{$details['primaryPriceDiscountedFrom']}</s>
+					{{endif}}
+				</span>
+			{{endif}}
+			{{if !$details['primaryPriceIsZero'] and \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+				<small class='ipsCommercePrice__tax'>{lang="nexus_tax_explain_val"}</small>
+			{{endif}}
+            {{if $details['initialTerm']}}
+			    <span>{lang="package_initial_term" sprintf="$details['initialTerm']"}</span><br>
+			{{endif}}
+		</div>
+        {{if $details['initialTerm']}}
+		<div>
+			<span class="ipsCommercePrice">{$details['renewalPrice']}</span>
+			{{if \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+				<small class='ipsCommercePrice__tax'>{lang="nexus_tax_explain_val"}</small>
+			{{endif}}
+			<span>{lang="package_subsequent_term"}</span>
+		</div>
+		{{endif}}
+
+	{{endif}}
+</div>

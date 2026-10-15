@@ -1,0 +1,5 @@
+<ips:template parameters="$item" />
+{{foreach $item->details as $k => $v}}
+    <dt class='ipsMinorTitle i-margin-top_2'><strong>{lang="nexus_pfield_{$k}"}</strong></dt>
+    <dd>{expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v )" raw="true"}</dd>
+{{endforeach}}

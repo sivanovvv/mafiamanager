@@ -1,0 +1,21 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/pages\/widgetContainer"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "front\/database_index\/featured.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

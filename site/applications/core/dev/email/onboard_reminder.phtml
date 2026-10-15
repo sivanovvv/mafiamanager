@@ -1,0 +1,8 @@
+<ips:template parameters="$email" />
+{$email->language->addToStack("onboard_welcome_message_email", FALSE)}
+<br><br>
+<a href='{url="app=core&module=overview&controller=onboard" base="admin"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("onboard_finish_setup", FALSE)}</a>
+<br><br>
+{$email->language->addToStack("onboard_email_thanks", FALSE)}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {$email->language->addToStack("onboard_email_tic", FALSE)}</em>

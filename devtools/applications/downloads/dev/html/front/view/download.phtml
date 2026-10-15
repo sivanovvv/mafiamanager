@@ -1,0 +1,8 @@
+<ips:template parameters="$file, $terms=NULL, $download=NULL, $confirmUrl=NULL, $multipleFiles=NULL, $waitingOn=NULL, $waitingFor=0" />
+<div data-controller='downloads.front.view.download'>
+	{{if $terms}}
+		{template="downloadTerms" group="view" app="downloads" params="$file, $terms, $confirmUrl, $multipleFiles"}
+	{{else}}
+		{template="multipleFiles" group="view" app="downloads" params="$file, $download, $waitingOn, $waitingFor"}
+	{{endif}}
+</div>

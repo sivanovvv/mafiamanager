@@ -1,0 +1,29 @@
+{
+    "normal": {
+        "added": [
+            "mod_checkbox",
+            "admin_emails",
+            "admin_emails_desc",
+            "pf_search_main",
+            "pf_search_main_desc",
+            "emailtpl_loginLinkValidate",
+            "queue_copying_followers",
+            "search_by_content_type",
+            "datalayer_use_internal_member_id",
+            "AchievementAction__ProfileCompletion",
+            "AchievementAction__ProfileCompletion_log",
+            "AchievementAction__ProfileCompletion_title",
+            "no_permission_themeeditor"
+        ],
+        "edited": [
+            "jump_to_content",
+            "core_datalayer_enabled"
+        ],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

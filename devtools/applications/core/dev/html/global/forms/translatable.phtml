@@ -1,0 +1,46 @@
+<ips:template parameters="$name, $languages, $values, $editors, $placeholder, $textarea=FALSE, $required=FALSE" />
+{{if \count( $languages ) === 1}}
+	{{foreach $languages as $lang}}
+		{{if !isset( $editors[ $lang->id ] ) }}
+			{{if $textarea}}
+				<textarea class='ipsInput ipsInput--text' name="{$name}[{$lang->id}]">{{if isset($values[ $lang->id ])}}{$values[ $lang->id ]}{{endif}}</textarea>
+			{{else}}
+				<input type='text' class='ipsInput ipsInput--text' name="{$name}[{$lang->id}]" value="{{if isset($values[ $lang->id ])}}{$values[ $lang->id ]}{{endif}}" {{if $placeholder !== NULL}}placeholder='{$placeholder}'{{endif}}>
+			{{endif}}
+		{{else}}
+			{$editors[ $lang->id ]->html()|raw}
+		{{endif}}
+	{{endforeach}}
+{{else}}
+	{{if $textarea}}
+		<div class="ipsFieldRow__languages">
+			{{foreach $languages as $lang}}
+				<div>
+					<div class="ipsFieldRow__language"><span class="{$lang->_icon}"></span> {$lang->_title} {{if $required and $lang->default}}<span class="ipsFieldRow__required">{lang="required"}</span>{{endif}}</div>
+					<textarea name="{$name}[{$lang->id}]" aria-label='{$lang->title}' class='ipsInput ipsInput--text {{if !$required || !$lang->default}} ipsFieldRow_errorExclude{{endif}}'>{{if isset( $values[ $lang->id ])}}{$values[ $lang->id ]}{{endif}}</textarea>
+				</div>
+			{{endforeach}}
+		</div>
+	{{else}}
+		<ul class='ipsForm ipsForm--translatable'>
+			{{foreach $languages as $lang}}
+				<li class='ipsFieldRow'>
+					<div class='ipsFieldList__content'>
+						{{if !isset( $editors[ $lang->id ] ) }}
+							<div class="ipsInputIcon">
+								<span class="ipsInputIcon__icon {$lang->_icon}"></span>
+								<input type='text' name="{$name}[{$lang->id}]" aria-label='{$lang->title}' placeholder="{$lang->title} {{if $required and $lang->default}} - {lang="required"}{{endif}}" {{if isset( $values[ $lang->id ])}}value="{$values[ $lang->id ]}"{{endif}} class="ipsInput ipsInput--text {{if !$required || !$lang->default}}ipsFieldRow_errorExclude{{endif}}">
+							</div>
+						{{else}}
+							<p class='ipsFlagEditor'>
+								<span class="{$lang->_icon}"></span> <span class='ipsFlagLabel'>{$lang->_title}</span>
+								{{if $required and $lang->default}}<span class="ipsFieldRow__required">{lang="required"}</span>{{endif}}
+							</p>
+							{$editors[ $lang->id ]->html()|raw}
+						{{endif}}
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+	{{endif}}
+{{endif}}

@@ -1,0 +1,37 @@
+<ips:template parameters="$rules, $pagination, $rootButtons" />
+<div data-baseurl="{url="app=core&module=achievements&controller=rules"}" data-controller="core.global.core.table">
+	<!--<div class="ipsBox i-padding_3 i-margin-bottom_1">
+		<ul class="ipsList ipsList--inline">
+			<li><strong>{lang="achievement_rules_filters"}</strong></li>
+			{{foreach [ 'points', 'badges', 'milestone' ] as $filter}}
+				<li>
+					<input type="checkbox" id="filter_{$filter}" name="filter_{$filter}" class="ipsInput ipsInput--toggle" data-action="filter" checked>
+					<label for="filter_{$filter}">{lang="achievement_rules_filters_{$filter}"}</label>
+				</li>
+			{{endforeach}}
+		</ul>
+	</div>-->
+	{{if $data = \IPS\core\Achievements\Rule::getRebuildProgress()}}
+		{template="rebuildProgress" group="achievements" params="$data"}
+	{{endif}}
+	<div class=''>
+		<div data-role="tablePagination" class="i-margin-bottom_1 {{if !$pagination}}ipsHide{{endif}}">{$pagination|raw}</div>
+		{template="buttons" params="$rootButtons" group="global" app="core"}
+	</div>
+	<div class="ipsBox">
+		<div class="ipsTree_wrapper">
+            {{if empty( $rules )}}
+            <div class='i-color_soft i-padding_3'>
+                {lang="no_results"}
+            </div>
+            {{else}}
+			<div class="ipsTree_rows">
+				<ol class="ipsTree" data-role="tableRows">
+					{template="rulesListRows" group="achievements" params="$rules"}
+				</ol>
+			</div>
+            {{endif}}
+		</div>
+	</div>
+	<div data-role="tablePagination" class='i-margin-top_2 {{if !$pagination}}ipsHide{{endif}}'>{$pagination|raw}</div>
+</div>

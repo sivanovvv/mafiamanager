@@ -1,0 +1,10 @@
+<ips:template parameters="$invoice" />
+<li class='ipsPhotoPanel ipsPhotoPanel_mini i-padding_2' data-role='result'>
+	<div class="ipsPhotoPanel__text">
+		<h2 class='ipsPhotoPanel__primary'>
+			<a href='{$invoice->acpUrl()}'>{$invoice->title}</a>
+			{template="status" group="invoices" app="nexus" params="$invoice->status"}
+		</h2>
+		<p class='ipsPhotoPanel__secondary'>{lang="invoice_number" sprintf="$invoice->id"} &middot; {$invoice->total} &middot; {$invoice->member->cm_name}</p>
+	</div>
+</li>

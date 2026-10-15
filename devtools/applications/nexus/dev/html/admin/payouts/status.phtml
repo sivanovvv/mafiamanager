@@ -1,0 +1,4 @@
+<ips:template parameters="$status" />
+<span class="ipsBadge ipsBadge--style{{if $status == \IPS\nexus\Payout::STATUS_COMPLETE}}4{{elseif $status == \IPS\nexus\Payout::STATUS_PENDING}}1{{elseif $status == \IPS\nexus\Payout::STATUS_CANCELED}}5{{elseif $status == \IPS\nexus\Payout::STATUS_PROCESSING}}7{{endif}}">
+	{lang="postatus_{$status}"}
+</span>

@@ -1,0 +1,173 @@
+<ips:template parameters="" />
+{{if !\IPS\Request::i()->isAjax()}}
+    {{if \IPS\IN_DEV AND defined('PAGEBUILDER_DEV') AND \PAGEBUILDER_DEV}}
+        {{$pagebuilderDevUrl = defined('PAGEBUILDER_DEV_URL') ? \PAGEBUILDER_DEV_URL : 'http://localhost:5173';}}
+        <script type="module">
+            import RefreshRuntime from '{$pagebuilderDevUrl|raw}/@react-refresh'
+            RefreshRuntime.injectIntoGlobalHook(window)
+            window.\$RefreshReg\$ = () => {}
+            window.\$RefreshSig\$ = () => (type) => type
+            window.__vite_plugin_react_preamble_installed__ = true
+        </script>
+        <script type="module" src="{$pagebuilderDevUrl|raw}/@vite/client"></script>
+        <script type="module" src="{$pagebuilderDevUrl|raw}/src/main.jsx"></script>
+    {{endif}}
+    {{if \IPS\IN_DEV AND defined('EDITOR_DEV') AND \EDITOR_DEV}}
+        {{$editorURL = defined('EDITOR_DEV_URL') ? \EDITOR_DEV_URL : 'http://localhost:5174';}}
+        <script type="module">
+            import RefreshRuntime from '{$editorURL|raw}/@react-refresh'
+            RefreshRuntime.injectIntoGlobalHook(window)
+            window.\$RefreshReg$ = () => {}
+            window.\$RefreshSig$ = () => (type) => type
+            window.__vite_plugin_react_preamble_installed__ = true
+        </script>
+        <script type="module" src="{$editorURL|raw}/@vite/client"></script>
+        <script type="module" src="{$editorURL|raw}/src/main.jsx"></script>
+    {{endif}}
+    {{if \IPS\IN_DEV AND defined('ICONPICKER_DEV') AND \ICONPICKER_DEV}}
+    {{$editorURL = defined('ICONPICKER_DEV_URL') ? \ICONPICKER_DEV_URL : 'http://localhost:5175';}}
+    <script type="module">
+        import RefreshRuntime from '{$editorURL|raw}/@react-refresh'
+        RefreshRuntime.injectIntoGlobalHook(window)
+        window.\$RefreshReg$ = () => {}
+        window.\$RefreshSig$ = () => (type) => type
+        window.__vite_plugin_react_preamble_installed__ = true
+    </script>
+    <script type="module" src="{$editorURL|raw}/@vite/client"></script>
+    <script type="module" src="{$editorURL|raw}/src/main.jsx"></script>
+    {{endif}}
+	{{$maxImageDims = \IPS\Settings::i()->attachment_image_size ? explode( 'x', \IPS\Settings::i()->attachment_image_size ) : array( 1000, 750 );}}
+	<script>
+		var ipsDebug = {{if ( \IPS\IN_DEV and \IPS\DEV_DEBUG_JS ) or \IPS\DEBUG_JS}}true{{else}}false{{endif}};
+		var ipsSettings = {
+			{{if \IPS\Dispatcher::hasInstance() and \IPS\Dispatcher::i()->controllerLocation == 'admin'}}
+			isAcp: true,
+			{{endif}}
+			{{if \IPS\COOKIE_DOMAIN !== NULL}}
+			cookie_domain: "{expression="\IPS\COOKIE_DOMAIN"}",
+			{{endif}}
+			cookie_path: "{expression="\IPS\Request::getCookiePath()"}",
+			{{if \IPS\COOKIE_PREFIX !== NULL}}
+			cookie_prefix: "{expression="\IPS\COOKIE_PREFIX"}",
+			{{endif}}
+			{{if mb_substr( \IPS\Settings::i()->base_url, 0, 5 ) == 'https' AND \IPS\COOKIE_BYPASS_SSLONLY !== TRUE}}
+			cookie_ssl: true,
+			{{else}}
+			cookie_ssl: false,
+			{{endif}}
+            essential_cookies: {expression="json_encode( \IPS\Request::getEssentialCookies())" raw="true"},
+			cookieConsent: {expression="\IPS\Request::i()->cookieConsentEnabled() ? 1 : 0"},
+			upload_imgURL: "{resource="notifyIcons/upload.png" location="front"}",
+			message_imgURL: "{resource="notifyIcons/message.png" location="front"}",
+			notification_imgURL: "{resource="notifyIcons/notification.png" location="front"}",
+			baseURL: "{expression="\IPS\Http\Url::baseUrl( \IPS\Http\Url::PROTOCOL_RELATIVE )"}",
+			jsURL: "{expression="rtrim( \IPS\Http\Url::baseUrl( \IPS\Http\Url::PROTOCOL_RELATIVE ), '/' )"}/applications/core/interface/js/js.php",
+			uploadBaseURLs: {expression="json_encode( \IPS\File::baseUrls() )" raw="true"},
+			csrfKey: "{expression="\IPS\Session::i()->csrfKey"}",
+			antiCache: "{expression="\IPS\Theme::i()->cssCacheBustKey()"}",
+			jsAntiCache: "{expression="\IPS\Output\Javascript::javascriptCacheBustKey()"}",
+			disableNotificationSounds: true,
+			useCompiledFiles: {{if \IPS\IN_DEV}}false{{else}}true{{endif}},
+			links_external: {{if \IPS\Settings::i()->links_external }}true{{else}}false{{endif}},
+			memberID: {expression="( \IPS\Member::loggedIn()->member_id ) ? \IPS\Member::loggedIn()->member_id : 0"},
+			blankImg: "{expression="\IPS\Text\Parser::blankImage()"}",
+			googleAnalyticsEnabled: {{if \IPS\Settings::i()->ga_enabled }}true{{else}}false{{endif}},
+			matomoEnabled: {{if \IPS\Settings::i()->matomo_enabled }}true{{else}}false{{endif}},
+			viewProfiles: {{if \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'members' ) )}}true{{else}}false{{endif}},
+			mapProvider: {{if \IPS\Settings::i()->googlemaps and \IPS\Settings::i()->google_maps_api_key}}'google'{{elseif \IPS\Settings::i()->mapbox and \IPS\Settings::i()->mapbox_api_key}}'mapbox'{{else}}'none'{{endif}},
+			mapApiKey: {{if \IPS\Settings::i()->googlemaps and \IPS\Settings::i()->google_maps_api_key}}"{expression="\IPS\Settings::i()->google_maps_api_key"}"{{elseif \IPS\Settings::i()->mapbox and \IPS\Settings::i()->mapbox_api_key}}"{expression="\IPS\Settings::i()->mapbox_api_key"}"{{else}}''{{endif}},
+			pushPublicKey: {{if \IPS\Notification::webPushEnabled()}}"{expression="\IPS\Settings::i()->vapid_public_key"}"{{else}}null{{endif}},
+			relativeDates: {{if \IPS\Settings::i()->relative_dates_enable}}true{{else}}false{{endif}},
+            pagebuilderKey: "{expression="json_decode( file_get_contents( \IPS\ROOT_PATH . '/applications/core/data/pagebuilder.json' ), true )['build']" raw="true"}",
+            ipsApps: {expression="json_encode( \IPS\IPS::$ipsApps )" raw="true"}
+		};
+		{{if \IPS\Settings::i()->custom_page_view_js && \IPS\Dispatcher::hasInstance() && \IPS\Dispatcher::i()->controllerLocation == 'front'}}
+			ipsSettings['paginateCode'] = {setting="custom_page_view_js"};
+		{{endif}}
+		{{if !empty( $maxImageDims[0] ) AND !empty( $maxImageDims[1] ) AND ( \intval( $maxImageDims[0] ) !== 0 || \intval( $maxImageDims[1] ) !== 0 ) }}
+			ipsSettings['maxImageDimensions'] = {
+				width: {$maxImageDims[0]},
+				height: {$maxImageDims[1]}
+			};
+		{{endif}}
+		const ipsJsFileMap = {expression="json_encode(\IPS\Output\Javascript::getJavascriptFileMap())" raw="true"};
+		
+	</script>
+{{endif}}
+{{if !\IPS\Request::i()->isAjax() and \IPS\Dispatcher::hasInstance() and \IPS\Dispatcher::i()->controllerLocation == 'front' and \IPS\Settings::i()->fb_pixel_enabled and \IPS\Settings::i()->fb_pixel_id}}
+{{$pixelId = \IPS\Settings::i()->fb_pixel_id;}}
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+setTimeout( function() {
+	fbq('init', '{$pixelId}');
+	{{if $pixels = \IPS\core\Facebook\Pixel::i()->output()}}
+	{$pixels|raw}
+	{{endif}}
+}, {expression="\intval( \IPS\Settings::i()->fb_pixel_delay * 1000 )"} );
+</script>
+<!-- End Facebook Pixel Code -->
+{{endif}}
+
+{{foreach array_unique( array_filter( \IPS\Output::i()->jsFiles ), SORT_STRING ) as $js}}
+{{$js = \IPS\Http\Url::external( $js );}}
+    <script
+        src='{{if isset( $js->queryString['v'] )}}{expression="$js"}{{elseif $js->data['host'] == parse_url( \IPS\Settings::i()->base_url, PHP_URL_HOST )}}{expression="$js->setQueryString( 'v', \IPS\Output\Javascript::javascriptCacheBustKey() )"}{{else}}{expression="$js"}{{endif}}'
+        data-ips
+        {{if str_contains( $js, "interface/static/iro" ) or str_contains( $js, 'interface/static/tiptap' ) or str_contains( $js, "interface/static/pagebuilder" ) or str_contains( $js, 'interface/static/codehighlighting' ) }}type="module"{{endif}}
+        {{if str_contains( $js, "interface/static/iro" )}}data-iro-loader{{endif}}
+></script>
+{{endforeach}}
+{{foreach array_unique( \IPS\Output::i()->jsFilesAsync, SORT_STRING ) as $js}}
+{{$js = \IPS\Http\Url::external( $js );}}
+    <script
+        src="{{if isset( $js->queryString['v'] )}}{expression="$js"}{{else}}{expression="$js->setQueryString( 'v', \IPS\Output\Javascript::javascriptCacheBustKey() )"}{{endif}}"
+        {{if str_contains( $js, 'interface/static/tiptap' ) or str_contains( $js, "interface/static/pagebuilder" ) or str_contains( $js, 'interface/static/codehighlighting' ) }}type="module"{{endif}}
+        async
+    ></script>
+{{endforeach}}
+{{if !\IPS\Request::i()->isAjax() and ( \count( \IPS\Output::i()->jsVars ) || \IPS\Output::i()->headJs)}}
+	<script>
+		{{foreach \IPS\Output::i()->jsVars as $k => $v}}
+			ips.setSetting( '{$k}', {{if ! \is_array( $v )}}JSON.parse('{expression="json_encode( $v, JSON_HEX_APOS )" raw="true"}'){{else}}{expression="json_encode( $v, JSON_HEX_APOS )" raw="true"}{{endif}} );
+		{{endforeach}}
+        {{$hasPermission = \IPS\Helpers\Form\Editor::memberHasPermission( permission: "raw_embed" );}}
+		ips.setSetting('maxEmbedWidth', {expression="json_encode( \IPS\Settings::i()->max_internalembed_width ?: null, JSON_HEX_APOS )" raw="true"});
+		ips.setSetting('maxEmbeddedMediaWidth', {expression="json_encode( \IPS\Settings::i()->max_embeddedmedia_width ?: null, JSON_HEX_APOS )" raw="true"});
+        ips.setSetting('allowedIframeDomains', {expression="( $hasPermission and \IPS\Settings::i()->ipb_embed_url_filter_option ) ? json_encode(explode(',',\IPS\Settings::i()->ipb_embed_url_whitelist), JSON_HEX_APOS ) : '[]'" raw="true"});
+		{expression="\IPS\Output::i()->headJs" raw="true"}
+    </script>
+{{endif}}
+{{if \count( \IPS\Output::i()->jsonLd )}}
+{{foreach \IPS\Output::i()->jsonLd as $object}}
+<script type='application/ld+json'>
+{expression="json_encode( $object, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS )" raw="true"}	
+</script>
+{{endforeach}}
+{{endif}}
+
+<script>
+    (() => {
+        let gqlKeys = {expression="json_encode(\IPS\Output::i()->graphData)" raw="true"};
+        for (let [k, v] of Object.entries(gqlKeys)) {
+            ips.setGraphQlData(k, v);
+        }
+    })();
+</script>
+{{if \IPS\Dispatcher::hasInstance() and \IPS\Dispatcher::i()->controllerLocation == 'front' and \IPS\Theme::i()->core_js}}
+<!-- Theme javascript -->
+<script>
+    {expression="\IPS\Theme::i()->getCustomJsForOutput()" raw="true"}
+</script>
+{{endif}}
+
+<!-- Need to add VLE tags regarless of ajax -->
+{{if \IPS\Lang::vleActive()}}
+<script>
+    // vle words defined here, on the next line <!--ipsVleWords-->
+</script>
+{{endif}}

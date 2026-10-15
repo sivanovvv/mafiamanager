@@ -1,0 +1,87 @@
+/*
+	----------------
+	- Font-size
+	----------------
+*/
+
+.i-font-size_-3{ font-size: max(11px, var(--i-font-size_-3)); }
+.i-font-size_-2{ font-size: max(11px, var(--i-font-size_-2)); }
+.i-font-size_-1{ font-size: var(--i-font-size_-1); }
+.i-font-size_1{ font-size: var(--i-font-size_1); }
+.i-font-size_2{ font-size: var(--i-font-size_2); }
+.i-font-size_3{ font-size: var(--i-font-size_3); }
+.i-font-size_4{ font-size: var(--i-font-size_4); line-height: 1.2; }
+.i-font-size_5{ font-size: var(--i-font-size_5); line-height: 1.2; }
+.i-font-size_6{ font-size: var(--i-font-size_6); line-height: 1.2; }
+.i-font-size_7{ font-size: var(--i-font-size_7); line-height: 1.2; }
+
+/* This allows a smooth transition between font-sizes depending on screen size */
+:where(.i-font-size_fluid){
+	--_i-min-font-size: 1;
+	--_i-max-font-size: 1;
+}
+.i-font-size_fluid{
+	font-size: calc((var(--_i-min-font-size) * var(--i-rem)) + (var(--i-range) * (var(--_i-max-font-size) - var(--_i-min-font-size))));
+}
+
+
+/*
+	----------------
+	- Font-weight
+	----------------
+*/
+
+.i-font-weight_100, .i-font-weight_thin{ font-weight: 100; }
+.i-font-weight_200, .i-font-weight_extra-light{ font-weight: 200; }
+.i-font-weight_300, .i-font-weight_light{ font-weight: 300; }
+.i-font-weight_400, .i-font-weight_normal{ font-weight: 400; }
+.i-font-weight_500, .i-font-weight_medium{ font-weight: 500; }
+.i-font-weight_600, .i-font-weight_semi-bold{ font-weight: 600; }
+.i-font-weight_700, .i-font-weight_bold{ font-weight: 700; }
+.i-font-weight_800, .i-font-weight_extra-bold{ font-weight: 800; }
+.i-font-weight_900, .i-font-weight_black{ font-weight: 900; }
+
+
+/*
+	----------------
+	- Utilities
+	----------------
+*/
+
+.i-font-style_italic{
+	font-style: italic;
+}
+
+.i-text-transform_uppercase{
+	text-transform: uppercase;
+}
+
+.i-text-transform_none{
+	text-transform: none;
+}
+
+.i-text-align_center{
+	text-align: center;
+}
+
+.i-text-align_start{
+	text-align: start;
+}
+
+.i-text-align_end{
+	text-align: end;
+}
+
+.i-word-break_break-all{
+	word-break: break-all;
+}
+
+.i-text-decoration_underline,
+.i-link-text-decoration_underline a,
+.i-hover-text-decoration_underline:hover{
+	text-decoration: underline;
+}
+
+.i-text-decoration_none{
+	text-decoration: none;
+}

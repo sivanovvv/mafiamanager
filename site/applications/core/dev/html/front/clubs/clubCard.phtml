@@ -1,0 +1,78 @@
+<ips:template parameters="$club, $approvalQueue=FALSE" />
+{{$coverPhoto = $club->coverPhoto( FALSE );}}
+{{$memberStatus = $club->memberStatus( \IPS\Member::loggedIn() );}}
+
+<li class="ipsData__item" {{if settings.clubs_require_approval and !$club->approved}}ipsModerated{{endif}}>
+	<a href='{$club->url()}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$club->name}</span></a>
+	<div class="ipsData__image" aria-hidden="true">
+		<a href='{$club->url()}' title="{$club->name}" class='ipsCoverPhoto' data-controller='core.global.core.coverPhoto' data-url="{$club->url()->csrf()}" data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}'>
+			{{$cfObject = $coverPhoto->object;}}
+			{{if $coverPhoto->file}}
+				<div class='ipsCoverPhoto__container'>
+					<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' alt='{$club->name}' loading='lazy'>
+				</div>
+			{{elseif ! empty( $cfObject::$coverPhotoDefault )}}
+				<div class='ipsCoverPhoto__container'>
+					<div class="ipsFallbackImage" style="--i-empty-image-random--ba-co: {$coverPhoto->object->coverPhotoBackgroundColor()};"></div>
+				</div>
+			{{endif}}
+		</a>
+	</div>
+	<div class="ipsData__content">
+		<div class="ipsData__main">
+			<div class="i-flex i-align-items_center i-gap_2">
+				<div class="i-flex_00 i-basis_40">{template="clubIcon" group="clubs" app="core" params="$club, 'fluid'"}</div>
+				<div class="i-flex_11">
+					<div class='ipsData__title'>
+						<h2>
+							<a href='{$club->url()}' title="{$club->name}">{$club->name}</a>
+						</h2>
+						<div class="ipsBadges" data-ips-hook="badges">
+						    {{foreach $club->badges() as $badge}}{$badge|raw}{{endforeach}}
+						</div>
+					</div>
+					<ul class='ipsList ipsList--sep i-color_soft i-row-gap_0 i-font-size_-1 i-font-weight_500' data-ips-hook="info">
+						{{if $club->type != "open"}}
+							<li>{lang="club_{$club->type}"}</li>
+						{{endif}}
+						{{if $club->last_activity}}
+							<li>{lang="club_last_activity"} {datetime="$club->last_activity"}</li>
+						{{endif}}
+					</ul>
+				</div>
+			</div>
+			{{if $club->about}}
+				<div class='ipsData__desc'>{$club->about}</div>
+			{{endif}}
+			{{if ( \in_array( $club->type, array( $club::TYPE_OPEN, $club::TYPE_CLOSED ) ) or \in_array( $memberStatus, array( $club::STATUS_MEMBER, $club::STATUS_MODERATOR, $club::STATUS_LEADER, $club::STATUS_INVITED, $club::STATUS_INVITED_BYPASSING_PAYMENT, $club::STATUS_REQUESTED, $club::STATUS_EXPIRED, $club::STATUS_EXPIRED_MODERATOR ) ) ) and $priceBlurb = $club->priceBlurb()}}
+				<div class='i-margin-top_1'>
+					<span class="cClubPrice">{$priceBlurb}</span>
+					{{if $club->isPaid() and $club->joiningFee() and \IPS\Member::loggedIn()->language()->checkKeyExists('nexus_tax_explain_val')}}
+						<span class='cNexusPrice_tax i-color_soft'>{lang="nexus_tax_explain_val"}</span>
+					{{endif}}
+				</div>
+			{{endif}}
+		</div>
+		{{if $club->type != $club::TYPE_PUBLIC}}
+			<div class='i-flex i-align-items_center i-gap_2 i-flex-wrap_wrap i-padding-top_3 i-margin-top_auto'>
+				{{if $club->canViewMembers() }}
+					<div class="i-flex_11">
+						<ul class='ipsCaterpillar i-basis_30'>
+							{{foreach $club->randomTenMembers() as $member}}
+								<li class='ipsCaterpillar__item'>
+									{template="userPhotoFromData" group="global" app="core" params="$member['core_members']['member_id'], $member['core_members']['name'], $member['core_members']['members_seo_name'], \IPS\Member::photoUrl( $member['core_members'] ), 'fluid'"}
+								</li>
+							{{endforeach}}
+						</ul>
+					</div>
+				{{endif}}
+				<div class="i-font-size_-1 i-font-weight_500 i-color_soft">{lang="club_members_count" pluralize="$club->members"}</div>
+			</div>
+			{{if $club->canJoin()}}
+				<div class="i-margin-top_3">
+					<a class="ipsButton ipsButton--wide ipsButton--secondary ipsButton--small" href="{$club->url()->setQueryString('do', 'join')->csrf()}" {{if $club->isPaid() and $memberStatus !== $club::STATUS_INVITED_BYPASSING_PAYMENT}}data-confirm data-confirmIcon="info" data-confirmMessage="{lang="club_membership_item"}" data-confirmSubmessage="{$club->memberFeeMessage()}"{{endif}}><i class="fa-solid fa-user-plus" aria-hidden="true"></i>{lang="club_join"}</a>
+				</div>
+			{{endif}}
+		{{endif}}
+	</div>
+</li>

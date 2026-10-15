@@ -1,0 +1,16 @@
+<ips:template parameters="$notifications" />
+{{if \count( $notifications )}}
+	{{foreach $notifications as $notification}}
+		<li class="ipsData__item cNotification_row cNotification_{$notification->style()}">
+			<a href="{$notification->link()}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$notification->title()|raw}</span></a>
+			<div class='ipsData__main'>
+				<h4 class="ipsData__title">{$notification->title()|raw}</h4>
+				<p class="ipsData__desc">{$notification->subtitle()}</p>
+			</div>
+		</li>
+	{{endforeach}}
+{{else}}
+	<li class="ipsData__item">
+		<div class="i-padding_3 i-color_soft i-text-align_center">{lang="no_results_notifications"}</div>
+	</li>
+{{endif}}

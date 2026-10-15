@@ -1,0 +1,4 @@
+;(function(){"use strict";class IAnnouncementBanner extends HTMLElement{connectedCallback(){this.querySelectorAll('[data-announcementid]').forEach(announcement=>{if(ips.utils.cookie.get(`announcement_${announcement.getAttribute('data-announcementid')}`)){announcement.hidden=true;}});this.addEventListener("click",this);}
+handleEvent(e){return this[`${e.type}Event`]&&this[`${e.type}Event`](e);}
+clickEvent(e){const target=e.target.closest('[data-role="dismissAnnouncement"]');if(!target)return;const element=target.closest('[data-announcementid]');if(!element)return;const id=element.getAttribute('data-announcementid');let date=new Date();date.setTime(date.getTime()+(7*86400000));ips.utils.cookie.set(`announcement_${id}`,true,date.toUTCString());element.hidden=true;}}
+ips.ui.registerWebComponent("announcementBanner",IAnnouncementBanner);Debug.log(`Submitted the web component constructor, IAnnouncementBanner, for ${"announcementBanner"}`);})();;

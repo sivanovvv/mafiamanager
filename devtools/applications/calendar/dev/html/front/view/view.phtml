@@ -1,0 +1,136 @@
+<ips:template parameters="$event, $commentsAndReviews, $attendees, $address=NULL, $reminder=NULL" />
+
+{{if $club = $event->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $event->container()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+<div class='ipsBlockSpacer'>
+	{template="contentHiddenMessage" group="global" app="core" params="$event"}
+	<header id="elEventHeader" class='ipsPageHeader ipsBox ipsBox--calendarEventHeader ipsPull' data-ips-hook='header'>{$event->coverPhoto()|raw}</header>
+	<section>
+		{template="contentItemMessages" group="global" app="core" params="$event->getMessages(), $event"}
+        <div id="sidebarWrapper">
+		{{if $event->rsvp || $address || $event->map( 270, 270 ) || $event->online || $event->_livetopic_id }}
+			<div data-ips-hook="sidebarWrapper" class='ipsColumns'>
+				<div class='ipsColumns__primary'>
+		{{endif}}
+			<div class='ipsBox ipsBox--calendarEventMain ipsPull'>
+				<div class='i-padding_3'>
+
+					<div class="ipsTitle ipsTitle--h4" data-ips-hook='date'>
+						<time datetime='{expression="$event->_start_date->format( 'Y-m-d' )"}'>
+							{{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+								<span data-controller="core.global.core.datetime" data-time="{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"} {{endif}}">
+									{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->calendarDate()}{{if !$event->all_day}}, {$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->localeTime( FALSE )} {{endif}}
+								</span>
+							{{else}}
+								<span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'startDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}} {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"} {{endif}}">
+									{$event->lastOccurrence( 'startDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'startDate' )->localeTime( FALSE )} {{endif}}
+								</span>
+							{{endif}}
+						</time>
+						{{if $event->_end_date}}
+							<i class='fa-solid fa-arrow-right-long i-margin-start_icon i-margin-end_icon' aria-hidden="true"></i>
+							<time datetime='{expression="$event->_end_date->format( 'Y-m-d' )"}'>
+								{{$sameDay = !( ($event->_start_date->mday != $event->_end_date->mday) or ($event->_start_date->mon != $event->_end_date->mon) or ($event->_start_date->year != $event->_end_date->year) );}}
+								{{if $endDate = $event->nextOccurrence( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: \IPS\calendar\Date::getDate(), 'endDate' )}}
+									{{if !$sameDay}}
+										<span data-controller="core.global.core.datetime" data-time="{$endDate->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}}, {{endif}}">
+											{$endDate->calendarDate()}{{if !$event->all_day}}, {{endif}}
+										</span>
+									{{endif}}
+									{{if !$event->all_day}}
+										<span data-controller="core.global.core.datetime" data-time="{$endDate->format('c')}" data-format="{expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}">
+											{$endDate->localeTime( FALSE )}
+										</span>
+									{{endif}}
+								{{else}}
+									<span data-controller="core.global.core.datetime" data-time="{$event->lastOccurrence( 'endDate' )->format('c')}" data-format="{expression="\IPS\calendar\Date::calendarDateFormat()"}{{if !$event->all_day}} {expression="\IPS\calendar\Date::localeTimeFormat( FALSE )"}{{endif}}">
+										{$event->lastOccurrence( 'endDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'endDate' )->localeTime( FALSE )}{{endif}}
+									</span>
+								{{endif}}
+							</time>
+						{{endif}}
+					</div>
+					{{if $event->recurring}}
+						<p class='i-color_soft i-font-size_2 i-font-weight_500 i-margin-top_1'><i class='fa-solid fa-repeat' aria-hidden="true"></i> {$event->_recurring_text}</p>
+					{{endif}}			
+					
+					<div class='ipsEntry__content js-ipsEntry__content i-margin-top_3'>
+					    {template="contentWrapper" app="core" group="global" params="$event, 'event'"}
+					</div>
+
+					{{if $event->_album}}
+						<div class='i-background_2 i-padding_3 i-margin-top_3'>
+							<h3 class='ipsTitle ipsTitle--h4 i-margin-bottom_2'>{lang="event_images"}</h3>
+							{$event->_album|raw}
+						</div>
+					{{endif}}
+
+					{{if $event->editLine()}}
+						<div class='i-margin-top_3 i-color_soft i-font-size_-1 ipsEdited'>
+                        	{$event->editLine()|raw}
+                        </div>
+					{{endif}}
+				</div>
+				<div class='ipsEntry__footer'>
+					<menu class='ipsEntry__controls' data-ips-hook='eventMainButtons'>
+						<li>
+							{$event->menu()|raw}
+						</li>
+						<li><a href='{$event->url('download')}' rel="noindex nofollow" title='{lang="download_ical_title"}'>{lang="download_ical"}</a></li>
+						{{if $event->venue() and $event->venue()->can( 'view' )}}
+							<li><a href="{$event->venue()->url()}">{lang="calendar_more_events_at_x" sprintf="$event->venue()->_title"}</a></li>
+						{{endif}}
+						{{if $event->canCopyEvent()}}
+							<li><a href='{url="app=calendar&module=calendar&controller=submit&do=copy&event_id={$event->id}"}' rel="noindex nofollow">{lang="add_similar_event"}</a></li>
+						{{endif}}
+					</menu>
+					{{if \IPS\IPS::classUsesTrait( $event, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+						{template="reputation" app="core" group="global" params="$event"}
+					{{endif}}
+				</div>
+			</div>
+		{{if $event->rsvp || $address || $event->map( 270, 270 ) || ( $event->online and $event->url and !$event->hasPassed() ) || $event->_livetopic_id}}
+				</div>
+				<aside class='ipsColumns__secondary i-basis_360'>
+					<div data-ips-hook="sidebar">
+						{template="eventSidebar" group="view" params="$event, $attendees, 'Mob', $address"}
+					</div>
+				</aside>
+			</div>
+		{{endif}}
+        </div>
+	</section>
+
+	<div class='ipsBox i-padding_2 ipsPull ipsResponsive_showPhone'>
+		<div class='ipsPageActions'>
+			{{if \count( $event->shareLinks() )}}
+				{template="shareButton" app="core" group="sharelinks" params="$event"}
+			{{endif}}
+			{{if \IPS\Application::appIsEnabled('cloud')}}
+            	{template="spam" app="cloud" group="spam" params="$event"}
+            {{endif}}
+			{template="follow" app="core" group="global" params="'calendar', 'event', $event->id, $event->followersCount()"}
+			{{if $event->canRemind()}}
+				{template="reminder" app="calendar" group="view" params="$event, $reminder, 'ipsButton--wide'"}
+			{{endif}}
+		</div>
+	</div>
+
+	{{if $commentsAndReviews}}
+		{{if $event->container()->allow_reviews && $event->container()->allow_comments}}
+			<span id="replies"></span>
+			<h2 class='ipsHide'>{lang="user_feedback"}</h2>
+		{{endif}}
+		<div class='ipsBox ipsBox--calendarCommentsReviews ipsPull'>
+			{$commentsAndReviews|raw}
+		</div>
+	{{endif}}
+</div>
+
+{{if $event->container()->club()}}
+	</div>
+{{endif}}

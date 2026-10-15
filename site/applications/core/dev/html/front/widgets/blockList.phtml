@@ -1,0 +1,13 @@
+<ips:template parameters="$availableBlocks, $favorites=[], $customBlocks=[]" />
+{{$favoriteTitle = "<i class='fa-solid fa-star' aria-hidden='true'></i>&nbsp;&nbsp;" . \IPS\Member::loggedIn()->language()->addToStack( "sidebar_favorites" );}}
+{template="blockGroup" group="widgets" app="core" location="front" params="$favorites, $favoriteTitle, $favorites, false, true"}
+
+{{foreach $availableBlocks as $app => $blocks}}
+    {{$title = \IPS\Member::loggedIn()->language()->addToStack( "__app_{$app}" );}}
+    {template="blockGroup" group="widgets" app="core" location="front" params="$blocks,$title,$favorites"}
+{{endforeach}}
+	 
+{{if \IPS\Application::appIsEnabled('cms')}}
+{{$customTitle = \IPS\Member::loggedIn()->language()->addToStack( "block_Blocks" );}}
+{template="blockGroup" group="widgets" app="core" location="front" params="$customBlocks, $customTitle, $favorites, true"}
+{{endif}}

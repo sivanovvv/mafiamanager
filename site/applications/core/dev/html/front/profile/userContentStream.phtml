@@ -1,0 +1,25 @@
+<ips:template parameters="$member, $results, $pagination" />
+
+<div data-baseurl="{url="app=core&module=members&controller=profile&do=content&id={$member->member_id}&all_activity=1&page=1" seoTemplate="profile_content" seoTitle="$member->members_seo_name"}" data-resort="listResort" data-tableid="topics" data-controller="core.global.core.table">
+	<div data-role="tableRows">
+		{{if $pagination}}
+			<div class="ipsButtonBar ipsButtonBar--top">
+				<div class="ipsButtonBar__pagination" data-role="tablePagination">
+					{$pagination|raw}
+				</div>
+			</div>
+		{{endif}}
+		<ol class='ipsStream ipsStream--profile-activity'>
+			{{foreach $results as $activity}}
+				{$activity->html()|raw}
+			{{endforeach}}
+		</ol>
+		{{if $pagination}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination" data-role="tablePagination">
+					{$pagination|raw}
+				</div>
+			</div>
+		{{endif}}
+	</div>
+</div>

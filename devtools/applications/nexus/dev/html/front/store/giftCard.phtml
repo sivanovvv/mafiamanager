@@ -1,0 +1,19 @@
+<ips:template parameters="$form" />
+<header class="ipsPageHeader">
+	<div class="ipsPageHeader__row">
+		<div class="ipsPageHeader__primary">
+			<h1 class="ipsPageHeader__title">
+				{lang="buy_gift_voucher"}
+			</h1>
+		</div>
+		<ul class="ipsButtons">
+			<li>
+				<a href="{url="app=nexus&module=store&controller=gifts&do=redeem" seoTemplate="store_giftvouchers_redeem"}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="redeem_gift_voucher"}' class='ipsButton ipsButton--primary'>{lang="redeem_gift_voucher"}</a>
+			</li>
+		</ul>
+	</div>
+</header>
+
+<div class='ipsBox ipsBox--padding' data-controller='nexus.front.store.giftCard' data-formatCurrencyUrl="{url="app=nexus&module=store&controller=gifts&do=formatCurrency"}">
+	{$form|raw}
+</div>

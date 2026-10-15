@@ -1,0 +1,26 @@
+<ips:template parameters="$pos,$neg" />
+<div class='ipsLikeRep'>
+	{{if $pos}}
+		<a class='ipsButton ipsButton_rep ipsButton_repUp'><i class='fa-solid fa-arrow-up' aria-hidden="true"></i></a>
+	{{endif}}
+	{{if $neg}}
+		<a class='ipsButton ipsButton_rep ipsButton_repDown'><i class='fa-solid fa-arrow-down' aria-hidden="true"></i></a>
+	{{endif}}
+	{{if $pos and $neg}}
+		<span class='ipsReputation_count i-link-color_inherit i-color_soft'><i class='fa-solid fa-heart i-font-size_-1' aria-hidden="true"></i> 0</span>
+	{{elseif $pos}}
+		<span class='ipsReputation_count i-link-color_inherit i-color_positive'><i class='fa-solid fa-heart i-font-size_-1' aria-hidden="true"></i> 5</span>
+	{{else}}
+		<span class='ipsReputation_count i-link-color_inherit i-color_negative'><i class='fa-solid fa-heart i-font-size_-1' aria-hidden="true"></i> -5</span>
+	{{endif}}
+</div>
+<br>
+<span class="i-color_soft">
+	{{if $pos and $neg}}
+		{lang="rep_system_both"}
+	{{elseif $pos}}
+		{lang="rep_system_positive"}
+	{{else}}
+		{lang="rep_system_negative"}
+	{{endif}}
+</span>

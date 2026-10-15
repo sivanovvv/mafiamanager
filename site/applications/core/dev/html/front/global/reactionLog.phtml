@@ -1,0 +1,24 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<li class='ipsPhotoPanel ipsPhotoPanel--mini ipsPhotoPanel--reaction-log'>
+		{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $row['member_id'] ), 'mini'"}
+		<div class="ipsPhotoPanel__text">
+			<h3 class="ipsPhotoPanel__primary">{template="userLink" app="core" group="global" params="\IPS\Member::load( $row['member_id'] )"}</h3>
+			<div class="ipsPhotoPanel__secondary">
+				<span>
+					{{if !isset( \IPS\Request::i()->reaction ) || \IPS\Request::i()->reaction == 'all'}}
+						{{$reaction = \IPS\Content\Reaction::load( $row['reaction'] );}}
+						<img src='{$reaction->_icon->url}' height='20' width='20' loading="lazy" alt="">
+					{{endif}} <span>{$row['rep_date']|raw}</span>
+				</span>
+				{{if \IPS\Member::loggedIn()->modPermission('can_remove_reactions') and \count( $row['_buttons'] )}}
+					<a href="{$row['_buttons']['delete']['link']}" {{if isset( $row['_buttons']['delete']['data'] )}}
+						{{foreach $row['_buttons']['delete']['data'] as $k => $v}}
+							data-{$k}="{$v}"
+						{{endforeach}}
+						{{endif}} class="i-margin-start_icon"><i class="fa-solid fa-{$row['_buttons']['delete']['icon']}" aria-hidden="true"></i></a>
+				{{endif}}
+			</div>
+		</div>
+	</li>
+{{endforeach}}

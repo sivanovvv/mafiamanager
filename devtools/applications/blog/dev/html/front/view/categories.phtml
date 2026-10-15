@@ -1,0 +1,20 @@
+<ips:template parameters="$currentCategory=NULL, $categories=array(), $blog=NULL" />
+{{if \count( $categories )}}
+	<section id='elBlogCategoriesBlock' class='ipsWidget ipsWidget--vertical'>
+		<header class='ipsWidget__header'>
+			<h3>{lang="categories"}</h3>
+			{{if $blog->canEdit()}}
+				<span class='ipsBox__header-secondary'><a href="{$blog->url()->setQueryString( array( 'do' => "manageCategories" ) )}" data-ipsDialog data-ipsDialog-size='narrow'><i class='fa-solid fa-pencil' aria-hidden="true"></i><span class="ipsInvisible">{lang="edit"}</span></a></span>
+			{{endif}}
+		</header>
+		<div class='ipsSideMenu ipsSideMenu--truncate ipsCategoriesMenu'>
+			<ul class='ipsSideMenu__list'>
+				{{foreach $categories as $category}}
+					<li {{if $currentCategory and $currentCategory->id == $category->id}}aria-current="page"{{endif}}>
+						<a href="{$category->url()}" class='ipsSideMenu_item'><strong class='ipsSideMenu__text'>{$category->name}</strong></a>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	</section>
+{{endif}}

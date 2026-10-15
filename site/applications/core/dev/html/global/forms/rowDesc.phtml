@@ -1,0 +1,3 @@
+<ips:template parameters="$label, $element, $required=FALSE, $error=NULL, $prefix=NULL, $suffix=NULL, $id=NULL, $object=NULL, $form=NULL" />
+{{if \IPS\Dispatcher::i()->controllerLocation == 'admin' AND !( $object instanceof \IPS\Helpers\Form\Address ) AND !( $object instanceof \IPS\Helpers\Form\Upload ) AND !( $object instanceof \IPS\Helpers\Form\Node ) AND !( $object instanceof \IPS\Helpers\Form\Codemirror )}}<!-- <br> -->{{endif}}
+<div class='ipsFieldRow__desc'>%s</div>

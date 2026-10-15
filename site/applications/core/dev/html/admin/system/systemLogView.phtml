@@ -1,0 +1,35 @@
+<ips:template parameters="$log" />
+<div class="i-margin-bottom_3">
+	<div class='ipsPhotoPanel' style="--i-photoPanelAvatar: 4em;">
+		<span class='ipsUserPhoto'>
+			<img src='{member="photo" id="$log->member_id"}' alt=''>
+		</span>
+		<div class='ipsPhotoPanel__text'>
+			<div class="ipsPhotoPanel__primary">
+				{{if $log->member_id}}
+					<a href="{url="app=core&module=members&controller=members&do=view&id="}{$log->member_id}" data-ipsTooltip title='{lang="triggered_by" sprintf="\IPS\Member::load($log->member_id)->name"}'>{member="name" id="$log->member_id"}</a>
+				{{else}}
+					{lang="triggered_guest"}
+				{{endif}}
+				({expression="\IPS\Member\Group::load( \IPS\Member::load( $log->member_id )->member_group_id )->formattedName" raw="true"})
+			</div>
+			<div class="ipsPhotoPanel__secondary">{datetime="$log->time"}</div>
+			<div class="ipsPhotoPanel__secondary">{lang="triggered_at"} {{if $log->url}}<a href='{$log->url}' target='_blank' rel="noopener" title='{$log->url}'>{$log->url}</a>{{else}}<em>{lang="log_missing_data"}</em>{{endif}}</div>
+		{{if $log->category}}
+			<div class="ipsPhotoPanel__secondary"> {lang="log_category"}: {$log->category}</div>
+		{{endif}}
+
+		</div>
+	</div>
+</div>
+<div class="i-margin-bottom_3">
+	{{if $log->exception_class}}
+		<code>{$log->exception_class}::{$log->exception_code}</code><br>
+		<br>
+	{{endif}}
+	<textarea class="ipsInput ipsInput--text" rows="15" style="font-family: monospace;">{$log->message}</textarea>
+</div>
+<div class="i-margin-bottom_3">
+	<h3 class="ipsMinorTitle">{lang="log_backtrace"}</h3>
+	<textarea class="ipsInput ipsInput--text" rows="8" style="font-family: monospace;">{$log->backtrace}</textarea>
+</div>

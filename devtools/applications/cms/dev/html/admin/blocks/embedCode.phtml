@@ -1,0 +1,25 @@
+<ips:template parameters="$block, $embedKey" />
+<div class="i-padding_3">
+	<div class="ipsMessage ipsMessage--info">
+    	{lang="embed_message"}
+	</div>
+	<div data-controller='cms.admin.pages.embed'>
+		<div class="i-margin-top_4">
+			<div class='ipsTitle ipsTitle--h4'>1. {lang="embed_1_title"}</div>
+			<p class="i-margin-block_2">{lang="embed_1_desc"}</p>
+			<label class="ipsInputLabel i-font-weight_500 i-margin-top_3 i-margin-bottom_2"><input type='checkbox' class="ipsInput" id='elEmbedInherit' checked><span>{lang="embed_1_toggle"}</span></label>
+			<div class="i-flex i-flex-wrap_wrap i-gap_1">
+				<textarea rows='2' spellcheck='false' id="embed_block" class='i-flex_91 i-basis_300 ipsInput ipsInput--fluid i-font-family_monospace' data-role='blockCode' readonly>&lt;div id='block_{$embedKey}' data-blockID='{$block->key}' class='ipsExternalWidget' data-inheritStyle='true'&gt;&lt;/div&gt;</textarea>
+				<button type="button" class="i-flex_11 ipsButton ipsButton--primary ipsButton--small" data-ipscopy data-ipscopy-target="embed_block">{lang="copy"}</button>
+			</div>
+		</div>		
+		<div class="i-margin-top_4">
+			<div class='ipsTitle ipsTitle--h4'>2. {lang="embed_2_title"}</div>
+			<p class="i-margin-block_2">{lang="embed_2_desc"}</p>
+			<div class="i-flex i-flex-wrap_wrap i-gap_1">
+				<textarea rows='2' spellcheck='false' id="embed_loader" class='i-flex_91 i-basis_300 ipsInput ipsInput--fluid i-font-family_monospace' readonly>&lt;script type='text/javascript' src='{url="applications/cms/interface/external/external.js" base="none"}' id='ipsWidgetLoader'&gt;&lt;/script&gt;</textarea>
+				<button type="button" class="i-flex_11 ipsButton ipsButton--primary ipsButton--small" data-ipscopy data-ipscopy-target="embed_loader">{lang="copy"}</button>
+			</div>				
+		</div>
+	</div>
+</div>

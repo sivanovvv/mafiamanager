@@ -1,0 +1,62 @@
+<ips:template parameters="$notification, $purchase, $email" />
+{$email->language->addToStack( "email_ad_needs_approval", FALSE )}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>
+<br><br>
+<a href='{url="app=core&module=promotion&controller=advertisements&filter=ad_filters_pending" base="admin"}' style="color: #ffffff; font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; text-decoration: none; font-size: 14px; background-color: {setting="email_color"}; line-height: 36px; padding: 0 16px; display: inline-block; border-radius: 6px; font-weight: 600;" class="button">{$email->language->addToStack("view_advertisements", FALSE)}</a>
+<br><br>
+<table cellpadding="10" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_2 color_hard">
+			<strong>{$email->language->addToStack("ad_details")}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f9f9f9" class="background_2 color_hard">
+			<table width="100%" cellpadding="2" cellspacing="0" border="0">
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px; vertical-align: top;"><strong>{$email->language->addToStack("t_member", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+						&nbsp;&nbsp;{$purchase->member->cm_name} ({$purchase->member->email})
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px; vertical-align: top;"><strong>{$email->language->addToStack("package", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+						&nbsp;&nbsp;{expression="\IPS\nexus\Package::load( $purchase->item_id )->getTitleForLanguage( $email->language )"}
+					</td>
+				</tr>
+				<tr>
+					<td dir='{dir}' width="150" align='right' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px; vertical-align: top;"><strong>{$email->language->addToStack("advertisement_url", FALSE)}</strong></td>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px">
+						&nbsp;&nbsp;<a href="{$purchase->extra['link']}">{$purchase->extra['link']}</a>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br><br>
+{{foreach json_decode( $purchase->extra['image'], TRUE ) as $type => $image}}
+	{{if $image}}
+		<table cellpadding="10" cellspacing="0" border="0" width="100%">
+			<tr>
+				<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_2 color_hard">
+					<strong>
+						{{if $type === 'large'}}
+							{$email->language->addToStack("ad_image", FALSE)}
+						{{else}}
+							{$email->language->addToStack( "ad_image_" . $type, FALSE )}
+						{{endif}}
+					</strong>
+				</td>
+			</tr>
+			<tr>
+				<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px; text-align: center" bgcolor="#f9f9f9" class="background_2 color_hard">
+					<img src='{file="$image" extension="core_Advertisements"}' alt="" />
+				</td>
+			</tr>
+		</table>
+		<br>
+	{{endif}}
+{{endforeach}}

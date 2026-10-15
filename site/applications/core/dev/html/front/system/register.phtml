@@ -1,0 +1,43 @@
+<ips:template parameters="$form, $login, $postBeforeRegister" />
+
+<section data-el='register-form'>
+	<div data-ips-hook="registerForm" data-role='registerForm'>
+		<div class='ipsBox ipsBox--register ipsPull i-overflow_hidden'>
+			{{$buttonMethods = $login->buttonMethods();}}
+			{{if $buttonMethods}}
+			<div class="ipsColumns ipsColumns--lines">
+				<div class='ipsColumns__primary'>
+			{{endif}}
+					<div class='{{if !$buttonMethods}}cRegister_noSocial{{endif}}'>
+						<div class='i-padding_3'>
+							{{if $postBeforeRegister}}
+								<h1 class='ipsTitle ipsTitle--h2'>{lang="post_before_register_headline"}</h1>
+								{{if !\IPS\Request::i()->hidereminder}}<p class='i-color_soft i-font-size_2 i-font-weight_500 i-margin-top_1'>{lang="post_before_register_subtext"}</p>{{endif}}
+							{{else}}
+								<h1 class='ipsTitle ipsTitle--h2'>{lang='sign_up'}</h1>
+								<p class='i-color_soft i-font-size_2 i-font-weight_500 i-margin-top_1'>{lang="existing_user"} <a href='{$login->url}'>{lang="sign_in_short"}</a></p>
+							{{endif}}
+						</div>
+						{$form|raw}
+					</div>
+			{{if $buttonMethods}}
+				</div>
+				<div class='ipsColumns__secondary i-basis_360 i-padding_3' id='elRegisterSocial'>
+					<h2 class='ipsTitle ipsTitle--h3'>{lang='reg_start_faster'}</h2>
+					<p class='i-color_soft i-font-weight_500'>{lang='reg_connect'}</p>
+					<form accept-charset='utf-8' method='post' action='{$login->url}'>
+						<input type="hidden" name="csrfKey" value="{expression="\IPS\Session::i()->csrfKey"}">
+						<div class='i-grid i-gap_1 i-margin-top_3'>
+							{{foreach $buttonMethods as $method}}
+								<div class="i-flex_11">
+									{$method->button()|raw}
+								</div>
+							{{endforeach}}
+						</div>
+					</form>
+				</div>
+			</div>
+			{{endif}}
+		</div>
+	</div>
+</section>

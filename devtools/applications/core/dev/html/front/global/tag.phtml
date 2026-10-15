@@ -1,0 +1,9 @@
+<ips:template parameters="$tag, $tagEditUrl=NULL, $classes=null" />
+
+{{$url = \IPS\Content\Tag::buildTagUrl( $tag );}}
+<li class='ipsTags__item {{if $classes}}{$classes}{{endif}} {{if $tagEditUrl}}ipsTags__item--deletable{{endif}}'>
+	<a href='{$url}' class='ipsTags__tag' title="{lang="find_tagged_content" sprintf="$tag"}" rel="tag" data-tag-label="{$tag}" data-ipsTooltip><span>{$tag}</span></a>
+	{{if $tagEditUrl}}
+		<a href='{$tagEditUrl->setQueryString( 'do', 'editTags' )->setQueryString( 'removeTag', $tag )->csrf()}' class='ipsTags__remove' data-action='removeTag' data-ipsTooltip title='{lang="remove_tag"}'>&times;</a>
+	{{endif}}
+</li>

@@ -1,0 +1,33 @@
+<ips:template parameters="$chart, $type, $options, $format=NULL" />
+{{if isset( $chart->errors ) AND \count( $chart->errors )}}
+	<div class='ipsMessage ipsMessage--error'>
+		{{foreach $chart->errors as $error}}
+			{{if isset($error['sprintf'])}}
+				{lang="$error['string']" sprintf="$error['sprintf']"}
+			{{else}}
+				{lang="$error['string']"}
+			{{endif}}
+		{{endforeach}}
+	</div>
+{{endif}}
+<div class="ipsChart__table-wrapper ipsLoading ipsLoading--small" data-ipsChart data-ipsChart-type="{$type}" data-ipsChart-extraOptions='{$options|raw}' {{if $format}}data-ipsChart-format='{$format}'{{endif}}>
+    <table class="ipsTable" >
+        <thead>
+            <tr>
+                {{foreach $chart->headers as $data}}
+                    <th data-colType="{$data['type']}">{$data['label']}</th>
+                {{endforeach}}
+            </tr>
+        </thead>
+        <tbody>
+            {{foreach $chart->rows as $row}}
+                <tr>
+                    {{foreach $row as $value}}
+                        <td {{if \is_array( $value )}}data-key="{$value['key']}"{{endif}}>{{if \is_array( $value )}}{$value['value']}{{else}}{$value}{{endif}}</td>
+                    {{endforeach}}
+                </tr>
+            {{endforeach}}
+        </tbody>
+    </table>
+</div>
+<div class="ipsChart"></div>

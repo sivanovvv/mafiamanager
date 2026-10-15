@@ -1,0 +1,15 @@
+<ips:template parameters="$table" />
+<header class='ipsPageHeader ipsPageHeader--notifications'>
+	<div class="ipsPageHeader__row">
+		<div class='ipsPageHeader__primary'>
+			<h1 class='ipsPageHeader__title'>{lang="notifications"}</h1>
+		</div>
+		<div class="ipsButtons">
+			<a class="ipsButton ipsButton--text" href="{url="app=core&module=system&controller=notifications&do=options" seoTemplate="notifications_options"}"><i class="fa-solid fa-gear" aria-hidden="true"></i> {lang="notification_options"}</a>
+			<a class="ipsButton ipsButton--text" href="{url="app=core&module=system&controller=notifications&format=rss" seoTemplate="notifications_rss"}"><i class="fa-solid fa-rss" aria-hidden="true"></i> {lang="rss"}</a>
+		</div>
+	</div>
+</header>
+<div class='ipsBox ipsBox--notifications'>
+	{$table|raw}
+</div>

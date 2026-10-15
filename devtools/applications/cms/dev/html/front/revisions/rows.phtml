@@ -1,0 +1,67 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{foreach $rows as $row}}
+	<article class='ipsEntry js-ipsEntry ipsEntry--simple ipsEntry--revisions'>
+		<header class='ipsEntry__header'>
+			<div class='ipsEntry__header-align'>
+				<div class='ipsPhotoPanel'>
+					<div>{template="userPhoto" app="core" group="global" params="$row['revision_member_id'], 'mini'"}</div>
+					<div class='ipsPhotoPanel__text'>
+						<h3 class='ipsPhotoPanel__primary'>
+							{$row['revision_member_id']->link()|raw}
+						</h3>
+						<p class='ipsPhotoPanel__secondary'>
+							{$row['revision_date']}
+						</p>
+					</div>
+				</div>
+				<div class='i-flex i-flex-wrap_wrap i-gap_3'>
+					<a href="{$table->baseUrl->setQueryString( array( 'do' => 'revisionView', 'revision_id' => $row['revision_id'], 'd' => \IPS\cms\Databases\Dispatcher::i()->databaseId ) )}">{lang="content_revision_button_view"}</a>
+					<a data-confirm href="{$table->baseUrl->csrf()->setQueryString( array( 'do' => 'revisionDelete', 'revision_id' => $row['revision_id'], 'd' => \IPS\cms\Databases\Dispatcher::i()->databaseId, 'ajax' => \IPS\Request::i()->isAjax() ) )}">{lang="content_revision_button_delete"}</a>
+				</div>
+			</div>
+		</header>
+		<div class='ipsEntry__post'>
+			{{$gotDiffs = FALSE;}}
+			<i-data>
+				<ul class='ipsData ipsData--table ipsData--revisions-rows'>
+					{{foreach $row['revision_data'] as $key => $diff}}
+						<li class='ipsData__item'>
+							<div class='ipsData__main'>
+								{{if $diff['original'] != $diff['current']}}
+									{{$gotDiffs = TRUE;}}
+									<h3 class='ipsTitle ipsTitle--h3 i-margin-bottom_2'>{$diff['field']->_title}</h3>
+									{{if !\in_array( $diff['field']->type, array( 'Editor', 'CodeMirror', 'TextArea' ) )}}
+										<div class='ipsSpanGrid' data-key='{$row['revision_id']}_{$key}' data-method='diff'>
+											<div class='ipsSpanGrid__6 i-padding_3'>
+												<h3 class='ipsTitle ipsTitle--h3'>Revision</h3>
+												<div data-original='{$row['revision_id']}_{$key}'>{$diff['field']->displayValue( $diff['original'] )}</div>
+											</div>
+											<div class='ipsSpanGrid__6 i-padding_3'>
+												<h3 class='ipsTitle ipsTitle--h3'>Current</h3>
+												<div data-current='{$row['revision_id']}_{$key}'>{$diff['field']->displayValue( $diff['current'] )}</div>
+											</div>
+										</div>
+									{{else}}
+										<div class='ipsSpanGrid'>
+											<div class='ipsSpanGrid__6 i-margin-bottom_2'><strong>{lang="content_record_revision_title_revision"}</strong></div>
+											<div class='ipsSpanGrid__6 i-margin-bottom_2'><strong>{lang="content_record_revision_title_record"}</strong></div>
+										</div>
+
+										<div class='ipsPagesDiff' data-key='{$row['revision_id']}_{$key}' data-method='merge'></div>
+										<textarea class='ipsInput ipsInput--text ipsHide' data-original='{$row['revision_id']}_{$key}'>{$diff['original']}</textarea>
+										<textarea class='ipsInput ipsInput--text ipsHide' data-current='{$row['revision_id']}_{$key}'>{$diff['current']}</textarea>
+									{{endif}}
+								{{endif}}
+							</div>
+						</li>
+					{{endforeach}}
+					{{if ! $gotDiffs}}
+						<li>
+							<p class="ipsMessage ipsMessage--info">{lang="record_no_revision_data"}</p>
+						</li>
+					{{endif}}
+				</ul>
+			</i-data>
+		</div>
+	</article>
+{{endforeach}}

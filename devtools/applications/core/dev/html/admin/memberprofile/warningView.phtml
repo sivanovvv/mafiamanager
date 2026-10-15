@@ -1,0 +1,110 @@
+<ips:template parameters="$warning" />
+<div class="i-padding_3" id="warnhovercard_{$warning->id}">	
+	<h2 class="ipsTitle ipsTitle--h4">
+		{{if $warning->canViewDetails()}}
+			<span class='ipsWarningPoints ipsWarningPoints--small i-margin-end_icon'>{$warning->points}</span>
+			{lang="core_warn_reason_{$warning->reason}"}
+		{{else}}
+			{lang="warning"}
+		{{endif}}
+	</h2>
+	{{if \IPS\Settings::i()->warnings_acknowledge OR \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+		<p class=''>
+			{{if $warning->acknowledged}}
+				<strong class='i-color_positive'><i class='fa-solid fa-check-circle' aria-hidden="true"></i> {lang="warning_acknowledged"}</strong>
+			{{else}}
+				{{if $warning->canAcknowledge()}}
+					<div class='i-background_2 i-padding_3 i-text-align_center'>
+						<a href="{$warning->url('acknowledge')->csrf()}" class="ipsButton ipsButton--primary ipsButton--wide"><i class='fa-solid fa-check' aria-hidden="true"></i> {lang="acknowledge"}</a>
+						<p class='i-color_soft i-font-size_-1'>{lang="acknowledge_message"}</p>
+					</div>
+				{{else}}
+					<strong class='i-color_soft'><i class='fa-regular fa-circle' aria-hidden="true"></i> {lang="warning_not_acknowledged"}</strong>
+				{{endif}}
+			{{endif}}
+		</p>
+	{{endif}}
+	{{if $content = $warning->contentObject() and $content->canView()}}
+		<a href='{$content->url()->setQueryString( '_warn', $warning->id )}' class='i-color_soft' title='{lang="warning_go_to_content"}'><i class='fa-solid fa-{$content::$icon}' aria-hidden="true"></i> &nbsp;&nbsp;{{if $content instanceof \IPS\Content\Comment}}{$content->item()->mapped('title')}{{else}}{$content->mapped('title')}{{endif}}</a>
+	{{endif}}
+	{{if $warning->canViewDetails()}}
+		<hr class='ipsHr'>
+		<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+			{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $warning->moderator ), 'tiny'"}
+			<div class="ipsPhotoPanel__text">
+				<p class="ipsPhotoPanel__primary i-color_hard">{lang="warning_byline" sprintf="\IPS\Member::load( $warning->moderator )->name"}</p>
+				<p class='ipsPhotoPanel__secondary'>{datetime="$warning->date"}</p>
+			</div>
+			{{if $warning->canDelete()}}
+				<a href="{url="app=core&module=members&controllers=members&do=warningRevoke&id={$warning->id}" csrf="true"}" data-confirm data-confirmMessage="{lang="warning_revoke_blurb"}" data-confirmType="verify" data-confirmButtons='{expression="json_encode( array( 'yes' => \IPS\Member::loggedIn()->language()->addToStack('warning_revoke_undo'), 'no' => \IPS\Member::loggedIn()->language()->addToStack('delete'), 'cancel' => \IPS\Member::loggedIn()->language()->addToStack('cancel') ) )" raw="true"}' title='{lang="revoke_this_warning"}' class='ipsButton ipsButton--small ipsButton--secondary'><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> {lang="revoke"}</a>
+			{{endif}}
+		</div>
+	{{endif}}
+	{{if $warning->canViewDetails() or $warning->mq or $warning->rpa or $warning->suspend}}
+		<hr class='ipsHr'>
+		<h3 class='ipsTitle ipsTitle--h4'>{lang="warn_punishment"}</h3>
+		<ul class='ipsList_bullets'>
+			{{if $warning->canViewDetails()}}
+				<li>
+					{{if $warning->expire_date}}
+						{{if $warning->expire_date < time()}}
+							{{if $warning->expire_date == -1}}
+								{lang="warn_action_points_never_expire" pluralize="$warning->points"}
+							{{else}}
+								{lang="warn_action_points_expired" pluralize="$warning->points" sprintf="\IPS\DateTime::ts( $warning->expire_date )"}
+							{{endif}}
+						{{else}}
+							{lang="warn_action_points_expire" pluralize="$warning->points" sprintf="\IPS\DateTime::ts( $warning->expire_date )"}
+						{{endif}}
+					{{else}}
+						{lang="warn_action_points" pluralize="$warning->points"}
+					{{endif}}			
+				</li>
+			{{endif}}
+			{{if $warning->mq}}
+				<li>
+					{lang="moderation_modq"} - 
+					{{if $warning->mq == -1}}
+						{lang="indefinitely"}
+                    {{elseif $mq = $warning->mq_interval}}
+                        {expression="\IPS\DateTime::formatInterval( $mq, 2 )"}
+					{{endif}}
+				</li>
+			{{endif}}
+			{{if $warning->rpa}}
+				<li>
+					{lang="moderation_nopost"} - 
+					{{if $warning->rpa == -1}}
+						{lang="indefinitely"}
+                    {{elseif $rpa = $warning->rpa_interval}}
+                        {expression="\IPS\DateTime::formatInterval( $rpa, 2 )"}
+					{{endif}}
+				</li>
+			{{endif}}
+			{{if $warning->suspend}}
+				<li>
+					{lang="moderation_banned"} - 
+					{{if $warning->suspend == -1}}
+						{lang="indefinitely"}
+                    {{elseif $suspend = $warning->suspend_interval}}
+                        {expression="\IPS\DateTime::formatInterval( $suspend, 2 )"}
+					{{endif}}
+				</li>
+			{{endif}}
+		</ul>
+	{{endif}}
+	{{if $warning->note_member}}
+		<hr class='ipsHr'>
+		<h3 class='ipsTitle ipsTitle--h4'>{lang="warn_member_note"}</h3>
+		<div class='ipsRichText'>
+			{$warning->note_member|raw}
+		</div>
+	{{endif}}
+	{{if $warning->note_mods and member.modPermission('mod_see_warn')}}
+		<hr class='ipsHr'>
+		<h3 class='ipsTitle ipsTitle--h4'>{lang="warn_mod_note"}</h3>
+		<div class='ipsRichText'>
+			{$warning->note_mods|raw}
+		</div>
+	{{endif}}
+</div>

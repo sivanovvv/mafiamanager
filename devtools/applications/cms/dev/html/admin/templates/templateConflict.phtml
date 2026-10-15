@@ -1,0 +1,55 @@
+<ips:template parameters="$conflicts, $id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $formClass='', $attributes=array(), $sidebar=''" />
+<form accept-charset='utf-8' data-controller='core.admin.templates.conflict' action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} data-ipsForm class="{$formClass}" {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}}>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+
+	<p class="ipsMessage ipsMessage--error">{lang="theme_conflict_message"}</p>
+	
+	<div class="ipsBox">
+		{{foreach $conflicts as $cid => $data}}
+		<div class="i-padding_3 i-background_dark">{$data['conflict_location']}/{$data['conflict_group']}/{$data['conflict_title']}</div>
+		<table class="ipsTable diff restrict_height">
+			<tr>
+				<th><span data-conflict-id="{$cid}" data-conflict-name="old">{lang="theme_conflict_old_version"}</span></th>
+				<th><span data-conflict-id="{$cid}" data-conflict-name="new">{lang="theme_conflict_new_version"} </span></th>
+			</tr>
+		</table>
+		<div data-conflict-id="{$cid}">
+		{$data['diff']|raw}
+		</div>
+		<div class="i-background_2 i-padding_3">
+			<div class='ipsFluid i-basis_300'>
+				<div>
+					<span class='ipsButton ipsButton--primary' data-conflict-name="old">
+						{{foreach $elements as $collection}}
+							{{foreach $collection as $name => $input}}
+								{{if $name == 'conflict_' . $cid}}
+									<input id='elField_{$name}' type="radio" name="{$name}" value="old" checked="checked" />
+								{{endif}}
+							{{endforeach}}
+						{{endforeach}}
+						<strong>{lang="theme_conflict_use_this"}</strong>
+					</span>
+				</div>
+				<div>
+					<span class='ipsButton ipsButton--primary' data-conflict-name="new">
+						{{foreach $elements as $collection}}
+							{{foreach $collection as $name => $input}}
+								{{if $name == 'conflict_' . $cid}}
+									<input id='elField_{$name}'  type="radio" name="{$name}" value="new" />
+								{{endif}}
+							{{endforeach}}
+						{{endforeach}}
+						<strong>{lang="theme_conflict_use_this"}</strong>
+					</span>
+				</div>
+			</div>
+		</div>
+		{{endforeach}}
+	</div>
+	<div class="ipsSubmitRow">
+		{expression="implode( '', $actionButtons)" raw="true"}
+	</div>
+</form>

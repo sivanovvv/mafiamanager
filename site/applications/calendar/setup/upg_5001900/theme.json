@@ -1,0 +1,22 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/overview\/byMonth",
+            "front\/view\/coverPhotoOverlay"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "front\/calendar.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

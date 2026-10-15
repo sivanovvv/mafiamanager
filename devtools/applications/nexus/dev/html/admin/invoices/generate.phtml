@@ -1,0 +1,107 @@
+<ips:template parameters="$summary, $itemTypes, $url" />
+<div class="i-padding_3">
+	<ul class="ipsButtons ipsButtons--end ipsButtons--generate-invoice i-margin-bottom_2">
+		<li>
+			<button type="button" id="el_addItem" popovertarget="el_addItem_menu" class="ipsButton ipsButton--secondary ipsButton--small"><i class="fa-solid fa-plus" aria-hidden="true"></i> {lang="invoice_add_item"} <i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+			<i-dropdown popover id="el_addItem_menu">
+				<div class="iDropdown">
+					<ul class="iDropdown__items">
+						{{foreach $itemTypes as $k => $class}}
+							{{if method_exists( $class, 'form' )}}
+								<li><a href="{$url->setQueryString('add', $k )}" data-ipsDialog  data-ipsDialog-title="{lang="$class::$title"}"><i class="fa-solid fa-{$class::$icon}" aria-hidden="true"></i> {lang="$class::$title"}</a></li>
+							{{endif}}
+						{{endforeach}}
+						<li><a href="{$url->setQueryString('addRenewal', 1 )}" data-ipsDialog data-ipsDialog-title="{lang="renewal"}"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> {lang="renewal"}</a></li>
+					</ul>
+				</div>
+			</i-dropdown>
+		</li>
+	</ul>
+	<table class="ipsTable ipsTable_zebra">
+		<thead>
+			<tr>
+				<th>{lang="invoice_item"}</th>
+				<th>{lang="invoice_unit_price"}</th>
+				<th>{lang="invoice_quantity"}</th>
+				<th>{lang="invoice_line_price"}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $summary['items'] as $itemId => $item}}
+				<tr>
+					<td>
+						<span title="{lang="$item::$title"}" data-ipsTooltip><i class="fa-solid fa-{$item::$icon}" aria-hidden="true"></i></span> &nbsp; 
+						{{if $itemUrl = $item->acpUrl()}}
+							<a href="{$itemUrl}">{$item->name}</a>
+						{{else}}
+							{$item->name}
+						{{endif}}
+						{{if \count( $item->details )}}
+							<br>
+							<span class="i-color_soft">
+								{{foreach $item->details as $k => $v}}
+									{lang="nexus_pfield_{$k}"}: {expression="\IPS\nexus\Package\CustomField::load( $k )->displayValue( $v, TRUE )" raw="true"}<br>
+								{{endforeach}}
+							</span>
+						{{endif}}
+					</td>
+					<td>
+						{$item->price}
+						{{if isset( $item->renewalTerm ) and $item->renewalTerm}}
+							<br>
+							<span class="i-color_soft">
+								{lang="and_renewal" sprintf="$item->renewalTerm"}
+							</span>
+						{{endif}}
+					</td>
+					<td>{$item->quantity}</td>
+					<td>
+						{$item->linePrice()}
+						{{if isset( $item->renewalTerm ) and $item->renewalTerm}}
+							<br>
+							<span class="i-color_soft">
+								{lang="and_renewal" sprintf="$item->renewalTerm->times( $item->quantity )"}
+							</span>
+						{{endif}}
+					</td>
+					<td>
+						<ul class="ipsControlStrip" data-ipscontrolstrip>
+							<li class="ipsControlStrip_button ">
+								<a href="{$url->setQueryString('remove', $itemId)}" data-ipsTooltip title="{lang="delete"}" data-confirm data-confirmSubMessage="{lang="invoice_remove_item_warn"}"> <!-- @todo [Future] It would be nice if it could recalculate prices automatically rather than show that warning -->
+									<i class="ipsControlStrip_icon fa-solid fa-xmark-circle" aria-hidden="true"></i>
+									<span class="ipsControlStrip_item">{lang="delete"}</span>
+								</a>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="3"><strong>{lang="subtotal"}</strong></td>
+				<td><strong>{$summary['subtotal']}</strong></td>
+				<td></td>
+			</tr>
+			{{foreach $summary['tax'] as $taxId => $tax}}
+				<tr>
+					<td colspan="3">{lang="nexus_tax_{$taxId}"} ({expression="$tax['rate']*100"}%)</td>
+					<td>{$tax['amount']}</td>
+					<td></td>
+				</tr>
+			{{endforeach}}
+			<tr>
+				<td colspan="3"><strong class="i-font-size_2">{lang="total"}</strong></td>
+				<td><strong class="i-font-size_2">{$summary['total']}</strong></td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<div class="ipsSubmitRow">			
+	<form action="{$url}" method="post">
+		<input type="hidden" name="continue" value="1">
+		<button type="submit" class="ipsButton ipsButton--primary">{lang="save"}</button>
+	</form>
+</div>

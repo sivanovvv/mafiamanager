@@ -1,0 +1,31 @@
+<ips:template parameters="$file, $version" />
+{{$versionNumber = $version['b_version'] ?: (string) \IPS\DateTime::ts( $version['b_backup'] );}}
+<p class='i-color_soft i-margin-bottom_1'>{lang="file_version_released" htmlsprintf="\IPS\DateTime::ts( $version['b_backup'] )->html( false )"}</p>
+<div class='ipsRichText'>
+	{{if $version['b_changelog']}}
+		{template="richText" group="global" app="core" location="global" params="$version['b_changelog']"}
+	{{else}}
+		<p><em>{lang="file_no_changelog"}</em></p>
+	{{endif}}
+</div>
+{{if isset( $version['b_id'] ) and ( $file->canDownload() or ( $file->canEdit() and member.group['idm_bypass_revision'] ) )}}
+	<div class="ipsTitle ipsTitle--h5 i-margin-top_3 i-margin-bottom_1">{lang="with_version" sprintf="$versionNumber"}</div>
+	<ul class='ipsList ipsList--inline'>
+		{{if $file->canDownload()}}
+			<li><a href='{{if settings.idm_antileech AND !$file->requiresDownloadConfirmation()}}{$file->url('download')->setQueryString( array( 'version' => $version['b_id'] ) )->csrf()}{{else}}{$file->url('download')->setQueryString( array( 'version' => $version['b_id'] ) )}{{endif}}' {{if $file->requiresDownloadConfirmation()}}data-ipsDialog{{endif}}>{lang="download"}</a></li>
+		{{endif}}
+		{{if $file->canEdit() and member.group['idm_bypass_revision']}}
+			<li><a href="{$file->url()->setQueryString( array( 'do' => 'restorePreviousVersion', 'version' => $version['b_id'] ) )->csrf()}" data-confirm data-confirmMessage="{lang="version_restore_confirm"}" data-confirmSubMessage="{lang="version_restore_confirm_desc" sprintf="$versionNumber"}">{lang="restore"}</a></li>
+			<li><a href='{$file->url()->setQueryString( array( 'do' => 'deletePreviousVersion', 'version' => $version['b_id'] ) )->csrf()}' data-confirm data-confirmMessage="{lang="version_delete_confirm"}">{lang="delete"}</a></li>
+			<li>
+				<a href='{$file->url()->setQueryString( array( 'do' => 'previousVersionVisibility', 'version' => $version['b_id'] ) )->csrf()}'>
+					{{if $version['b_hidden']}}
+						{lang="unhide_from_members"}
+					{{else}}
+						{lang="hide_from_members"}
+					{{endif}}
+				</a>
+			</li>
+		{{endif}}
+	</ul>
+{{endif}}

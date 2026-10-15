@@ -1,0 +1,19 @@
+<ips:template parameters="$packages, $layout='grid-carousel', $isCarousel=false" />
+{{if !empty( $packages ) }}
+	<header class='ipsWidget__header'>
+		<h3>{lang="block_featuredProduct"}</h3>
+		{{if $isCarousel}}
+			{{$carouselID = 'widget--commerce-featured-products_' . mt_rand();}}
+			{template="carouselNavigation" group="global" app="core" params="$carouselID"}
+		{{endif}}
+	</header>
+	<div class='ipsWidget__content'>
+		<i-data>
+			<ul class='ipsData ipsData--{$layout} {{if $isCarousel}}ipsData--carousel{{endif}} ipsData--commerce-featured-products' {{if $isCarousel}}id='{$carouselID}' tabindex="0"{{endif}}>
+				{{foreach $packages as $package}}
+					{template="packageBlockWidget" app="nexus" group="store" params="$package, TRUE, TRUE"}
+				{{endforeach}}
+			</ul>
+		</i-data>
+	</div>
+{{endif}}

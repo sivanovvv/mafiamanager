@@ -1,0 +1,7 @@
+;(function(){"use strict";class CookieConsent extends HTMLElement{connectedCallback(){this.bannerType=this.getAttribute("data-role");this.skipToBanner=document.querySelector(`.ipsSkipToContent[data-role="skipToConsent"]`);this.hide=false;if((this.bannerType==="cookieConsentBar"&&ips.utils.cookie.get('cookie_consent'))||(this.bannerType==="guestTermsBar"&&ips.utils.cookie.get('guestTermsDismissed'))){this.hide=true;}
+this.#hideGuestBar(this.hide);this.addEventListener("keydown",this.#returnFocus);if(this.bannerType==="guestTermsBar"){this.addEventListener("click",this.#dismissTerms);}
+else if(!ips.utils.cookie.get('cookie_consent_optional')){document.body.classList.add("cOptionalCookiesRejected");}}
+#dismissTerms(e){const target=e.target.closest(`[data-action="dismissTerms"]`);if(!target)return;e.preventDefault();ips.utils.cookie.set('guestTermsDismissed',1);this.#hideGuestBar(true);}
+#hideGuestBar(isHidden){this.hidden=isHidden;this.skipToBanner.hidden=isHidden;document.body.classList.toggle('cWithGuestTerms',!isHidden);}
+#returnFocus(e){if(e.key==="Escape"){document.querySelector(`.ipsSkipToContent[data-role="skipToContent"]`)?.focus();}}}
+ips.ui.registerWebComponent("cookieConsent",CookieConsent);Debug.log(`Submitted the web component constructor, CookieConsent, for ${"cookieConsent"}`);})();;

@@ -1,0 +1,7 @@
+<ips:template parameters="" />
+<span class='ipsUserPhoto'>
+    <img src='{expression="\IPS\Member::loggedIn()->photo"}' alt='' loading="lazy">
+</span>
+<span class='ipsUserNav__text'>
+    {{if isset( $_SESSION['logged_in_as_key'] )}}{lang="front_logged_in_as" sprintf="$_SESSION['logged_in_from']['name']"} {{endif}}{member="name"}
+</span>

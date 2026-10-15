@@ -1,0 +1,33 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div class="i-flex">
+	<div class="i-flex_11">
+		{{if $table->pages > 1}}
+			{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+		{{endif}}
+	</div>
+	{template="buttons" params="$table->rootButtons, ''" group="global" app="core" if="isset( $headers['_buttons'] )"}
+</div>
+{{foreach $rows as $note}}
+	<article class="ipsEntry ipsEntry--simple ipsEntry--customer-note">
+		<header class="ipsEntry__header">
+			<div class="ipsEntry__header-align">
+				<div class="ipsPhotoPanel">
+					{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $note['note_author'] ), 'mini'"}
+					<div class="ipsPhotoPanel__text">
+						<div class="ipsPhotoPanel__primary">{member="name" id="$note['note_author']"}</div>
+						<div class="ipsPhotoPanel__secondary">{datetime="$note['note_date']"}</div>
+					</div>
+				</div>
+				{template="controlStrip" params="$note['_buttons'], 'ipsControlStrip_showText'" group="global" app="core"}
+			</div>
+		</header>
+		<div class="ipsEntry__post ipsRichText">
+			{$note['note_text']|raw}
+		</div>
+	</article>
+{{endforeach}}
+{{if $table->pages > 1}}
+	<div class="i-padding_2">
+		{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit"}
+	</div>
+{{endif}}

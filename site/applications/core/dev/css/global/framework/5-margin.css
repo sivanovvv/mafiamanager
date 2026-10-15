@@ -1,0 +1,77 @@
+/*
+	----------------
+	- Margin
+	----------------
+*/
+
+.i-margin_1{ margin: var(--i-sp_1); }
+.i-margin_2{ margin: var(--i-sp_2); }
+.i-margin_3{ margin: var(--i-sp_3); }
+.i-margin_4{ margin: var(--i-sp_4); }
+.i-margin_5{ margin: var(--i-sp_5); }
+
+/* Vertical spacing */
+.i-margin-top_1,
+.i-margin-block_1{ margin-top: var(--i-sp_1); }
+.i-margin-bottom_1,
+.i-margin-block_1{ margin-bottom: var(--i-sp_1); }
+.i-margin-top_2,
+.i-margin-block_2{ margin-top: var(--i-sp_2); }
+.i-margin-bottom_2,
+.i-margin-block_2{ margin-bottom: var(--i-sp_2); }
+.i-margin-top_3,
+.i-margin-block_3{ margin-top: var(--i-sp_3); }
+.i-margin-bottom_3,
+.i-margin-block_3{ margin-bottom: var(--i-sp_3); }
+.i-margin-top_4,
+.i-margin-block_4{ margin-top: var(--i-sp_4); }
+.i-margin-bottom_4,
+.i-margin-block_4{ margin-bottom: var(--i-sp_4); }
+.i-margin-top_5,
+.i-margin-block_5{ margin-top: var(--i-sp_5); }
+.i-margin-bottom_5,
+.i-margin-block_5{ margin-bottom: var(--i-sp_5); }
+
+.i-margin-top_0{ margin-top: 0; }
+.i-margin-bottom_0{ margin-bottom: 0; }
+
+.i-margin-top_block,
+.i-margin-block_block{ margin-top: var(--i-sp_block); }
+.i-margin-bottom_block,
+.i-margin-block_block{ margin-bottom: var(--i-sp_block); }
+
+.i-margin-start_1{ margin-inline-start: var(--i-sp_1) }
+.i-margin-start_2{ margin-inline-start: var(--i-sp_2) }
+.i-margin-start_3{ margin-inline-start: var(--i-sp_3) }
+.i-margin-start_4{ margin-inline-start: var(--i-sp_4) }
+.i-margin-start_5{ margin-inline-start: var(--i-sp_5) }
+
+.i-margin-end_1{ margin-inline-end: var(--i-sp_1) }
+.i-margin-end_2{ margin-inline-end: var(--i-sp_2) }
+.i-margin-end_3{ margin-inline-end: var(--i-sp_3) }
+.i-margin-end_4{ margin-inline-end: var(--i-sp_4) }
+.i-margin-end_5{ margin-inline-end: var(--i-sp_5) }
+
+.ipsBlockSpacer > :not(:last-child){
+	--spacer: var(--i-sp_block);
+	margin-bottom: var(--spacer);
+}
+
+.i-margin-top_auto{ margin-top: auto }
+.i-margin-bottom_auto{ margin-bottom: auto }
+
+/* Inline spacing */
+.i-margin-start_auto,
+.i-margin-inline_auto{
+	margin-inline-start: auto;
+}
+.i-margin-end_auto,
+.i-margin-inline_auto{
+	margin-inline-end: auto;
+}
+.i-margin-start_icon{
+	margin-inline-start: .5em;
+}
+.i-margin-end_icon{
+	margin-inline-end: .5em;
+}

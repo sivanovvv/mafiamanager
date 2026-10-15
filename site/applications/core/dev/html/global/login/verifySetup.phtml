@@ -1,0 +1,57 @@
+<ips:template parameters="$countryCode, $phoneNumber, $showingMultipleForms, $methods, $error" />
+<div id="elVerify">
+	<div class='i-padding_3'>
+		{{if !$showingMultipleForms}}
+			<h1 class='i-text-align_center ipsTitle ipsTitle--h3 i-margin-bottom_2'>{lang="mfa_popup_setup_title"}</h1>
+		{{endif}}
+		<div class="ipsRichText i-text-align_center c2FA_info">
+				{{if !$showingMultipleForms}}
+					{lang="verify_mfa_desc_phone_prefix"}
+				{{endif}}
+				{{if \count( $methods ) > 1}}
+					{lang="verify_mfa_desc_sms_or_phone"}
+				{{elseif \in_array( 'phone', $methods )}}
+					{lang="verify_mfa_desc_phone"}
+				{{else}}
+					{lang="verify_mfa_desc_sms"}
+				{{endif}}
+		</div>
+	</div>
+	<div class="i-padding_3">
+		<div class='i-grid i-gap_2'>
+			<div>
+				<select class="ipsInput ipsInput--select" data-sort name="countryCode">
+					{{foreach \IPS\Helpers\Form\Tel::$diallingCodes as $country => $codes}}
+						{{foreach $codes as $code}}
+							<option value="{$country}-{$code}" data-code="+{$code}" data-text="{lang="country-{$country}"} (+{$code})" {{if $country == $countryCode or "{$country}-{$code}" == $countryCode}}selected{{endif}}>{lang="country-{$country}"} (+{$code})</option>
+						{{endforeach}}
+					{{endforeach}}
+				</select>
+			</div>
+			<div>
+				<input class="ipsInput ipsInput--text" name="phoneNumber" type="tel" value="{$phoneNumber}" placeholder="{lang="verify_placeholder"}" autocomplete="tel-national">
+			</div>
+		</div>
+		{{if request.countryCode}}
+			<p class="i-color_warning">{lang="$error"}</p>
+		{{endif}}
+	</div>
+	<div class="i-padding_3 i-background_3 ipsButtons ipsButtons--fill">
+		{{if \in_array( 'phone', $methods )}}
+			<button type='submit' name="method" value="phone" class='ipsButton ipsButton--primary'>
+				<i class='fa-solid fa-phone' aria-hidden="true"></i> {lang="verify_submit_call"}
+			</button>
+		{{endif}}
+		{{if \in_array( 'sms', $methods )}}
+			<button type='submit' name="method" value="sms" class='ipsButton ipsButton--primary'>
+				<i class='fa-solid fa-comment-dots' aria-hidden="true"></i> {lang="verify_submit_sms"}
+			</button>
+		{{endif}}
+		{{if \in_array( 'whatsapp', $methods )}}
+			<button type='submit' name="method" value="whatsapp" class='ipsButton ipsButton--primary'>
+				<i class='fa-reguar fa-comment' aria-hidden="true"></i> {lang="verify_submit_whatsapp"}
+			</button>
+		{{endif}}
+	</div>
+    {template="mfaSetupOptOut" app="core" group="login" location="global"}
+</div>

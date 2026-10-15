@@ -1,0 +1,17 @@
+<ips:template parameters="$preview, $author, $contentApp, $contentClass, $contentId, $time, $contentComment=null" />
+
+<iframe
+	src='{$preview}'
+	data-embedContent
+    data-internalembed
+	data-controller='core.front.core.autosizeiframe'
+	data-embedauthorid='{$author}'
+	data-ipsembed-contentapp='{$contentApp}'
+	data-ipsembed-contentclass='{$contentClass}'
+	data-ipsembed-contentid='{$contentId}'
+    data-ipsembed-timestamp="{$time}"
+	{{if $contentComment AND ($idCol=$contentComment::$databaseColumnId) AND ($commentId = $contentComment->$idCol)}}
+	data-ipsembed-contentcommentid='{$commentId}'
+	{{endif}}
+	allowfullscreen=''
+></iframe>

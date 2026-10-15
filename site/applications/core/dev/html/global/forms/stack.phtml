@@ -1,0 +1,21 @@
+<ips:template parameters="$name, $fields, $options=array()" />
+<div class="ipsField_stack" data-ipsStack data-ipsStack-sortable data-ipsStack-fieldName="{$name}" {{if isset( $options['maxItems'] )}}data-ipsStack-maxItems="{$options['maxItems']}"{{endif}}>
+	<ul data-role="stack">
+	{{foreach $fields as $field}}
+		<li class='ipsField_stackItem' data-role="stackItem">
+			<span class="ipsField_stackDrag ipsDrag ipsJS_show" data-action='stackDrag'>
+				<i class='fa-solid fa-bars ipsDrag_dragHandle' aria-hidden="true"></i>
+			</span>
+			<div data-ipsStack-wrapper>{$field|raw}</div>
+			<input type="submit" class="ipsField_stackDelete ipsJS_hide" name="form_remove_stack[{expression="md5($field)"}]" value="&cross;">
+			<a href='#' class="ipsField_stackDelete ipsJS_show" data-action="stackDelete">
+				&times;
+			</a>
+		</li>
+	{{endforeach}}
+	</ul>
+	<div class='i-margin-top_2'>
+		<a class="ipsField_stackAdd ipsButton ipsButton--soft ipsButton--small ipsJS_show" href='#' data-action="stackAdd" role="button"><i class='fa-solid fa-plus-circle' aria-hidden="true"></i> {lang="stack_add"}</a>
+	</div>
+	<input type="submit" class="ipsJS_hide" name="form_add_stack" value="{lang="stack_add"}">
+</div>

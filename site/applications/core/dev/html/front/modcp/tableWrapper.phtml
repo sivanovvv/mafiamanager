@@ -1,0 +1,7 @@
+<ips:template parameters="$table, $title=''" />
+<div class='ipsModCpanel__tableWrapper' data-controller='core.front.modcp.reportList'>
+	{{if $title}}
+		<h2 class='ipsTitle ipsTitle--padding ipsTitle--h4'>{lang="$title"}</h2>
+	{{endif}}
+	{$table|raw}
+</div>

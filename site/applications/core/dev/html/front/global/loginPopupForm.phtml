@@ -1,0 +1,38 @@
+<ips:template parameters="$login" />
+<div class="">
+	<p class="ipsTitle ipsTitle--h3 i-padding_2 i-padding-bottom_0 i-color_hard">{lang="login"}</p>
+	<ul class='ipsForm ipsForm--vertical ipsForm--login-popup'>
+		<li class="ipsFieldRow ipsFieldRow--noLabel ipsFieldRow--fullWidth">
+			<label class="ipsFieldRow__label" for="login_popup_email">{lang="email_address"}</label>
+			<div class="ipsFieldRow__content">
+                <input type="email" class='ipsInput ipsInput--text' placeholder="{lang="email_address"}" name="auth" autocomplete="email" id='login_popup_email' required>
+			</div>
+		</li>
+		<li class="ipsFieldRow ipsFieldRow--noLabel ipsFieldRow--fullWidth">
+			<label class="ipsFieldRow__label" for="login_popup_password">{lang="password"}</label>
+			<div class="ipsFieldRow__content">
+				<input type="password" class='ipsInput ipsInput--text' placeholder="{lang="password"}" name="password" autocomplete="current-password" id='login_popup_password' required>
+			</div>
+		</li>
+		<li class="ipsFieldRow ipsFieldRow--checkbox">
+			<input type="checkbox" name="remember_me" id="remember_me_checkbox_popup" value="1" checked class="ipsInput ipsInput--toggle">
+			<div class="ipsFieldRow__content">
+				<label class="ipsFieldRow__label" for="remember_me_checkbox_popup">{lang="remember_me"}</label>
+				<div class="ipsFieldRow__desc">{lang="remember_me_desc"}</div>
+			</div>
+		</li>
+		<li class="ipsSubmitRow">
+			<button type="submit" name="_processLogin" value="usernamepassword" class="ipsButton ipsButton--primary i-width_100p">{lang="login"}</button>
+			{{if settings.allow_forgot_password != 'disabled'}}
+				<p class="i-color_soft i-link-color_inherit i-font-weight_500 i-font-size_-1 i-margin-top_2">
+					{{if settings.allow_forgot_password == 'redirect'}}
+						<a href='{expression="\IPS\Settings::i()->allow_forgot_password_target"}' target="_blank" rel="noopener">
+					{{else}}
+						<a href='{url="app=core&module=system&controller=lostpass" seoTemplate="lostpassword"}' {{if \IPS\Helpers\Form\Captcha::supportsModal()}}data-ipsDialog data-ipsDialog-title='{lang="forgotten_password"}'{{endif}}>
+					{{endif}}
+					{lang="forgotten_password"}</a>
+				</p>
+			{{endif}}
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,9 @@
+<ips:template parameters="$templates, $app" />
+<div class="i-font-size_-1">
+    <div class='i-font-weight_600'>{lang="devscan__emailtpl"}</div>
+    <pre class="prettyprint lang-txt">
+
+    {{foreach $templates as $template}}{$template}
+    {{endforeach}}</pre>
+</div>
+{template="blockFooter" app="core" group="developer" params="$app"}

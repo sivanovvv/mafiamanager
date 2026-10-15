@@ -1,0 +1,18 @@
+<ips:template parameters="$purchase" />
+
+<div class='i-padding_3 i-background_2 i-text-align_center i-margin-bottom_1'>
+	<h2 class='ipsMinorTitle i-margin-bottom_1'>{lang="license_key"}</h2>
+	<div class='i-font-size_2 i-margin-bottom_1'>
+		{lang="no_license_key_generated"}
+	</div>
+
+	{{if member.hasAcpRestriction( 'nexus', 'customers', 'lkeys_reset' ) || ( $purchase->licenseKey() and $purchase->licenseKey()->uses )}}
+		<ul class='ipsList ipsList--inline i-margin-top_1'>
+			{{if member.hasAcpRestriction( 'nexus', 'customers', 'lkeys_reset' )}}
+				<li>
+					<a href="{$purchase->acpUrl()->setQueryString( array( 'do' => 'extra', 'act' => 'lkeyReset' ) )->csrf()}" data-confirm class="ipsButton ipsButton--inherit ipsButton--tiny">{lang="generate_new_key"}</a>
+				</li>
+			{{endif}}
+		</ul>
+	{{endif}}
+</div>

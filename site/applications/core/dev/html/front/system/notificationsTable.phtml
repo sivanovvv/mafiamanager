@@ -1,0 +1,37 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div class='ipsBox ipsBox--notificationsTable ipsPull'>
+	<header class='ipsPageHeader ipsPageHeader--notifications-table'>
+		<div class="ipsPageHeader__row">
+			<div class='ipsPageHeader__primary'>
+				<h1 class='ipsPageHeader__title'>{lang="notifications"}</h1>
+			</div>
+			<div class="ipsButtons">
+				<a class="ipsButton ipsButton--inherit ipsButton--small" href="{url="app=core&module=system&controller=notifications&do=options" seoTemplate="notifications_options"}"><i class="fa-solid fa-gear" aria-hidden="true"></i> {lang="notification_options"}</a>
+			</div>
+		</div>
+	</header>
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+			</div>
+		</div>
+	{{endif}}
+
+	{{if \is_array( $rows ) AND \count( $rows )}}
+		<i-data>
+			<ol class="ipsData ipsData--table ipsData--notifications-table cForumTopicTable {{foreach $table->classes as $class}}{$class} {{endforeach}}" id='elTable_{$table->uniqueId}' data-role="tableRows">
+				{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+			</ol>
+		</i-data>
+	{{else}}
+		<p class='ipsEmptyMessage'>{lang="notifications_none"}</p>
+	{{endif}}	
+	{{if $table->pages > 1}}
+		<div class="ipsButtonBar ipsButtonBar--bottom">
+			<div class="ipsButtonBar__pagination" data-role="tablePagination">
+				{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+			</div>
+		</div>
+	{{endif}}
+</div>

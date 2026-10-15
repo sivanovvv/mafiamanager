@@ -1,0 +1,364 @@
+<ips:template parameters="$member, $mainContent, $visitors, $sidebarFields, $followers, $addWarningUrl, $solutions" />
+{{if !\IPS\Request::i()->isAjax()}}
+<!-- When altering this template be sure to also check for similar in the hovercard -->
+<div class="ipsProfileContainer" data-controller='core.front.profile.main'>
+	{template="profileHeader" app="core" location="front" group="profile" params="$member, false, $solutions"}
+	<div data-role="profileContent">
+{{endif}}
+		<div class='ipsProfile ipsProfile--profile'>
+			<aside class='ipsProfile__aside' id='elProfileInfoColumn'>
+				<div class="ipsProfile__sticky-outer">
+					<div class="ipsProfile__sticky-inner" data-ips-hook="profileInfoColumn">
+
+						{{if \IPS\Settings::i()->warn_on and !$member->inGroup( explode( ',', \IPS\Settings::i()->warn_protected ) ) and ( \IPS\Member::loggedIn()->modPermission('mod_see_warn') or ( \IPS\Settings::i()->warn_show_own and \IPS\Member::loggedIn()->member_id == $member->member_id ) )}}
+							<div class='ipsWidget ipsWidget--warnings'>
+								<div class="ipsWidget__content">
+									<div class="i-padding_2">
+										<div id='elWarningInfo' class="i-padding_1">
+											<h4 class='i-margin-bottom_2 i-font-weight_600 i-font-size_3 {{if $member->mod_posts || $member->restrict_post || $member->temp_ban}}i-color_negative{{endif}}'>{{if $member->mod_posts || $member->restrict_post || $member->temp_ban}}<i class="fa-solid fa-triangle-exclamation i-margin-end_icon" aria-hidden="true"></i>{{endif}}{lang="member_warn_level" pluralize="$member->warn_level"}</h4>
+											{{if !$member->mod_posts && !$member->restrict_post && !$member->temp_ban}}
+												<div class='{{if $member->mod_posts || $member->restrict_post || $member->temp_ban}}i-color_negative i-font-weight_500{{else}}i-color_soft{{endif}}'>{lang="no_restrictions_applied"}</div>
+											{{else}}
+												<div class='i-font-weight_500 i-color_hard'>{lang="restrictions_applied"}</div>
+												<ul class='ipsList ipsList--csv'>
+													{{if $member->mod_posts}}
+														<li data-ipsTooltip title="{{if $member->mod_posts == -1}}{lang="moderation_modq_perm"}{{else}}{lang="moderation_modq_temp" sprintf="\IPS\DateTime::ts( $member->mod_posts )"}{{endif}}">{lang="moderation_modq"}</li>
+													{{endif}}
+													{{if $member->restrict_post}}
+														<li data-ipsTooltip title="{{if $member->restrict_post == -1}}{lang="moderation_nopost_perm"}{{else}}{lang="moderation_nopost_temp" sprintf="\IPS\DateTime::ts( $member->restrict_post )"}{{endif}}">{lang="moderation_nopost"}</li>
+													{{endif}}
+													{{if $member->temp_ban}}
+														<li data-ipsTooltip title="{{if $member->temp_ban == -1}}{lang="moderation_banned_perm"}{{else}}{lang="moderation_banned_temp" sprintf="\IPS\DateTime::ts( $member->temp_ban )"}{{endif}}">{lang="moderation_banned"}</li>
+													{{endif}}
+												</ul>
+											{{endif}}
+										</div>
+									</div>
+									{{if ( member.canWarn( $member ) || member.modPermission('can_manage_alerts') || ( member.modPermission('can_flag_as_spammer') and !$member->modPermission() and !$member->isAdmin() ) ) and $member->member_id != member.member_id }}
+										<ul class='ipsButtons ipsButtons--fill i-padding_1 i-padding-top_0'>
+											{{if member.modPermission('can_flag_as_spammer') and $member->member_id != member.member_id and $member->canBeFlaggedAsSpammer()}}
+												<li>
+													{{if $member->members_bitoptions['bw_is_spammer']}}
+														<a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$member->member_id}&s=0" seoTemplate="flag_as_spammer" seoTitle="$member->members_seo_name" csrf="true"}' class='ipsButton ipsButton--inherit ipsButton--small' title='{lang="spam_unflag"}' data-confirm data-confirmSubMessage="{lang="spam_unflag_confirm"}"><i class="fa-solid fa-user-check" aria-hidden="true"></i> {lang="spam_unflag"}</a>
+													{{else}}
+														<a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$member->member_id}&s=1" seoTemplate="flag_as_spammer" seoTitle="$member->members_seo_name" csrf="true"}' class='ipsButton ipsButton--inherit ipsButton--small' title='{lang="spam_flag"}' data-confirm><i class="fa-solid fa-comment-slash" aria-hidden="true"></i> {lang="spam_flag"}</a>
+													{{endif}}
+												</li>
+											{{endif}}
+											{{if member.modPermission('can_manage_alerts')}}
+												<li>
+													<a href='{url="app=core&module=modcp&controller=modcp&tab=alerts&action=create&user={$member->member_id}" seoTemplate="modcp_alerts"}' id='elWarnUserButton' data-ipsDialog data-ipsDialog-title="{lang="alert_send"}" class='ipsButton ipsButton--inherit ipsButton--small' title='{lang="alert_send"}'><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> {lang="alert_send"}</a>
+												</li>
+											{{endif}}
+											{{if member.canWarn( $member )}}
+												<li>
+													<a href='{$addWarningUrl}' id='elWarnUserButton' data-ipsDialog data-ipsDialog-title="{lang="warn_member" sprintf="$member->name"}" class='ipsButton ipsButton--secondary ipsButton--small' title='{lang="warn_member" sprintf="$member->name"}'><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {lang="warn_user"}</a>
+												</li>
+											{{endif}}
+										</ul>
+									{{endif}}
+									{{if \count( $member->warnings( 1 ) )}}
+										<i-data data-role="recentWarnings">
+											<ol class='ipsData ipsData--table ipsData--compact ipsData--warnings i-border-top_3'>
+												{{foreach $member->warnings( 2 ) as $warning}}
+													<li class="ipsData__item" id='elWarningOverview_{$warning->id}'>
+														<div class='ipsData__icon'>
+															<a href="{url="app=core&module=system&controller=warnings&do=view&id={$member->member_id}&w={$warning->id}" seoTemplate="warn_view" seoTitle="$member->members_seo_name"}" data-ipsDialog data-ipsDialog-size='narrow' data-ipsTooltip title='{lang="wan_action_points" pluralize="$warning->points"}'>
+																<span class="ipsWarningPoints {{if $warning->expire_date == 0}}ipsWarningPoints--removed{{endif}}">{$warning->points}</span>
+															</a>
+														</div>
+														<div class='ipsData__main'>
+															<h4 class='ipsData__title'>
+																<a href="{url="app=core&module=system&controller=warnings&do=view&id={$member->member_id}&w={$warning->id}" seoTemplate="warn_view" seoTitle="$member->members_seo_name"}" data-ipsDialog data-ipsDialog-size='narrow' title=''>
+
+																	{{if \IPS\Settings::i()->warnings_acknowledge}}
+																		{{if $warning->acknowledged}}
+																			<strong class='i-color_positive' title='{lang="warning_acknowledged"}' data-ipsTooltip><i class='fa-solid fa-check-circle' aria-hidden="true"></i></strong>
+																		{{else}}
+																			<strong class='i-color_soft' title='{lang="warning_not_acknowledged"}' data-ipsTooltip><i class='fa-regular fa-circle' aria-hidden="true"></i></strong>
+																		{{endif}}
+																	{{endif}}
+																	{lang="core_warn_reason_{$warning->reason}"}
+																</a>
+															</h4>
+															<p class='ipsData__meta'>
+																{lang="byline_name_date" htmlsprintf="\IPS\Member::load( $warning->moderator )->name, \IPS\DateTime::ts( $warning->date )->html(TRUE)"}
+															</p>
+															{{if $warning->expire_date == 0}}
+																<p class='ipsData__meta i-margin-top_2'>
+																	{lang="warning_no_longer_active"}{{if $warning->removed_on}} {lang="warning_expired_on" sprintf="\IPS\DateTime::ts( $warning->removed_on )->relative()"}{{endif}}
+																</p>
+															{{endif}}													
+														</div>
+														{{if $warning->canDelete()}}
+															<a href="{$warning->url('delete')->csrf()}" title='{lang="revoke_this_warning"}' data-ipsTooltip data-action="revoke" class='ipsButton ipsButton--small ipsButton--text ipsButton--icon' data-ipsDialog data-ipsDialog-title='{lang="revoke_this_warning"}' data-ipsDialog-size='medium'><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></a>
+														{{endif}}
+													</li>
+												{{endforeach}}
+											</ol>
+											<p class='ipsViewAll'>
+												<a href='{url="app=core&module=system&controller=warnings&id={$member->member_id}" seoTemplate="warn_list" seoTitle="$member->members_seo_name"}' title='{lang="see_all_warnings"}' data-ipsDialog data-ipsDialog-remoteVerify='false' data-ipsDialog-remoteSubmit='false' data-ipsDialog-title="{lang="members_warnings" sprintf="$member->name"}">{lang="see_all_c"}</a>
+											</p>
+										</i-data>
+									{{endif}}
+								</div>
+							</div>
+						{{else}}
+							{{if \IPS\Member::loggedIn()->modPermission('can_flag_as_spammer') and \IPS\Member::loggedIn()->member_id != $member->member_id and $member->canBeFlaggedAsSpammer()}}
+								<div class='ipsWidget ipsWidget--spam'>
+									<div class="ipsWidget__content ipsWidget__padding">
+										{{if $member->members_bitoptions['bw_is_spammer']}}
+											<a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$member->member_id}&s=0" seoTemplate="flag_as_spammer" seoTitle="$member->members_seo_name" csrf="true"}' class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide' title='{lang="spam_unflag"}' data-confirm data-confirmSubMessage="{lang="spam_unflag_confirm"}">{lang="spam_unflag"}</a>
+										{{else}}
+											<a href='{url="app=core&module=system&controller=moderation&do=flagAsSpammer&id={$member->member_id}&s=1" seoTemplate="flag_as_spammer" seoTitle="$member->members_seo_name" csrf="true"}' class='ipsButton ipsButton--inherit ipsButton--small ipsButton--wide' title='{lang="spam_flag"}' data-confirm>{lang="spam_flag"}</a>
+										{{endif}}
+									</div>
+								</div>
+							{{endif}}
+						{{endif}}
+					
+						{{if \IPS\Application::appIsEnabled('nexus') and settings.nexus_subs_enabled and settings.nexus_subs_show_public}}
+							{template="profileSubscription" app="nexus" location="front" group="subscription" params="$member"}
+						{{endif}}
+
+						{{if $member->isExpert()}}
+							<div class='ipsWidget ipsWidget--expert'>
+								<h3 class="ipsWidget__header">{lang="community_expert"}</h3>
+								<div class="ipsWidget__content ipsWidget__padding">
+									<div class='i-flex_11 i-grid i-place-content_center i-font-size_6'>
+										<i class="fa-solid fa-medal" aria-hidden="true"></i>
+									</div>
+								</div>
+							</div>
+						{{endif}}
+
+						{{if (settings.reputation_enabled and settings.reputation_show_profile) or (\IPS\core\Achievements\Rank::show() and \count( \IPS\core\Achievements\Rank::getStore() ) && $rank = $member->rank())}}
+							<div class='ipsWidget ipsWidget--profileAchievements'>
+								<div class='ipsWidget__content'>
+
+									<i-data>
+										<ul class="ipsData ipsData--table ipsData--profileAchievements">
+											{{if settings.reputation_enabled and settings.reputation_show_profile}}
+												{{if settings.reputation_leaderboard_on and settings.reputation_show_days_won_trophy and $member->getReputationDaysWonCount() and $lastDayWon = $member->getReputationLastDayWon()}}
+													{{$formattedDate = $lastDayWon['date']->dayAndMonth() . (  $lastDayWon['date']->format('Y') == \IPS\DateTime::ts( time() )->format('Y' ) ? '' : " " . $lastDayWon['date']->format('Y') );}}
+													<li class='ipsData__item'>
+														<a href="{url="app=core&module=discover&controller=popular&tab=leaderboard&custom_date_start={$lastDayWon['date']->getTimeStamp()}&custom_date_end={$lastDayWon['date']->getTimeStamp()}" seoTemplate="leaderboard_leaderboard"}" class='ipsLinkPanel' aria-hidden="true" tabindex="-1"><span>{number="$member->getReputationDaysWonCount()"} {lang="members_days_won_count"}!</span></a>
+														<div class="ipsData__content">
+															<div class='ipsData__main'>
+																<h3 class='ipsData__title'>{number="$member->getReputationDaysWonCount()"} {lang="members_days_won_count"}!</h3>
+																<p class='ipsData__desc'>{{if $member->member_id == \IPS\Member::loggedIn()->member_id}}{lang="profile_you_congrats"}{{else}}{lang="profile_member_congrats" sprintf="$member->name"}{{endif}} <a href="{url="app=core&module=discover&controller=popular&tab=leaderboard&custom_date_start={$lastDayWon['date']->getTimeStamp()}&custom_date_end={$lastDayWon['date']->getTimeStamp()}" seoTemplate="leaderboard_leaderboard"}">
+																	{{if $member->member_id == \IPS\Member::loggedIn()->member_id}}
+																		{lang="profile_you_won" sprintf="$formattedDate"}
+																	{{else}}
+																		{lang="profile_member_won" sprintf="$formattedDate"}
+																	{{endif}}
+																</a></p>
+															</div>
+														</div>
+														<div class="i-font-size_7">🏆</div>
+													</li>
+												{{endif}}
+											{{endif}}
+
+											{{if \IPS\core\Achievements\Rank::show() and \count( \IPS\core\Achievements\Rank::getStore() ) && $rank = $member->rank()}}
+												{{$progressId = 'ipsProgress-' . mt_rand();}}
+												<li class='ipsData__item'>
+													<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=badges" seoTemplate="profile_badges" seoTitle="$member->members_seo_name"}" data-action="badgeLog" title="{lang="members_badges" sprintf="$member->name"}" class='ipsLinkPanel' aria-hidden="true" tabindex="-1"><span>{lang="view_all"}</span></a>
+													<div class='ipsData__main'>
+														<div class="i-flex">
+															<div class="i-flex_11">
+																<h3 class='ipsData__title'>{$rank->_title}</h3>
+																<p id="{$progressId}" class="ipsData__desc">{lang="achievements_current_rank"} ({$rank->rankPosition()['pos']}/{$rank->rankPosition()['max']})</p>
+															</div>
+															<div class='i-flex_00 i-basis_30'>
+																{$rank->html( 'ipsDimension i-basis_30' )|raw}
+															</div>
+														</div>
+														{{if $nextRank = $member->nextRank()}}
+															<div class='i-margin-top_2'>
+																<progress aria-labelledby="{$progressId}" class='ipsProgress ipsProgress--rank i-margin-bottom_1' value='{expression="($member->achievements_points - $rank->points) / ($nextRank->points - $rank->points) * 100"}' max="100"></progress>
+																{{if $member->member_id == \IPS\Member::loggedIn()->member_id}}
+																	<div class='i-font-size_-2 i-color_soft'>{lang="achievements_next_rank" pluralize="$nextRank->points - $member->achievements_points"}</div>
+																{{endif}}
+															</div>
+														{{endif}}
+													</div>
+												</li>
+											{{endif}}
+
+											{{if \IPS\core\Achievements\Badge::show() and \count( \IPS\core\Achievements\Badge::getStore() )}}
+												{{$recentBadges = $member->recentBadges( 6 );}}	
+												{{if \count( $recentBadges )}}
+													<li class='ipsData__item'>
+														<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=badges" seoTemplate="profile_badges" seoTitle="$member->members_seo_name"}" data-action="badgeLog" title="{lang="members_badges" sprintf="$member->name"}" class='ipsLinkPanel' aria-hidden="true" tabindex="-1"><span>{lang="view_all"}</span></a>
+														<div class="ipsData__main">
+															<div class="i-flex i-align-items_center i-justify-content_space-between i-margin-bottom_2">
+																<h3 class="ipsData__title">
+																	{lang="profile_recent_badges"}
+																</h3>
+																<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=badges" seoTemplate="profile_badges" seoTitle="$member->members_seo_name"}" data-action="badgeLog" title="{lang="members_badges" sprintf="$member->name"}" class='i-font-size_-1 i-font-weight_500 i-color_soft'>{lang="view_all"}</a>
+															</div>
+															<ul class="i-flex i-gap_1">
+																{{foreach $recentBadges as $badge}}
+																	<li class='i-basis_40'>
+																		{$badge->html( '', TRUE, TRUE )|raw}
+																	</li>
+																{{endforeach}}
+															</ul>
+														</div>
+													</li>										
+												{{endif}}
+											{{endif}}
+
+										</ul>
+									</i-data>
+								</div>
+							</div>
+						{{endif}}
+
+						<div class='ipsWidget ipsWidget--profileMeta'>
+							<div class='ipsWidget__content'>
+
+								<i-data>
+									<ul class="ipsData ipsData--table ipsData--profileMeta">
+										{{if $member->group['g_icon'] }}
+											<li class='ipsData__item i-text-align_center'>
+												<div class="ipsData__main"><img src='{file="$member->group['g_icon']" extension="core_Theme"}' alt='' loading='lazy' {{if $width = $member->group['g_icon_width']}}width="{$width}"{{endif}}></div>
+											</li>
+										{{endif}}
+
+										{{if \IPS\Member::loggedIn()->modPermission('can_see_emails')}}
+											<li class="ipsData__item">
+												<a href='mailto:{$member->email}' class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="email_this_user"}</span></a>
+												<div class="ipsData__icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div>
+												<div class="ipsData__main">
+													<strong class='ipsData__title'>{lang="profile_email"}</strong>
+													<div class='ipsData__desc'>
+														<div class="i-font-weight_500"><a href='mailto:{$member->email}' title='{lang="email_this_user"}'>{$member->email}</a></div>
+														<span class='i-font-size_-1'>{lang="profile_email_addresses"}</span>
+													</div>
+												</div>
+											</li>
+										{{endif}}
+
+										<li class='ipsData__item'>
+											<a href="{url="app=core&module=members&controller=profile&do=content&id={$member->member_id}" base="front" seoTemplate="profile_content" seoTitle="$member->members_seo_name"}" rel="nofollow" class='ipsLinkPanel' data-action="browseContent" data-type='full' title="{lang="members_content" sprintf="$member->name"}" aria-hidden="true" tabindex="-1"><span>{{if member.member_id === $member->member_id}}{lang="profile_browse_my_content"}{{else}}{lang="profile_browse_content"}{{endif}}</span></a>
+											<div class="ipsData__icon"><i class="fa-solid fa-comment" aria-hidden="true"></i></div>
+											<div class="ipsData__main">
+												<h4 class='ipsData__title'>{lang="members_member_posts"}</h4>
+												<div class="ipsData__desc"><a href="{url="app=core&module=members&controller=profile&do=content&id={$member->member_id}" base="front" seoTemplate="profile_content" seoTitle="$member->members_seo_name"}" rel="nofollow" class='ips' data-action="browseContent" data-type='full' title="{lang="members_content" sprintf="$member->name"}"><span>{{if member.member_id === $member->member_id}}{lang="profile_browse_my_content"}{{else}}{lang="profile_browse_content"}{{endif}}</span></a></div>
+											</div>
+											<div class='i-font-size_4 i-font-weight_600 i-flex_00'>
+												{number="$member->member_posts"}
+											</div>
+										</li>
+
+										{{if $solutions}}
+											<li class='ipsData__item'>
+												<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=solutions" seoTemplate="profile_solutions" seoTitle="$member->members_seo_name"}" data-action="solutionLog" title="{lang="members_solutions" sprintf="$member->name"}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="solutionlog_show_activity"}</span></a>
+												<div class="ipsData__icon"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></div>
+												<div class="ipsData__main">
+													<h3 class="ipsData__title">{lang="profile_solutions"}</h3>
+													<p class="ipsData__desc">
+														<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=solutions" seoTemplate="profile_solutions" seoTitle="$member->members_seo_name"}" data-action="solutionLog" title="{lang="members_solutions" sprintf="$member->name"}">{lang="solutionlog_show_activity"}</a>
+													</p>
+												</div>
+												<div class='i-font-size_4 i-font-weight_600 i-flex_00'>
+													{number="$solutions"}
+												</div>
+											</li>
+										{{endif}}
+
+										{{if settings.reputation_enabled and settings.reputation_show_profile}}
+											<li class='ipsData__item'>
+												{{if member.group['gbw_view_reps']}}
+													<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=reputation" seoTemplate="profile_reputation" seoTitle="$member->members_seo_name"}" data-action="repLog" title="{lang="members_reputation" sprintf="$member->name"}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{lang="replog_show_activity"}</span></a>
+												{{endif}}
+												<div class="ipsData__icon"><i class="fa-solid fa-thumbs-up" aria-hidden="true"></i></div>
+												<div class="ipsData__main">
+													<h3 class='ipsData__title'>{lang="profile_reputation"}</h3>
+													{{if $member->reputation()}}
+														{{if member.group['gbw_view_reps']}}
+															<a href="{url="app=core&module=members&controller=profile&id={$member->member_id}&do=reputation" seoTemplate="profile_reputation" seoTitle="$member->members_seo_name"}" data-action="repLog" title="{lang="members_reputation" sprintf="$member->name"}" class='ipsData__desc'>
+																{$member->reputation()}
+															</a>
+														{{else}}
+															<span class='ipsData__desc'>{$member->reputation()}</span>
+														{{endif}}
+													{{endif}}
+													{{if $member->reputationImage()}}
+														<div class='i-margin-top_2'>
+															<img src='{file="$member->reputationImage()" extension="core_Theme"}' alt='' loading='lazy'>
+														</div>
+													{{endif}}
+												</div>
+												<div class='i-font-size_4 i-font-weight_600 i-flex_00 {{if $member->pp_reputation_points > 1}}i-color_positive{{elseif $member->pp_reputation_points < 0}}i-color_negative{{else}}i-color_soft{{endif}}'>
+													{number="$member->pp_reputation_points"}
+												</div>
+											</li>
+										{{endif}}
+										{{if $member->birthday AND \IPS\Settings::i()->profile_birthday_type == 'public' or ( \IPS\Settings::i()->profile_birthday_type == 'private' and ( \IPS\Member::loggedIn()->member_id == $member->member_id OR \IPS\Member::loggedIn()->isAdmin() ) )}}
+											<li class="ipsData__item">
+												<div class="ipsData__icon"><i class="fa-solid fa-cake-candles" aria-hidden="true"></i></div>
+												<div class="ipsData__main">
+													<strong class='ipsData__title'>{lang="bday"}</strong>
+													<div class='ipsData__desc'>{$member->birthday}</div>
+												</div>
+											</li>
+										{{endif}}
+										{{if ( ! empty( $followers ) and is_array( $followers ) and count( $followers ) ) || \IPS\Member::loggedIn()->member_id === $member->member_id}}
+											<li class="ipsData__item" id='elFollowers' data-feedID='member-{$member->member_id}' data-controller='core.front.profile.followers'>
+												{template="followers" group="profile" app="core" params="$member, $followers"}
+											</li>
+										{{endif}}
+									</ul>
+								</i-data>
+
+							</div>
+						</div>
+
+						{{foreach $sidebarFields as $group => $fields}}
+							{{if \count( $fields ) AND \count( array_filter( $fields, function( $fieldValue ){ return $fieldValue['value']; } ) )}}
+							<div class='ipsWidget ipsWidget--fields' data-location='customFields'>
+								{{if $group != 'core_pfieldgroups_0'}}
+									<h2 class='ipsWidget__header'>{lang="$group"}</h2>
+								{{endif}}
+								<div class="ipsWidget__content">
+									<i-data>
+										<ul class='ipsData ipsData--table ipsData--profileCustomFields'>
+											{{foreach $fields as $field => $value}}
+												{{if $value['value'] !== ""}}
+													<li class="ipsData__item">
+														<div class="ipsData__main">
+															{{if $value['custom']}}
+																{$value['value']|raw}
+															{{else}}
+																<strong class='ipsData__title'>{lang="$field"}</strong>
+																<div class='ipsData__desc'>{$value['value']|raw}</div>
+															{{endif}}
+														</div>
+													</li>
+												{{endif}}
+											{{endforeach}}
+										</ul>
+									</i-data>
+								</div>
+							</div>
+							{{endif}}
+						{{endforeach}}
+						{{if !empty( $visitors ) || \IPS\Member::loggedIn()->member_id == $member->member_id}}
+							<div class='ipsWidget ipsWidget--recent' data-controller='core.front.profile.toggleBlock'>
+								{template="recentVisitorsBlock" group="profile" params="$member, $visitors"}
+							</div>
+						{{endif}}
+					</div>
+				</div>
+			</aside>
+			<section class='ipsProfile__main ipsBox ipsBox--profileMain ipsPull'>
+				{$mainContent|raw}
+			</section>
+		</div>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+</div>
+{{endif}}

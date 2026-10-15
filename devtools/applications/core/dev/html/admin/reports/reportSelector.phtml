@@ -1,0 +1,21 @@
+<ips:template parameters="$reports, $activeTab='charts', $currentReport=null" />
+<!-- v5 todo: This template is potentially no longer used -->
+<ul class="ipsMenu ipsMenu_normal ipsHide" id="elStatsSelectReport_menu" data-role="reports">
+    <li class="ipsMenu_item">
+        <a href="{url='app=core&module=overview&controller=mycharts&tab=$activeTab'}"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> {lang="statsreports_report_maindash"}</a>
+    </li>
+    {{if \IPS\Platform\Bridge::i()->featureIsEnabled('community_health_stats')}}
+    <li class="ipsMenu_item">
+        <a href="{url='app=core&module=overview&controller=mycharts&communityhealth=1'}"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i> {lang="communityhealth"}</a>
+    </li>
+    {{endif}}
+    <li class="ipsMenu_sep">
+        <hr class='ipsHr'>
+    </li>
+    {{foreach $reports as $report}}
+        {{$id = $report['id'];}}
+        <li class="ipsMenu_item" {{if $currentReport === $report['id']}}data-selected{{endif}}>
+            <a href="{url='app=core&module=overview&controller=mycharts&report_id=$id&tab=$activeTab'}"><i class="fa-solid fa-bookmark" aria-hidden="true"></i>{$report['report_title']}</a>
+        </li>
+    {{endforeach}}
+</ul>

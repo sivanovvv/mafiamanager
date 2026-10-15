@@ -1,0 +1,9 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+
+{{if \count( $rows )}}
+	<ul class='cCustomerOther_list i-grid i-gap_3'>
+		{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+	</ul>
+{{else}}
+	<p class='ipsEmptyMessage'>{lang="no_customer_notes"}</p>
+{{endif}}

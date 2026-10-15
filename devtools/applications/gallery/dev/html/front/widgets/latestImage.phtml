@@ -1,0 +1,29 @@
+<ips:template parameters="$latestImage, $layout='table', $isCarousel=false" />
+<div id='elGalleryStatsLatest' class='cGalleryWidget' {{if settings.gallery_nsfw}}data-controller="gallery.front.global.nsfw"{{endif}}>
+	<h6 class='ipsTitle ipsTitle--h6 ipsTitle--padding'>{lang="latest_image"}</h6>
+	<figure class='ipsFigure'>	
+		<a href='{$latestImage->url()}' title='{lang="view_this_image" sprintf="$latestImage->caption"}' class='ipsFigure__main'>
+			{{if $latestImage->small_file_name}}
+				<img src='{file="$latestImage->small_file_name" extension="gallery_Images"}' alt="{$latestImage->caption}" loading="lazy">
+			{{else}}
+				<i class="ipsFigure__icon" aria-hidden="true"></i>
+			{{endif}}
+		</a>
+		{template="nsfwOverlay" app="gallery" location="front" group="global" params="$latestImage"}
+		<figcaption class='ipsFigure__footer'>
+			<div class='ipsFigure__title'>
+				<a href="{$latestImage->url()}" title='{lang="view_this_image" sprintf="$latestImage->caption"}'>
+					{$latestImage->caption}
+				</a>
+			</div>
+			<div class="i-flex i-justify-content_space-between">
+				<div>{lang="byline_name_date" htmlsprintf="$latestImage->author()->link(), \IPS\DateTime::ts( $latestImage->mapped('date') )->html(TRUE)"}</div>
+				{{if $latestImage->directContainer()->allow_comments && $latestImage->comments > 0}}
+					<div data-ipsTooltip title='{lang="num_comments" pluralize="$latestImage->comments"}'>
+						<i class='fa-solid fa-comment' aria-hidden="true"></i> {$latestImage->comments}
+					</div>
+				{{endif}}
+			</div>
+		</figcaption>
+	</figure>
+</div>

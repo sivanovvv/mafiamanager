@@ -1,0 +1,169 @@
+/* Lightbox: the image viewer used throughout the front-end */
+.ipsLightbox {
+	background: rgba(20,20,20,0.95);
+	position: fixed;
+	inset: 0;
+	box-shadow: var(--i-dialog--bo-sh);
+}
+
+.ipsLightbox_imagePanel {
+	position: absolute !important; /* required to stop conflicts with ipsLoading */
+	inset: 0;
+	overflow: hidden;
+	/* Center image */
+	display: grid;
+	place-items: center;
+}
+
+.ipsLightbox .ipsLightbox_toolsPanel {
+	bottom: 0;
+	align-items: flex-end;
+	padding: 20px;
+	position: absolute;
+	width: 100%;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	z-index: 9999;
+}
+
+.ipsLightbox .ipsLightbox_toolsPanel a.ipsButton.ipsButton--text {
+	background: rgba(0,0,0,0.1) !important;
+	color: #d0d0d0;
+	border: 1px solid #d0d0d0 !important;
+	margin: 0 5px;
+}
+	
+	.ipsLightbox_imagePanel.ipsLightbox_withComments {
+		inset-inline-end: 350px;
+	}
+
+	.ipsLightbox_imagePanel .ipsLightbox_image {
+		max-width: 100%;
+		max-height: 100%;
+		position: absolute;
+		z-index: 1000;
+	}
+
+.ipsLightbox_commentsPanel {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	inset-inline-end: 0;
+	width: 350px;
+	background-color: #fff;
+	overflow-y: auto;
+}
+
+	/* .ipsLoading adds position: relative; to the element which makes it float to the left behind the lightbox image, 
+		so we need to override that here even though we've already defined position: absolute; on ipsLightbox_commentsPanel above */
+	.ipsLightbox_commentsPanel.ipsLoading {
+		position: absolute;
+		min-height: 100px;
+	}
+
+.ipsLightbox_next, .ipsLightbox_prev {
+	font-size: clamp(20px, 1em + 3vw, 38px);
+	line-height: 1.4em;
+	width: 1.4em;
+	text-align: center;
+	color: #fff;
+	border-radius: 5px;
+	position: absolute;
+	top: calc(50% - .7em);
+	cursor: pointer;
+	z-index: 5000;
+	transition: opacity 0.3s linear;
+	text-shadow: hsl(0 0% 0% / .7) 0px 0px 12px, hsl(0 0% 0% / .5) 0px 1px 2px;
+}
+
+.ipsLightbox_prev:hover, .ipsLightbox_next:hover {
+	background-color: hsl(0 0% 100% / .1);
+}
+
+.ipsLightbox_prev {
+	inset-inline-start: clamp(0px, 100vw - 600px, 20px);
+}
+.ipsLightbox_next {
+	inset-inline-end: clamp(0px, 100vw - 600px, 20px);
+}
+
+@media (hover){
+	.ipsLightbox_next, .ipsLightbox_prev {
+		opacity: 0;
+	}
+	.ipsLightbox_imagePanel:hover .ipsLightbox_next,
+	.ipsLightbox_imagePanel:hover .ipsLightbox_prev {
+		opacity: 0.5;
+	}
+
+	.ipsLightbox_imagePanel .ipsLightbox_next:hover, .ipsLightbox_imagePanel .ipsLightbox_prev:hover {
+		opacity: 1;
+	}
+}
+
+.ipsLightbox_fullSize {
+	position: absolute;
+	z-index: 4999;
+	color: #fff;
+	opacity: 0.4;
+	text-align: center;
+	display: none;
+	font-size: 20px;
+	cursor: zoom-in;
+}
+	.ipsLightbox_fullSize i[class*=" fa-"] {
+		font-size: 80px;
+	}
+
+	.ipsLightbox_fullSize:hover {
+		color: #fff;
+	}
+
+.ipsLightbox_meta {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: #000;
+	min-height: 50px;
+	z-index: 10000;
+	opacity: 0;
+	padding: 15px;
+	color: #fff;
+	transition: opacity 0.2s linear;
+}
+
+	.ipsLightbox_imagePanel.ipsLightbox_withComments + .ipsLightbox_meta {
+		inset-inline-end: 350px;
+	}
+
+	.ipsLightbox_imagePanel:hover + .ipsLightbox_meta {
+		opacity: 1;
+	}
+
+.ipsLightbox_close {
+	width: 1.4em;
+	line-height: 1.4em;
+	text-align: center;
+	border-radius: 5px;
+	font-size: 38px;
+	color: #fff;
+	position: absolute;
+	top: calc(env(safe-area-inset-top) + 10px);
+	inset-inline-end: 10px;
+	cursor: pointer;
+	z-index: 5000;
+}
+
+	.ipsLightbox_close:hover {
+		background-color: hsl(0 0% 100% / .1);
+	}
+
+/* BOTH */
+@media screen and (min-width: 980px) {
+	.ipsLightbox {
+		inset: 40px;
+		border-radius: min(var(--i-design-radius, 8px));
+	}
+}

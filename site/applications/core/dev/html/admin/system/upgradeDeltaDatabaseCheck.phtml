@@ -1,0 +1,12 @@
+<ips:template parameters="$version" />
+<div class="i-padding_3">
+	<div class="i-margin-bottom_1">
+		<h2 class='ipsTitle ipsTitle--h3'>{lang="download_upgrade_database_check_fail_title"}</h2>
+	</div>
+	<div class="i-margin-bottom_1">
+		<p>{lang="download_upgrade_database_check_fail_desc"}</p>
+	</div>
+</div>
+<div class="ipsSubmitRow">
+	<a href="{url="app=core&module=system&controller=upgrade&do=databaseChecker&_upgradeVersion={$version}" csrf="true"}" data-ipsDialog data-ipsDialog-title="{lang="self_service"}" class="ipsButton ipsButton--primary">{lang="help_me_fix_this"}</a>
+</div>

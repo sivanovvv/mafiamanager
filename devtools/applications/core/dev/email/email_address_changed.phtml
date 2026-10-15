@@ -1,0 +1,34 @@
+<ips:template parameters="$member, $oldEmail, $email" />
+{$email->language->addToStack("email_email_address_changed", FALSE, array( 'sprintf' => \IPS\Settings::i()->board_name ) )}
+<br><br>
+<table width='100%' cellpadding='0' cellspacing='0' border='0' style='background: #f9f9f9;' class="background_2">
+	<tr>
+		<td dir='{dir}' height='20' style='line-height: 20px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px;"><strong>{$email->language->addToStack("email_new_email", FALSE)}</strong></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='6' style='line-height: 6px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 22px;">{$member->email}</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='20' style='line-height: 20px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 17px;"><strong>{$email->language->addToStack("email_old_email", FALSE)}</strong></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='6' style='line-height: 6px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+	<tr>
+		<td dir='{dir}' align='center' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 22px;">{$oldEmail}</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' height='6' style='line-height: 6px'><img src="{setting="base_url"}applications/core/interface/email/spacer.png" alt='' width="1" height="1" /></td>
+	</tr>
+</table>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

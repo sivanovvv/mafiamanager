@@ -1,0 +1,31 @@
+<ips:template parameters="$user" />
+<div class='i-padding_3 i-flex i-gap_3 i-align-items_center'>
+	<div class='i-basis_90'>{template="userPhoto" app="core" group="global" params="$user->member(), 'fluid'"}</div>
+	<div class='i-flex_11'>
+		<h3 class='ipsTitle ipsTitle--h4'>
+			{{if $user->id AND \IPS\Member::loggedIn()->language()->checkKeyExists( "core_staff_directory_name_" . $user->id ) }}
+				{{if member.canAccessModule( \IPS\Application\Module::get( 'core', 'members' ) )}}
+					<a href='{$user->member()->url()}'>{lang="core_staff_directory_name_{$user->id}" escape="true"}</a>
+				{{else}}
+					{lang="core_staff_directory_name_{$user->id}" escape="true"}
+				{{endif}}
+			{{else}}
+				{$user->member()->link()|raw}
+			{{endif}}
+		</h3>
+		{{if $user->id AND \IPS\Member::loggedIn()->language()->checkKeyExists( "core_staff_directory_title_" . $user->id ) }}
+			<p class='i-font-weight_500 i-color_soft i-margin-bottom_2'>{lang="core_staff_directory_title_{$user->id}" escape="true"}</p>
+		{{endif}}
+		<ul class='ipsList ipsList--inline i-gap_3 i-color_soft i-link-color_inherit i-font-weight_500 i-margin-top_1' data-ips-hook="staffInfo">
+			{{if $user->id AND \IPS\Member::loggedIn()->language()->checkKeyExists( "core_staff_directory_bio_" . $user->id )}}
+				<li><a href='#staffFull_{$user->id}' data-ipsdialog data-ipsDialog-content='#staffFull_{$user->id}' data-ipsdialog-size='medium' data-ipsdialog-title="{{if $user->id AND \IPS\Member::loggedIn()->language()->checkKeyExists( "core_staff_directory_name_" . $user->id ) }}{lang="core_staff_directory_name_{$user->id}" escape="true"}{{else}}{$user->member()->name}{{endif}}: {lang="leader_custom_bio"}"><i class="fa-regular fa-address-card i-margin-end_icon i-opacity_6" aria-hidden="true"></i>{lang="leader_custom_bio"}</a></li>
+					{{endif}}
+			{{if !member.members_disable_pm AND !$user->member()->members_disable_pm AND \IPS\Member::loggedIn()->member_id AND \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'messaging' ) )}}
+				<li><a href='{url="app=core&module=messaging&controller=messenger&do=compose&to={$user->member()->member_id}" seoTemplate="messenger_compose"}' data-ipsDialog data-ipsDialog-title='{lang="compose_new"}' data-ipsDialog-forceReload data-ipsDialog-remoteSubmit data-ipsDialog-flashMessage="{lang="message_sent"}"><i class='fa-regular fa-message i-margin-end_icon i-opacity_6' aria-hidden="true"></i>{lang="message_send"}</a></li>
+			{{endif}}
+		</ul>
+		<div id='staffFull_{$user->id}' class="i-padding_3 ipsHide">
+			{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('core_staff_directory_bio_' . $user->id)"}
+		</div>
+	</div>
+</div>

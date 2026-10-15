@@ -1,0 +1,20 @@
+<ips:template parameters="$key" />
+{{$handler = NULL;}}
+{{if \is_numeric( $key )}}
+	{{try { $handler = \IPS\Login\Handler::load( $key ); } catch( \Exception $e ) { $handler = NULL; } }}
+{{elseif $key}}
+	{{$handlers = \IPS\Login::getStore();}}
+	{{foreach $handlers as $method}}
+		{{$_key = mb_substr( \get_class( $method ), 10 );}}
+		{{if $_key == $key}}
+			{{$handler = $method;}}
+		{{endif}}
+	{{endforeach}}
+{{endif}}
+{{if $handler}}
+	{$handler->_title}
+{{elseif $key}}
+	{$key}
+{{else}}
+	<em class="i-color_soft" title='{lang="device_handler_unknown_desc"}' data-ipsTooltip>{lang="device_handler_unknown"}</em>
+{{endif}}

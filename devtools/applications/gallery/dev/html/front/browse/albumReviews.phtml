@@ -1,0 +1,64 @@
+<ips:template parameters="$album" />
+
+<div data-controller='core.front.core.commentFeed' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-commentsType='reviews' data-baseURL='{$album->url()}' {{if $album->isLastPage('reviews')}}data-lastPage{{endif}} data-feedID='{$album->reviewFeedId}' id='reviews' data-follow-area-id="album-{$album->id}">
+	{{if $album->reviewForm()}}
+		{$album->reviewForm()|raw}
+	{{else}}
+		{{if $album->hasReviewed()}}
+			<!-- Already reviewed -->
+		{{elseif \IPS\Member::loggedin()->restrict_post}}
+			{{if \IPS\Member::loggedIn()->restrict_post == -1}}
+				{template="reviewUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment'"}
+			{{else}}
+				{template="reviewUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment', \IPS\Member::loggedIn()->warnings(5,NULL,'rpa'), \IPS\Member::loggedIn()->restrict_post"}
+			{{endif}}
+		{{elseif \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+			{template="reviewUnavailable" group="forms" location="front" app="core" params="'unacknowledged_warning_cannot_post', \IPS\Member::loggedIn()->warnings( 1, FALSE )"}
+		{{endif}}
+	{{endif}}
+	{{if \count( $album->reviews( NULL, NULL, NULL, 'desc', NULL, NULL, NULL, NULL, isset( \IPS\Request::i()->showDeleted ) ) )}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			{{if $album->reviewPageCount() > 1}}
+				<div class="ipsButtonBar__pagination">
+					{$album->reviewPagination( array( 'tab', 'sort' ) )|raw}
+				</div>
+			{{endif}}
+			<div class='ipsButtonBar__end'>
+				<ul class="ipsDataFilters">
+					<li data-action="tableFilter">
+						<a href="{$album->url()->setQueryString( array( 'tab' => 'reviews', 'sort' => 'helpful' ) )->setPage('page',1)}" class="ipsDataFilters__button {{if !isset( request.sort ) or request.sort != 'newest'}}ipsDataFilters__button--active{{endif}}" data-action="filterClick">{lang="most_helpful"}</a>
+					</li>
+					<li data-action="tableFilter">
+						<a href="{$album->url()->setQueryString( array( 'tab' => 'reviews', 'sort' => 'newest' ) )->setPage('page',1)}" class="ipsDataFilters__button {{if isset( request.sort ) and request.sort == 'newest'}}ipsDataFilters__button--active{{endif}}" data-action="filterClick">{lang="newest"}</a>
+					</li>
+				</ul>
+				{template="commentMultimodHeader" app="core" group="global" params="$album, '#reviews', 'review'"}
+			</div>
+		</div>
+
+		<div data-role='commentFeed' data-controller='core.front.core.moderation'>
+			<form action="{$album->url()->csrf()->setQueryString( 'do', 'multimodReview' )->setPage('page',\IPS\Request::i()->page)}" method="post" data-ipsPageAction data-role='moderationTools'>
+				{{$reviewCount=0; $timeLastRead = $album->timeLastRead(); $lined = FALSE;}}
+				{{foreach $album->reviews( NULL, NULL, NULL, 'desc', NULL, NULL, NULL, NULL, isset( \IPS\Request::i()->showDeleted ) ) as $review}}
+					{{if !$lined and $timeLastRead and $timeLastRead->getTimestamp() < $review->mapped('date')}}
+						{{if $lined = TRUE and $reviewCount}}
+							<hr class="ipsUnreadBar">
+						{{endif}}
+					{{endif}}
+					{{$reviewCount++;}}
+					{$review->html()|raw}
+				{{endforeach}}
+				{template="commentMultimod" app="core" group="global" params="$album, 'review'"}
+			</form>
+		</div>
+		{{if $album->reviewPageCount() > 1}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination">
+					{$album->reviewPagination( array( 'tab', 'sort' ) )|raw}
+				</div>
+			</div>
+		{{endif}}
+	{{elseif !$album->canReview()}}
+		<p class="ipsEmptyMessage" data-role="noReviews">{lang="no_reviews"}</p>
+	{{endif}}
+</div>

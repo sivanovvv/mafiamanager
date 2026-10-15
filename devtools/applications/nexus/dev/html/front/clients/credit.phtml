@@ -1,0 +1,124 @@
+<ips:template parameters="$balance, $pastWithdrawals, $pastWithdrawalsPagination, $canWithdraw, $canTopup" />
+
+<h1 class='ipsTitle ipsTitle--h3'>{lang="credit_title"}</h1>
+
+<div class='ipsBox i-padding_3 i-margin-top_3'>
+	<div class='ipsColumns'>
+		<div class='ipsColumns__secondary i-basis_280'>
+			{{if is_countable( $balance ) AND \count( $balance )}}
+				{{foreach $balance as $amount}}
+					<h2 class='ipsMinorTitle'>{lang="credit_balance"} {{if \count( $balance ) > 1}}({$amount->currency}){{endif}}</h2>
+					<div class='cNexusCredit_total i-margin-bottom_3'>
+						{$amount}
+					</div>
+				{{endforeach}}
+			{{elseif $balance !== NULL}}
+				<h2 class='ipsMinorTitle'>{lang="credit_balance"}</h2>
+				<div class='cNexusCredit_total i-margin-bottom_3'>
+					{money="0" currency="\IPS\nexus\Customer::loggedIn()->defaultCurrency()"}
+				</div>
+			{{endif}}
+			{{if $canWithdraw or $canTopup}}
+				<ul class='i-grid i-gap_2'>
+					{{if $canTopup}}
+						<li><a href='{url="app=nexus&module=clients&controller=credit&do=topup" seoTemplate="clientscredit"}' data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="credit_add"}' class='ipsButton ipsButton--primary ipsButton--wide' title="{lang="credit_add_title"}">{lang="credit_add"}</a></li>
+					{{endif}}
+					{{if $canWithdraw}}
+						<li><a href='{url="app=nexus&module=clients&controller=credit&do=withdraw" seoTemplate="clientscredit"}' data-ipsDialog data-ipsDialog-size='medium' data-ipsDialog-title='{lang="credit_withdraw_dialog"}' class='ipsButton ipsButton--soft ipsButton--wide' title="{lang="credit_withdraw_title"}">{lang="credit_withdraw"}</a></li>
+					{{endif}}
+				</ul>
+			{{endif}}
+			{{if \count( \IPS\nexus\Customer::loggedIn()->parentContacts( array('billing=1') ) )}}
+				<hr class='ipsHr'>
+				<p>{lang="credit_altcontact"}</p>
+				{{foreach \IPS\nexus\Customer::loggedIn()->parentContacts( array('billing=1') ) as $contact}}
+					<hr class='ipsHr'>
+					<div class='ipsPhotoPanel ipsPhotoPanel--tiny'>
+						{template="userPhoto" group="global" app="core" params="$contact->main_id, 'tiny'"}
+						<div>
+							<h3>{$contact->main_id->cm_name}</h3>
+
+							{{$val = FALSE;}}
+							{{foreach $contact->main_id->cm_credits as $credit}}
+								{{if $credit->amount->isGreaterThanZero()}}
+									{{$val = TRUE;}}
+									<h2 class='ipsMinorTitle'>{lang="credit_balance"} {{if \count( $contact->main_id->cm_credits ) > 1}}({$credit->currency}){{endif}}</h2>
+									<div class='cNexusCredit_total cNexusCredit_contact i-margin-bottom_3'>
+										{$credit}
+									</div>
+								{{endif}}
+							{{endforeach}}
+							{{if !$val}}
+								<h2 class='ipsMinorTitle'>{lang="credit_balance"}</h2>
+								<div class='cNexusCredit_total cNexusCredit_contact i-margin-bottom_3'>
+									{money="0" currency="$contact->main_id->defaultCurrency()"}
+								</div>
+							{{endif}}
+						</div>
+					</div>
+				{{endforeach}}
+			{{endif}}
+		</div>
+		<div class='ipsColumns__primary'>
+			{{if isset( request.withdraw )}}
+				{{if request.withdraw === 'success'}}
+					<p class="ipsMessage ipsMessage--success">{lang="payout_status_success"}</p>
+					<br>
+				{{elseif request.withdraw === 'pending'}}
+					<p class="ipsMessage ipsMessage--info">{lang="payout_status_pending"}</p>
+					<br>
+				{{endif}}
+			{{endif}}
+
+			{{if \count( $pastWithdrawals ) or $canWithdraw}}
+				<h2 class='ipsTitle ipsTitle--h3'>{lang="credit_withdrawal_history"}</h2>
+				{{if \count( $pastWithdrawals )}}
+					<i-data>
+						<ol class="ipsData ipsData--table ipsData--withdrawl-history">
+							{{foreach $pastWithdrawals as $withdrawal}}
+								<li class='ipsData__item'>
+									<div class='i-flex_00'>
+										{{if $withdrawal->status === \IPS\nexus\Payout::STATUS_COMPLETE}}
+											<span class='ipsBadge ipsBadge--icon ipsBadge--positive' data-ipsTooltip title='{lang="credit_withdraw_complete"}'>
+												<i class='fa-solid fa-check i-font-size_2' aria-hidden="true"></i>
+											</span>
+										{{elseif $withdrawal->status === \IPS\nexus\Payout::STATUS_PENDING}}
+											<span class='ipsBadge ipsBadge--icon ipsBadge--neutral'  data-ipsTooltip title='{lang="credit_withdraw_pending"}'>
+												<i class='fa-regular fa-clock i-font-size_2' aria-hidden="true"></i>
+											</span>
+										{{elseif $withdrawal->status === \IPS\nexus\Payout::STATUS_CANCELED}}
+											<span class='ipsBadge ipsBadge--icon ipsBadge--negative'  data-ipsTooltip title='{lang="credit_withdraw_cancelled"}'>
+												<i class='fa-solid fa-xmark i-font-size_2' aria-hidden="true"></i>
+										{{elseif $withdrawal->status == \IPS\nexus\Payout::STATUS_PROCESSING}}
+											<span class='ipsBadge ipsBadge--icon ipsBadge--intermediary'  data-ipsTooltip title='{lang="credit_withdraw_processing"}'>
+												<i class='fa-solid fa-circle-notch fa-spin' aria-hidden="true"></i>
+											</span>
+										{{endif}}
+									</div>
+									<div class='ipsData__content'>
+										<div class='ipsData__main'>
+											<strong class='ipsData__title'>{$withdrawal->amount}</strong>
+											<p class='ipsData__meta'>
+												{datetime="$withdrawal->date"}
+											</p>
+										</div>
+										{{if $withdrawal->status === \IPS\nexus\Payout::STATUS_PENDING}}
+											<div class=''>
+												<a href="{url="app=nexus&module=clients&controller=credit&do=cancel&id={$withdrawal->id}" seoTemplate="clientscredit" csrf="true"}" class='ipsButton ipsButton--inherit ipsButton--small' data-confirm data-confirmMessage='{lang="credit_withdraw_cancel_confirm"}'>{lang="cancel"}</a>
+											</div>
+										{{endif}}
+									</div>
+								</li>
+							{{endforeach}}
+						</ol>
+					</i-data>
+					{$pastWithdrawalsPagination|raw}
+				{{else}}
+					<p class='ipsEmptyMessage'>
+						{lang="credit_no_withdrawals"}
+					</p>
+				{{endif}}
+			{{endif}}
+		</div>
+	</div>
+</div>

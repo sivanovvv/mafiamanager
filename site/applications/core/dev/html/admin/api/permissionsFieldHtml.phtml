@@ -1,0 +1,41 @@
+<ips:template parameters="$endpoints, $name, $value, $type=NULL" />
+<div data-controller='core.admin.system.apiPermissions'>
+	{{foreach $endpoints as $app => $sections}}
+		<div class='i-margin-bottom_4'>
+			<div class='i-background_3 i-padding_2 cApiPermissions_header'>
+				<h2 class='i-font-size_2'>{lang="__app_{$app}"}</h2>
+				<span data-role="massToggle" class="ipsJS_show">
+					<a href="#" data-action="checkAll">{lang="all"}</a> /  <a href="#" data-action="checkNone">{lang="none"}</a>
+				</span>
+			</div>
+			<ul class='cApiPermissions'>
+				{{foreach $sections as $sectionID => $sectionEndpoints}}
+					<li class='cApiPermissions_closed'>
+						<h3 class='ipsCursor_pointer' data-action='toggleSection'>{lang="__api_{$app}_{$sectionID}"}</h3> 
+						<span class='i-color_soft i-font-size_-1' data-role='endpointOverview'></span>
+						<span data-role="massToggle" class="ipsJS_show">
+							<a href="#" data-action="checkAll">{lang="all"}</a> /  <a href="#" data-action="checkNone">{lang="none"}</a>
+						</span>
+						<ul>
+							{{foreach $sectionEndpoints as $endpointKey => $endpoint}}
+								<li>
+									<ul class='ipsList ipsList--inline'>
+										<li>
+											<input type="checkbox" name="{$name}[{$endpointKey}][access]" class="ipsInput ipsInput--toggle" value="1" {{if isset( $value[ $endpointKey ]['access'] ) and $value[ $endpointKey ]['access']}}checked{{endif}}>
+											<label>{lang="api_permissions_access"}</label>
+										</li>
+										<li>
+											<input type="checkbox" name="{$name}[{$endpointKey}][log]" class="ipsInput ipsInput--toggle" value="1" {{if isset( $value[ $endpointKey ]['log'] ) and $value[ $endpointKey ]['log']}}checked{{endif}}>
+											<label>{lang="api_permissions_log"}</label>
+										</li>
+										<li><strong><code>{expression="\IPS\Api\Controller::parseEndpointForDisplay( $endpoint['title'] )" raw="true"}</code></strong></li>
+									</ul>
+								</li>
+							{{endforeach}}
+						</ul>
+					</li>
+				{{endforeach}}
+			</ul>
+		</div>
+	{{endforeach}}
+</div>

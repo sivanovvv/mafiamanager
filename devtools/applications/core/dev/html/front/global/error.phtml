@@ -1,0 +1,60 @@
+<ips:template parameters="$title, $message, $code, $extra, $member, $faultyPluginOrApp=NULL, $httpStatusCode=500" />
+
+<section id='elError' class='ipsBox ipsBox--padding i-text-align_center'>
+	{{if ! \in_array( (int) $httpStatusCode, [404, 403] )}} <i class='fa-solid fa-circle-exclamation i-font-size_5 i-margin-bottom_2' aria-hidden="true"></i>{{endif}}
+    <p class='i-color_soft i-font-size_3 i-font-weight_500'>{{if \in_array( (int) $httpStatusCode, [404, 403] )}}{lang="something_went_wrong_{$httpStatusCode}"}{{else}} {lang="something_went_wrong"}{{endif}}</p>
+	<div id='elErrorMessage' class='i-font-size_4 i-font-weight_600 i-margin-top_2'>
+		{$message|raw}
+	</div>
+	{{if ( \IPS\IN_DEV or $member->isAdmin() ) and $extra}}
+		{{if $faultyPluginOrApp}}
+		<p class="i-margin-top_3">
+			{$faultyPluginOrApp}
+		</p>
+		{{endif}}
+
+		<div class="i-margin-top_3">
+			<h3 class="i-font-weight_600 i-color_soft i-font-size_-1 i-text-transform_uppercase">{lang="error_technical_details"}</h3>
+			<textarea class="ipsInput ipsInput--text" rows="13" style="font-family: monospace;">{$extra}</textarea>
+			<p class="i-font-size_-1 i-color_soft">
+				{{if $member->isAdmin()}}
+					{lang="error_technical_details_desc"}
+					{{if $member->hasAcpRestriction( 'core', 'support', 'system_logs_view' )}}
+						{lang="error_technical_details_logs"}
+					{{endif}}
+				{{elseif \IPS\IN_DEV}}
+					{lang="error_technical_details_dev"}
+				{{endif}}
+			</p>
+		</div>
+	{{endif}}
+
+	<p class='i-margin-top_3 i-color_soft'>
+        {lang="error_page_code"} <strong>{$code}</strong>
+    </p>
+
+	{{if ( member.isAdmin() and member.hasAcpRestriction( 'core', 'support', 'get_support' ) ) || ( member.canUseContactUs() and !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'contact' ) ) || !member.member_id}}
+		<ul class='ipsButtons i-margin-top_3'>
+			{{if member.isAdmin() and member.hasAcpRestriction( 'core', 'support', 'get_support' )}}
+				<li>
+					<a href='{url="app=core&module=support&controller=support" base="admin"}' title='{lang="get_support"}' class='ipsButton ipsButton--inherit'>
+						<i class="fa-solid fa-lock" aria-hidden="true"></i><span>{lang="get_support"}</span>
+					</a>
+				</li>
+			{{elseif \IPS\Member::loggedIn()->canUseContactUs() and !( \IPS\Dispatcher::i()->application->directory == 'core' and \IPS\Dispatcher::i()->module and \IPS\Dispatcher::i()->module->key == 'contact' )}}
+				<li>
+					<a href='{url="app=core&module=contact&controller=contact" seoTemplate="contact"}' title='{lang="contact_admin"}' class='ipsButton ipsButton--inherit'>
+						{lang="contact_admin"}
+					</a>
+				</li>
+			{{endif}}
+			{{if !member.member_id}}
+				<li>
+					<a href='{url="app=core&module=system&controller=login" seoTemplate="login"}' class='ipsButton ipsButton--primary' title='{lang="sign_in"}'>
+						{lang="sign_in"}
+					</a>
+				</li>
+			{{endif}}
+		</ul>
+	{{endif}}
+</section>

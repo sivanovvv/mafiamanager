@@ -1,0 +1,64 @@
+<ips:template parameters="$invoice, $fromBillingAgreement=NULL" />
+<li class='ipsData__item'>
+	<a href='{$invoice->url()}' class="ipsLinkPanel" aria-hidden="true"><span>{lang="order_view_details"}</span></a>
+	<div class='ipsData__content'>
+		<div class='ipsData__main'>
+			<div class="ipsColumns ipsColumns--orders">
+				<div class='ipsColumns__secondary i-basis_260'>
+					<a href='{$invoice->url()}' class='ipsData__title'>{datetime="$invoice->date"}</a>
+					<div class='ipsData__meta'><strong class='cNexusPrice'>{$invoice->total}</strong> &middot; {lang="order_title"} #{$invoice->id}</div>
+					<p class='i-flex i-gap_1 i-align-items_center i-flex-wrap_wrap i-margin-top_1'>
+						<span class='cNexusOrderBadge cNexusOrderBadge_{$invoice->status}'>{lang="istatus_{$invoice->status}"}</span>
+					</p>
+				</div>
+				{{if !$fromBillingAgreement}}
+					<div class="ipsColumns__primary i-align-self_center">
+						{{$summary = $invoice->summary();}}
+						{{if \count( $summary['items'] )}}
+							<ul class='i-grid i-gap_3 cNexusOrderList_items'>
+								{{foreach $summary['items'] as $k => $item}}
+									<li class='i-flex i-gap_2'>
+										<div class='i-basis_40 i-flex_00' {{if $item::$title}}title='{lang="$item::$title"}' data-ipsTooltip{{endif}}>
+											<div class="ipsThumb i-width_100p">
+												{{if $image = $item->image()}}
+													<img src="{$image->url}" alt='' loading='lazy'>
+												{{elseif $item::$icon}}
+													<i class='fa-solid fa-{$item::$icon}' aria-hidden="true"></i>
+												{{else}}
+													<i aria-hidden="true"></i>
+												{{endif}}
+											</div>
+										</div>
+										<div class='i-flex_11'>
+											{{if $url = $item->url()}}
+												<a href="{$url}" class='i-color_hard i-font-weight_600'>{$item->name}</a>
+											{{else}}
+												<span class='i-color_hard i-font-weight_600'>{$item->name}</span>
+											{{endif}}
+											<ul class='ipsList ipsList--inline i-color_soft i-gap_3 i-row-gap_0'>
+												<li>{lang="quantity"}: {$item->quantity}</li>
+												<li>{lang="invoice_unit_price"}: {$item->price}</li>
+											</ul>
+										</div>
+									</li>
+								{{endforeach}}
+							</ul>
+						{{else}}
+							<span class='ipsEmptyMessage'>{lang="orders_no_items"}</span>
+						{{endif}}
+					</div>
+				{{endif}}
+			</div>
+		</div>
+		{{if $invoice->status === $invoice::STATUS_PENDING}}
+			<ul class='ipsButtons ipsButtons--fill i-flex_00'>
+				<li>
+					<a href='{$invoice->url()->setQueryString( 'do', 'cancel' )->csrf()}' data-confirm class='ipsButton ipsButton--inherit ipsButton--small' title="{lang="orders_cancel_title"}"><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="orders_cancel"}</a>
+				</li>
+				<li>
+					<a href='{$invoice->checkoutUrl()}' class='ipsButton ipsButton--primary ipsButton--small' title="{lang="order_pay_now_title"}"><i class="fa-solid fa-check" aria-hidden="true"></i> {lang="order_pay_now"}</a>
+				</li>
+			</ul>
+		{{endif}}
+	</div>
+</li>

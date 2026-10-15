@@ -1,0 +1,11 @@
+<ips:template parameters="$strings, $app" />
+{{foreach $strings as $group => $missing}}
+<div class="i-font-size_-1 i-margin-top_2">
+    <div class='i-font-weight_600'>{lang="devscan__strings_{$group}"}</div>
+    <pre class="prettyprint lang-txt">
+
+    {{foreach $missing as $string}}{$string}
+    {{endforeach}}</pre>
+</div>
+{{endforeach}}
+{template="blockFooter" app="core" group="developer" params="$app"}

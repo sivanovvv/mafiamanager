@@ -1,0 +1,62 @@
+<ips:template parameters="$method, $done, $error, $setup, $availableMethods, $url=NULL" />
+<div id="elVerify">
+	<div class="i-padding_3 i-text-align_center">
+        {{if $method == 'phone'}}
+            {{if $done}}
+                {lang="verify_call_auth_done"}
+            {{else}}
+                {lang="verify_call_auth"}
+            {{endif}}
+        {{elseif $done}}
+            {lang="verify_{$method}_auth_done"}
+        {{else}}
+            {lang="verify_{$method}_auth"}
+        {{endif}}
+	</div>
+	{{if $done}}
+		<ul class="i-padding_3 i-background_3">
+            <li class="ipsFieldRow ">
+				<div class="ipsFieldRow_content cVerify_container">
+					<input type="text" name="verify_auth_code" value="" class="ipsInput ipsInput--text {{if request.verify_auth_code}}ipsField_error{{endif}}" autocomplete="one-time-code" >
+					{{if request.verify_auth_code}}
+						<p class="i-color_warning">{lang="$error"}</p>
+					{{endif}}
+                </div>
+            </li>
+			<li>
+				<button type='submit' class='ipsButton ipsButton--primary ipsButton--wide i-margin-bottom_3'>
+					<i class='fa-solid fa-lock' aria-hidden="true"></i> &nbsp;{lang="verify_submit_code"}
+				</button>
+			</li>
+			{{if $setup}}
+				<li>
+					<a href="{$url->csrf()->setQueryString( '_new', '1' )}" class='ipsButton ipsButton--text ipsButton--wide'>{lang="verify_change_number"}</a>
+				</li>
+			{{endif}}
+		</ul>
+	{{else}}
+		<div class="i-padding_3 i-background_3">
+			{{if \in_array( 'phone', $availableMethods )}}
+				<div class="i-margin-bottom_3">
+					<a href="{$url->csrf()->setQueryString( 'verify_method', 'phone' )}" class='ipsButton ipsButton--primary ipsButton--wide'>
+						<i class='fa-solid fa-phone' aria-hidden="true"></i>&nbsp; {lang="verify_submit_call"}
+					</a>
+				</div>
+			{{endif}}
+			{{if \in_array( 'sms', $availableMethods )}}
+                <div class="i-margin-bottom_3">
+					<a href="{$url->csrf()->setQueryString( 'verify_method', 'sms' )}" value="sms" class='ipsButton ipsButton--primary ipsButton--wide'>
+						<i class='fa-solid fa-comment-dots' aria-hidden="true"></i>&nbsp; {lang="verify_submit_sms"}
+					</a>
+				</div>
+			{{endif}}
+            {{if \in_array( 'whatsapp', $availableMethods )}}
+            <div class="i-margin-bottom_3">
+                <a href="{$url->csrf()->setQueryString( 'verify_method', 'whatsapp' )}" value="sms" class='ipsButton ipsButton--primary ipsButton--wide'>
+                    <i class='fa-reguar fa-comment' aria-hidden="true"></i>&nbsp; {lang="verify_submit_whatsapp"}
+                </a>
+            </div>
+            {{endif}}
+		</div>
+	{{endif}}
+</div>

@@ -1,0 +1,10 @@
+<ips:template parameters="$member" />
+<li class='ipsPhotoPanel ipsPhotoPanel_mini i-padding_2' data-role='result'>
+	<a href="{$member->acpUrl()}" class="ipsUserPhoto ipsUserPhoto--mini" target="_blank" rel='noopener'>
+		<img src='{$member->photo}' alt="" loading="lazy">
+	</a>
+	<div class="ipsPhotoPanel__text">
+		<h2 class='ipsPhotoPanel__primary'><a href='{$member->acpUrl()}'>{$member->cm_name}</a></h2>
+		<p class='ipsPhotoPanel__secondary'>{$member->email}</p>
+	</div>
+</li>

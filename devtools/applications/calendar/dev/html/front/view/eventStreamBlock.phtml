@@ -1,0 +1,107 @@
+<ips:template parameters="$event, $date, $truncate=FALSE, $map=array( 300, 200 ), $revertToFirst=FALSE" />
+{{$coverPhoto = $event->coverPhoto();}}
+{{if ( $coverPhoto === null or $coverPhoto->file === null ) and $club = $event->container()->club()}}
+    {{$coverPhoto = $club->coverPhoto();}}
+{{endif}}
+
+<div class='cCalendarBlock i-background_1 ipsInnerBox i-margin-bottom_block {$event->ui( 'css' )}' {$event->ui( 'dataAttributes' )}>
+	<div class='ipsCoverPhoto' data-controller='core.global.core.coverPhoto' data-coverOffset='{$coverPhoto->offset}' style='--offset:{$coverPhoto->offset}' data-ips-hook='image'>
+		{{if $coverPhoto->file}}
+			<div class='ipsCoverPhoto__container'>
+				<img src='{$coverPhoto->file->url}' class='ipsCoverPhoto__image' alt='' loading='lazy'>
+			</div>
+		{{endif}}
+		<div class='i-flex i-align-items_center i-gap_4'>
+			<div class='i-flex_00'>
+				<div class="ipsUserPhoto ipsUserPhoto--mini">
+					<img src='{$event->author()->photo}' alt='' loading='lazy'>
+				</div>
+			</div>
+			<div class='i-flex_11'>
+				<h2 class='ipsTitle ipsTitle--h3 ipsPageHead_barText ipsPageHead_barText_small' data-ips-hook='title'><a href='{$event->url( "getPrefComment" )}' title='{$event->title}'>{$event->title}{{if $event->hidden() === 1}} <span class="ipsBadge ipsBadge--icon ipsBadge--warning" data-ipsTooltip title='{lang="pending_approval"}'><i class='fa-solid fa-triangle-exclamation' aria-hidden="true"></i></span>{{endif}}</a></h2>
+			</div>
+		</div>
+	</div>
+	<div class='i-flex i-gap_2 i-flex-wrap_wrap i-padding_3'>
+		<div class='i-flex_91 i-basis_600 i-flex i-gap_4'>
+			<div class='i-flex_00'>
+				<div class='eventStreamDate'>
+					<a href='{$event->url( "getPrefComment" )}'>
+						{{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+							<time datetime='{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->mysqlDatetime()}' class='ipsCalendarDate'>
+							<span class='ipsCalendarDate__month'>{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->monthNameShort}</span>
+							<span class='ipsCalendarDate__date'>{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->mday}</span>
+						{{else}}
+							<time datetime='{$event->lastOccurrence( 'startDate' )->mysqlDatetime()}{{if !$event->all_day}} {$event->lastOccurrence( 'startDate' )->mysqlDatetime( FALSE )} {{endif}}' class='ipsCalendarDate'>
+							<span class='ipsCalendarDate__month'>{$event->lastOccurrence( 'startDate' )->monthNameShort}</span>
+							<span class='ipsCalendarDate__date'>{$event->lastOccurrence( 'startDate' )->mday}</span>
+						{{endif}}
+						</time>
+					</a>
+				</div>
+			</div>
+			<div class='i-flex_11'>
+				<div class='i-flex i-flex-wrap_wrap'>
+					<div class='i-flex_11' style='flex-basis: 450px'>
+						<h3 data-ips-hook='date'>
+							<time datetime='{expression="$event->_start_date->format( 'Y-m-d' )"}'>
+							{{if $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )}}
+							{$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->calendarDate()}{{if !$event->all_day}}, {$event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' )->localeTime( FALSE )} {{endif}}
+							{{else}}
+							{$event->lastOccurrence( 'startDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'startDate' )->localeTime( FALSE )} {{endif}}
+							{{endif}}
+							</time>
+							{{if $event->_end_date}}
+							&nbsp;&nbsp;<i class='fa-solid fa-circle-arrow-right i-font-size_2 i-color_soft' aria-hidden="true"></i>&nbsp;&nbsp;
+							<time datetime='{expression="$event->_end_date->format( 'Y-m-d' )"}'>
+							{{$sameDay = !( ($event->_start_date->mday != $event->_end_date->mday) or ($event->_start_date->mon != $event->_end_date->mon) or ($event->_start_date->year != $event->_end_date->year) );}}
+							{{if $event->nextOccurrence( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: \IPS\calendar\Date::getDate(), 'endDate' )}}
+							{{if !$sameDay}}{$event->nextOccurrence( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: \IPS\calendar\Date::getDate(), 'endDate' )->calendarDate()}{{endif}}{{if !$event->all_day}}{{if !$sameDay}}, {{endif}}{$event->nextOccurrence( $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: \IPS\calendar\Date::getDate(), 'endDate' )->localeTime( FALSE )}{{endif}}
+							{{else}}
+							{$event->lastOccurrence( 'endDate' )->calendarDate()}{{if !$event->all_day}} {$event->lastOccurrence( 'endDate' )->localeTime( FALSE )}{{endif}}
+							{{endif}}
+							</time>
+							{{endif}}
+						</h3>
+						{{if $event->recurring}}<p class='i-color_soft'>{$event->_recurring_text}</p><br>{{endif}}
+						<div class='ipsRichText {{if ( \IPS\Request::i()->isAjax() or $truncate ) && $event->content}} ipsTruncate_5{{endif}}'>
+							{{if $event->content}}
+								{{if \IPS\Request::i()->isAjax() or $truncate}}
+									{$event->truncated()|raw}
+								{{else}}
+									{$event->content|raw}
+								{{endif}}
+							{{endif}}
+						</div>
+						{{if $event->container()->allow_comments OR $event->container()->allow_reviews OR $event->rsvp}}
+							<div class='i-margin-top_3' data-ips-hook='stats'>
+								{{if $event->container()->allow_comments}}<a href='{$event->url()->setQueryString( 'tab', 'comments' )}'>{lang="event_comment_count" pluralize="$event->comments"}</a>{{endif}}
+								{{if $event->container()->allow_comments AND $event->container()->allow_reviews}}&middot;{{endif}}
+								{{if $event->container()->allow_reviews}}<a href='{$event->url()->setQueryString( 'tab', 'reviews' )}'>{lang="event_review_count" pluralize="$event->reviews"}</a>{{endif}}
+								{{if $event->rsvp }}
+									<hr class='ipsHr'>
+									<h4><strong>{lang="event_rsvp_attendees_list" pluralize="$event->attendeeCount( \IPS\calendar\Event::RSVP_YES )"}</strong></h4>
+									{{if \count( $event->attendees( \IPS\calendar\Event::RSVP_YES, 5 ) )}}
+										<ul class='ipsList ipsList--inline i-gap_0 i-margin-top_2'>
+											{{foreach $event->attendees( \IPS\calendar\Event::RSVP_YES, 5 ) as $attendee}}
+											<li>{template="userPhoto" app="core" group="global" params="$attendee, 'tiny'"}</li>
+											{{endforeach}}
+										</ul>
+									{{endif}}
+								{{endif}}
+							</div>
+						{{endif}}
+					</div>
+					<div class='i-flex_00'>
+						<a href='{$event->container()->url()}' class='cEvents_event cEvents_eventSmall cEvents_style{$event->container()->id}'>{$event->container()->_title}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{if $map !== FALSE AND $event->map( $map[0], $map[1] )}}
+			<div class='i-flex_11 cCalendarBlock_map' data-ips-hook='map'>
+				{$event->map( $map[0], $map[1] )|raw}
+			</div>
+		{{endif}}
+	</div>
+</div>

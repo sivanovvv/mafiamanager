@@ -1,0 +1,13 @@
+<ips:template parameters="$groups" />
+<div class='i-background_2 i-padding_3'>
+	<div>
+		<h2 class='ipsTitle ipsTitle--h3'><strong>{lang="promote_permission_title"}</strong></h2>
+		<div>
+			{{if \count($groups)}}
+				{lang="promote_permission_desc" htmllist="$groups"}
+			{{else}}
+				{lang="promote_permission_none_desc"}
+			{{endif}}
+		</div>
+	</div>
+</div>

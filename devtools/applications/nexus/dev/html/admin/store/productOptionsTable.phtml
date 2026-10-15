@@ -1,0 +1,50 @@
+<ips:template parameters="$fields, $combinations, $existingValues, $renews" />
+<table class="ipsTable">
+	<thead>
+		<tr>
+			{{foreach $fields as $field}}
+				<th>{$field->_title}</th>
+			{{endforeach}}
+			<th>{lang="p_stock"}</th>
+			<th>
+				{lang="base_price_adjustment"}<br>
+				<span class="i-color_soft i-font-size_-1">{lang="base_price_adjustment_desc"}</span>
+			</th>
+			{{if $renews}}
+				<th>
+					{lang="renew_price_adjustment"}<br>
+					<span class="i-color_soft i-font-size_-1">{lang="renew_price_adjustment_desc"}</span>
+				</th>
+			{{endif}}
+		</tr>
+	</thead>
+	<tbody>
+		{{foreach $combinations as $k => $options}}
+			<tr>
+				{{foreach $options as $option}}
+					<td>{$option}</td>
+				{{endforeach}}
+				<td data-role="unlimitedCatch">
+					<input type="number" name="custom_fields[{$k}][stock]" class="ipsInput ipsField_short" {{if isset( $existingValues[ $k ] ) and $existingValues[ $k ]['opt_stock'] != -1}}value="{$existingValues[ $k ]['opt_stock']}"{{endif}}><br>
+					{lang="or"} 
+					<input type="checkbox" class="ipsInput ipsInput--toggle" name="custom_fields[{$k}][unlimitedStock]" id="custom_fields_{$k}_unlimitedStock" data-control="unlimited" {{if isset( $existingValues[ $k ] ) and $existingValues[ $k ]['opt_stock'] == -1}}checked{{endif}}>
+					<label for="custom_fields_{$k}_unlimitedStock" class='ipsField_unlimited'>{lang="unlimited"}</label>
+				</td>
+				<td>
+					{{$values = isset( $existingValues[ $k ] ) ? json_decode( $existingValues[ $k ]['opt_base_price'], TRUE ) : array();}}
+					{{foreach \IPS\nexus\Money::currencies() as $currency}}
+						<input type="number" name="custom_fields[{$k}][bpa][{$currency}]" class="ipsInput ipsField_short" step="any" value="{{if isset( $values[$currency] )}}{$values[$currency]}{{else}}0{{endif}}"> {$currency}<br>
+					{{endforeach}}					
+				</td>
+				{{if $renews}}
+					<td>
+						{{$values = isset( $existingValues[ $k ] ) ? json_decode( $existingValues[ $k ]['opt_renew_price'], TRUE ) : array();}}
+						{{foreach \IPS\nexus\Money::currencies() as $currency}}
+							<input type="number" name="custom_fields[{$k}][rpa][{$currency}]" class="ipsInput ipsField_short" step="any" value="{{if isset( $values[$currency] )}}{$values[$currency]}{{else}}0{{endif}}"> {$currency}<br>
+						{{endforeach}}
+					</td>
+				{{endif}}
+			</tr>
+		{{endforeach}}
+	</tbody>
+</table>

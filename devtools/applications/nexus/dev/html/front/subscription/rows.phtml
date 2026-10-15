@@ -1,0 +1,15 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{$forcePlaceholders = FALSE;}}
+{{if \count( $rows )}} 
+	{{foreach $rows as $row}}
+		{{if $row->_image}}
+			{{$forcePlaceholders = TRUE;}}
+			{{break;}}
+		{{endif}}
+	{{endforeach}}
+
+	{{foreach $rows as $row}}
+		{template="row" params="$row, $table->activeSubscription, $forcePlaceholders" app="nexus" group="subscription"}
+	{{endforeach}}
+{{endif}}

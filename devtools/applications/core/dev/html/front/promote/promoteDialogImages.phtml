@@ -1,0 +1,18 @@
+<ips:template parameters="$images, $promote=NULL" />
+<li class="ipsFieldRow ">
+	<ul class="cPromote_attachList">
+		{{foreach $images as $image}}
+			{{foreach $image as $extension => $file}}
+				{{$checked = ( $promote ? ( $promote->hasImage( $file, $extension ) ? 'checked="checked"' : '' ) : '' );}}
+				<li class='cPromote_attachImage {{if !empty( $checked )}}cPromote_attachImageSelected{{endif}}'>
+					<div data-role="preview">
+						<img src="{file="$file" extension="$extension"}" alt="" loading="lazy">
+					</div>
+					<label class="cPromote_attachImage__checkbox" data-action='selectImage'>
+						<input type="checkbox" name="attach_files[{$file}]" {$checked} value="1" class="ipsInput">
+					</label>
+				</li>
+			{{endforeach}}
+		{{endforeach}}
+	</ul>
+</li>

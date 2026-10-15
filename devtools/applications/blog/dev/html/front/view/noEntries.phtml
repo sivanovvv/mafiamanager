@@ -1,0 +1,8 @@
+<ips:template parameters="$container" />
+
+<div class='ipsBox__padding i-text-align_center'>
+	<p class='i-font-size_2 i-color_soft'>{{if \IPS\Request::i()->cat}}{lang="no_entries_in_cat"}{{else}}{lang="no_entries"}{{endif}}</p>
+	{{if $container->can('add')}}
+		<a href='{url="app=blog&module=blogs&controller=submit&id={$container->_id}" seoTemplate="blog_submit"}{{if \IPS\Request::i()->cat}}&cat={request="cat"}{{endif}}' class='ipsButton ipsButton--primary i-margin-top_3'>{lang="submit_entry"}</a>
+	{{endif}}
+</div>

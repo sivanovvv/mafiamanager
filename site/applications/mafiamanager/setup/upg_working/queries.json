@@ -1,0 +1,60 @@
+[
+    {
+        "method": "createTable",
+        "params": [
+            {
+                "name": "mafiamanager_forums",
+                "columns": {
+                    "id": {
+                        "name": "id",
+                        "type": "BIGINT",
+                        "length": 0,
+                        "decimals": null,
+                        "values": [],
+                        "allow_null": false,
+                        "default": 0,
+                        "comment": "ID Number",
+                        "unsigned": true,
+                        "auto_increment": true
+                    },
+                    "enabled": {
+                        "name": "enabled",
+                        "type": "TINYINT",
+                        "length": null,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": false,
+                        "default": 0,
+                        "comment": "",
+                        "unsigned": false,
+                        "auto_increment": false
+                    },
+                    "forum_id": {
+                        "name": "forum_id",
+                        "type": "INT",
+                        "length": 0,
+                        "decimals": null,
+                        "values": [],
+                        "allow_null": true,
+                        "default": "0",
+                        "comment": "",
+                        "unsigned": true,
+                        "auto_increment": false
+                    }
+                },
+                "indexes": {
+                    "PRIMARY": {
+                        "type": "primary",
+                        "name": "PRIMARY",
+                        "columns": [
+                            "id"
+                        ],
+                        "length": [
+                            null
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+]

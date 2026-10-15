@@ -1,0 +1,36 @@
+<ips:template parameters="$id, $action, $elements, $hiddenValues, $actionButtons, $uploadField, $class=''" />
+
+<form accept-charset='utf-8' class="ipsFormWrap ipsFormWrap--event-submit" action="{$action}" method="post" {{if $uploadField}}enctype="multipart/form-data"{{endif}} data-ipsForm data-ipsFormSubmit>
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		<input type="hidden" name="{$k}" value="{$v}">
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	
+	<div class='ipsBox ipsBox--calendarSubmit ipsPull'>
+		<ul class='{$class}'>
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $inputName => $input}}
+					{{if $inputName == 'event_dates'}}
+						{$input->html()|raw}
+					{{endif}}
+				{{endforeach}}
+			{{endforeach}}
+		</ul>
+		<ul class='ipsForm {$class} ipsForm--vertical ipsForm--event-submit'>
+			{{foreach $elements as $collection}}
+				{{foreach $collection as $inputName => $input}}
+					{{if $inputName != 'event_dates'}}
+						{$input|raw}
+					{{endif}}
+				{{endforeach}}
+			{{endforeach}}
+		</ul>
+		<div class='ipsSubmitRow'>
+			<button type='submit' class='ipsButton ipsButton--primary'>{lang="submit_event"}</button>
+		</div>
+	</div>
+</form>

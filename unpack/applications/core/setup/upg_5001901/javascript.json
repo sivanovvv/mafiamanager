@@ -1,0 +1,21 @@
+{
+    "files": {
+        "added": [
+            "global\/framework\/common\/components\/cookieConsent.js"
+        ],
+        "edited": [
+            "global\/library\/app.js",
+            "global\/framework\/common\/ui\/ips.ui.quote.js",
+            "global\/framework\/common\/ui\/ips.ui.webcomponents.js",
+            "global\/framework\/common\/utils\/ips.utils.cookie.js"
+        ],
+        "removed": [
+            "core\/front\/controllers\/core\/ips.core.guestTerms.js"
+        ]
+    },
+    "orders": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

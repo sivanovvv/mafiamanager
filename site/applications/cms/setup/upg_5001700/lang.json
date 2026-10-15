@@ -1,0 +1,59 @@
+{
+    "normal": {
+        "added": [
+            "content_block_add_type_template",
+            "content_block_add_type_template_desc",
+            "content_block_form_tab__fields",
+            "block_fields",
+            "block_fields_desc",
+            "block_templatefield_type",
+            "block_templatefield_title",
+            "pf_type_Image",
+            "pf_type_Status",
+            "field_status_options",
+            "form_key_value_color",
+            "field_status_listing_layout",
+            "field_status_listing_layout_desc",
+            "field_status_layout_none",
+            "field_status_layout_simple",
+            "field_status_layout_custom",
+            "field_status_display_layout",
+            "field_status_display_layout_desc",
+            "content_template_type_field",
+            "content_template_add_template_field",
+            "content_template_add_template_field_title",
+            "field_template_type_import",
+            "templates_field",
+            "cms_import_fields",
+            "content_import_fields",
+            "field_display_listing_template_id",
+            "field_display_listing_template_use_how",
+            "field_display_listing_template_use_how_use",
+            "field_display_listing_template_use_how_copy",
+            "field_template_use_default",
+            "field_display_listing_save_template",
+            "field_display_listing_save_name",
+            "field_display_display_template_id",
+            "field_display_display_template_use_how",
+            "field_display_display_save_template",
+            "field_display_display_save_name",
+            "criteria__FieldValue",
+            "criteria__FieldValue_desc",
+            "criteria__FieldValue_blurb",
+            "criteria__FieldValue_empty",
+            "record_field",
+            "action__FieldValue",
+            "action__FieldValue_desc",
+            "action__FieldValue_blurb"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [
+            "content_block_template_fields_header"
+        ],
+        "edited": [],
+        "removed": []
+    }
+}

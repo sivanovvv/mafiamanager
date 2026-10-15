@@ -1,0 +1,20 @@
+<ips:template parameters="$purchases" />
+<div class="ipsBox ipsBox--commercePurchases ipsPull">
+	<header class="ipsPageHeader ipsPageHeader--padding">
+		<h1 class='ipsPageHeader__title'>{lang="purchases_title"}</h1>
+		{{if \count( $purchases )}}
+			<p class='ipsPageHeader__desc'>
+				{lang="purchases_info"}
+			</p>
+		{{endif}}
+	</header>
+	{{if \count( $purchases )}}
+		<ul class="ipsGrid ipsGrid--lines i-basis_300">
+			{template="purchaseList" group="clients" params="0, $purchases"}
+		</ul>
+	{{else}}
+		<div class='ipsEmptyMessage'>
+			{lang="purchases_none"}
+		</div>
+	{{endif}}
+</div>

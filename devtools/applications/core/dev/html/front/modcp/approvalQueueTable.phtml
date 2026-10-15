@@ -1,0 +1,104 @@
+<ips:template parameters="$table, $headers, $rows, $quickSearch" />
+<div data-baseurl='{$table->baseUrl}' data-resort='{$table->resortKey}' data-controller='core.global.core.table,core.front.modcp.approveQueue{{if $table->canModerate()}},core.front.core.moderation{{endif}}' {{if $table->dummyLoading}}data-dummyLoading{{endif}} {{if $table->getPaginationKey() != 'page'}}data-pageParam='{$table->getPaginationKey()}'{{endif}} data-tableID='{expression="md5($table->baseUrl->stripQueryString($table->getPaginationKey()))"}'>
+	{{if $table->title}}
+		<h2 class='ipsBox__header'>{lang="$table->title"}</h2>
+	{{endif}}
+	{{if ( $table->canModerate() AND $table->showFilters ) OR ( $table->showAdvancedSearch AND ( ( isset( $table->sortOptions ) and \count( $table->sortOptions ) > 1 ) OR $table->advancedSearch ) ) OR ( !empty( $table->filters ) ) OR ( $table->pages > 1 )}}
+	<div class="ipsButtonBar ipsButtonBar--top">
+		<div class="ipsButtonBar__pagination {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+			{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+		</div>
+		<div class="ipsButtonBar__end">
+			<ul class="ipsDataFilters">
+				{{if $table->showAdvancedSearch AND ( ( isset( $table->sortOptions ) and \count( $table->sortOptions ) > 1 ) OR $table->advancedSearch )}}
+					<li>
+						{{if isset($table->sortOptions) }}
+						<button type="button" id="elSortByMenu_{$table->uniqueId}" popovertarget="elSortByMenu_{$table->uniqueId}_menu" class="ipsDataFilters__button" data-role="sortButton"><span>{lang="sort_by"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						<i-dropdown popover id="elSortByMenu_{$table->uniqueId}_menu" data-i-dropdown-selectable="radio">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+										{{$custom = TRUE;}}
+										{{foreach $table->sortOptions as $k => $col}}
+											<li><a href="{$table->baseUrl->setQueryString( array( 'filter' => $table->filter, 'sortby' => $col, 'sortdirection' => $table->getSortDirection( $k ) ) )->setPage( 'page', 1 )}" rel="nofollow" {{if $col === $table->getSortByColumn()}}{{$custom = FALSE;}}aria-selected="true"{{endif}} data-ipsMenuValue="{$col}" data-sortDirection='{$table->getSortDirection( $k )}'><i class="iDropdown__input" aria-hidden="true"></i>{lang="{$table->langPrefix}sort_{$k}"}</a></li>
+										{{endforeach}}
+									{{if $table->advancedSearch}}
+										<li>
+											<a href='{$table->baseUrl->setQueryString( array( 'advancedSearchForm' => '1', 'filter' => $table->filter, 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )}' data-ipsDialog data-ipsDialog-title='{lang="custom_sort"}' rel="nofollow" {{if $custom}}aria-selected="true"{{endif}} data-i-dropdown-noselect><i class="iDropdown__input" aria-hidden="true"></i>{lang="custom"}</a>
+										</li>
+									{{endif}}
+								</ul>
+							</div>
+						</i-dropdown>
+						{{elseif $table->advancedSearch}}
+							<a href='{$table->baseUrl->setQueryString( array( 'advancedSearchForm' => '1', 'filter' => $table->filter, 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )}' data-ipsDialog data-ipsDialog-title='{lang="custom_sort"}' rel="nofollow">{lang="custom"}</a>
+						{{endif}}
+					</li>
+				{{endif}}
+				{{if !empty( $table->filters )}}
+					<li>
+						<button type="button" id="elFilterByMenu_{$table->uniqueId}" popovertarget="elFilterByMenu_{$table->uniqueId}_menu" class="ipsDataFilters__button" data-role="tableFilterMenu"><span>{lang="filter_by"}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+						<i-dropdown popover id="elFilterByMenu_{$table->uniqueId}_menu" data-i-dropdown-selectable="radio">
+							<div class="iDropdown">
+								<ul class="iDropdown__items">
+									<li>
+										<a href='{$table->baseUrl->setQueryString( array( 'filter' => '', 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )->setPage( 'page', 1 )}' rel="nofollow" data-action="tableFilter" data-ipsMenuValue='' {{if !$table->filter}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="{$table->langPrefix}all"}</a>
+									</li>
+									<li><hr></li>
+									{{foreach $table->filters as $k => $q}}
+										<li>
+											<a href='{$table->baseUrl->setQueryString( array( 'filter' => $k, 'sortby' => $table->sortBy, 'sortdirection' => $table->sortDirection ) )->setPage( 'page', 1 )}' rel="nofollow" data-action="tableFilter" data-ipsMenuValue='{$k}' {{if $k === $table->filter}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="{$table->langPrefix}{$k}"}</a>
+										</li>
+									{{endforeach}}
+								</ul>
+							</div>
+						</i-dropdown>
+					</li>
+				{{endif}}
+				<li>
+				    <button type="button" id="elCheck_{$table->uniqueId}" popovertarget="elCheck_{$table->uniqueId}_menu" class="ipsDataFilters__button" data-ipsTooltip='{lang="{$table->langPrefix}select_rows_tooltip"}' data-ipsAutoCheck data-ipsAutoCheck-context="#elTable_{$table->uniqueId}">
+						<span class="ipsInvisible">{lang="{$table->langPrefix}select_rows_tooltip"}</span>
+				        <span class="cAutoCheckIcon"><i class="fa-regular fa-square" aria-hidden="true"></i></span> <i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+				        <span class='ipsNotification' data-role='autoCheckCount'>0</span>
+					</button>
+					<i-dropdown popover id="elCheck_{$table->uniqueId}_menu" data-i-dropdown-selectable="radio">
+						<div class="iDropdown">
+							<ul class="iDropdown__items">
+								<li class="iDropdown__title">{lang="{$table->langPrefix}select_rows"}</li>
+								<li><button type="button" data-ipsMenuValue="all"><i class="iDropdown__input" aria-hidden="true"></i>{lang="all"}</button></li>
+								<li><button type="button" data-ipsMenuValue="none"><i class="iDropdown__input" aria-hidden="true"></i>{lang="none"}</button></li>
+							</ul>
+						</div>
+					</i-dropdown>
+                </li>
+			</ul>
+		</div>
+	</div>
+	{{endif}}
+    <form action="{$table->baseUrl->csrf()}" method="post" data-role='moderationTools' data-ipsPageAction>
+        {{if \count( $rows )}}
+            <i-data>
+				<ol class="ipsEntries ipsEntries--approvalQueue {{foreach $table->classes as $class}}{$class} {{endforeach}}" id='elTable_{$table->uniqueId}' data-role="tableRows">
+					{template="$table->rowsTemplate[1]" params="$table, $headers, $rows" object="$table->rowsTemplate[0]"}
+				</ol>
+			</i-data>
+        {{else}}
+            <div class="ipsEmpty">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <p>{lang="approval_queue_empty"}</p>
+            </div>
+        {{endif}}
+
+        <div class="ipsJS_hide ipsData__modBar" data-role="pageActionOptions">
+			<select class="ipsInput ipsInput--select i-basis_300" name="modaction" data-role="moderationAction">
+				<option value='delete' data-icon='trash'>{lang="delete"}</option>
+				<option value='hide' data-icon='eye-low-vision'>{lang="hide"}</option>
+				<option value='approve' data-icon='check'>{lang="approve"}</option>
+			</select>
+			<button type="submit" class="ipsButton ipsButton--primary">{lang="submit"}</button>
+        </div>
+    </form>
+
+	<div class="ipsButtonBar ipsButtonBar--bottom {{if $table->pages <= 1}}ipsHide{{endif}}" data-role="tablePagination">
+		{template="pagination" group="global" app="core" location="global" params="$table->baseUrl, $table->pages, $table->page, $table->limit, TRUE, $table->getPaginationKey()"}
+	</div>
+</div>

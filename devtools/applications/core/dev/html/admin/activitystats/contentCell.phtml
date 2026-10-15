@@ -1,0 +1,20 @@
+<ips:template parameters="$comment" />
+<div>
+	{{if $comment instanceof \IPS\Content\Comment}}
+		<h3><a href='{$comment->url()}' target='_blank' rel="noopener">{$comment->item()->mapped('title')}</a></h3>
+		<p class='i-margin-bottom_1 i-color_soft'>
+			{template="icon" app="core" location="front" group="tables" params="\get_class($comment), $comment->item()->containerWrapper()"}
+		</p>
+		<p class='i-margin-bottom_1 i-color_soft'>
+			{lang="posted_by_x" htmlsprintf="$comment->author()->link(), \IPS\DateTime::ts( $comment->mapped('date') )->html(FALSE)"}
+		</p>
+	{{else}}
+		<h3><a href='{$comment->url()}' target='_blank' rel="noopener">{$comment->mapped('title')}</a></h3>
+		<p class='i-margin-bottom_1 i-color_soft'>
+			{template="icon" app="core" location="front" group="tables" params="\get_class($comment), $comment->containerWrapper()"}
+		</p>
+		<p class='i-margin-bottom_1 i-color_soft'>
+			{lang="posted_by_x" htmlsprintf="$comment->author()->link(), \IPS\DateTime::ts( $comment->mapped('date') )->html(FALSE)"}
+		</p>
+	{{endif}}
+</div>

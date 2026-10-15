@@ -1,0 +1,10 @@
+<ips:template parameters="$member, $vid, $email" />
+
+
+{$email->language->addToStack("email_account_deletion_confirm", FALSE)}
+
+=====
+{$email->language->addToStack("email_account_delete_link", FALSE)}: {url="app=core&module=system&controller=settings&do=confirmAccountDeletion&vid={$vid}" plain="true" base="front"}
+=====
+
+-- {setting="board_name"}

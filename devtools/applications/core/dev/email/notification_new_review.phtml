@@ -1,0 +1,13 @@
+<ips:template parameters="$comment, $email" />
+{{$item = $comment->item();}}
+{{if $comment->author()->member_id}}
+    {$email->language->addToStack("email_new_review", FALSE, array( 'sprintf' => array( $comment->author()->url(), $comment->author()->name, $item->indefiniteArticle( $email->language ) ) ) )} <a href='{$comment->item()->url()}'>{$comment->item()->mapped('title')}</a>
+{{elseif $comment->author()->real_name}}
+    {$email->language->addToStack("email_new_review_guest", FALSE, array( 'sprintf' => array( $email->language->addToStack( 'guest_name_shown', FALSE, array( 'sprintf' => array( $comment->author()->real_name ) ) ), $item->indefiniteArticle( $email->language ) ) ) )} <a href='{$comment->item()->url()}'>{$comment->item()->mapped('title')}</a>
+{{else}}
+    {$email->language->addToStack("email_new_review_guest", FALSE, array( 'sprintf' => array( $email->language->addToStack( 'guest_name_shown', FALSE, array( 'sprintf' => array( $email->language->addToStack('guest') ) ) ), $item->indefiniteArticle( $email->language ) ) ) )} <a href='{$comment->item()->url()}'>{$comment->item()->mapped('title')}</a>
+{{endif}}
+<br><br>
+{$comment->emailContent( $email, 'html' )|raw}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

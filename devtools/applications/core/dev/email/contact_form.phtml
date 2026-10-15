@@ -1,0 +1,26 @@
+<ips:template parameters="$member, $name, $fromEmail, $message, $referrer, $email" />
+{$email->language->addToStack("email_contact_form", FALSE)}
+<br><br>
+<table width='100%' cellpadding='0' cellspacing='50' border='0'>
+	<tr>
+		<td dir='{dir}' width='40' valign='top' class='hidePhone'>
+			<img src='{$member->get_photo( true, true )}' width='40' height='40' style='border-radius: 6px;'>
+		</td>
+		<td dir='{dir}' valign='top'>
+			<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+				<tr>
+					<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; line-height: 1.5; font-size: 14px;">
+						<strong class="color_hard">{$email->language->addToStack("email_contact_said", FALSE, array( 'sprintf' => array( $name, $fromEmail ) ) )}</strong>
+						<br>
+						{$email->parseTextForEmail( $message, $email->language )|raw}
+						{{if $referrer}}
+							<br><br><div class="color_soft">{lang="contact_form_referrer" sprintf="$referrer, $referrer"}</div>
+						{{endif}}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>

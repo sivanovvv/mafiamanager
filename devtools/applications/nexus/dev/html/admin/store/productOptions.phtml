@@ -1,0 +1,24 @@
+<ips:template parameters="$input, $fields, $package" />
+<li class="ipsFieldRow" id="{$input->htmlId}" data-controller="nexus.admin.store.productoptions" data-url="{url="app=nexus&module=store&controller=packages&do=productoptions&package={$package->id}"}">
+	<div class="ipsFieldRow__label">
+		{lang="p_stock_dynamic_fields"}
+		<span class="ipsFieldRow__required">{lang="required"}</span>
+	</div>
+	<div class="ipsFieldRow__content">
+		<ul class="ipsFieldList">
+			{{foreach $fields as $field}}
+				<li>
+					<input type="checkbox" class="ipsInput ipsInput--toggle" id="elCheckbox_{$input->name}_{$field->id}" data-role="field" data-id="{$field->id}" {{if \in_array( $field->id, $input->value )}}checked{{endif}} >
+					<div class='ipsFieldList__content'>
+						<label for='elCheckbox_{$input->name}_{$field->id}' id='elField_{$input->name}_label'>{$field->_title}</label>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+		<div class="ipsFieldRow__desc">{lang="p_stock_dynamic_fields_desc"}</div>
+		<div class="ipsJS_show ipsBox i-margin-top_1" data-role='table'></div>
+	</div>
+	<noscript>
+		<p class="ipsMessage ipsMessage--error">{lang="p_stock_dynamic_fields_noscript"}</p>
+	</noscript>
+</li>

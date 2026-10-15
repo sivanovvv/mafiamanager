@@ -1,0 +1,205 @@
+.ipsOffCanvas__nav{
+	padding: .5em;
+}
+
+.ipsOffCanvas__nav a,
+.ipsOffCanvas__nav button,
+.ipsOffCanvas__nav summary,
+.ipsOffCanvas__item{
+	outline-offset: -2px;
+	color: var(--i-co);
+	display: flex;
+	gap: .6em;
+	align-items: center;
+	font-weight: 550;
+	padding: .8em 1.2em;
+	width: 100%;
+	text-decoration: none;
+	border-radius: min(5px, var(--i-design-radius));
+}
+
+	@media (any-hover:hover){
+		.ipsOffCanvas__nav :where(a:hover, button:hover, summary:hover){
+			background-color: var(--i-background_3);
+		}
+	}
+
+	.ipsOffCanvas__nav [aria-current="page"],
+	.ipsOffCanvas__nav [aria-selected="true"]{
+		background-color: var(--i-primary);
+		color: var(--i-primary-contrast);
+	}
+
+	.ipsOffCanvas__icon{
+		flex: 0 0 auto;
+		width: 1.4em;
+		line-height: 1;
+		text-align: center;
+		margin-inline-end: .2em;
+	}
+
+		.ipsOffCanvas__icon [style*="--icon"]::before{
+			content: var(--icon);
+		}
+
+		/* FA icons and svg */
+		.ipsOffCanvas__icon i,
+		.ipsOffCanvas__icon svg{
+			opacity: .5;
+			fill: currentColor;
+		}
+
+		/* Icons in user menu */
+		.ipsOffCanvas__nav--profile .fa-solid{
+			width: 1.5em;
+			opacity: .5;
+		}
+
+	.ipsOffCanvas__label{
+		flex: 1 1 auto;
+	}
+
+		.ipsOffCanvas__nav hr{
+			border-top: 1px solid currentColor;
+			opacity: .15;
+			margin: .5em;
+		}
+
+	.ipsOffCanvas__nav .ipsNotification{
+		position: static;
+	}
+
+	.ipsOffCanvas__label:has(+ .ipsNotification){
+		flex: 0 1 auto;
+	}
+
+	.ipsOffCanvas__nav summary::after,
+	.ipsOffCanvas__nav [aria-expanded]::after{
+		content: "\f078";
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		flex: 0 0 auto;
+		margin-inline-start: auto;
+		font-size: .7em;
+	}
+
+		/* Expanded menu inside dropdown */
+		.ipsOffCanvas__nav [open] > summary::after,
+		.ipsOffCanvas__nav [aria-expanded="true"]::after{
+			content: '\f077';
+		}
+
+	.ipsOffCanvas__nav i-details-content{
+		font-size: max(calc(var(--i-rem) * .9), .9em);
+		font-weight: 500;
+		margin-inline-start: 2.1em;
+		border-inline-start: 1px solid color-mix(in srgb, var(--i-co) 20%, transparent);
+		padding-inline-start: .6em;
+	}
+
+	.ipsOffCanvas__nav i-details-content a{
+		padding: .6em 1.2em;
+	}
+
+	/* Mini titles in menus: Eg. "Default streams" and "Custom streams" */
+	.ipsOffCanvas__title{
+		text-transform: uppercase;
+		font-weight: 600;
+		padding: .3em 1.2em;
+		color: var(--i-color_hard);  
+	}
+		
+	.ipsOffCanvas__title:not(:first-child){
+		margin-top: 2em;
+	}
+
+/* Align the inbox/notification icons in the user off-canvas menu. These are shown when the "icon location" is set to header */
+.ipsOffCanvas__nav--user{
+	display: flex;
+}
+
+.ipsOffCanvas__nav--user > li:first-child{
+	flex: 1 1 auto;
+}
+
+.ipsOffCanvas__nav--user a,
+.ipsOffCanvas__nav--user button{
+	height: 100%;
+	position: relative;
+}
+
+.ipsOffCanvas__nav--user svg{
+	fill: currentColor;
+}
+
+.ipsOffCanvas__nav--user .ipsNotification{
+	position: absolute;
+	inset-inline-end: auto;
+	top: auto;
+	bottom: 50%;
+	inset-inline-start: calc(50% + .5em);
+}
+
+/* Search */
+.ipsOffCanvas__search-filters .ipsSimpleSelect select{
+	background: none;
+}
+
+/* Breadcrumb */
+.ipsOffCanvas__breadcrumb{
+	flex: 0 0 auto;
+	font-weight: 600;
+	padding: .7em;
+	overflow: auto;
+	scrollbar-width: none;
+	/* Necessary to allow "overscroll padding" */
+	display: flex;
+	justify-content: start;
+}
+
+.ipsOffCanvas__breadcrumb::-webkit-scrollbar {
+	-webkit-appearance: none;
+	height: 0px;
+	display: none;
+}
+
+	.ipsOffCanvas__breadcrumb ol{
+		display: flex;
+		font-size: .9em;
+		background-color: var(--if-light, var(--i-background_2)) var(--if-dark, var(--i-background_3));
+		border-radius: 5px;
+		flex: 1 0 max-content;
+	}
+
+	.ipsOffCanvas__breadcrumb li{
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+	}
+
+	.ipsOffCanvas__breadcrumb li > a,
+	.ipsOffCanvas__breadcrumb li > span{
+		padding: 1em;
+		display: block;
+		color: var(--i-color_hard);
+	}
+
+	.ipsOffCanvas__breadcrumb .fa-house-chimney{
+		margin-inline-end: .3em;
+	}
+
+	.ipsOffCanvas__breadcrumb li > span{
+		opacity: .6;
+	}
+
+	.ipsOffCanvas__breadcrumb li:not(:last-child)::after {
+		content: '\f054';
+		opacity: .5;
+		font-size: .8em;
+		font-weight: 900;
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+	}

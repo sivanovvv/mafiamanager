@@ -1,0 +1,76 @@
+<ips:template parameters="$blog, $showCover=true" />
+
+{{if $showCover}}
+	<div id='elBlogHeader' class='ipsPageHeader ipsBox ipsBox--blogHeader ipsPull'>
+		{$blog->coverPhoto()|raw}
+
+		{{if !( $blog->owner() instanceof \IPS\Member ) and \count( $blog->contributors() ) AND $showCover}}
+			<div class='cBlogContributors ipsResponsive_hidePhone'>
+				<h2 class='i-font-weight_600 i-color_soft i-margin-bottom_1'>{lang="contributors_to_this"}</h2>
+				<ul class='cBlogView_contributors ipsGrid i-basis_40 i-gap_2'>
+					{{foreach  $blog->contributors() as $idx => $contributor}}
+						<li class='i-position_relative'>
+							<span data-ipsTooltip title='{$contributor['member']->name}'>
+								{template="userPhoto" group="global" app="core" params="$contributor['member'], 'fluid'"}<span class='ipsNotification'>{$contributor['contributions']}</span>
+							</span>
+						</li>
+					{{endforeach}}
+				</ul>
+			</div>
+		{{endif}}
+	</div>
+{{else}}
+
+	<div id='elBlogHeaderStats' class='ipsBox ipsBox--blogHeader ipsPull ipsCoverPhotoMeta' data-ips-hook='header'>
+		
+		{{if ( $blog->owner() instanceof \IPS\Member ) && \IPS\Request::i()->module == 'view'}}
+			<div class='ipsCoverPhoto__avatar'>
+				{template="userPhoto" group="global" app="core" params="$blog->owner(), 'fluid'"}
+			</div>
+		{{endif}}
+
+		<div class='ipsCoverPhoto__titles'>
+			<div class='ipsCoverPhoto__title'>
+				<h1 data-ips-hook='title'>
+					<a href='{$blog->url()}' title='{lang="go_to_blog" sprintf="$blog->_title"}'>{$blog->_title}</a>
+				</h1>
+				{{if $blog->pinned}}
+					<span class="ipsBadge ipsBadge--icon ipsBadge--positive" data-ipsTooltip title='{lang="pinned"}'><i class='fa-solid fa-thumbtack' aria-hidden="true"></i></span>
+				{{endif}}
+			</div>
+			<div class='ipsCoverPhoto__subTitle' data-ips-hook='headerMetaData'>
+				{{if $blog->owner() instanceof \IPS\Member}}
+					{lang="blog_by" htmlsprintf="$blog->owner()->link(), $blog->category()->link()"}
+				{{elseif $club = $blog->club()}}
+					<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="club_blog_for" sprintf="$club->name"}
+				{{else}}
+					<i class='fa-solid fa-users' aria-hidden="true"></i> {lang="group_blog_by" htmlsprintf="\IPS\Member::loggedIn()->language()->addToStack( 'blogs_groupblog_name_' . $blog->id ), $blog->category()->link()"}
+				{{endif}}
+			</div>
+		</div>
+		<ul class='ipsCoverPhoto__stats' data-ips-hook='headerStats'>
+			<li>
+				<h4 class='ipsCoverPhoto__statTitle'>{lang="blog_entries" pluralize="$blog->_items"}</h4>
+				<span class='ipsCoverPhoto__statValue'>{number="$blog->_items"}</span>
+			</li>
+			<li>
+				<h4 class='ipsCoverPhoto__statTitle'>{lang="blog_comments" pluralize="$blog->_comments"}</h4>
+				<span class='ipsCoverPhoto__statValue'>{number="$blog->_comments"}</span>
+			</li>
+            <li id='elBlogViews'>
+                <h4 class='ipsCoverPhoto__statTitle'>{lang="blog_views" pluralize="$blog->num_views"}</h4>
+                {{if \IPS\Application::appIsEnabled('cloud') and \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+                    {{$url = "app=cloud&module=analytics&controller=analytics&contentClass=" . get_class($blog) . "&contentId=" . $blog->id;}}
+                    <span class='ipsCoverPhoto__statValue i-link-color_inherit'><a href='{url="$url"}' data-ipsDialog data-ipsDialog-title='{lang="analytics"}' data-ipsTooltip title='{lang="analytics"}'>{number="$blog->num_views"}</a></span>
+                {{else}}
+                    <span class='ipsCoverPhoto__statValue'>{number="$blog->num_views"}</span>
+                {{endif}}
+			</li>
+		</ul>
+		<div class='ipsCoverPhoto__buttons'>
+			{template="follow" app="core" group="global" params="'blog', 'blog', $blog->_id, \IPS\blog\Entry::containerFollowerCount( $blog )"}
+		</div>
+
+	</div>
+
+{{endif}}

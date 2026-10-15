@@ -1,0 +1,40 @@
+<ips:template parameters="$stats, $latestFile, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{lang="block_downloadStats"}</h3>
+<div class='ipsWidget__content'>
+	<ul class='ipsList ipsList--stats ipsList--stats ipsList--stacked ipsList--border ipsList--fill'>
+		<li>
+			<span class='ipsList__value'>{number="$stats['totalFiles']"}</span>
+			<span class='ipsList__label'>{lang="total_files_front"}</span>
+		</li>
+		{{if $stats['totalComments']}}
+			<li>
+				<span class='ipsList__value'>{number="$stats['totalComments']"}</span>
+				<span class='ipsList__label'>{lang="total_comments"}</span>
+			</li>
+		{{endif}}
+		{{if $stats['totalReviews']}}
+			<li>
+				<span class='ipsList__value'>{number="$stats['totalReviews']"}</span>
+				<span class='ipsList__label'>{lang="total_reviews"}</span>
+			</li>
+		{{endif}}
+		{{if $latestFile}}
+			<li>
+				<div class='cNewestMember'>
+					<div id='elDownloadStatsLatest' class=''>
+						<p class='i-color_soft i-link-color_inherit'>{lang="latest_file" htmlsprintf="$latestFile->author()->link()"}</p>
+						<p class="i-font-weight_500"><a href="{$latestFile->url( "getPrefComment" )}" title='{lang="view_this_file" sprintf="$latestFile->name"}'>{$latestFile->name}</a></p>
+						<ul class="ipsList ipsList--inline i-justify-content_center i-gap_3">
+							{{if $latestFile->downloads}}
+								<li><i class="fa-solid fa-download" aria-hidden="true"></i> {number="$latestFile->downloads"}</li>
+							{{endif}}
+							{{if $latestFile->container()->bitoptions['comments'] AND $latestFile->comments}}
+								<li><i class='fa-solid fa-comment' aria-hidden="true"></i> {$latestFile->comments}</li>
+							{{endif}}
+						</ul>
+					</div>
+				</div>
+			</li>
+		{{endif}}
+	</ul>
+</div>

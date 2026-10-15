@@ -1,0 +1,5 @@
+<ips:template parameters="$content, $email" />
+
+{$email->language->addToStack("email_approved_content", FALSE, array( 'sprintf' => array( $content->definiteArticle( $email->language ) ) ) )}
+
+-- {setting="board_name"}

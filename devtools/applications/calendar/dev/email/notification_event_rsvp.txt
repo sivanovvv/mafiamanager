@@ -1,0 +1,8 @@
+<ips:template parameters="$content, $member, $email" />
+{$email->language->addToStack("email_event_rsvp_plain", FALSE, array( 'htmlsprintf' => array( $member->name, $content->mapped('title') ) ) )}
+
+{$email->language->get("rsvp_attend_event")}: {$email->language->addToStack( 'x_members', false, array( 'pluralize' => array( $content->attendeeCount( $content::RSVP_YES ) ) ) )}
+{$email->language->get("rsvp_maybe_event")}: {$email->language->addToStack( 'x_members', false, array( 'pluralize' => array( $content->attendeeCount( $content::RSVP_MAYBE ) ) ) )}
+{$email->language->get("rsvp_notgoing_event")}: {$email->language->addToStack( 'x_members', false, array( 'pluralize' => array( $content->attendeeCount( $content::RSVP_NO ) ) ) )}
+
+-- {setting="board_name"}

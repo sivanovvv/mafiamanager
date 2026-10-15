@@ -1,0 +1,47 @@
+<ips:template parameters="$purchase" />
+
+<ul class='ipsList ipsList--inline'>
+	<li>
+		<strong class="ipsMinorTitle">{lang="ps_start"}</strong>
+		<br>{$purchase->start->localeDate()}
+	</li>
+	{{if $purchase->expire}}
+		<li>
+			<strong class="ipsMinorTitle">{lang="ps_expire"}</strong>
+			<br>{$purchase->expire->localeDate()}
+		</li>
+	{{endif}}
+	{{if $purchase->renewals and !$purchase->grouped_renewals}}
+		<li>
+			<strong class="ipsMinorTitle">{lang="purchase_renewal_terms"}</strong>
+			<br>{$purchase->renewals->toDisplay( $purchase->member )}
+		</li>
+	{{endif}}
+	{{if $purchase->billing_agreement AND !$purchase->billing_agreement->canceled}}
+		<li>
+			<strong class="ipsMinorTitle">{lang="ps_billing_agreement"}</strong>
+			<br><a href='{$purchase->billing_agreement->url()}' class="i-color_inherit">{$purchase->billing_agreement->gw_id}</a>
+		</li>
+	{{endif}}
+
+</ul>
+
+<ul class='ipsList ipsList--inline i-margin-top_3'>
+	<li>
+		<a href="{$purchase->url()}" class="ipsButton ipsButton--primary">{lang="nexus_subs_view_purchase"}</a>
+	</li>
+	{{if $pendingInvoice = $purchase->invoice_pending and $pendingInvoice->status === $pendingInvoice::STATUS_PENDING}}
+		<li>
+			<a href="{$pendingInvoice->checkoutUrl()}" class='ipsButton ipsButton--primary' title="{lang="purchase_renew_now_title"}">{lang="purchase_renew_now"}</a>
+		</li>
+	{{elseif $purchase->expire AND $canRenewUntil = $purchase->canRenewUntil(NULL,TRUE)}}
+		<li>
+			<a href="{url="app=nexus&module=clients&controller=purchases&do=renew&id={$purchase->id}" base="front" csrf="true" seoTemplate="clientspurchaserenew" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $purchase->name )"}" class='ipsButton ipsButton--primary' title="{lang="purchase_renew_now_title"}" {{if $canRenewUntil === TRUE or $canRenewUntil > 1}}data-ipsDialog data-ipsDialog-size='narrow'{{endif}}>{lang="purchase_renew_now"}</a>
+		</li>
+	{{endif}}
+	{{if $purchase->canCancel()}}
+		<li>
+			<a href="{url="app=nexus&module=clients&controller=purchases&do=cancel&id={$purchase->id}" base="front" csrf="true" seoTemplate="clientspurchasecancel" seoTitle="\IPS\Http\Url\Friendly::seoTitle( $purchase->name )"}" class='ipsButton ipsButton--negative' data-confirm data-confirmSubMessage="{lang="purchase_cancel_renewal_confirm"}">{lang="purchase_cancel_renewal"}</a>
+		</li>
+	{{endif}}
+</ul>

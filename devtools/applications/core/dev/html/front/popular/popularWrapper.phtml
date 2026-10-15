@@ -1,0 +1,119 @@
+<ips:template parameters="$results, $areas, $topContributors, $dates, $description, $form, $tzOffsetDifference" />
+{{if \IPS\Content\Search\Query::isRebuildRunning()}}
+	<div class="ipsMessage ipsMessage--info">{lang="popular_rebuild_is_running"}</div>
+{{endif}}
+{{$now = \IPS\DateTime::ts( time() );}}
+{{$thisUrl = \IPS\Request::i()->url();}}
+{{$customStart = ( isset( \IPS\Request::i()->custom_date_start ) and is_numeric( \IPS\Request::i()->custom_date_start ) ) ? (int) \IPS\Request::i()->custom_date_start : NULL;}}
+{{$customEnd = ( isset( \IPS\Request::i()->custom_date_end ) and is_numeric( \IPS\Request::i()->custom_date_end ) ) ? (int) \IPS\Request::i()->custom_date_end : NULL;}}
+
+<div>
+    {{if \count( $dates )}}
+        <div class="ipsButtonBar ipsButtonBar--top">
+            <div class="ipsButtonBar__end">
+                <ul class="ipsDataFilters">
+                    {{if settings.reputation_leaderboard_type != 'points'}}
+                    <li>
+                        <button type="button" id="elLeaderboard_app" popovertarget="elLeaderboard_app_menu" class='ipsDataFilters__button'><span>{{if isset( \IPS\Request::i()->in ) and isset( $areas[ \IPS\Request::i()->in ] )}}{lang="leaderboard_in_app" sprintf="$areas[ \IPS\Request::i()->in ][1]"}{{else}}{lang="leaderboard_in_all_apps"}{{endif}}</span><i class="fa-solid fa-caret-down" aria-hidden="true"></i></button>
+                        <i-dropdown popover id="elLeaderboard_app_menu" data-i-dropdown-selectable="radio">
+                            <div class="iDropdown">
+                                <ul class="iDropdown__items">
+                                    <li><a href="{$thisUrl->stripQueryString( 'in' )}" rel="nofollow" {{if ! isset( \IPS\Request::i()->in )}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{lang="leaderboard_all_apps"}</a></li>
+                                    {{foreach $areas as $key => $data}}
+                                    <li><a href="{$thisUrl->setQueryString( array( 'in' => $key ) )}" rel="nofollow" {{if isset( \IPS\Request::i()->in ) and \IPS\Request::i()->in == $key}}aria-selected="true"{{endif}}><i class="iDropdown__input" aria-hidden="true"></i>{$data[1]}</a></li>
+                                    {{endforeach}}
+                                </ul>
+                            </div>
+                        </i-dropdown>
+                    </li>
+                    {{endif}}
+                    <li>
+                        <button type="button" id="elLeaderboard_time" popovertarget="elLeaderboard_time_menu" class='ipsDataFilters__button'>
+                            <span>
+                                {{if $customStart or $customEnd}}
+                                    {lang="custom_date"}
+                                    {{elseif isset( \IPS\Request::i()->time ) and isset( $dates[ \IPS\Request::i()->time ] ) and $setTime = \IPS\Request::i()->time}}
+                                    {lang="leaderboard_time_$setTime"}
+                                    {{else}}
+                                    {lang="leaderboard_time_oldest"}
+                                {{endif}}
+                            </span>
+                            <i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+                        </button>
+                        <i-dropdown popover id="elLeaderboard_time_menu" data-i-dropdown-selectable="radio" data-role="tableFilterMenu">
+                            <div class="iDropdown">
+                                <ul class="iDropdown__items">
+                                    {{foreach $dates as $human => $timeObject}}
+                                    <li>
+                                        <a href="{$thisUrl->stripQueryString( array('custom_date_start', 'custom_date_end') )->setQueryString( array( 'time' => $human ) )}" rel="nofollow" {{if ( ! isset( \IPS\Request::i()->time ) and ( !$customStart and !$customEnd ) and $human == 'oldest' ) or ( !$customStart and ( isset( \IPS\Request::i()->time ) and \IPS\Request::i()->time == $human ) )}}aria-selected="true"{{endif}}>
+                                            <i class="iDropdown__input" aria-hidden="true"></i>
+                                            <div>
+                                                {lang="leaderboard_time_$human"}
+                                                <div class="iDropdown__minor">
+                                                    {$timeObject->dayAndMonth()} {$timeObject->format('Y')}{{if $now->localeDate() != $timeObject->localeDate()}} - {$now->dayAndMonth()} {$now->format('Y')}{{endif}}
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    {{endforeach}}
+                                    <li>
+                                        <a href="#" rel="nofollow" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-content='#elDateForm' data-ipsDialog-title="{lang="custom_date"}" {{if $customStart or $customEnd}}aria-selected="true"{{endif}}>
+                                            <i class="iDropdown__input" aria-hidden="true"></i>
+                                            <div>
+                                                {lang="custom_date"}
+                                                {{if $customStart or $customEnd}}
+                                                <div class="iDropdown__minor">
+                                                    {{if $customStart}}
+                                                    {datetime="\IPS\Request::i()->custom_date_start" dateonly="true"}
+                                                    {{if $customEnd}} - {{endif}}
+                                                    {{endif}}
+                                                    {{if $customEnd}}
+                                                    {datetime="\IPS\Request::i()->custom_date_end" dateonly="true"}
+                                                    {{endif}}
+                                                </div>
+                                                {{endif}}
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </i-dropdown>
+                        <div class="ipsHide" id="elDateForm">
+                            {$form|raw}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {{endif}}
+	{{if \count( $topContributors)}}
+        {{$count = 0;}}
+        <ol class="ipsMembers ipsGrid i-gap_lines i-basis_320 i-border-bottom_3">
+            {{foreach $topContributors as $memberId => $rep}}
+                {{$count++;}}
+                {{$member = \IPS\Member::load( $memberId );}}
+                {template="memberRow" group="popular" app="core" params="$member, $rep, $count"}
+            {{endforeach}}
+        </ol>
+	{{else}}
+		<p class='ipsEmptyMessage'>{lang="popular_no_member_results"}</p>
+	{{endif}}
+</div>
+{{if settings.reputation_leaderboard_type != 'points'}}
+<section data-controller='core.front.core.ignoredComments'>
+    <div class='i-padding_3 i-padding-top_5 i-background_2 i-border-bottom_3'>
+        <h2 class='ipsTitle ipsTitle--h2'>{lang="popular_results_title"}</h2>
+        <p class="i-color_soft i-font-size_2 i-font-weight_500 i-margin-top_1">{$description}</p>
+    </div>
+    <div data-role='popularResults'>
+        <ol class='ipsStream' data-role='popularContent'>
+            {template="popularItems" group="popular" app="core" params="$results"}
+        </ol>
+    </div>
+</section>
+{{endif}}
+{{if $tzOffsetDifference !== NULL}}
+	<div class='i-padding_2 i-font-size_-1 i-color_soft i-font-weight_500 i-text-align_center'>
+		<i class="fa-solid fa-earth-americas i-margin-end_icon" aria-hidden="true"></i>{lang="popular_timezone" sprintf="\IPS\Member::loggedIn()->language()->addToStack('timezone__' . \IPS\Settings::i()->reputation_timezone), $tzOffsetDifference"}
+	</div>
+{{endif}}

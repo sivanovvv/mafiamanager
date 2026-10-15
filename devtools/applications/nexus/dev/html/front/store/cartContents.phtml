@@ -1,0 +1,96 @@
+<ips:template parameters="$location, $currency" />
+{{$subtotal = new \IPS\Math\Number('0');}}
+{{if \count( $_SESSION['cart'] )}}
+	<div id='elNexusCart'>
+		<i-data>
+			<ul class="ipsData ipsData--table ipsData--cart-contents">
+				{{foreach $_SESSION['cart'] as $id => $item}}
+					<li id='elCartItem_{$id}' class="ipsData__item">
+						<div class="ipsData__image" aria-hidden="true">
+							{{if $image = $item->image()}}
+								<img src="{$image->url}" alt='' loading='lazy'>
+							{{elseif $icon = $item::$icon}}
+								<i class='fa-solid fa-{$icon}' aria-hidden="true"></i>
+							{{else}}
+								<i aria-hidden="true"></i>
+							{{endif}}
+						</div>
+						<div class='ipsData__content'>
+							<div class='ipsData__main'>
+								<h2 class='ipsData__title'>{{if $item->canChangeQuantity()}}<span class='i-color_soft'>{$item->quantity} x</span> {{endif}}{$item->name}</h2>
+								{$item->detailsForDisplay( 'checkout' )|raw}
+								<div class='ipsData__meta'>
+									<ul class='ipsList ipsList--inline i-font-size_-2'>
+										<li><a href='{url="app=nexus&module=store&controller=cart&do=quantities&item[$id]=0" csrf="1"}' title='{lang="remove_from_cart_title"}' data-action='removeFromCart'>{lang="remove_from_cart"}</a></li>
+										{{if $item->canChangeQuantity()}}
+											<li><button type="button" id="elItemRow{$id}_quantity" popovertarget="elItemRow{$id}_quantity_menu" title='{lang="change_quantity_title"}'>{lang="change_quantity"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button></li>
+										{{endif}}
+									</ul>
+									<i-dropdown popover id="elItemRow{$id}_quantity_menu">
+										<div class="iDropdown">
+											<form action="{url="app=nexus&module=store&controller=cart&do=quantities" seoTemplate="store_cart" csrf="1"}" method="post" data-role='quantityForm' class="ipsForm">
+												<label class="ipsFieldRow">
+													<span class="ipsFieldRow__label">{lang="change_quantity"}</span>
+													<input class="ipsInput ipsInput--number" type='number' name="item[{$id}]" value='{$item->quantity}' min="0">
+												</label>
+												<div class="ipsSubmitRow"><button type='submit' class='ipsButton ipsButton--primary ipsButton--wide'>{lang="update"}</button></div>
+											</form>
+										</div>
+									</i-dropdown>
+								</div>
+							</div>
+							<div class='i-basis_180'>
+								<span class='cNexusPrice i-font-size_3'>
+									{{if settings.nexus_show_tax}}
+										{{$location = $location ?: \IPS\nexus\Customer::loggedIn()->estimatedLocation();}}
+										{{$itemPrice = $item->grossPrice( $location );}}
+										{{$linePrice = $item->grossLinePrice( $location );}}
+									{{else}}
+										{{$itemPrice = $item->price;}}
+										{{$linePrice = $item->linePrice();}}
+									{{endif}}
+									{$linePrice}
+									{{$subtotal = $subtotal->add( $linePrice->amount );}}
+								</span>
+								{{if $item->renewalTerm}}
+									<p class='i-font-size_-2 i-color_soft'>
+										{lang="and_renewal" sprintf="$item->renewalTerm->toDisplay( NULL, $item->quantity )"}
+									</p>
+								{{endif}}
+								{{if $item->quantity > 1}}
+									<p class='i-font-size_-2 i-color_soft'>
+										{{if $item->renewalTerm}}
+											{lang="each_short_with_renewal" sprintf="$itemPrice, $item->renewalTerm"}
+										{{else}}
+											{lang="each_short" sprintf="$itemPrice"}
+										{{endif}}
+									</p>
+								{{endif}}
+							</div>
+						</div>
+					</li>
+				{{endforeach}}
+				</ul>
+		</i-data>
+		<div class='cNexusCart_totals i-text-align_end'>
+			{lang="cart_subtotal"}: <span class='cNexusPrice'>{money="$subtotal" currency="$currency"}</span>
+		</div>
+		<ul class="ipsSubmitRow ipsButtons">
+			<li>
+				<a class="ipsButton ipsButton--inherit" href="{url="app=nexus&module=store" seoTemplate="store"}"><i class="fa-solid fa-store" aria-hidden="true"></i> {lang="continue_shopping"}</a>
+			</li>
+			<li>
+				<a class="ipsButton ipsButton--text i-margin-end_auto" href="{url="app=nexus&module=store&controller=cart&do=clear" seoTemplate="store_cart" csrf="true"}" data-confirm><i class="fa-regular fa-trash-can" aria-hidden="true"></i> {lang="empty_cart"}</a>
+			</li>
+			<li>
+				<a class="ipsButton ipsButton--primary" href="{url="app=nexus&module=store&controller=cart&do=checkout" seoTemplate="store_cart" csrf="true"}" data-action="checkout"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> {lang="checkout"}</a>
+			</li>
+		</ul>
+	</div>
+{{else}}
+	<div class='ipsBox i-padding_3 i-text-align_center i-font-size_2 i-color_soft'>
+		{lang="your_cart_empty"}
+		<br><br>
+		<a href='{url="app=nexus&module=store" seoTemplate="store"}' title='{lang="start_shopping"}' class='ipsButton ipsButton--primary'>{lang="start_shopping"}</a>
+	</div>
+{{endif}}

@@ -1,0 +1,33 @@
+{
+    "normal": {
+        "added": [
+            "jump_to_consent_message",
+            "points_badge_tooltip",
+            "points_badge_tooltip_period",
+            "reputation_leaderboard_type",
+            "reputation_leaderboard_type_reputation",
+            "reputation_leaderboard_type_reputation_desc",
+            "reputation_leaderboard_type_points",
+            "reputation_leaderboard_type_points_desc",
+            "reputation_leaderboard_type_desc",
+            "reputation_leaderboard_type_warning",
+            "leaderboard_history_points",
+            "leader_rep_total_points",
+            "leaderboard_tab_points",
+            "received_x_rep_points",
+            "cookie_scheme_preference_description"
+        ],
+        "edited": [
+            "guest_terms_bar",
+            "accept_cookies",
+            "received_x_points",
+            "cookieconstent_reject"
+        ],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

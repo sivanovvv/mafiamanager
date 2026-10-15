@@ -1,0 +1,64 @@
+<ips:template parameters="$items" />
+
+{{foreach $items as $child}}
+	{{if $child->canView() and $child->isAvailableFor('smallscreen')}}
+		{{if $children = $child->children()}}
+			<li data-id="{$child->id}">
+				<details>
+					<summary>
+						<span class="ipsOffCanvas__icon" aria-hidden="true">
+							{{if $child->getIconData()}}
+								{$child->getIconData()|raw}
+							{{else}}
+								<i class="fa-solid" style="--icon:'{$child->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+							{{endif}}
+						</span>
+						<span class="ipsOffCanvas__label">{$child->title()}</span>
+					</summary>
+					<i-details-content>
+						<ul id='mobile-nav__{$child->id}'>
+							{{if $child->link() && $child->link() !== '#'}}
+								<li>
+									<a href='{$child->link()}'>
+										{$child->title()}
+									</a>
+								</li>
+							{{endif}}
+							{template="mobileNavigationChildren" group="global" app="core" params="$children"}
+						</ul>
+					</i-details-content>
+				</details>
+			</li>
+
+		{{elseif $child instanceof \IPS\core\extensions\core\FrontNavigation\MenuHeader}}
+			<li class='ipsOffCanvas__title'>
+				{$child->title()}
+			</li>
+		{{elseif $child instanceof \IPS\core\extensions\core\FrontNavigation\MenuSeparator}}
+			
+		{{elseif $child instanceof \IPS\core\extensions\core\FrontNavigation\MenuButton}}
+			<li>
+				<a href='{$child->link()}'>
+					<span class="ipsOffCanvas__icon" aria-hidden="true">
+						<i class="fa-solid" style="--icon:'\\f061'" aria-hidden="true"></i>
+					</span>
+					<span class="ipsOffCanvas__label">{$child->title()}</span>
+				</a>
+			</li>
+		{{else}}
+			<li data-id="{$child->id}">
+				{{$active = $child->activeOrChildActive('smallscreen');}}
+				<a href='{$child->link()}' {{if method_exists( $child, 'target' ) AND $child->target()}}target='{$child->target()}'{{if $child->target() == '_blank'}} rel="noopener"{{endif}}{{endif}} {{if $active}}aria-current="page"{{endif}}>
+					<span class="ipsOffCanvas__icon" aria-hidden="true">
+						{{if $child->getIconData()}}
+							{$child->getIconData()|raw}
+						{{else}}
+							<i class="fa-solid" style="--icon:'{$child->getDefaultIcon()|raw}'" aria-hidden="true"></i>
+						{{endif}}
+					</span>
+					<span class="ipsOffCanvas__label">{$child->title()}</span>
+				</a>
+			</li>
+		{{endif}}
+	{{endif}}
+{{endforeach}}

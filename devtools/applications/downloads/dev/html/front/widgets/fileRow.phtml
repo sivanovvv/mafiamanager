@@ -1,0 +1,68 @@
+<ips:template parameters="$file, $layout='table', $isCarousel=false" />
+<li class='ipsData__item {$file->ui('css')}' {$file->ui('dataAttributes')}>
+	<a href="{$file->url('getPrefComment')}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$file->name}</span></a>
+	<div class="ipsData__image" aria-hidden="true" data-ips-hook='image'>
+		{{if $screenshot = $file->primary_screenshot_thumb}}
+			<img src='{$screenshot->url}' alt='' loading='lazy'>
+		{{else}}
+			<i aria-hidden="true"></i>
+		{{endif}}
+	</div>
+	<div class="ipsData__content">
+		<div class='ipsData__main'>
+			<h4 class='ipsData__title' data-ips-hook='title'>
+				<a href="{$file->url( "getPrefComment" )}" title='{lang="view_this_file" sprintf="$file->name"}'>{$file->name}</a>
+			</h4>
+			{{$price = NULL;}}
+			{{if \IPS\Application::appIsEnabled( 'nexus' ) and settings.idm_nexus_on}}
+				<p class="cWidgetPrice">
+					{{if $file->isPaid()}}
+						{{if $price = $file->priceToDisplay()}}
+							{$price|raw}
+						{{endif}}
+					{{else}}
+						{lang="file_free_feed"}
+					{{endif}}
+				</p>
+			{{endif}}
+			{{if $layout === "featured"}}<div class='ipsData__desc'>{$file->truncated(TRUE)|raw}</div>{{endif}}
+			{{if \in_array( $layout, array("minimal"))}}
+				<div class="ipsData__meta">{lang="byline_nodate" htmlsprintf="$file->author()->link( NULL, NULL, $file->isAnonymous() )"} &middot; {datetime="$file->mapped('date')" lowercase="true" short="true"}</div>
+			{{endif}}
+			{{if $file->container()->bitoptions['reviews']}}
+				{template="rating" group="global" location="front" app="core" params="'small', $file->averageReviewRating(), \IPS\Settings::i()->reviews_rating_out_of"}
+			{{endif}}
+		</div>
+		{{if !\in_array( $layout, array("minimal"))}}
+			<div class="ipsData__extra">
+				<ul class='ipsData__stats' data-ips-hook='stats'>
+					{{if $file->isPaid() and !$file->nexus and \in_array( 'purchases', explode( ',', settings.idm_nexus_display ) ) }}
+						<li data-stattype="purchases" data-v="{$file->purchaseCount()}">
+							<span class="ipsData__stats-icon" data-stat-value="{$file->purchaseCount()}" aria-hidden="true" data-ipstooltip title='{$file->purchaseCount()} {lang="idm_purchases"}'></span>
+							<span class="ipsData__stats-label">{$file->purchaseCount()} {lang="idm_purchases"}</span>
+						</li>
+					{{endif}}
+					{{if !$file->isPaid() or \in_array( 'downloads', explode( ',', settings.idm_nexus_display ) )}}
+						<li data-stattype="downloads" data-v="{number='$file->downloads'}">
+							<span class="ipsData__stats-icon" data-stat-value="{number="$file->downloads"}" aria-hidden="true" data-ipstooltip title='{number="$file->downloads"} {lang="downloads"}'></span>
+							<span class="ipsData__stats-label">{number="$file->downloads"} {lang="downloads"}</span>
+						</li>
+					{{endif}}
+					{{if $file->container()->bitoptions['comments']}}
+						<li data-stattype="comments" data-v="{$file->comments}">
+							<span class="ipsData__stats-icon" data-stat-value="{$file->comments}" aria-hidden="true" data-ipstooltip title='{$file->comments} {lang="total_comments"}'></span>
+							<span class="ipsData__stats-label">{$file->comments} {lang="total_comments"}</span>
+						</li>
+					{{endif}}
+				</ul>
+				<div class="ipsData__last">
+					{template="userPhoto" app="core" group="global" params="$file->author(), 'fluid'"}
+					<div class="ipsData__last-text">
+						<div class="ipsData__last-primary">{lang="byline_nodate" htmlsprintf="$file->author()->link( NULL, NULL, $file->isAnonymous() )"}</div>
+						<div class="ipsData__last-secondary">{datetime="$file->mapped('date')" lowercase="true" short="true"}</div>
+					</div>
+				</div>
+			</div>
+		{{endif}}
+	</div>
+</li>

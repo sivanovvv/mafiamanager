@@ -1,0 +1,2 @@
+<ips:template parameters="$content, $includeLinks, $includeAuthor, $email" />
+{{if $includeLinks}}{$email->language->addToStack("go_to_this_x", FALSE, array( 'htmlsprintf' => array( mb_strtolower( $email->language->addToStack( $content::$title, FALSE ) ) ) ) )}: {$content->url()}{{endif}}

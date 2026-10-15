@@ -1,0 +1,14 @@
+<ips:template parameters="$comment, $topic" />
+{{$idField = $topic::$databaseColumnId;}}
+{{$iposted = $topic->container()->contentPostedIn( NULL, [ $topic->$idField ] );}}
+<div>
+	<h3 class='ipsTitle ipsTitle--h3'>
+		{{if $topic->unread()}}
+			<a href='{$topic->url( 'getNewComment' )}' data-ipsTooltip='{lang="first_unread_post"}' class='ipsIndicator {{if \in_array( $topic->$idField, $iposted )}}ipsIndicator--participated{{endif}}' data-ips-hook="unreadIcon"><span class="ipsInvisible">{lang="first_unread_post"}</span></a>
+		{{else}}
+			<span class='ipsIndicator ipsIndicator--read {{if \in_array( $topic->$idField, $iposted )}}ipsIndicator--participated{{endif}}'></span>
+		{{endif}}
+			<a href='{$comment->url()}' title='{lang="view_this_topic" sprintf="$topic->title"}'>{$topic->title}</a>
+	</h3>
+	<p class='i-color_soft i-link-color_inherit'>{lang="in"} <a href='{$topic->container()->url()}'>{$topic->container()->_title}</a></p>
+</div>

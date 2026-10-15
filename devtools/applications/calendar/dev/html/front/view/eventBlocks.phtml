@@ -1,0 +1,19 @@
+<ips:template parameters="$events" />
+
+<ul class="ipsGrid ipsGrid--auto-fit i-basis_340 i-gap_4">
+	{{foreach $events as $event}}
+		<li class='i-flex i-gap_3'>
+			<div class='i-basis_50 i-flex_00'>
+				{{$nextOccurrence = $event->nextOccurrence( \IPS\calendar\Date::getDate(), 'startDate' ) ?: $event->lastOccurrence();}}
+				<time datetime='{$nextOccurrence->mysqlDatetime()}' class='ipsCalendarDate'>
+					<span class='ipsCalendarDate__month'>{$nextOccurrence->monthNameShort}</span>
+					<span class='ipsCalendarDate__date'>{$nextOccurrence->mday}</span>
+				</time>
+			</div>
+			<div class='i-flex_11'>
+				<div class='ipsTitle ipsTitle--h6'><a href="{$event->url( "getPrefComment" )}" title='{lang="view_this_event" sprintf="$event->title"}'>{$event->title}</a></div>
+				<span class='i-color_soft i-font-size_-1'>{lang="byline_nodate" sprintf="$event->author()->name"}</span>
+			</div>
+		</li>
+	{{endforeach}}
+</ul>

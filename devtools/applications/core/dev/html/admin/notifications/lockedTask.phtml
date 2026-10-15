@@ -1,0 +1,52 @@
+<ips:template parameters="$task, $description" />
+<div class="ipsRichText">
+	<p>{lang="dashboard_tasks_broken_desc"}</p>
+</div>
+<i-data>
+	<ul class="ipsData ipsData--table ipsData--compact ipsData--locked-task i-margin-top_1">
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="task_manager_app"}</strong></span>
+			<div>
+				<div>
+						{expression="\IPS\Application::load( $task->app )->_title"}
+				</div>
+			</div>
+		</li>
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="task_manager_key"}</strong></span>
+			<div>
+				<div>
+					{$task->key}
+					{{if $description}}
+						<br>
+						<span class="i-color_soft">{lang="$description"}</span>
+					{{endif}}
+				</div>
+			</div>
+		</li>
+		<li class="ipsData__item">
+			<span class="i-basis_160"><strong>{lang="task_manager_last_run"}</strong></span>
+			<div>
+				<div>
+					{{if $task->last_run}}
+						{datetime="$task->last_run"}
+					{{else}}
+						<em>{lang="never"}</em>
+					{{endif}}
+				</div>
+			</div>
+		</li>
+	</ul>
+</i-data>
+<div class="ipsRichText i-margin-top_1">
+	{{if $task->app and \in_array( $task->app, \IPS\IPS::$ipsApps )}}
+		<p>{lang="dashboard_tasks_broken_desc_firstparty"}</p>
+	{{else}}
+		<p>{lang="dashboard_tasks_broken_desc_thirdparty"}</p>
+	{{endif}}
+</div>
+<div class="i-margin-top_3">
+	<a href="{url="app=core&module=settings&controller=advanced&do=runTask&id={$task->id}" csrf="true"}" class="ipsButton ipsButton--primary ipsButton--tiny">{lang="task_manager_run"}</a>
+	&nbsp;
+	<a href="{url="app=core&module=settings&controller=advanced&do=taskLogs&id={$task->id}"}" class="ipsButton ipsButton--inherit ipsButton--tiny">{lang="task_manager_logs"}</a>
+</div>

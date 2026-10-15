@@ -1,0 +1,70 @@
+<ips:template parameters="$event" />
+
+<div data-controller='core.front.core.commentFeed' {{if settings.auto_polling_enabled}}data-autoPoll{{endif}} data-commentsType='reviews' data-baseURL='{$event->url()}' {{if $event->isLastPage('reviews')}}data-lastPage{{endif}} data-feedID='{$event->reviewFeedId}' id='reviews' data-follow-area-id="event-{$event->id}">
+	{{if $event->reviewForm()}}
+		{{if $event->locked()}}
+			<strong class='i-color_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="item_locked_can_review"}</strong>
+		{{endif}}
+		<div id='elEventReviewForm'>
+			{$event->reviewForm()|raw}
+		</div>
+	{{else}}
+		{{if $event->hasReviewed()}}
+			<!-- Already reviewed -->
+		{{elseif $event->locked()}}
+			{template="commentUnavailable" group="forms" location="front" app="core" params="'item_locked_cannot_review'"}
+		{{elseif \IPS\Member::loggedin()->restrict_post}}
+			{{if \IPS\Member::loggedIn()->restrict_post == -1}}
+				{template="reviewUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment'"}
+			{{else}}
+				{template="reviewUnavailable" group="forms" location="front" app="core" params="'restricted_cannot_comment', \IPS\Member::loggedIn()->warnings(5,NULL,'rpa'), \IPS\Member::loggedIn()->restrict_post"}
+			{{endif}}
+		{{elseif \IPS\Member::loggedIn()->members_bitoptions['unacknowledged_warnings']}}
+			{template="reviewUnavailable" group="forms" location="front" app="core" params="'unacknowledged_warning_cannot_post', \IPS\Member::loggedIn()->warnings( 1, FALSE )"}
+		{{endif}}
+	{{endif}}
+	{{if \count( $event->reviews( NULL, NULL, NULL, 'desc', NULL, NULL, NULL, NULL, isset( \IPS\Request::i()->showDeleted ) ) )}}
+		<div class="ipsButtonBar ipsButtonBar--top">
+			{{if $event->reviewPageCount() > 1}}
+				<div class="ipsButtonBar__pagination">
+					{$event->reviewPagination( array( 'tab', 'sort' ) )|raw}
+				</div>
+			{{endif}}
+			<div class='ipsButtonBar__end'>
+				{template="commentMultimodHeader" app="core" group="global" params="$event, '#reviews', 'review'"}
+				<ul class='ipsDataFilters'>
+					<li data-action="tableFilter">
+						<a href="{$event->url()->setQueryString( array( 'tab' => 'reviews', 'sort' => 'helpful' ) )->setPage( 'page', 1 )}" class="ipsDataFilters__button {{if !isset( request.sort ) or request.sort != 'newest'}}ipsDataFilters__button--active{{endif}}" data-action="filterClick">{lang="most_helpful"}</a>
+					</li>
+					<li data-action="tableFilter">
+						<a href="{$event->url()->setQueryString( array( 'tab' => 'reviews','sort' => 'newest' ) )->setPage( 'page', 1 )}" class="ipsDataFilters__button {{if isset( request.sort ) and request.sort == 'newest'}}ipsDataFilters__button--active{{endif}}" data-action="filterClick">{lang="newest"}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div data-role='commentFeed' data-controller='core.front.core.moderation'>
+			<form action="{$event->url()->csrf()->setQueryString( 'do', 'multimodReview' )->setPage('page',\IPS\Request::i()->page)}" method="post" data-ipsPageAction data-role='moderationTools'>
+				{{$reviewCount=0; $timeLastRead = $event->timeLastRead(); $lined = FALSE;}}
+				{{foreach $event->reviews() as $review}}
+					{{if !$lined and $timeLastRead and $timeLastRead->getTimestamp() < $review->mapped('date')}}
+						{{if $lined = TRUE and $reviewCount}}
+							<hr class="ipsUnreadBar">
+						{{endif}}
+					{{endif}}
+					{{$reviewCount++;}}
+					{$review->html()|raw}
+				{{endforeach}}
+				{template="commentMultimod" app="core" group="global" params="$event, 'review'"}
+			</form>
+		</div>
+		{{if $event->reviewPageCount() > 1}}
+			<div class="ipsButtonBar ipsButtonBar--bottom">
+				<div class="ipsButtonBar__pagination">
+					{$event->reviewPagination( array( 'tab', 'sort' ) )|raw}
+				</div>
+			</div>
+		{{endif}}
+	{{elseif !$event->canReview()}}
+		<p class="ipsEmptyMessage" data-role="noReviews">{lang="no_reviews"}</p>
+	{{endif}}
+</div>

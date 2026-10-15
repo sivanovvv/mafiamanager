@@ -1,0 +1,81 @@
+<ips:template parameters="$id, $action, $tabs, $activeTab, $error, $errorTabs, $hiddenValues, $actionButtons, $uploadField, $sidebar, $tabClasses=array(), $formClass='', $attributes=array(), $tabArray=array(), $usingIcons=FALSE" />
+{{if !\IPS\Request::i()->isAjax() }}<div class="ipsBox ipsBox--formTemplate">{{endif}}
+<form action="{$action}" method="post" accept-charset='utf-8' {{if $uploadField}}enctype="multipart/form-data"{{endif}} data-ipsForm class="ipsFormWrap ipsFormWrap--template" {{foreach $attributes as $k => $v}}{$k}="{$v}"{{endforeach}} {{if \count($tabArray) > 1}}novalidate="true"{{endif}} data-template='front/forms/template'>
+	{{if $error}}
+		<div class="ipsMessage ipsMessage--error i-margin_1" data-role="formError" tabindex="-1">
+			{$error}
+		</div>
+	{{endif}}
+	{{if !empty( $errorTabs )}}
+		<p class="ipsMessage ipsMessage--error i-margin_1 ipsJS_show" data-role="formError" tabindex="-1">{lang="tab_error"}</p>
+	{{endif}}
+	<input type="hidden" name="{$id}_submitted" value="1">
+	{{foreach $hiddenValues as $k => $v}}
+		{{if \is_array($v)}}
+			{{foreach $v as $_k => $_v}}
+				<input type="hidden" name="{$k}[{$_k}]" value="{$_v}">
+			{{endforeach}}
+		{{else}}
+			<input type="hidden" name="{$k}" value="{$v}">
+		{{endif}}
+	{{endforeach}}
+	{{if $uploadField}}
+		<input type="hidden" name="MAX_FILE_SIZE" value="{$uploadField}">
+		<input type="hidden" name="plupload" value="{expression="md5( mt_rand() )"}">
+	{{endif}}
+	{{if \count( $tabs ) < 2}}
+		{{if !empty( $sidebar )}}
+			<div class='ipsColumns ipsColumns--compose-form ipsColumns--lines'>
+				<div class='ipsColumns__primary'>
+		{{endif}}
+					<ul class='ipsForm {$formClass} ipsForm--template'>
+						{expression="array_pop( $tabs )" raw="true"}
+						<li class='ipsSubmitRow'>
+							{expression="implode( '', $actionButtons)" raw="true"}
+						</li>
+					</ul>
+		{{if !empty( $sidebar )}}
+				</div>
+				<div class='ipsColumns__secondary'>
+					{expression="array_pop( $sidebar )" raw="true"}
+				</div>
+			</div>
+		{{endif}}
+	{{else}}
+		<i-tabs class='ipsTabs{{if $usingIcons}} ipsTabs--withIcons{{endif}}' id='ipsTabs_{$id}' data-ipsTabBar data-ipsTabBar-contentArea='#ipsTabs_{$id}_content'>
+			<div role='tablist'>
+				{{foreach $tabs as $name => $content}}
+					<button type="button" id='ipsTabs_{$id}_{$name}' class="ipsTabs__tab {{if \in_array( $name, $errorTabs )}}ipsTabs__tab--error{{endif}}" role="tab" aria-controls="ipsTabs_{$id}_{$name}_panel" aria-selected="{{if $activeTab == $name}}true{{else}}false{{endif}}">
+						{{if \in_array( $name, $errorTabs )}}<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> {{endif}}{{if isset($tabArray[$name]['icon'])}}<i class='fa-solid fa-{$tabArray[$name]['icon']}' aria-hidden="true"></i> {{endif}}{lang="$name"}
+					</button>
+				{{endforeach}}
+			</div>
+			{template="tabScrollers" app="core" group="global" location="global"}
+		</i-tabs>
+		<div id='ipsTabs_{$id}_content' class='ipsTabs__panels'>
+			{{foreach $tabs as $name => $contents}}
+				<div id='ipsTabs_{$id}_{$name}_panel' class="ipsTabs__panel ipsTabs__panel--{$name}" role="tabpanel" aria-labelledby="ipsTabs_{$id}_{$name}" {{if $activeTab != $name}}hidden{{endif}}>
+					{{if isset( $sidebar[ $name ] )}}
+						<div class='ipsColumns ipsColumns--compose-form ipsColumns--lines'>
+							<div class='ipsColumns__primary'>
+					{{endif}}
+								<ul class='ipsForm {$formClass} ipsForm--template {{if isset( $tabClasses[ $name ] )}}{$tabClasses[ $name ]}{{endif}}'>
+									<li class='ipsJS_hide'>{lang="$name"}</li>
+									{$contents|raw}
+								</ul>
+					{{if isset( $sidebar[ $name ] )}}
+							</div>
+							<div class='ipsColumns__secondary'>
+								{$sidebar[ $name ]|raw}
+							</div>
+						</div>
+					{{endif}}
+				</div>
+			{{endforeach}}
+		</div>
+		<div class="ipsSubmitRow">
+			{expression="implode( '', $actionButtons)" raw="true"}
+		</div>
+	{{endif}}
+</form>
+{{if !\IPS\Request::i()->isAjax() }}</div>{{endif}}

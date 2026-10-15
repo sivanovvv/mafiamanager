@@ -1,0 +1,129 @@
+/*
+	----------------
+	- Display
+	----------------
+*/
+
+.i-display_block{
+	display: block;
+}
+
+/* Future todo: Replace ipsHide with [hidden] */
+.ipsApp .ipsHide,
+.i-display_none{
+	display: none;
+}
+
+.i-display_inline-block{
+	display: inline-block;
+}
+
+.i-display_grid{
+	display: grid;
+}
+
+.i-display_contents{
+	display: contents;
+}
+
+[data-ips-scheme="dark"] .i-display_light,
+[data-ips-scheme="light"] .i-display_dark{
+	display: none !important;
+}
+
+.i-overflow_hidden{
+	overflow: hidden;
+}
+
+.i-position_relative{
+	position: relative;
+}
+
+.i-position_cover{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+	object-fit: cover;
+}
+
+.i-position_sticky-top{
+	position: sticky;
+	top: calc(var(--i-sticky-offset, 0px) + var(--_i-sticky-margin, 0px));
+	z-index: var(--i-z-index_sticky);
+}
+.i-position_sticky-bottom{
+	position: sticky;
+	bottom:  var(--_i-sticky-margin, 0px);
+	z-index: var(--i-z-index_sticky);
+}
+
+:where([dir="ltr"]) .i-float_start,
+:where([dir="rtl"]) .i-float_end{
+	float: left;
+}
+
+:where([dir="ltr"]) .i-float_end,
+:where([dir="rtl"]) .i-float_start{
+	float: right;
+}
+
+.i-height_100p{
+	min-height: 100%;
+}
+
+.i-width_100p{
+	width: 100%;
+}
+
+/*
+	----------------
+	- Images
+	----------------
+*/
+
+.i-aspect-ratio_10{ aspect-ratio: 10/10 }
+.i-aspect-ratio_9{ aspect-ratio: 10/9 }
+.i-aspect-ratio_8{ aspect-ratio: 10/8 }
+.i-aspect-ratio_7{ aspect-ratio: 10/7 }
+.i-aspect-ratio_6{ aspect-ratio: 10/6 }
+.i-aspect-ratio_5{ aspect-ratio: 10/5 }
+.i-aspect-ratio_4{ aspect-ratio: 10/4 }
+.i-aspect-ratio_3{ aspect-ratio: 10/3 }
+
+:where(img[class*="i-aspect-ratio_"]){
+	width: 100%;
+	object-fit: cover;
+}
+
+.i-object-fit_contain{
+	object-fit: contain;
+}
+
+.i-object-fit_cover{
+	object-fit: cover;
+}
+
+/*
+	----------------
+	- Cursor
+	----------------
+*/
+
+.i-cursor_zoom-in{
+	cursor: zoom-in;
+}
+
+.i-cursor_not-allowed{
+	cursor: not-allowed;
+}
+
+.i-cursor_move{
+	cursor: move;
+}
+
+.i-cursor_pointer{
+	cursor: pointer;
+}

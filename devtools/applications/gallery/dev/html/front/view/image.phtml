@@ -1,0 +1,31 @@
+<ips:template parameters="$image, $commentsAndReviews=FALSE" />
+
+{{if $club = $image->container()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $image->container()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+<div data-controller='gallery.front.view.image{{if settings.gallery_nsfw}},gallery.front.global.nsfw{{endif}}' data-lightboxURL='{$image->url()}' class="ipsBlockSpacer">
+	{template="contentHiddenMessage" group="global" app="core" params="$image"}
+	<div class='ipsPull i-margin-bottom_block'>
+		<div class='elGalleryHeader'>
+			{template="imageFrame" group="view" app="gallery" params="$image"}
+		</div>
+        {{if $image->hasPreviousOrNext() }}
+            {template="imageCarouselLinks" app="gallery" group="view" location="front" params="$image"}
+        {{endif}}
+	</div>
+
+	{advertisement="ad_image_lightbox"}
+
+	{template="imageInfo" group="view" params="$image"}
+
+	{template="imageComments" app="gallery" location="front" group="view" params="$image, $commentsAndReviews"}
+
+</div> 
+
+{{if $image->container()->club()}}
+	</div>
+{{endif}}

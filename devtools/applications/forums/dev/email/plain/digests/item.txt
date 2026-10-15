@@ -1,0 +1,2 @@
+<ips:template parameters="$topic, $email" />
+{$email->language->addToStack("x_created_topic_in", FALSE, array( 'htmlsprintf' => array( $topic->author()->name, $topic->container()->getTitleForLanguage( $email->language ) ) ) )}: {$topic->title} ({$topic->url()})

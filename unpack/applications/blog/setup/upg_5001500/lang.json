@@ -1,0 +1,15 @@
+{
+    "normal": {
+        "added": [
+            "blog_entry_lc",
+            "blog_entry_comment_lc"
+        ],
+        "edited": [],
+        "removed": []
+    },
+    "js": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

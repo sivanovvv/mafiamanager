@@ -1,0 +1,34 @@
+<ips:template parameters="$apiKey" />
+<p>{lang="zapier_setup_intro"}</p>
+<div class="ipsBox">
+	<ul class="ipsForm ipsForm--horizontal ipsForm--zapier">
+		<li class="ipsFieldRow ipsFieldRow_yesNo ">
+			<div class="ipsFieldRow__label">
+				{lang="zapier_community_url"}
+			</div>
+			<div class="ipsFieldRow__content">
+				<div class="i-flex i-gap_1">
+					<input type="text" readonly class="i-flex_11 ipsInput ipsInput--text i-font-family_monospace" value='{expression="rtrim( \IPS\Settings::i()->base_url, '/' )"}/'>
+					<button type="button" class="i-flex_00 ipsButton ipsButton--secondary" data-ipscopy data-ipscopy-text="{expression="rtrim( \IPS\Settings::i()->base_url, '/' )"}">{lang="copy"}</button>
+				</div>
+            </div>
+		</li>
+
+		<li class="ipsFieldRow ipsFieldRow_yesNo ">
+			<div class="ipsFieldRow__label">
+				{lang="api_id"}
+			</div>
+			<div class="ipsFieldRow__content">
+				<div class="i-flex i-gap_1">
+					<input type="text" readonly class="i-flex_11 ipsInput ipsInput--text i-font-family_monospace" value='{$apiKey->id}'>
+					<button type="button" class="i-flex_00 ipsButton ipsButton--secondary" data-ipscopy data-ipscopy-text="{$apiKey->id}">{lang="copy"}</button>
+				</div>
+            </div>
+		</li>
+	</ul>
+	<hr class="ipsHr_thick">
+	<div class="i-background_dark i-padding_3">
+		<script type="module" src="https://zapier.com/partner/embed/app-directory/wrapper.js?app=invision-community&link-target=new-tab&theme=dark&applimit=5&zaplimit=6&zapstyle=card&introcopy=hide"></script>
+	</div>
+
+</div>

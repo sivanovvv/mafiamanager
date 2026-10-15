@@ -1,0 +1,42 @@
+<ips:template parameters="$comment, $id, $commentLang='__defart_comment'" />
+{{if isset( $comment['comment'] )}}
+	{{$idField = $comment['comment']::$databaseColumnId;}}
+	<div class='i-padding_3 ipsEntry ipsEntry--recommended' data-commentID='{$id}'>
+		{{if \IPS\IPS::classUsesTrait( $comment['comment'], 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+			<div class='i-flex i-justify-content_end'>{template="reactionOverview" group="global" app="core" params="$comment['comment']"}</div>
+		{{endif}}
+		<div class='ipsEntry__header ipsPhotoPanel ipsPhotoPanel--mini i-margin-top_3'>
+			{template="userPhoto" app="core" group="global" params="$comment['comment']->author(), 'mini', $comment['comment']->warningRef()"}
+			<div>
+				<h3 class='ipsPhotoPanel__primary'>
+					<strong>{template="userLink" app="core" group="global" params="$comment['comment']->author(), $comment['comment']->warningRef()"}</strong>
+					{template="reputationBadge" group="global" app="core" params="$comment['comment']->author()"}
+				</h3>
+				<p class='ipsPhotoPanel__secondary'>
+					<a href='{$comment['comment']->url()}' class='i-color_inherit'>{$comment['comment']->dateLine()|raw}</a>
+					{{if $comment['comment']->editLine()}}
+						({lang="edited_lc"})
+					{{endif}}
+				</p>
+			</div>
+		</div>
+
+		<div class='ipsRichText ipsTruncate_2'>{$comment['comment']->truncated( TRUE )|raw}</div>
+
+		{{if $comment['note']}}
+			<div class='ipsEntry__recommendedNote'>
+				<p class='ipsRichText'>{$comment['note']}</p>
+				{{if isset( $comment['featured_by'] )}}
+					<p class='i-color_soft i-margin-top_2'>{lang="recommended_by" htmlsprintf="$comment['featured_by']->link()"}</p>
+				{{endif}}
+			</div>
+		{{elseif isset( $comment['featured_by'] )}}
+			{lang="recommended_by" htmlsprintf="$comment['featured_by']->link()"}
+		{{endif}}
+
+		<hr class='ipsHr'>
+		<div>
+			<a href='{$comment['comment']->url()}' data-action='goToComment' class='ipsButton ipsButton--text ipsButton--small ipsButton--wide'>{lang="go_to_this_comment" sprintf="\IPS\Member::loggedIn()->language()->get( $commentLang )"} <i class='fa-solid fa-angle-right' aria-hidden="true"></i></a>
+		</div>
+	</div>
+{{endif}}

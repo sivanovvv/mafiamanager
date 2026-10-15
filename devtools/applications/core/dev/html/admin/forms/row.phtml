@@ -1,0 +1,23 @@
+<ips:template parameters="$langKey, $element, $desc, $warning, $required=FALSE, $error=NULL, $prefix=NULL, $suffix=NULL, $id=NULL, $object=NULL, $form=NULL, $rowClasses=NULL" />
+<li class='ipsFieldRow {{if $object instanceof \IPS\Helpers\Form\YesNo}}ipsFieldRow_yesNo{{endif}} {{if $object and isset( request.searchResult ) and ( request.searchResult === $object->name or request.searchResult === $id )}}ipsFieldRow_searchResult{{endif}} {{if $rowClasses}}{expression="implode(' ', $rowClasses)"}{{endif}}' {{if $id !== NULL}}id="{$id}"{{endif}}>
+	<div class='ipsFieldRow__label {{if $error}}ipsFieldRow_error{{endif}}'>
+		{$langKey|raw}
+		{{if $required}}<span class='ipsFieldRow__required'>{lang="required"}</span>{{endif}}
+		{{if \IPS\IN_DEV and $form and $object}}{template="searchKeywords" app="core" group="global" params="$form->action->setQueryString( array( 'do' => ( isset( $form->action->queryString['do'] ) and ( $form->action->queryString['do'] != 'form' or $form->action->queryString['do'] != 'edit' ) ) ? $form->action->queryString['do'] : NULL, 'id' => NULL, 'searchResult' => $id ) )->acpQueryString(), $object->name"}{{endif}}
+	</div>
+	<div class='ipsFieldRow__content {{if $error}}ipsFieldRow_error{{endif}}'>
+		{{if $object and $form and !( $object instanceof \IPS\Helpers\Form\Translatable ) and !( $object instanceof \IPS\Helpers\Form\Editor ) and !( $object instanceof \IPS\Helpers\Form\Upload ) and !( $object instanceof \IPS\Helpers\Form\Codemirror ) and !( $object instanceof \IPS\Helpers\Form\Icon ) and $form->copyButton and ( !isset( $object->options['disableCopy'] ) or !$object->options['disableCopy'] )}}
+		<a href="#" data-baseLink="{$form->copyButton->setQueryString( array( 'key' => $object->name ) )}" data-controller="core.admin.core.nodeCopySetting" data-field="{$object->name}" class='ipsJS_show ipsButton ipsButton--tiny ipsButton--inherit ipsButton--icon i-opacity_4 i-hover-opacity_10 i-float_end cCopyNode' title='{lang="copy_value"}' data-ipsTooltip><i class="fa-solid fa-gear" aria-hidden="true"></i> <i class='fa-solid fa-caret-right' aria-hidden="true"></i></a>
+		{{endif}}
+		{$prefix|raw}
+		{$element|raw}
+		{$suffix|raw}
+		{$desc|raw}
+		{$warning|raw}
+		{{if $error}}
+			<div class='ipsFieldRow__warning'><i class='fa-solid fa-circle-exclamation' aria-hidden="true"></i> {lang="$error"}</div>
+		{{else}}
+			<div class='ipsFieldRow__warning'></div>
+		{{endif}}
+	</div>
+</li>

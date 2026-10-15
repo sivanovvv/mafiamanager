@@ -1,0 +1,10 @@
+<ips:template parameters="$advertisement, $layout='table', $isCarousel=false" />
+{{if $advertisement!==null}}
+
+	<section class="ipsWidget__content ipsWidget__content--tnemesitrevda i-text-align_center">	
+		{{foreach $advertisement as $ad}}
+			{$ad|raw}
+		{{endforeach}}
+	</section>
+
+{{endif}}

@@ -1,0 +1,43 @@
+<ips:template parameters="$item" />
+{{if $assignment = $item->assignment and !$assignment->closed}}
+    {{$assignedTo = $assignment->assignedTo();}}
+    {{if $item->isAssignedToMember()}}
+        <div class="ipsMessage ipsMessage--withButtons ipsMessage--assigned ipsMessage--general">
+			<i class="fa-regular fa-paper-plane ipsMessage__icon" aria-hidden="true"></i>
+			<div>
+				<div class='ipsMessage__title'>
+					{{if $assignedTo instanceof \IPS\Member\Team}}{lang="assigned_to_you_team" sprintf="$assignedTo->name"}{{else}}{lang="assigned_to_you"}{{endif}}
+				</div>
+			</div>
+			<ul class='ipsButtons'>
+				<li>
+					<a href='{url="app=cloud&module=assignments&controller=assignments&do=assign&assignment={$assignment->id}"}' class="ipsButton" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="reassign_item"}' title='{lang="reassign_item"}'><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> {lang="reassign_item"}</a>
+				</li>
+				{{if !$assignment->closed}}
+				<li>
+					<a href='{url="app=cloud&module=assignments&controller=assignments&do=unassign&id={$assignment->id}"}' class="ipsButton" data-ipsDialog data-ipsDialog-title='{lang="unassign"}' data-ipsDialog-size='narrow' title='{lang="unassign"}'><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="unassign"}</a>
+				</li>
+				{{endif}}
+			</ul>
+		</div>
+    {{elseif $item->canAssign()}}
+        <div class="ipsMessage ipsMessage--withButtons ipsMessage--warning">
+			<i class="fa-solid fa-paper-plane ipsMessage__icon" aria-hidden="true"></i>
+			<div>
+				<p class="ipsMessage__title">
+					{{if $assignedTo instanceof \IPS\Member\Team}}{lang="assigned_to_other_team" sprintf="$assignedTo->name"}{{else}}{lang="assigned_to_other" sprintf="$assignedTo->name"}{{endif}}
+				</p>
+			</div>
+			<ul class='ipsButtons'>
+				<li>
+					<a href='{url="app=cloud&module=assignments&controller=assignments&do=assign&assignment={$assignment->id}"}' class="ipsButton" data-ipsDialog data-ipsDialog-size='narrow' data-ipsDialog-title='{lang="reassign_item"}' title='{lang="reassign_item"}'><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> {lang="reassign_item"}</a>
+				</li>
+				{{if !$assignment->closed}}
+				<li>
+					<a href='{url="app=cloud&module=assignments&controller=assignments&do=unassign&id={$assignment->id}"}' data-ipsDialog data-ipsDialog-title='{lang="unassign"}' data-ipsDialog-size='narrow' class="ipsButton" title='{lang="unassign"}'><i class="fa-solid fa-xmark" aria-hidden="true"></i> {lang="unassign"}</a>
+				</li>
+				{{endif}}
+			</ul>
+		</div>
+    {{endif}}
+{{endif}}

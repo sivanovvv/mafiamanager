@@ -1,0 +1,106 @@
+.cStreamFilter {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(12em, 1fr));
+	gap: 1px;
+	border-bottom: 1px solid var(--i-background_4);
+	overflow: hidden; /* gap overflow */
+}
+
+	.cStreamFilter > li {
+		outline: 1px solid var(--i-background_3);
+	}
+		.cStreamFilter__toggle{
+			display: block;
+			width: 100%;
+			padding: 1.3em;
+			color: inherit;
+			outline-offset: -2px;
+			position: relative;
+		}
+
+			.cStreamFilter__toggle:hover{
+				background-color: color-mix(in srgb, var(--i-background_3) 50%, transparent);
+			}
+		
+			.cStreamFilter__toggle[aria-expanded="true"] {
+				background: var(--i-primary);
+				color: var(--i-primary-contrast);
+			}
+
+			.cStreamFilter__toggle .ipsMenuCaret{
+				position: absolute;
+				inset-inline-end: 1em;
+			}
+
+		.cStreamFilter__title {
+			display: block;
+			font-weight: 600;
+			font-size: 1.05em;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+	.cStreamFilter__blurb em {
+		opacity: 0.3;
+	}
+
+	.cStreamFilter__blurb {
+		display: block;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+/* If the filter form doesn't exist, hide the toggle button. We do this with JS too in ips.streams.main.js for older browsers, but the below prevents the button from flashing on page load */
+.ipsBox--activity-stream:not(:has(#elStreamFilterForm)) [aria-controls="elStreamFilterForm"]{
+	display: none;
+}
+
+/* FILTER FORM STYLES */
+.cStreamForm_list > li {
+	position: relative;
+}
+
+.cStreamForm_list .ipsSideMenu_item.cStream_withOptions {
+	margin-inline-end: 45px;
+}
+
+.cStreamForm_menu {
+	padding: .6em;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	inset-inline-end: 0;
+	border-radius: min(var(--i-design-radius), .45em);
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+	color: #fff;
+	background: hsl(0 0% 100% / .1);
+	/* Hide by default, only show when active */
+	visibility: hidden;
+}
+
+/* Hover */
+.cStreamForm_menu:hover{
+	background: hsl(0 0% 100% / .2);
+}
+
+/* Display cog icon when item is active */
+.ipsSideMenu_itemActive + .cStreamForm_menu {
+	visibility: visible;
+}
+
+.ipsSideMenu_itemActive + .cStreamForm_menu{
+	
+}
+
+.cStreamForm_list[data-filterType="type"] .ipsSideMenu_item .cStreamForm_menu + a {
+	margin-inline-end: 45px;
+}
+
+.cStreamForm_nodes {
+	display: block;
+	margin-inline-start: 2em;
+	border-inline-start: 2px solid var(--i-background_3);
+}

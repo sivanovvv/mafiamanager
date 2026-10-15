@@ -1,0 +1,153 @@
+<ips:template parameters="$name, $value, $timeZones, $error=''" />
+
+<div data-controller='calendar.front.submit.dates' id='eventDateSelection'>
+	{{if $error}}
+		<div class="ipsMessage ipsMessage--error">{lang="$error"}</div>
+	{{endif}}
+	<ul class='i-basis_100p i-padding_3 ipsList ipsList--inline i-align-items_center'>
+		<li>
+			<label class="i-flex i-align-items_center i-gap_1">
+				<input type="checkbox" role="checkbox" name="event_dates[single_day]" {{if isset($value['single_day']) AND $value['single_day']}}checked{{endif}} value="1" id="check_single_day" class="ipsInput ipsInput--toggle">
+				{lang="event_single_day"}
+			</label>
+		</li>
+		<li>
+			<label class="i-flex i-align-items_center i-gap_1">
+				<input type="checkbox" role="checkbox" name="event_dates[all_day]" {{if isset($value['all_day']) AND $value['all_day']}}checked{{endif}} value="1" id="check_all_day" class="ipsInput ipsInput--toggle">
+				{lang="event_all_day"}
+			</label>
+		</li>
+		<li class='i-color_soft i-link-color_inherit' id='elTimezone'>
+			<button type="button" id="elTimezoneSelector" class='ipsButton ipsButton--text' popovertarget="elTimezoneSelector_menu">
+				<i class='fa-solid fa-earth-americas i-margin-end_icon' aria-hidden="true"></i> {lang="event_timezone"}: <span class="i-color_hard i-font-weight_500" data-role="timezone_display"></span> <i class='fa-solid fa-angle-down' aria-hidden="true"></i>
+			</button>
+			<i-dropdown id="elTimezoneSelector_menu" popover>
+				<div class="iDropdown">
+					<div class='ipsForm'>
+						<div class="ipsFieldRow">
+							<select class="ipsInput ipsInput--select" name="event_dates[event_timezone]" id="event_timezone">
+								{{foreach $timeZones as $k => $v}}
+									<option value='{$k}' {{if $value['event_timezone'] == $k}}selected{{endif}} data-abbreviated="{$k}">{$k}</option>
+								{{endforeach}}
+							</select>
+						</div>
+						<div class='ipsSubmitRow'>
+							<button class='ipsButton ipsButton--primary' data-action="updateTimezone" type="button" popovertarget="elTimezoneSelector_menu">{lang="change"}</button>
+						</div>
+					</div>
+				</div>
+			</i-dropdown>
+		</li>
+	</ul>
+	<div class='ipsFluid i-basis_340 i-gap_lines i-border-bottom_3 i-border-top_3'>
+		<div class='i-padding_3 i-background_2' id='elDateGrid_start'>
+			<div class='i-flex i-flex-wrap_wrap i-align-items_center i-gap_1'>
+				<label class='i-flex_11'>
+					<div class="i-color_hard i-font-weight_600 i-font-size_3 i-margin-bottom_2"><i class="fa-regular fa-calendar i-color_soft i-margin-end_icon i-opacity_5" aria-hidden="true"></i> {lang="submit_event_start_date"}</div>
+					<input type="date" data-summaryControl name="event_dates[start_date]" value="{{if $value['start_date'] instanceof \IPS\DateTime}}{$value['start_date']->format('Y-m-d')}{{else}}{$value['start_date']}{{endif}}" required class="ipsInput ipsInput--text" data-control="date" id='event_start_date' placeholder='{expression="str_replace( array( 'YYYY', 'MM', 'DD' ), array( \IPS\Member::loggedIn()->language()->addToStack('_date_format_yyyy'), \IPS\Member::loggedIn()->language()->addToStack('_date_format_mm'), \IPS\Member::loggedIn()->language()->addToStack('_date_format_dd') ), str_replace( 'Y', 'YY', \IPS\Member::loggedIn()->language()->preferredDateFormat() ) )"}'>
+				</label>
+				<label class='i-flex_11' id='start_time_wrap'>
+					<div class="i-color_hard i-font-weight_600 i-font-size_3 i-margin-bottom_2"><i class="fa-regular fa-clock i-color_soft i-margin-end_icon i-opacity_5" aria-hidden="true"></i> {lang="submit_event_start_time"}</div>
+					<input name="event_dates[start_time]" id="start_time" type="time" size='12' class="ipsInput ipsInput--text" placeholder="{lang="_time_format_hhmm"}" step='60' min='00:00' value="{$value['start_time']}">
+				</label>
+			</div>
+		</div>
+		<div class='i-padding_3 i-background_2' id='elDateGrid_end'>
+			<div class='i-flex i-flex-wrap_wrap i-align-items_center i-gap_1'>
+				<label class='i-flex_11' id='event_end_date_wrap'>
+					<div class="i-color_hard i-font-weight_600 i-font-size_3 i-margin-bottom_2"><i class="fa-regular fa-calendar i-color_soft i-margin-end_icon i-opacity_5" aria-hidden="true"></i> {lang="submit_event_end_date"}</div>
+					<input type="date" name="event_dates[end_date]" value="{{if $value['end_date'] instanceof \IPS\DateTime}}{$value['end_date']->format('Y-m-d')}{{else}}{$value['end_date']}{{endif}}" class="ipsInput ipsInput--text" data-control="date" id="event_end_date" placeholder='{expression="mb_strtoupper( str_replace( 'Y', 'YY', \IPS\Member::loggedIn()->language()->preferredDateFormat() ) )"}'>
+				</label>
+				<label class='i-flex_11' id='end_time_wrap'>
+					<div class="i-color_hard i-font-weight_600 i-font-size_3 i-margin-bottom_2"><i class="fa-regular fa-clock i-color_soft i-margin-end_icon i-opacity_5" aria-hidden="true"></i> {lang="submit_event_end_time"}</div>
+					<input name="event_dates[end_time]" id="end_time" type="time" size='12' class="ipsInput ipsInput--text" placeholder="{lang="_time_format_hhmm"}" step='60' min='00:00' value="{{if isset( $value['end_time'] )}}{$value['end_time']}{{endif}}">
+				</label>
+			</div>
+			<div id='end_date_controls'>
+				<label class="i-margin-top_2 i-flex i-align-items_center i-gap_1">
+					<input type="checkbox" role="checkbox" name="event_dates[no_end_time]" {{if !isset( $value['end_time'] ) OR !$value['end_time']}}checked{{endif}} value="1" id="check_no_end_time" class="ipsInput ipsInput--toggle">
+					{lang="no_end_time"}
+				</label>
+			</div>
+		</div>
+		{{if isset( $value['allow_recurring'] ) and $value['allow_recurring']}}
+		<div class='i-padding_3 i-background_2'>
+			<strong class='i-color_hard i-font-weight_600 i-font-size_3 i-margin-bottom_2 i-display_block'><i class="fa-solid fa-clipboard-list i-color_soft i-margin-end_icon i-opacity_5" aria-hidden="true"></i> {lang="submit_event_summary"}</strong>
+			<p><span data-role='dateSummary'></span></p>
+			<p id='elRepeatRow_hidden' class="i-margin-top_1">
+				<label class="i-flex i-align-items_center i-gap_1">
+					<input type='checkbox' role='checkbox' name='event_dates[event_repeat]' value='1' id="elRepeatCb" {{if isset($value['event_repeat']) AND $value['event_repeat']}}checked{{endif}} class="ipsInput ipsInput--toggle">
+					{lang="submit_event_repeats_check"}
+				</label>
+			</p>
+			<div id='elRepeatRow_shown' class='i-margin-top_1 ipsJS_hide'>
+				<span class='i-color_soft'>{lang="submit_event_repeats"}</span>
+				<button type="button" id="elRecurEdit" popovertarget="elRecurEdit_menu" class='i-cursor_pointer i-color_hard i-font-weight_600'><span data-role='recurringSummary'></span> <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<label for="elRepeatCb" id='elRecurRemove' class='i-margin-start_2 i-font-size_-2 i-cursor_pointer'>({lang="submit_event_remove_repeat"})</label>
+				<i-dropdown id="elRecurEdit_menu" popover>
+					<div class="iDropdown">
+						<ul class="ipsForm">
+							<li class='ipsFieldRow'>
+								<label class='ipsFieldRow__label' for=''>{lang="event_rpm_repeats"}</label>
+								<div class='ipsFieldRow__content'>
+									{template="select" group="forms" app="core" location="front" params="'event_dates[event_repeats]', $value['event_repeats'], FALSE, array( 'daily' => \IPS\Member::loggedIn()->language()->addToStack('event_rpm_repeats_daily'), 'weekly' => \IPS\Member::loggedIn()->language()->addToStack('event_rpm_repeats_weekly'), 'monthly' => \IPS\Member::loggedIn()->language()->addToStack('event_rpm_repeats_monthly'), 'yearly' => \IPS\Member::loggedIn()->language()->addToStack('event_rpm_repeats_yearly') ), FALSE, '', FALSE, array( 'daily' => array( 'repeatFreqPer_day' ), 'weekly' => array( 'elRepeatOn', 'repeatFreqPer_week' ), 'monthly' => array( 'repeatFreqPer_month' ), 'yearly' => array( 'repeatFreqPer_year' ) ), 'event_repeats'"}
+								</div>
+							</li>
+							<li class='ipsFieldRow'>
+								<label class='ipsFieldRow__label' for=''>{lang="event_rpm_repeatevery"}</label>
+								<div class='ipsFieldRow__content'>
+									{template="select" group="forms" app="core" location="front" params="'event_dates[event_repeat_freq]', $value['event_repeat_freq'], FALSE, array_combine( range( 1, 30 ), range( 1, 30 ) ), FALSE, '', FALSE, array(), 'event_repeat_freq'"}
+									<span id='repeatFreqPer_day' {{if $value['event_repeats'] and $value['event_repeats'] != 'daily'}}hidden{{endif}}>{lang="event_rpm_repeatevery_day"}</span>
+									<span id='repeatFreqPer_week' {{if $value['event_repeats'] != 'weekly'}}hidden{{endif}}>{lang="event_rpm_repeatevery_week"}</span>
+									<span id='repeatFreqPer_month' {{if $value['event_repeats'] != 'monthly'}}hidden{{endif}}>{lang="event_rpm_repeatevery_month"}</span>
+									<span id='repeatFreqPer_year' {{if $value['event_repeats'] != 'yearly'}}hidden{{endif}}>{lang="event_rpm_repeatevery_year"}</span>
+								</div>
+							</li>
+							<li class='ipsFieldRow' id='elRepeatOn'>
+								<label class='ipsFieldRow__label'>{lang="event_rpm_repeaton"}</label>
+								<ul class='ipsFieldRow__content ipsFieldRow__content--checkboxes'>
+									{{foreach \IPS\calendar\Date::getDayNames() as $day }}
+										<li>
+											<input type="checkbox" role="checkbox" name="event_dates[repeat_freq_on_{$day['ical']}]" value="1" id="check_repeat_freq_on_{$day['ical']}" data-iCal='{$day['ical']}' {{if ( isset( $value['repeat_freq_on_' . $day['ical'] ] ) AND $value['repeat_freq_on_' . $day['ical'] ] )}}checked{{endif}} class="ipsInput ipsInput--toggle">
+											<label for="check_repeat_freq_on_{$day['ical']}">{$day['abbreviated']}</label>
+										</li>
+									{{endforeach}}
+								</ul>
+							</li>
+							<li class='ipsFieldRow'>
+								<label class='ipsFieldRow__label' for=''>{lang="event_rpm_ends"}</label>
+								<ul class='ipsFieldRow__content ipsFieldList'>
+									<li>
+										<input type='radio' name='event_dates[repeat_end]' id='event_repeat_end_never' value='never'{{if !$value['repeat_end_occurrences'] AND !$value['repeat_end_date']}} checked{{endif}} class="ipsInput ipsInput--toggle">
+										<div class='ipsFieldList__content'>
+											<label for="event_repeat_end_never">{lang="event_rpm_ends_never"}</label>
+										</div>
+									</li>
+									<li>
+										<input type='radio' name='event_dates[repeat_end]' id='event_repeat_end_afterx' value='after'{{if $value['repeat_end_occurrences']}} checked{{endif}} class="ipsInput ipsInput--toggle">
+										<div class='ipsFieldList__content'>
+											<label for="event_repeat_end_afterx">{lang="event_rpm_ends_afterx"}</label> <input type='number' name='event_dates[repeat_end_occurrences]' class='ipsInput ipsInput--text cCalendar_shortInput' size='4' min='1' value='{$value['repeat_end_occurrences']}'> {lang="event_rpm_ends_occurrencesx"}
+										</div>
+									</li>
+									<li>
+										<input type='radio' name='event_dates[repeat_end]' id='event_repeat_end_ondate' value='date'{{if $value['repeat_end_date']}} checked{{endif}} class="ipsInput ipsInput--toggle">
+										<div class='ipsFieldList__content'>
+											<label for="event_repeat_end_ondate">{lang="event_rpm_ends_date"}</label> <input type='date' name='event_dates[repeat_end_date]' class='ipsInput ipsInput--text cCalendar_shortInput' size='10' value='{{if $value['repeat_end_date'] instanceof \IPS\calendar\Date}}{$value['repeat_end_date']->mysqlDatetime( FALSE )}{{else}}{$value['repeat_end_date']}{{endif}}'>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<li class='ipsSubmitRow'>
+								<button type='button' class='ipsButton ipsButton--primary' data-action="updateRepeat" popovertarget="elRecurEdit_menu">{lang="ok"}</button>
+							</li>
+						</ul>
+					</div>
+				</i-dropdown>
+			</div>
+		</div>
+		{{else}}
+		<input type='hidden' name='event_dates[event_repeat]' value='0'>
+		<input type='hidden' name='event_dates[repeat_end]' value='never'>
+		{{endif}}
+	</div>
+</div>

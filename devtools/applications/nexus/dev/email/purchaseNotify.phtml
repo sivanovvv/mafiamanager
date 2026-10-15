@@ -1,0 +1,36 @@
+<ips:template parameters="$purchase, $invoice, $email" />
+{$email->language->addToStack("email_purchase_notify", FALSE, array( 'sprintf' => array( $purchase->member->acpUrl(), $purchase->member->cm_name, $purchase->acpUrl(), $purchase->name ) ) )}
+<br><br>
+<em class="color_soft" style="color:#4b4b4b;">&mdash; {setting="board_name"}</em>
+<br><br>
+<table cellpadding="10" cellspacing="0" border="0" width="100%" bgcolor="#f9f9f9" class="background_2">
+	<tr>
+		<td dir='{dir}' colspan="2" style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 15px; line-height: 21px" bgcolor="#f0f0f0" class="background_3">
+			<strong>{$email->language->addToStack("email_purchase_information", FALSE)}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' width='200' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px; line-height: 21px" align='right'>
+			<strong>{$email->language->addToStack("email_invoice_number", FALSE)}</strong>
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px; line-height: 21px" align="left">
+			{$invoice->id}
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' width='200' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px; line-height: 21px" align='right'>
+			<strong>{$email->language->addToStack("email_purchase_date", FALSE)}</strong>
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px; line-height: 21px" align="left">
+			{$invoice->date->localeDate( $email->language )}
+		</td>
+	</tr>
+	<tr>
+		<td dir='{dir}' width='200' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px; line-height: 21px" align='right'>
+			<strong>{$email->language->addToStack("email_order_total", FALSE)}</strong>
+		</td>
+		<td dir='{dir}' style="font-family: system-ui, 'Helvetica Neue', helvetica, sans-serif; font-size: 14px; line-height: 21px" align="left">
+			{$invoice->total->toString( $email->language )}
+		</td>
+	</tr>
+</table>

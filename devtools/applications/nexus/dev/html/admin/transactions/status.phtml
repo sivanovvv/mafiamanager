@@ -1,0 +1,4 @@
+<ips:template parameters="$status" />
+<span class="ipsBadge {{if $status == \IPS\nexus\Transaction::STATUS_PAID}}ipsBadge--positive{{elseif $status == \IPS\nexus\Transaction::STATUS_HELD}}ipsBadge--pending{{elseif $status == \IPS\nexus\Transaction::STATUS_REVIEW or $status == \IPS\nexus\Transaction::STATUS_DISPUTED}}ipsBadge--warning{{elseif $status == \IPS\nexus\Transaction::STATUS_REFUSED}}ipsBadge--negative{{elseif $status == \IPS\nexus\Transaction::STATUS_REFUNDED or $status == \IPS\nexus\Transaction::STATUS_PART_REFUNDED}}ipsBadge--neutral{{else}}ipsBadge--intermediary{{endif}}">
+	{lang="tstatus_{$status}"}
+</span>

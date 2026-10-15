@@ -1,0 +1,29 @@
+<ips:template parameters="$item, $container, $type='comment'" />
+
+{{$method = $type . 'MultimodActions';}}
+{{if $actions = $item->$method() and \count( $actions )}}
+	<div class="ipsButtonBar__mod">
+		<ul class="ipsDataFilters">
+			<li>
+				<button type="button" id="elCheck" popovertarget="elCheck_menu" class="ipsJS_show ipsDataFilters__button" data-ipstooltip='{lang="select_rows_tooltip"}' data-ipsAutoCheck data-ipsAutoCheck-context="{$container}">
+					<span class="ipsInvisible">{lang="select_rows_tooltip"}</span>
+					<span class="cAutoCheckIcon"><i class="fa-regular fa-square" aria-hidden="true"></i></span><i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+					<span class='ipsNotification' data-role='autoCheckCount'>0</span>
+				</button>
+			</li>
+		</ul>
+		<i-dropdown popover id="elCheck_menu">
+			<div class="iDropdown">
+				<ul class="iDropdown__items">
+					<li class="iDropdown__title">{lang="select_rows"}</li>
+					<li><button type="button" data-ipsMenuValue="all">{lang="all"}</button></li>
+					<li><button type="button" data-ipsMenuValue="none">{lang="none"}</button></li>
+					<li><hr></li>
+					<li><button type="button" data-ipsMenuValue="hidden">{lang="hidden"}</button></li>
+					<li><button type="button" data-ipsMenuValue="unhidden">{lang="unhidden"}</button></li>
+					<li><button type="button" data-ipsMenuValue="unapproved">{lang="unapproved"}</button></li>
+				</ul>
+			</div>
+		</i-dropdown>
+	</div>
+{{endif}}

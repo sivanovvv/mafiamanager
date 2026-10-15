@@ -1,0 +1,60 @@
+<ips:template parameters="$entry, $table, $first = FALSE" />
+
+<article class='cBlogView_entry i-border-bottom_3 {{if $entry->hidden()}}ipsModerated{{endif}} {$entry->ui( 'css' )}' data-controller="core.front.core.lightboxedImages" {$entry->ui( 'dataAttributes' )}>
+	<header class='i-background_2 i-border-bottom_3 i-padding_2' data-ips-hook='header'>
+		<div class="ipsPhotoPanel">
+			{template="userPhoto" app="core" params="$entry->author()" group="global"}
+			<div>
+				<h2 class='ipsTitle ipsTitle--h4' data-ips-hook='title'>
+					{$entry->caption}
+					{{if $entry->prefix()}}
+						{template="prefix" group="global" app="core" params="$entry->prefix( TRUE ), $entry->prefix()"}
+					{{endif}}
+					<a href="{$entry->url( "getPrefComment" )}" class='i-color_inherit' title="{lang="read_more_about" sprintf="$entry->name"} {{if $entry->canEdit()}}{lang="click_hold_edit"}{{endif}}" {{if $entry->canEdit()}}data-role="editableTitle"{{endif}}>
+						{{if $entry->unread()}}
+							<span class='ipsIndicator' data-ipsTooltip="{lang="unread_blog"}"><span class="ipsInvisible">{lang="unread_blog"}</span></span>
+						{{endif}}
+						{{if $entry->canEdit()}}<span data-role="editableTitle">{$entry->name}</span>{{else}}{$entry->name}{{endif}}
+					</a>
+					<div class="ipsBadges" data-ips-hook='badges'>{{foreach $entry->badges() as $badge}}{$badge|raw}{{endforeach}}</div>
+				</h2>
+				<ul class='ipsList ipsList--sep i-color_soft i-link-color_inherit' data-ips-hook='metadata'>
+					<li>{lang="byline" htmlsprintf="$entry->author()->link()"}</li>
+					<li>{datetime="$entry->date"}</li>
+					{{if $entry->category_id}}
+						<li><span class="i-font-weight_500">{$entry->category()->link()|raw}</span></li>
+					{{endif}}
+				</ul>
+			</div>
+		</div>
+	</header>
+	<div class="i-padding_2">
+		<section class='ipsRichText ipsTruncate_x' style='--line-clamp: {{if $first}}20{{else}}7{{endif}}'>
+			{$entry->content()|raw}
+		</section>
+		{{if \count( $entry->tags() )}}
+			<div class='i-margin-top_2'>		
+				{template="tags" group="global" app="core" params="$entry->tags()"}
+			</div>
+		{{endif}}
+		<div class="i-flex i-flex-wrap_wrap i-align-items_center i-gap_2 i-margin-top_3">
+			<div>
+				<strong><a href='{$entry->url( "getPrefComment" )}' title="{lang="read_more_about" sprintf="$entry->name"}">{lang="read_more"}</a></strong>
+			</div>
+			<ul class='i-margin-start_auto ipsList ipsList--inline i-gap_3 i-row-gap_1' data-ips-hook='stats'>
+				<li class="i-margin-end_auto"></li>
+				{{if \IPS\Settings::i()->blog_enable_rating}}
+					<li>{template="rating" app="core" params="'small', $entry->averageRating(), 5, $entry->memberRating()" group="global"}</li>
+				{{endif}}
+				<li class='i-color_soft'>{lang="num_views_with_number" pluralize="$entry->views"}</li>
+				<li><a href='{$entry->url()}#comments' title='{lang="view_comments"}' class='i-color_hard i-font-weight_500'>{lang="num_comments" pluralize="$entry->num_comments"}</a></li>
+				{{if $table->canModerate()}}
+					<li>
+						{{$idField = $entry::$databaseColumnId;}}
+						<input class="ipsInput" type='checkbox' data-role='moderation' name="moderate[{$entry->$idField}]" data-actions="{expression="implode( ' ', $table->multimodActions( $entry ) )"}" data-state='{{if $entry->tableStates()}}{$entry->tableStates()}{{endif}}'>
+					</li>
+				{{endif}}
+			</ul>
+		</div>
+	</div>	
+</article>

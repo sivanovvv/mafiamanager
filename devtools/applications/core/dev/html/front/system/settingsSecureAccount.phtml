@@ -1,0 +1,79 @@
+<ips:template parameters="$canChangePassword, $canConfigureMfa, $hasConfiguredMfa, $loginMethods, $oauthApps=0" />
+{template="pageHeader" group="global" params="\IPS\Member::loggedIn()->language()->addToStack('secure_account'), \IPS\Member::loggedIn()->language()->addToStack('secure_account_blurb')"}
+{{if $canChangePassword}}
+	<div class="ipsBox ipsBox--changePassword i-margin-bottom_3">
+		<h2 class="ipsBox__header">{lang="change_password"}</h2>
+		<div class="i-padding_3">
+			<p>
+				{lang="secure_account_change_password"}
+			</p>
+		</div>
+		<div class="ipsSubmitRow">
+			<a href="{url="app=core&module=system&controller=settings&area=password" seoTemplate="settings_password"}" target="_blank" rel="noopener" class="ipsButton ipsButton--primary">{lang="change_password"}</a>
+		</div>
+	</div>
+{{endif}}
+{{if $canConfigureMfa}}
+	<div class="ipsBox ipsBox--canConfigureMfa i-margin-bottom_3">
+		<h2 class="ipsBox__header">{lang="mfa_settings_title"}</h2>
+		<div class="i-padding_3">
+			<p>
+				{{if $hasConfiguredMfa}}
+					{lang="secure_account_mfa_revise"}
+				{{else}}
+					{lang="secure_account_mfa_setup"}
+				{{endif}}
+			</p>
+		</div>
+		<div class="ipsSubmitRow">
+			<a href="{url="app=core&module=system&controller=settings&area=mfa" seoTemplate="settings_mfa"}" target="_blank" rel="noopener" class="ipsButton ipsButton--primary">{lang="mfa_settings_title"}</a>
+		</div>
+	</div>
+{{endif}}
+{{if \count( $loginMethods )}}
+	<div class="ipsBox ipsBox--secureAccount i-margin-bottom_3">
+		<h2 class="ipsBox__header">{lang="secure_account_login_title"}</h2>
+		<div class="i-padding_3">
+			<p class="i-margin-bottom_3">
+				{lang="secure_account_login_info"}
+			</p>
+			<i-data>
+				<ul class="ipsData ipsData--table ipsData--settings-secure">
+					{{foreach $loginMethods as $id => $details}}
+						<li class='ipsData__item'>
+							<div class="ipsData__icon">
+								<div class="ipsUserPhoto ipsUserPhoto--mini">
+									{{if isset( $details['icon'] )}}
+										<img src="{$details['icon']}" alt="" loading="lazy">
+									{{else}}
+										<img src="{resource="default_photo.png" app="core" location="global"}" alt="" loading="lazy">
+									{{endif}}
+								</div>
+							</div>
+							<div class='ipsData__main'>
+								<h4 class='ipsData__title'>{$details['title']}</h4>
+								<div class='ipsData__desc'>{$details['blurb']}</div>
+								<div>
+									<a href="{url="app=core&module=system&controller=settings&area=login&service={$id}" seoTemplate="settings_login"}" class="ipsButton ipsButton--primary">{lang="profilesync_configure"}</a>
+								</div>
+							</div>
+						</li>
+					{{endforeach}}
+				</ul>
+			</i-data>
+		</div>
+	</div>
+{{endif}}
+{{if $oauthApps}}
+	<div class="ipsBox ipsBox--oauthApps i-margin-bottom_3">
+		<h2 class="ipsBox__header">{lang="oauth_apps"}</h2>
+		<div class="i-padding_3">
+			<p>
+				{lang="secure_account_apps" pluralize="$oauthApps"}
+			</p>
+		</div>
+		<div class="ipsSubmitRow">
+			<a href="{url="app=core&module=system&controller=settings&area=apps" seoTemplate="settings_apps"}" target="_blank" rel="noopener" class="ipsButton ipsButton--primary">{lang="review_oauth_apps"}</a>
+		</div>
+	</div>
+{{endif}}

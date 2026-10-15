@@ -1,0 +1,18 @@
+<ips:template parameters="$time, $image, $html, $view = 'expanded'" />
+<li class='ipsStreamItem ipsStreamItem_{$view} ipsStreamItem_actionBlock' data-role="activityItem" data-timestamp='{$time->getTimestamp()}'>
+	<div class='ipsStreamItem__iconCell'>
+		{{if isset( $image )}}
+			{$image|raw}
+		{{else}}
+			<span></span>
+		{{endif}}
+	</div>
+	<div class='ipsStreamItem__mainCell'>
+		<div class='ipsStreamItem__header'>
+			{$html|raw}
+		</div>
+		<ul class='ipsStreamItem__stats'>
+			<li><i class="fa-regular fa-clock" aria-hidden="true"></i> {datetime="$time"}</li>
+		</ul>
+	</div>
+</li>

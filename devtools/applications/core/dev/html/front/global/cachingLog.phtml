@@ -1,0 +1,35 @@
+<ips:template parameters="$cacheLog" />
+<div id="elCachingLog">
+    {{foreach $cacheLog as $i => $log}}
+		{{$i = \str_replace( '.', '_', $i);}}
+		<div class="cCachingLog" data-ipsDialog data-ipsDialog-content="#elCachingLog{$i}_menu">
+			{{if $log[0] === 'get'}}
+				<span class="cCachingLogMethod cCachingLogMethod_get">get</span>
+				<span class="cCachingLogKey">{$log[1]}</span>
+			{{elseif $log[0] === 'set'}}
+				<span class="cCachingLogMethod cCachingLogMethod_set">set</span>
+				<span class="cCachingLogKey">{$log[1]}</span>
+			{{elseif $log[0] === 'check'}}
+				<span class="cCachingLogMethod cCachingLogMethod_check">check</span>
+				<span class="cCachingLogKey">{$log[1]}</span>
+			{{elseif $log[0] === 'delete'}}
+				<span class="cCachingLogMethod cCachingLogMethod_delete">delete</span>
+				<span class="cCachingLogKey">{$log[1]}</span>
+			{{else}}
+                {{if count( array_keys( $cacheLog, $log ) ) > 1}}
+                    <i class="fa fa-exclamation-triangle cCachingLogMethod_delete" title="Possible Duplicate" aria-hidden="true"></i>
+                {{endif}}
+				<span class="cCachingLogMethod">Redis</span>
+				<span class="cCachingLogKey">{$log[1]}</span>
+			{{endif}}
+		</div>
+		<div id='elCachingLog{$i}_menu' class='i-padding_3 ipsHide'>
+			{{if ! empty( $log[2] )}}
+				<pre class="prettyprint lang-php">{$log[2]}</pre>
+				<hr class="ipsHr">
+			{{endif}}
+			{{if isset( $log[3] )}}<pre class="prettyprint lang-php">{$log[3]}</pre>{{endif}}
+		</div>
+		<hr class="ipsHr">
+	{{endforeach}}
+</div>

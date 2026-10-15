@@ -1,0 +1,29 @@
+<ips:template parameters="$select, $pagination, $members, $total" />
+
+<div class="ipsBox">
+	{{if trim( $pagination )}}
+		{$pagination|raw}
+	{{endif}}
+	<table class="ipsTable ipsTable_zebra">
+		<thead>
+			<tr>
+				<th width="60"></th>
+				<th>{lang="member"}</th>
+				<th>{lang="count"}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{foreach $select as $row}}
+				{{$member = \IPS\Member::constructFromData( $members[ $row['member_id'] ] );}}
+				<tr>
+					<td>{template="userPhoto" app="core" group="global" params="$member"}</td>
+					<td>{$member->name}</td>
+					<td>{$row['count']}</td>
+				</tr>
+			{{endforeach}}
+		</tbody>
+	</table>
+	{{if trim( $pagination )}}
+		{$pagination|raw}
+	{{endif}}
+</div>

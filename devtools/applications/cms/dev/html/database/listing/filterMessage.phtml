@@ -1,0 +1,10 @@
+<ips:template parameters="$activeFilters, $category" />
+<div class='ipsMessage ipsMessage--info'>
+	<div class='i-flex i-flex-wrap_wrap-reverse i-gap_2 i-align-items_center'>
+		<span>{lang="cms_database_filtered_by"}</span>
+		<a href='{$category->url()->csrf()->setQueryString( array( "do" => "clearFilters", 'd' => \IPS\cms\Databases\Dispatcher::i()->databaseId ) )}' class='ipsButton ipsButton--soft ipsButton--small'>{lang="cms_database_filtered_clear"}</a>
+	</div>
+	{{foreach $activeFilters as $id => $data}}
+		{$data['field']->_title} ({$data['value']|raw})
+	{{endforeach}}
+</div>

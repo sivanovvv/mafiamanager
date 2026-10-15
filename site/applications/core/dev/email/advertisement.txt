@@ -1,0 +1,2 @@
+<ips:template parameters="$advertisement, $email" />
+{$advertisement->image_alt}

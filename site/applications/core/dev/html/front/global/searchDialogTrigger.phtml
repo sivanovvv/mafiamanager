@@ -1,0 +1,7 @@
+<ips:template parameters="" />
+{{if ( \IPS\Settings::i()->site_online || \IPS\Member::loggedIn()->group['g_access_offline'] ) and \IPS\Member::loggedIn()->canAccessModule( \IPS\Application\Module::get( 'core', 'search' ) )}}
+	<button class='ipsSearchPseudo' command="show-modal" commandfor="ipsSearchDialog" type="button">
+		<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+		<span>{lang="search_trigger"}</span>
+	</button>
+{{endif}}

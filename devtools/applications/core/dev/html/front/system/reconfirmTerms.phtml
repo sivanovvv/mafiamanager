@@ -1,0 +1,57 @@
+<ips:template parameters="$terms, $privacy, $form, $subprocessors" />
+
+<div class="ipsBox ipsBox--reconfirm">
+	<div class="ipsBox__padding">
+
+		{{if member.joined->getTimestamp() < ( time() - 60 )}}
+			<div class="ipsMessage ipsMessage--general i-margin-bottom_3">
+				{{if $terms and $privacy}}
+					{lang="reconfirm_terms_and_policy_blurb"}
+				{{elseif $terms}}
+					{lang="reconfirm_terms_blurb"}
+				{{else}}
+					{lang="reconfirm_privacy_blurb"}
+				{{endif}}
+			</div>
+		{{endif}}
+
+		{{if $terms}}
+			<div class="i-margin-bottom_3">
+				<h2 class="ipsTitle ipsTitle--h3">{lang="reg_terms"}</h2>
+				<div class='ipsRichText i-margin-top_2'>
+					{lang="reg_rules_value"}
+				</div>
+			</div>
+		{{endif}}
+		
+		{{if $privacy}}
+			<div class="i-margin-bottom_3">
+				<h2 class="ipsTitle ipsTitle--h3">{lang="privacy"}</h2>
+				<div class='ipsRichText i-margin-top_2'>
+					{{if \IPS\Settings::i()->privacy_type == 'external'}}
+						<a href='{setting="privacy_link"}' rel='external'>{lang="view_privacy_policy"}</a>
+					{{else}}
+						{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('privacy_text_value')"}
+					{{endif}}
+					{{if \IPS\Settings::i()->site_address and \IPS\Settings::i()->site_address != "null"}}
+						<p>{setting="board_name"}, {address="\IPS\Settings::i()->site_address"}</p>
+					{{endif}}
+					{{if $subprocessors and \count($subprocessors)}}
+					<div class='i-margin-top_3'>
+						<h3 class="ipsTitle ipsTitle--h3">{lang="pp_third_parties"}</h3>
+						<div class='ipsRichText'>
+							{{foreach $subprocessors as $processor}}
+								<h3>{$processor['title']}</h3>
+								<p>{$processor['description']}<br><a href="{$processor['privacyUrl']}">{lang="pp_privacy_policy"}</a></p>
+							{{endforeach}}
+						</div>
+					</div>
+					{{endif}}
+				</div>
+			</div>
+		{{endif}}
+	</div>
+	<div class="">
+		{$form|raw}
+	</div>
+</div>

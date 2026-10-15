@@ -1,0 +1,53 @@
+{
+    "html": {
+        "added": [],
+        "edited": [
+            "front\/forms\/row",
+            "front\/forms\/template",
+            "admin\/global\/globalTemplate",
+            "front\/global\/globalTemplate",
+            "front\/global\/mobileFooterBar",
+            "admin\/global\/mobileNavigation",
+            "front\/global\/userMenuAchievements",
+            "front\/profile\/profile",
+            "front\/promote\/promoteDialogImages",
+            "front\/search\/filters",
+            "front\/search\/resultStream",
+            "front\/streams\/filterInlineForm",
+            "front\/streams\/stream",
+            "front\/streams\/streamItems",
+            "front\/streams\/streamWrapper",
+            "admin\/support\/dashboard",
+            "front\/system\/notificationSettingsIndex",
+            "front\/system\/notificationSettingsIndexRowDetails",
+            "front\/system\/notificationSettingsType",
+            "front\/system\/searchResult",
+            "front\/system\/settingsDevices",
+            "front\/system\/settingsMfa",
+            "front\/system\/settingsPrivacy",
+            "front\/tags\/contentTableRows",
+            "front\/widgets\/formTemplate"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [
+            "front\/core.css",
+            "global\/framework\/1-4-colors.css",
+            "global\/framework\/1-5-global.css",
+            "global\/framework\/3-buttons.css",
+            "global\/framework\/3-dropdown.css",
+            "global\/framework\/3-inputs.css",
+            "global\/framework\/4-offcanvas.css",
+            "global\/framework\/4-search-dialog.css",
+            "front\/styles\/streams.css"
+        ],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

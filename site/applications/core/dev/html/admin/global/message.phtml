@@ -1,0 +1,22 @@
+<ips:template parameters="$message, $type, $debug=NULL, $parse=TRUE, $pad=FALSE" />
+{{if $pad}}<div class="i-padding_2">{{endif}}
+{{if $debug !== NULL}}
+	<div class="ipsMessage ipsMessage--{$type}">
+		{{if $parse}}
+			{lang="$message"}
+		{{else}}
+			{$message|raw}
+		{{endif}}
+		<br><br>
+		<pre>{$debug}</pre>
+	</div>
+{{else}}
+	<div class="ipsMessage ipsMessage--{$type}">
+		{{if $parse}}
+			{lang="$message"}
+		{{else}}
+			{$message|raw}
+		{{endif}}
+	</div>
+{{endif}}
+{{if $pad}}</div>{{endif}}

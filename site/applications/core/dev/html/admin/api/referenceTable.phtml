@@ -1,0 +1,40 @@
+<ips:template parameters="$rows" />
+<table class="ipsTable">
+	<tr>
+		<th>{lang="api_param_name"}</th>
+		<th>{lang="api_param_type"}</th>
+		<th>{lang="api_param_desc"}</th>
+	</tr>
+	{{foreach $rows as $column}}
+		<tr>
+			<td>
+				{{if isset( $column[4] )}}
+					{{if $column[4] === 'required'}}
+						<span class="ipsBadge ipsBadge--neutral">{lang="required"}</span>
+					{{elseif $column[4] === 'client'}}
+						<i class="fa-solid fa-key" title="{lang="api_response_client"}" data-ipsTooltip aria-hidden="true"></i>
+					{{elseif $column[4] === 'member'}}
+						<i class="fa-solid fa-user" title="{lang="api_response_member"}" data-ipsTooltip aria-hidden="true"></i>
+					{{endif}}
+				{{endif}}
+				<code>{$column[1]}</code>
+			</td>
+			<td>
+			    {{$nullable = mb_stripos( $column[0], '|null' ) !== false;}}
+			    {{$column[0] = str_ireplace( '|null', '', $column[0] );}}
+				{{if mb_strpos( $column[0], '|' ) !== FALSE OR \in_array( $column[0], array( 'array', 'int', 'string', 'float', 'datetime', 'bool', 'object' ) )}}
+					{$column[0]}{{if $nullable}}|null{{endif}}
+				{{elseif mb_substr( $column[0], 0, 1 ) == '['}}
+					{{if \in_array( mb_substr( $column[0], 1, -1 ), array( 'int', 'string', 'float', 'datetime', 'bool', 'object' ) )}}
+						{lang="api_array_of_scalar" sprintf="mb_substr( $column[0], 1, -1 )"}{{if $nullable}}|null{{endif}}
+					{{else}}
+						{lang="api_array_of"} <a href="#object-{expression="mb_strtolower( mb_substr( $column[0], mb_strrpos( $column[0], '\\' ) + 1, -1 ) )"}">{expression="mb_strtolower( mb_substr( $column[0], mb_strrpos( $column[0], '\\' ) + 1, -1 ) )"}</a> {lang="api_array_objects"}{{if $nullable}}|null{{endif}}
+					{{endif}}
+				{{else}}
+					<a href="#object-{expression="mb_strtolower( mb_substr( $column[0], mb_strrpos( $column[0], '\\' ) + 1 ) )"}">{expression="mb_strtolower( mb_substr( $column[0], mb_strrpos( $column[0], '\\' ) + 1 ) )"}</a> {lang="api_object"}{{if $nullable}}|null{{endif}}
+				{{endif}}
+			</td>
+			<td class='ipsTable_wrap'>{lang="$column[2]"}</td>
+		</tr>
+	{{endforeach}}
+</table>

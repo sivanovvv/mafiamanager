@@ -1,0 +1,6 @@
+<ips:template parameters="$member, $block" />
+<div data-controller="core.admin.members.lazyLoadingProfileBlock" data-url="{$member->acpUrl()->setQueryString( array( 'do' => 'lazyBlock', 'block' => $block ) )}">
+	<div class="i-margin-bottom_1 i-text-align_center">
+		<img src="{resource="tiny_loading.gif" app="core"}">
+	</div>
+</div>

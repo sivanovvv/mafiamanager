@@ -1,0 +1,23 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if \count( $rows )}}
+	{{foreach $rows as $row}}
+		<li class='ipsData__item'>		
+			<div class='ipsData__icon'>
+				{template="userPhoto" group="global" app="core" params="\IPS\Member::load( \IPS\Request::i()->id ), 'mini'"}
+			</div>
+			<div class='ipsData__main'>
+				<div class='ipsData__title'>
+					<span>
+						{lang="solution_headline" sprintf="\IPS\Member::load( \IPS\Request::i()->id )->name, $row->url(), \IPS\Member::loggedIn()->language()->addToStack( $row::$title . '_lc' ), $row->item()->url(), $row->item()->mapped('title')"}
+					</span>
+					<span class='i-color_soft'>&nbsp;&nbsp;{datetime="$row->solved_date"}</span>
+				</div>
+				{{if $result = $row->truncated()}}
+					<div class='ipsRichText ipsData__desc ipsTruncate_2'>
+						{$result|raw}
+					</div>
+				{{endif}}
+			</div>
+		</li>
+	{{endforeach}}
+{{endif}}

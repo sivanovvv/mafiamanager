@@ -1,0 +1,3 @@
+<ips:template parameters="$member, $types, $currentAppModule, $currentType, $table" />
+<h2 class='ipsBox__header'>{{if !$currentAppModule}}{lang="all_content_by_user" sprintf="$member->name"}{{else}}{lang="content_by_user" sprintf="\IPS\Member::loggedIn()->language()->addToStack( $types[ $currentAppModule ][ $currentType ]::$title . '_pl' ), $member->name"}{{endif}}</h2>
+{$table|raw}

@@ -1,0 +1,9 @@
+<ips:template parameters="$content, $daysToGo, $email" />
+{$email->language->addToStack("email_event_reminder_plain", FALSE, array( 'htmlsprintf' => array( $email->language->addToStack( "days_to_go", FALSE, array( 'pluralize' => array( $daysToGo ) ) ), $content->mapped('title') ) ) )}
+
+{$email->language->addToStack("email_event_reminder_when", FALSE, array( 'htmlsprintf' => array( $content->fixedDateTimeDescription( $email->language ) ) ) )}
+{{if $content->location}}{$email->language->addToStack("email_event_reminder_where", FALSE, array( 'htmlsprintf' => array( \IPS\GeoLocation::buildFromjson( $content->location )->toString() ) ) )}{{endif}}
+
+{$email->language->addToStack("go_to_this_x", FALSE, array( 'htmlsprintf' => array( mb_strtolower( $email->language->addToStack( $content::$title, FALSE ) ) ) ) )}: {$content->url()}
+
+-- {setting="board_name"}

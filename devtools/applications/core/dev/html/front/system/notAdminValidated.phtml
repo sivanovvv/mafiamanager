@@ -1,0 +1,15 @@
+<ips:template parameters="" />
+<section class='i-text-align_center ipsBox'>
+	<div class='i-padding_3'>
+		<i class='ipsLargeIcon fa-solid fa-lock' aria-hidden="true"></i>
+		<h1 class='ipsTitle ipsTitle--h2'>{lang="reg_admin_validation"}</h1>
+		<div class="ipsRichText i-font-size_2 i-margin-block_3">
+			<p>{lang="reg_admin_validation_desc" sprintf="\IPS\Member::loggedIn()->email"}</p>
+		</div>
+	</div>
+	<ul class='ipsSubmitRow ipsButtons'>
+		{{$guest = new \IPS\Member;}}
+		<li><a href='{url="app=core&module=system&controller=login&do=logout" csrf="true" seoTemplate="logout"}' class='ipsButton ipsButton--primary'>{{if $guest->group['g_view_board']}}{lang="reg_continue_as_guest"}{{else}}{lang="sign_out"}{{endif}}</a></li>
+		<li><a href='{url="app=core&module=system&controller=register&do=cancel" csrf="true" seoTemplate="register"}' class='ipsButton ipsButton--inherit' data-confirm data-confirmMessage='{lang="reg_cancel"}' data-confirmSubMessage='{lang="reg_cancel_confirm"}'>{lang="reg_cancel"}</a></li>
+	</ul>
+</section>

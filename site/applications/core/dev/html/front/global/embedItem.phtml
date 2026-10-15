@@ -1,0 +1,25 @@
+<ips:template parameters="$item, $url, $image=NULL" />
+
+<div class='ipsRichEmbed ipsRichEmbed--item'>
+	{template="embedHeader" group="embed" app="core" params="$item, $item->mapped('title'), $item->mapped('date'), $url"}
+	{{if $image}}
+		{{$useImage = $image;}}
+	{{elseif $contentImage = $item->contentImages(1)}}
+		{{$attachType = key( $contentImage[0] );}}
+		{{$useImage = \IPS\File::get( $attachType, $contentImage[0][ $attachType ] );}}
+	{{endif}}
+
+	{{if $useImage}}
+		<a href='{$url}' class='ipsRichEmbed_masthead'>
+			<img src='{$useImage->url}' alt='' loading="lazy">
+		</a>
+	{{endif}}
+	<div class='ipsRichEmbed__content'>
+		{{if $desc = $item->truncated(TRUE)}}
+			<div class='ipsRichEmbed__snippet'>
+				{$desc|raw}
+			</div>
+		{{endif}}
+		{template="embedItemStats" group="embed" app="core" params="$item"}
+	</div>
+</div>

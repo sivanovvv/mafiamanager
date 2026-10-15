@@ -1,0 +1,205 @@
+/* Tables; used primarily in AdminCP */
+.ipsTable {
+	width: 100%;
+    border-spacing: 0;
+	border-collapse: collapse;
+	background: var(--i-background_1);
+}
+
+.ipsTable th {
+	background-color: var(--i-background_3);
+	text-transform: uppercase;
+	font-size: .8em;
+	font-weight: 500;
+	text-align: start;
+	border-bottom: 1px solid var(--i-background_4);
+	padding: 12px 14px;
+}
+
+	.ipsTable th a {
+		color: inherit;
+	}
+
+.ipsTable td {
+	padding: 14px;
+	border-bottom: 1px solid var(--i-background_3);
+}
+
+.ipsTable_wrap{
+	max-width: 500px;
+}
+
+.ipsTable tr:last-child td {
+	border-width: 0;
+}
+
+/* Zebra */
+:where(.ipsTable_zebra tbody tr:nth-child(2n)){
+	background-color: var(--i-background_2);
+}
+
+.ipsTable tr[data-tableClickTarget]:hover {
+	background: var(--i-background_3);
+	cursor: pointer;
+}
+.ipsTable code {
+	cursor: text;
+}
+	
+.ipsTable_highlight {
+	background: var(--i-background_selected);
+}
+
+/* Column sizes */
+.ipsTable_icon {
+	width: 65px;
+	text-align: center;
+}
+
+	.ipsTable_icon .ipsUserPhoto{
+		width: 34px;
+	}
+
+.ipsTable_controls {
+	width: 120px;
+}
+
+/* Sortables */
+.ipsTable_sortable:hover {
+	background-color: var(--i-background_4);
+	cursor: pointer;
+}
+
+	.ipsTable_sortable a {
+		display: flex;
+		align-items: center;
+	}
+
+	.ipsTable_sortable__icon {
+		margin-inline-start: auto;
+		visibility: hidden;
+	}
+
+		.ipsTable_sortableDesc .ipsTable_sortable__icon::before {
+			content: '\f0d7';
+		}
+
+.ipsTable .ipsTable_sortableActive {
+	background: var(--i-background_5);
+}
+
+	:is(.ipsTable_sortable:hover, .ipsTable_sortableActive) .ipsTable_sortable__icon {
+		visibility: visible;
+	}
+
+/* Matrices (Forum permissions, etc) */
+.ipsMatrix th,
+.ipsMatrix td:not(.ipsMatrix_rowTitle) {
+	text-align: center;
+}
+
+.ipsMatrix td {
+	padding: 1em;
+}
+
+.ipsMatrix .ipsMatrix_error {
+	background: var(--i-background_moderated);
+}
+
+.ipsMatrix .ipsMatrix_highlighted {
+	background: var(--i-background_selected);
+}
+
+/* ACP: Commerce Product filters */
+.ipsFieldRow [data-ipsmatrix]{
+	display: contents;
+}
+
+/* Prevent enabled/disabled badges from wrapping. Eg, Advertisements page */
+.ipsTable .ipsBadge{
+	overflow-wrap: normal;
+}
+
+
+
+
+/* Convert columns into rows in certain tables, to prevent overflow on mobiles */
+@media (max-width: 979px){
+
+	.ipsTable--collapse{
+		display: grid;
+	}
+
+	/* Hide the head, since sorting options are already available via the "Sort" menu, and the header labels are inserted into each row via ::before */
+	.ipsTable--collapse thead{
+		display: none;
+	}
+
+	.ipsTable--collapse tr{
+		display: flex;
+		flex-wrap: wrap;
+		position: relative;
+		padding: 1em 0;
+	}
+
+	.ipsTable--collapse tr:has(.ipsTable_icon){
+		padding-inline-start: 65px;
+	}
+
+	.ipsTable--collapse td{
+		display: block;
+		align-content: center;
+		border-color: var(--i-background_4);
+		flex: 1 1 auto;
+		padding: 0.7em 1em;
+	}
+
+	.ipsTable--collapse .ipsTable_primary{
+		flex: 1 1 100%;
+		font-weight: 500;
+	}
+
+	.ipsTable--collapse td[data-title]::before{
+		content: attr(data-title);
+		color: var(--i-color_soft);
+		font-weight: 600;
+		text-transform: uppercase;
+		font-size: .8em;
+		display: block;
+	}
+
+	.ipsTable--collapse .ipsTable_icon{
+		position: absolute;
+		inset-inline-start: 0;
+		top: 1em;
+		border-width: 0;
+	}
+	.ipsTable--collapse .ipsTable_controls{
+		order: 10;
+		flex: 1 1 100%;
+		border-width: 0;
+	}
+
+	.ipsTable--collapse .ipsControlStrip{
+		flex-wrap: wrap;
+	}
+
+	.ipsTable--collapse .ipsControlStrip_button > :is(a, button){
+		padding: 0 .8em;
+	}
+
+	:where(.ipsTable--collapse .ipsControlStrip_button > :is(a, button):not(:hover)){
+		background: color-mix(in srgb, currentColor 10%, transparent);
+	}
+
+	.ipsTable--collapse .ipsControlStrip:not(.ipsControlStrip_showText) .ipsControlStrip_item{
+		clip-path: none;
+		height: auto;
+		width: auto;
+		position: static;
+		white-space: wrap;
+		margin: 0;
+		margin-inline-start: .4em;
+	}
+
+}

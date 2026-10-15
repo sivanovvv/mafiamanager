@@ -1,0 +1,44 @@
+<ips:template parameters="$table, $headers, $rows" />
+
+{{foreach $rows as $row}}
+	{{$loadedMember = \IPS\Member::load( $row->member_id );}}
+	<li class='ipsData__item' data-controller='core.front.system.manageFollowed' data-followID='{$row->_followData['follow_area']}-{$row->_followData['follow_rel_id']}'>
+		<div class='ipsData__icon'>
+			{template="userPhoto" group="global" app="core" params="$loadedMember, 'small'"}
+		</div>
+		<div class='ipsData__content'>
+			<div class='ipsData__main'>
+				<div class='ipsData__title'>
+					<h3>{$loadedMember->link( NULL, FALSE )|raw}</h3> {{if $loadedMember->isOnline()}}<i class="ipsOnline" data-ipsTooltip title='{lang="online_now" sprintf="$row->name"}' aria-hidden="true"></i>{{endif}}
+				</div>
+				<p class='ipsData__desc ipsData__desc--all'>
+					{expression="\IPS\Member\Group::load( $row->member_group_id )->formattedName" raw="true"}
+					{{if $loadedMember->last_activity}}
+						&middot; {lang="members_last_visit"}: {datetime="$loadedMember->last_activity"}
+					{{endif}}
+				</p>
+				<ul class="ipsList ipsList--inline i-row-gap_0 i-margin-top_1 i-font-weight_500">
+					<li title='{lang="follow_when"}' data-role='followDate' hidden><i class='fa-regular fa-clock' aria-hidden="true"></i> {datetime="$row->_followData['follow_added']"}</li>
+					<li title='{lang="follow_how"}' data-role='followFrequency'>
+						{{if $row->_followData['follow_notify_freq'] == 'none'}}
+							<i class='fa-regular fa-bell-slash' aria-hidden="true"></i>
+						{{else}}
+							<i class='fa-regular fa-bell' aria-hidden="true"></i>
+						{{endif}} {lang="follow_freq_{$row->_followData['follow_notify_freq']}"}
+					</li>
+					<li data-role='followAnonymous' {{if !$row->_followData['follow_is_anon']}}hidden{{endif}}><i class="fa-regular fa-eye-slash" aria-hidden="true"></i> {lang="follow_is_anon"}</li>
+				</ul>
+			</div>
+			<div class='cFollowedContent_manage'>
+				{template="manageFollow" group="system" app="core" params="$row->_followData['follow_app'], $row->_followData['follow_area'], $row->_followData['follow_rel_id']"}
+			</div>
+		</div>
+
+		{{if $table->canModerate()}}
+			<label class="ipsData__mod">
+				<span class="ipsInvisible">{lang="mod_checkbox"}</span>
+				<input type='checkbox' data-role='moderation' name="moderate[{$row->member_id}]" data-actions="{expression="implode( ' ', $table->multimodActions( $row ) )"}" data-state='' class="ipsInput ipsInput--toggle">
+			</label>
+		{{endif}}
+	</li>
+{{endforeach}}

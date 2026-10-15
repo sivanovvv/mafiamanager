@@ -1,0 +1,58 @@
+<ips:template parameters="$baseUrl, $langPrefix, $headers, $mainColumn, $rootButtons, $rows, $sortBy, $sortDirection, $filters, $currentFilter, $pages, $currentPage, $noSort, $quickSearch, $advancedSearch, $classes, $widths" />
+<div id='elMessageSidebar' data-controller='core.front.messages.list, core.genericTable' data-baseurl="{url="{$baseUrl}"}">
+	<div class='ipsButtonBar'>
+		<!--<span class='ipsTitle ipsTitle--h3'>{lang="menu_messages"}</span>-->
+		<ul class='ipsButtonRow'>
+			<li class=''>
+				<button type="button" id="elCheck" popovertarget="elCheck_menu" data-ipstooltip='{lang="select_rows_tooltip"}' data-ipsAutoCheck data-ipsAutoCheck-context="#elMessageList">
+					<span class="ipsInvisible">{lang="select_rows_tooltip"}</span>
+					<span class="cAutoCheckIcon"><i class="fa-regular fa-square" aria-hidden="true"></i></span> <i class="fa-solid fa-caret-down" aria-hidden="true"></i>
+					<span class='ipsNotification' data-role='autoCheckCount'>0</span>
+				</button>
+				<i-dropdown popover id="elCheck_menu">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							<li class="iDropdown__title">{lang="select_rows"}</li>
+							<li><button type="button" data-ipsMenuValue="all">{lang="all"}</button></li>
+							<li><button type="button" data-ipsMenuValue="none">{lang="none"}</button></li>
+						</ul>
+					</div>
+				</i-dropdown>
+			</li>
+			<li>
+				<button type="button" id="elSortByMenu" popovertarget="elSortByMenu_menu">{lang="sort_by"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<i-dropdown popover id="elSortByMenu_menu" data-i-dropdown-selectable="radio">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							{{foreach $headers as $k => $header}}
+								{{if \in_array( $k, array( 'mt_last_post_time', 'mt_start_time', 'mt_replies' ) )}}
+									<li><button type="button" {{if $k == $sortBy}}aria-selected="true"{{endif}} data-ipsMenuValue='recent'><i class="iDropdown__input" aria-hidden="true"></i>{lang="{$langPrefix}{$header}"}</button></li>
+								{{endif}}
+							{{endforeach}}
+						</ul>
+					</div>
+				</i-dropdown>
+			</li>
+			<li>
+				<button type="button" id="elFilterMenu" popovertarget="elFilterMenu_menu">{lang="filter_by"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+				<i-dropdown popover id="elFilterMenu_menu" data-i-dropdown-selectable="radio">
+					<div class="iDropdown">
+						<ul class="iDropdown__items">
+							<li><a href='{url="{$baseUrl}&sortby={$sortBy}&sortdirection={$sortDirection}&page=1"}' {{if !array_key_exists( $currentFilter, $filters )}}aria-selected="true"{{endif}} data-ipsMenuValue='all'><i class="iDropdown__input" aria-hidden="true"></i>{lang="messenger_filter_all"}</a></li>
+							{{foreach $filters as $k => $q}}
+								<li><a href='{url="{$baseUrl}&filter={$k}&sortby={$sortBy}&sortdirection={$sortDirection}&page=1"}' {{if $k === $currentFilter}}aria-selected="true"{{endif}} data-ipsMenuValue='others'><i class="iDropdown__input" aria-hidden="true"></i>{lang="$k"}</a></li>
+							{{endforeach}}					
+						</ul>
+					</div>
+				</i-dropdown>
+			</li>
+		</ul>
+	</div>
+	<div id='elMessageList' class='i-background_2'>
+		<i-data>
+			<ol class='ipsData ipsData--table ipsData--message-list' data-role='messageList'>
+				{template="messageListRows" app="core" group="messaging" params="$rows, $mainColumn, $rootButtons, $headers, $langPrefix"}
+			</ol>
+		</i-data>
+	</div>
+</div>

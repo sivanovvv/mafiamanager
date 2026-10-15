@@ -1,0 +1,185 @@
+{
+    "1": {
+        "method": "addIndex",
+        "params": [
+            "core_solved_index",
+            {
+                "type": "key",
+                "name": "helpful_item",
+                "columns": [
+                    "app",
+                    "comment_class",
+                    "item_id",
+                    "type",
+                    "hidden"
+                ],
+                "length": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            }
+        ]
+    },
+    "2": {
+        "method": "addIndex",
+        "params": [
+            "core_solved_index",
+            {
+                "type": "key",
+                "name": "helpful_comment",
+                "columns": [
+                    "app",
+                    "comment_class",
+                    "comment_id",
+                    "type",
+                    "hidden"
+                ],
+                "length": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            }
+        ]
+    },
+    "3": {
+        "method": "addIndex",
+        "params": [
+            "core_solved_index",
+            {
+                "type": "key",
+                "name": "member_type_count",
+                "columns": [
+                    "member_id",
+                    "type"
+                ],
+                "length": [
+                    null,
+                    null
+                ]
+            }
+        ]
+    },
+    "4": {
+        "method": "createTable",
+        "params": [
+            {
+                "name": "core_search_index_queue",
+                "columns": {
+                    "queue_id": {
+                        "allow_null": false,
+                        "auto_increment": true,
+                        "binary": false,
+                        "comment": "",
+                        "decimals": null,
+                        "default": null,
+                        "length": 10,
+                        "name": "queue_id",
+                        "type": "INT",
+                        "unsigned": true,
+                        "values": [],
+                        "zerofill": false
+                    },
+                    "queue_class": {
+                        "allow_null": false,
+                        "auto_increment": false,
+                        "binary": false,
+                        "comment": "",
+                        "decimals": null,
+                        "default": "",
+                        "length": 255,
+                        "name": "queue_class",
+                        "type": "VARCHAR",
+                        "unsigned": false,
+                        "values": [],
+                        "zerofill": false
+                    },
+                    "queue_object_id": {
+                        "allow_null": false,
+                        "auto_increment": false,
+                        "binary": false,
+                        "comment": "",
+                        "decimals": null,
+                        "default": "0",
+                        "length": 20,
+                        "name": "queue_object_id",
+                        "type": "BIGINT",
+                        "unsigned": true,
+                        "values": [],
+                        "zerofill": false
+                    },
+                    "queue_action": {
+                        "allow_null": false,
+                        "auto_increment": false,
+                        "binary": false,
+                        "comment": "",
+                        "decimals": null,
+                        "default": "index",
+                        "length": 0,
+                        "name": "queue_action",
+                        "type": "ENUM",
+                        "unsigned": false,
+                        "values": [
+                            "index",
+                            "remove"
+                        ],
+                        "zerofill": false
+                    },
+                    "queue_added": {
+                        "allow_null": false,
+                        "auto_increment": false,
+                        "binary": false,
+                        "comment": "",
+                        "decimals": null,
+                        "default": "0",
+                        "length": 10,
+                        "name": "queue_added",
+                        "type": "INT",
+                        "unsigned": true,
+                        "values": [],
+                        "zerofill": false
+                    }
+                },
+                "indexes": {
+                    "PRIMARY": {
+                        "type": "primary",
+                        "name": "PRIMARY",
+                        "length": [
+                            null
+                        ],
+                        "columns": [
+                            "queue_id"
+                        ]
+                    },
+                    "queue_dedup": {
+                        "type": "unique",
+                        "name": "queue_dedup",
+                        "length": [
+                            191,
+                            null
+                        ],
+                        "columns": [
+                            "queue_class",
+                            "queue_object_id"
+                        ]
+                    },
+                    "queue_added": {
+                        "type": "key",
+                        "name": "queue_added",
+                        "length": [
+                            null
+                        ],
+                        "columns": [
+                            "queue_added"
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

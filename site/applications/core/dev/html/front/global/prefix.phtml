@@ -1,0 +1,5 @@
+<ips:template parameters="$encoded, $text" />
+{{if $text}}
+    {{$url = \IPS\Content\Tag::buildTagUrl( $text );}}
+	<a href='{$url}' title="{lang="find_tagged_content" sprintf="$text"}" class='ipsBadge ipsBadge--prefix' rel="tag" data-tag-label='{$text}' data-ipsTooltip><span>{$text}</span></a>
+{{endif}}

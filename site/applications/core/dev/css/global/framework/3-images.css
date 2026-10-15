@@ -1,0 +1,573 @@
+/*
+	----------------
+	- Avatars and thumbnails
+	----------------
+*/
+
+.ipsUserPhoto, .ipsThumb{
+	color: var(--i-co);
+	aspect-ratio: 1;
+	vertical-align: top;
+	overflow: hidden;
+	max-width: 100%;
+}
+
+/* We don't use inline-grid here since it caused some laggy behavior in Safari */
+.ipsUserPhoto{
+	border-radius: var(--i-avatar--bo-ra);
+	display: inline-block;
+	position: relative;
+	background: var(--i-background_3);
+	width: 100px;
+}
+
+	.ipsUserPhoto img{
+		border-radius: inherit; /* Improved rendering in Safari */
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		/* Some images are uploaded via the ACP, without being cropped into a square */
+		object-fit: cover;
+	}
+
+.ipsUserPhoto--tinier {
+	width: 24px;
+}
+
+.ipsUserPhoto--tiny {
+	width: 34px;
+}
+
+.ipsUserPhoto--mini {
+	width: 44px;
+}
+
+.ipsUserPhoto--small {
+	width: 54px;
+}
+
+.ipsUserPhoto--medium {
+	width: 75px;
+}
+
+.ipsUserPhoto--large {
+	width: 90px;
+}
+
+.ipsThumb{
+	--i-ipsThumb--ratio: 1;
+	display: inline-grid;
+	aspect-ratio: var(--i-ipsThumb--ratio);
+	border-radius: var(--i-thumb--bo-ra);
+}
+
+	/* Empty thumbs contain an <i> element which we style into an icon */
+	.ipsThumb > i{
+		container-type: size;
+		display: grid;
+		place-content: center;
+		opacity: .1;
+		overflow: hidden;
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-style: normal;
+		font-weight: 900;
+		/* Fix alignment in Safari */
+		line-height: 0;
+	}
+
+	.ipsThumb:not(:has(img)){ background-color: var(--i-background_3) }
+
+	:where(.ipsThumb i)::before{
+		content: "\f03e";
+		font-size: 40cqmin;
+	}
+
+.ipsThumb > img,
+.ipsThumb > i{
+	width: 100%;
+	height: 100%;
+	grid-area: 1/1;
+}
+
+	.ipsUserPhoto::after, .ipsThumb::after{
+		content: "";
+		pointer-events: none;
+		border-radius: inherit;
+		grid-area: 1/1;
+	}
+	.ipsUserPhoto::after{
+		position: absolute;
+		inset: 0;
+	}
+
+		:where(a.ipsUserPhoto, a.ipsThumb):hover::after{
+			background: color-mix(in srgb, var(--i-color_root) 10%, transparent);
+		}
+
+	.ipsThumb img{
+		object-fit: cover;
+		border-radius: inherit;
+	}
+
+/* Legacy browers (Safari 14) */
+@supports not (aspect-ratio: 1){
+	.ipsThumb{
+		position: relative;
+	}
+	.ipsThumb img{
+		position: absolute;
+	}
+	.ipsThumb::before,
+	.ipsUserPhoto::before{
+		content: "";
+		display: block;
+		padding-top: 100%;
+	}
+}
+
+/* Display rank and moderator/admin status */
+.ipsAvatarStack{
+	position: relative;
+}
+
+	.ipsAvatarStack__badge{
+		position: absolute;
+		z-index: 1;
+		inset-inline-end: 0;
+		inset-block-start: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: min(2.2em, 60%);
+		aspect-ratio: 1;
+		font-size: calc(var(--i-rem) * .8);
+		background: var(--i-background_dark);
+		color: hsl(0 0% 100%);
+		border: 2px solid var(--i-background_1);
+		border-radius: 50%;
+		margin-block-start: -.5em;
+		margin-inline-end: -.5em;
+	}
+
+		.ipsAvatarStack__badge::before{
+			content: var(--_icon, none);
+			font-family: var(--i-font-awesome);
+			-webkit-font-smoothing: antialiased;
+			text-rendering: auto;
+			font-style: normal;
+			font-weight: 900;
+			font-size: .8em;
+		}
+
+		/*.ipsAvatarStack__badge--moderator{
+			--_icon: "\f023";
+		}*/
+		.ipsAvatarStack__badge--new{
+			--_icon: "\f256";
+		}
+
+	.ipsAvatarStack__rank{
+		position: absolute;
+		z-index: 1;
+		inset-inline-start: -5%;
+		inset-block-end: -5%;
+		width: max(30%, 17px);
+		--bo-wi: 2px;
+		filter: drop-shadow( var(--bo-wi) 0 0 var(--i-background_1) ) drop-shadow( 0 var(--bo-wi) 0 var(--i-background_1) ) drop-shadow( calc( var(--bo-wi) * -1 ) 0 0 var(--i-background_1) ) drop-shadow( 0 calc( var(--bo-wi) * -1 ) 0 var(--i-background_1) );
+	}
+
+		.ipsPhotoPanel .ipsAvatarStack__rank{
+			--bo-wi: 1px;
+		}
+
+
+/*
+	----------------
+	- Avatar panel
+	----------------
+*/
+
+.ipsPhotoPanel{
+	--i-column-gap: initial;
+	--i-photoPanelAvatar: initial;
+	display: flex;
+	gap: var(--i-column-gap, 1em);
+	align-items: start;
+}
+@supports (-webkit-touch-callout: none) and (not(translate: none)){
+	.ipsPhotoPanel > :not(:first-child){
+		margin-inline-start: var(--i-column-gap, 1em);
+	}
+}
+
+	.ipsPhotoPanel > .ipsUserPhoto,
+	.ipsPhotoPanel .ipsAvatarStack{
+		flex: 0 0 auto;
+		width: var(--i-photoPanelAvatar, 2.5em);
+	}
+
+	.ipsPhotoPanel__text{
+		flex: 999 1 auto;
+		display: grid;
+		gap: .1em 1.5em;
+		line-height: 1.3;
+		align-self: center;
+	}
+
+		.ipsPhotoPanel__primary{
+			font-weight: 500;
+		}
+
+		.ipsPhotoPanel__secondary{
+			color: var(--i-color_soft);
+			font-size: inherit; /* For <small> elements */
+		}
+
+		@container (max-width: 720px){
+			.ipsPhotoPanel__secondary:has(.ipsUsername){
+				color: inherit;
+			}
+		}
+
+			.ipsPhotoPanel__secondary a{
+				color: inherit;
+			}
+
+.ipsPhotoPanel--small{
+	--i-column-gap: .6em;
+	--i-photoPanelAvatar: 1.4em;
+}
+
+/* Inline photo panels: Used in ipsPageHeader */
+.ipsPhotoPanel--inline{
+	--i-column-gap: .8em;
+	--i-photoPanelAvatar: 1.5em;
+	align-items: center;
+}
+
+.ipsPhotoPanel--inline .ipsPhotoPanel__text{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+
+
+/*
+
+	----------------
+	- Image Block
+	----------------
+*/
+.ipsFigure{
+	--ipsFigure--icon: "\f87c";
+	color: hsl(0 0% 100%);
+	display: grid;
+	border-radius: min(var(--i-design-radius), 8px);
+	background: oklch(40% calc(var(--i-base-c) * 40%) var(--i-base-h));
+	overflow: hidden;
+}
+
+.ipsFigure--transparent{
+	background: transparent;
+}
+
+.ipsFigure[style*="--_height"]{
+	height: var(--_height);
+}
+
+:where(.ipsCarousel .ipsFigure:only-child){
+	height: 100%;
+}
+
+	.ipsFigure a{
+		color: inherit;
+	}
+
+	.ipsFigure:has(.ipsFigure__main:focus-visible){
+		outline: 2px solid var(--i-color_root);
+		outline-offset: 2px;
+	}
+
+	.ipsFigure > *{
+		grid-area: 1/1;
+		border-radius: inherit;
+		position: relative;
+	}
+
+	.ipsFigure :is(a, button, input, img, video){
+		pointer-events: auto;
+	}
+
+	.ipsFigure__main{
+		display: grid;
+		overflow: hidden;
+/*		place-content: center;*/ /* Required for images which have width/height attributes */
+		/* isolation: isolate; Safari video border-radius bug */
+	}
+
+		.ipsFigure__main > *{
+			grid-area: 1/-1;
+			object-fit: cover;
+			place-self: stretch;
+			width: 100%;
+			height: 100%;
+		}
+
+		.ipsFigure__main > span{
+			display: grid;
+			place-items: center;
+		}
+
+		/* This ensures the Page Builder image carousel adheres to the height setting */
+		.ipsFigure[style*="--_height"] .ipsFigure__main img{
+			max-height: var(--_height, 100%);
+		}
+
+		/* "No image" and "Play" icons */
+		.ipsFigure__icon,
+		.ipsFigure__play{
+			container-type: inline-size;
+			display: grid;
+			place-content: center;
+			position: relative;
+			z-index: 2;
+		}
+
+			.ipsFigure__icon::before,
+			.ipsFigure__play::before{
+				content: var(--ipsFigure--icon);
+				font-family: var(--i-font-awesome);
+				-webkit-font-smoothing: antialiased;
+				text-rendering: auto;
+				font-weight: 900;
+				font-style: normal;
+				opacity: .2;
+				font-size: min(80px, 25cqmin);
+			}
+
+			.ipsFigure__play::before{
+				content: "\f144";
+				font-weight: 400;
+				pointer-events: none;
+				text-shadow: hsl(0 0% 0% / .2) 0px 1px 2px;
+				opacity: .8;
+			}
+
+	.ipsFigure__header{
+		align-self: start;
+		pointer-events: none;
+		padding: 1em;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: .5em;
+	}
+
+	.ipsFigure__footer{
+		position: relative;
+		text-shadow: hsl(0 0% 0% / .2) 0px 1px 2px;
+		align-self: end;
+		pointer-events: none;
+		padding: 1em;
+		z-index: 1;
+	}
+
+		.ipsFigure__footer a:hover{
+			text-decoration: underline;
+		}
+
+		.ipsFigure__footer .ipsIndicator{
+			margin-inline-end: .4em;
+			color: inherit;
+		}
+
+		:where(.ipsFigure__footer > :first-child:not(:only-child)){
+			font-weight: 600;
+		}
+
+		:where(.ipsFigure__footer > :last-child:not(:only-child)){
+			opacity: .8;
+			margin-top: .3em;
+			font-size: .9em;
+		}
+
+		.ipsFigure__footer::before{
+			content: '';
+			position: absolute;
+			inset: 0;
+			top: -60px;
+			z-index: -1;
+			border-bottom-left-radius: inherit;
+			border-bottom-right-radius: inherit;
+			background-image: linear-gradient(to bottom, hsl(0 0% 0% / 0) 0%, hsl(0 0% 0% / .01) 8%, hsl(0 0% 0% / .04) 15%, hsl(0 0% 0% / .1) 22%, hsl(0 0% 0% / .17) 29%, hsl(0 0% 0% / .26) 35%, hsl(0 0% 0% / .35) 41%, hsl(0 0% 0% / .45) 47%, hsl(0 0% 0% / .55) 53%, hsl(0 0% 0% / .65) 59%, hsl(0 0% 0% / .74) 65%, hsl(0 0% 0% / .82) 71%, hsl(0 0% 0% / .9) 77%, hsl(0 0% 0% / .95) 84%, hsl(0 0% 0% / .98) 92%, hsl(0 0% 0%) 100%);
+			opacity: .6;
+		}
+
+.ipsFigure__title{
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	/* This ensures the outline isn't clipped by the overflow */
+	padding: 1em;
+	margin: -1em;
+}
+
+/* Ratio */
+.ipsFigure--ratio{
+	--_ratio: 1;
+}
+
+	.ipsFigure--ratio .ipsFigure__main{
+		aspect-ratio: var(--_ratio);
+	}
+
+/* Contain */
+:is(.ipsFigure--contain, .ipsMasonry) .ipsFigure__main > :is(video, img){
+	object-fit: scale-down;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+}
+
+/* Add a blurred image in the background for --contain styles, if a background-image exists */
+.ipsFigure--contain[style*="--_backdrop"]{
+	background-image: var(--_backdrop);
+	background-size: cover;
+	background-position: 50%;
+}
+
+.ipsFigure--contain[style*="--_backdrop"] .ipsFigure__main{
+	background: hsl(0 0% 0% / .5);
+	-webkit-backdrop-filter: blur(80px);
+	backdrop-filter: blur(80px);
+}
+
+/* Hover effect */
+@media (any-hover:hover){
+	.ipsFigure--hover .ipsFigure__footer{
+		transition: opacity .15s linear;
+		opacity: 0;
+	}
+		.ipsFigure--hover:hover .ipsFigure__footer,
+		.ipsFigure--hover .ipsFigure__footer:focus-within{
+			opacity: 1;
+		}
+}
+
+.ipsNsfwOverlay{
+	-webkit-backdrop-filter: blur(30px) brightness(.9);
+	backdrop-filter: blur(30px) brightness(.9);
+	display: grid;
+	place-content: center;
+	font-weight: 600;
+	padding: .5em;
+	text-align: center;
+	z-index: 2;
+	container-type: inline-size;
+}
+
+	/* If the overlay doesn't contain any content (just the icon, which typically happens for smaller thumbnails), then make sure the link is clickable */
+	.ipsNsfwOverlay--no-content{
+		pointer-events: none;
+	}
+		/* Show the NSFW icon if the overlay has no text/button */
+		.ipsNsfwOverlay--no-content::before{
+			content: '\f070';
+			font-family: var(--i-font-awesome);
+			-webkit-font-smoothing: antialiased;
+			text-rendering: auto;
+			font-weight: 400;
+			color: hsl(0 0% 100% / .6);
+			font-size: min(80px, 20cqmin);
+		}
+
+	.ipsNsfwOverlay button{
+		background: hsl(0 0% 100% / .2);
+		border-radius: 5px;
+		padding: .5em 1.2em;
+		margin-top: 1em;
+		place-self: center;
+	}
+
+		.ipsNsfwOverlay button:hover{
+			background: hsl(0 0% 100% / .3);
+		}
+
+.ipsFigure:has(.ipsNsfwOverlay) :is(.ipsFigure__header, .ipsFigure__footer),
+.ipsFigure__header:not(:has(*)){
+	display: none;
+}
+
+/* Simplify the NSFW overlay on small screens when used in the masonry layout */
+@media (max-width: 767px){
+	.ipsMasonry .ipsNsfwOverlay{
+		pointer-events: none;
+	}
+		.ipsMasonry .ipsNsfwOverlay *{
+			display: none;
+		}
+		.ipsMasonry .ipsNsfwOverlay::before{
+			content: '\f070';
+			font-family: var(--i-font-awesome);
+			-webkit-font-smoothing: antialiased;
+			text-rendering: auto;
+			font-weight: 400;
+			grid-area: 1/-1;
+			display: grid;
+			place-content: center;
+			opacity: .6;
+			font-size: min(80px, 20cqmin);
+		}
+}
+
+.ipsData__icon .ipsFigure__main{
+	aspect-ratio: 1;
+}
+
+
+/*
+	----------------
+	- Fallback image
+		* Used in cover photos and some grid UI's
+		* A random color is assigned (from a predefined list) based on the nth-child selector
+	----------------
+*/
+
+.ipsFallbackImage{
+	background-color: var(--i-empty-image--ba-co, oklch(var(--if-light, 60% 25%) var(--if-dark, 35% 15%) var(--_hue, var(--i-base-h))));
+	display: grid;
+	border-radius: inherit;
+	overflow: hidden;
+}
+
+	.ipsFallbackImage::before{
+		content: '';
+		background-image: url('{resource="pattern.svg" app="core" location="global" inCss="true"}');
+		background-size: cover;
+		background-position: 50%;
+		mix-blend-mode: overlay;
+		opacity: .5;
+	}
+
+/* Default pattern image */
+.ipsCoverPhoto__container .ipsFallbackImage{
+	position: absolute;
+	inset: 0;
+}
+
+/* "Random" background color */
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 7) .ipsFallbackImage){ --_hue: 0; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 6) .ipsFallbackImage){ --_hue: 45; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 5) .ipsFallbackImage){ --_hue: 90; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 4) .ipsFallbackImage){ --_hue: 135; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 3) .ipsFallbackImage){ --_hue: 180; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 2) .ipsFallbackImage){ --_hue: 225; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 1) .ipsFallbackImage){ --_hue: 270; }
+:where(:is(.ipsData__item, .ipsData__blog-item):nth-child(8n - 0) .ipsFallbackImage){ --_hue: 315; }

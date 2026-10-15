@@ -1,0 +1,13 @@
+<ips:template parameters="$database, $categories, $currentContainer=null, $layout='table', $isCarousel=false" />
+<h3 class='ipsWidget__header'>{$database->_title}</h3>
+<div class='ipsWidget__content'>
+    <nav class="ipsWidget__nav" data-navType='database' data-navId='{$database->id}' data-controller='cms.front.blocks.navigation'>
+        {{if \is_array( $categories )}}
+            {{foreach $categories as $category}}
+                {template="navigationLine" app="cms" group="widgets" params="$category, null, $currentContainer"}
+            {{endforeach}}
+        {{else}}
+            {template="navigationLine" app="cms" group="widgets" params="$categories, $database->_title, $currentContainer"}
+        {{endif}}
+    </nav>
+</div>

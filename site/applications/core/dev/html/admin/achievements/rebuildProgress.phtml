@@ -1,0 +1,8 @@
+<ips:template parameters="$data, $needsBottomSpacer=FALSE" />
+<div class="i-position_sticky-top i-padding_2 i-background_1 i-text-align_center {{if $needsBottomSpacer}}i-margin-bottom_1{{endif}}">
+	<strong class="i-font-size_2">{lang="acp_rules_rebuilding_title"}</strong>
+	<p class="i-color_soft">{lang="acp_rules_rebuilding_blurb"}</p>
+	{{$progressId = 'ipsProgress-' . mt_rand();}}
+	<p id="{$progressId}" class="i-color_soft"><span data-role="percentage">{$data['percentage']}</span>% (<span data-role="number">{$data['processed']}</span> /{$data['count']})</p>
+	<progress aria-labelledby="{$progressId}" class="ipsProgress" value='{expression="number_format( $data['percentage'], 2)"}'></progress>
+</div>

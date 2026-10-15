@@ -1,0 +1,18 @@
+<ips:template parameters="$votes" />
+{{if !\IPS\Request::i()->isAjax()}}
+	<div class='ipsBox ipsBox--pollVoters'>
+{{endif}}
+		<ul class="ipsSpanGrid i-padding_3">
+			{{foreach $votes as $vote}}
+				<li class='ipsSpanGrid__6 ipsPhotoPanel ipsPhotoPanel--mini'>
+					{template="userPhoto" app="core" group="global" params="\IPS\Member::load( $vote->member_id ), 'mini'"}
+					<div>
+						<h3 class='ipsTruncate_1'>{member="name" id="$vote->member_id"}</h3>
+						<span class="i-color_soft">{datetime="$vote->vote_date"}</span>
+					</div>
+				</li>
+			{{endforeach}}
+		</ul>
+{{if !\IPS\Request::i()->isAjax()}}
+	</div>
+{{endif}}

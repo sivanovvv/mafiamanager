@@ -1,0 +1,9 @@
+<ips:template parameters="$expert, $topics, $email" />
+{$email->language->addToStack("mail_expert_nudge", FALSE, array())}
+{{foreach $topics as $id => $topic}}
+<br><br>
+    {$topic->emailContent( $email, 'html' )|raw}
+{{endforeach}}
+<br><br>
+<a href="{url="app=core&module=system&controller=unsubscribe&action=expertNudge&email=" seoTemplate="unsubscribe" base="front"}{$expert->email}&key={expression="md5( $expert->email . ':' . $expert->members_pass_hash )"}" style='text-decoration: none; display: inline-block' class="color_soft">{lang="expert_nudge_stop"}</a>.
+

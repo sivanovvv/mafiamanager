@@ -1,0 +1,11 @@
+<ips:template parameters="$setting" />
+<theme-setting data-setting='light__{$setting->key}' data-type='color' {{if $setting->refresh}}data-setting-refresh{{endif}}>
+    <input type='text' name='light__{$setting->key}' value="{$setting->value()['light']}" data-default="{$setting->default['light']}" hidden data-on-change="settingHasBeenChanged">
+    <button class="theme-editor__swatch" type="button" aria-controls='panel__colorSelector' data-panel-nav data-color-tool='swatchPicker' data-controls='light__{$setting->key}' style='--swatch: var(--light__{$setting->key});' data-on-click="panelNavigation">{$setting->name}</button>
+    <button class='theme-editor__revert' type='button' data-revert='light__{$setting->key}' {{if $setting->value()['light'] == $setting->default['light']}}hidden{{endif}} data-ipstooltip title='{lang="theme_editor_revert"}' data-on-click="revertSetting"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span class="ipsInvisible">{lang="theme_editor_revert"}</span></button>
+</theme-setting>
+<theme-setting data-setting='dark__{$setting->key}' data-type='color' {{if $setting->refresh}}data-setting-refresh{{endif}}>
+    <input type='text' name='dark__{$setting->key}' value="{$setting->value()['dark']}" data-default="{$setting->default['dark']}" hidden data-on-change="settingHasBeenChanged">
+    <button class="theme-editor__swatch" type="button" aria-controls='panel__colorSelector' data-panel-nav data-color-tool='swatchPicker' data-controls='dark__{$setting->key}' style='--swatch: var(--dark__{$setting->key});' data-on-click="panelNavigation">{$setting->name}</button>
+    <button class='theme-editor__revert' type='button' data-revert='dark__{$setting->key}' {{if $setting->value()['dark'] == $setting->default['dark']}}hidden{{endif}} data-ipstooltip title='{lang="theme_editor_revert"}' data-on-click="revertSetting"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span class="ipsInvisible">{lang="theme_editor_revert"}</span></button>
+</theme-setting>

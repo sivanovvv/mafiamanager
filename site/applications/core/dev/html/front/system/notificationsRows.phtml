@@ -1,0 +1,32 @@
+<ips:template parameters="$table, $headers, $rows" />
+{{if \count( $rows )}} 
+	{{foreach $rows as $notification}}
+		{{if isset( $notification['data']['title'] )}}
+			<li class='ipsData__item ipsData__item--notification-row' {{if $notification['data']['unread']}}data-ips-unread{{else}}data-ips-read{{endif}}>
+				{{if isset( $notification['data']['url'] )}}
+					<a href="{$notification['data']['url']}" class="ipsLinkPanel" aria-hidden="true" tabindex="-1"><span>{$notification['data']['title']}</span></a>
+				{{endif}}
+				<div class='ipsData__icon'>
+					{{if isset( $notification['data']['author'] )}}
+						{template="userPhoto" app="core" group="global" params="$notification['data']['author'], 'tiny'"}
+					{{endif}}
+				</div>
+				<div class="ipsData__content">
+					<div class='ipsData__main'>
+						<div class='ipsData__title'>
+							{{if !$notification['data']['unread']}}
+								<span class='ipsIndicator'></span>
+							{{endif}}
+							{{if isset( $notification['data']['url'] )}}
+								<a href="{$notification['data']['url']}">{$notification['data']['title']}</a>
+							{{else}}
+								<span>{$notification['data']['title']}</span>
+							{{endif}}
+						</div>
+						<p class='ipsData__meta'>{datetime="$notification['notification']->updated_time"}</p>
+					</div>
+				</div>
+			</li>
+		{{endif}}
+	{{endforeach}}
+{{endif}}

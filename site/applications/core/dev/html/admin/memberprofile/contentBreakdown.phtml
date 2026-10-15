@@ -1,0 +1,20 @@
+<ips:template parameters="$member, $percentages, $rawCounts" />
+<div class="i-padding_3">
+	<div class='acpStatsBar i-margin-bottom_2'>
+		{{foreach $percentages as $app => $percent}}
+			<div class='acpStatsBar_segment' style='width: {$percent}%;' title='{template="contentStatisticsTooltip" group="memberprofile" params="$app, $rawCounts[ $app ], TRUE"}' data-ipsTooltip data-ipsTooltip-safe></div>
+		{{endforeach}}
+	</div>
+	<ul class='ipsList ipsList--inline'>
+		{{foreach $percentages as $app => $percent}}
+			<li class='acpStatsBar_legend'>
+				<span class='acpStatsBar_preview'></span>
+				{{if $app == 'core'}}
+					{lang="module__core_status"}
+				{{else}}
+					{lang="__app_{$app}"}
+				{{endif}}
+			</li>
+		{{endforeach}}
+	</ul>
+</div>

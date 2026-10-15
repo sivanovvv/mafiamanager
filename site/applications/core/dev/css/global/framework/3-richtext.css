@@ -1,0 +1,675 @@
+/*
+	----------------
+	- Rich text
+	----------------
+*/
+
+[data-i-color="red"]{ --i-richtext-color: var(--i-color_red); }
+[data-i-color="orange"]{ --i-richtext-color: var(--i-color_orange); }
+[data-i-color="yellow"]{ --i-richtext-color: var(--i-color_yellow); }
+[data-i-color="green"]{ --i-richtext-color: var(--i-color_green); }
+[data-i-color="blue"]{ --i-richtext-color: var(--i-color_blue); }
+[data-i-color="indigo"]{ --i-richtext-color: var(--i-color_indigo); }
+[data-i-color="violet"]{ --i-richtext-color: var(--i-color_violet); }
+[data-i-color="default"]{ --i-richtext-color: var(--i-color_root); }
+[data-i-color="root"]{ --i-richtext-color: var(--i-color_root); }
+[data-i-color="soft"]{ --i-richtext-color: var(--i-color_soft); }
+[data-i-color="hard"]{ --i-richtext-color: var(--i-color_hard); }
+[data-i-color="theme_1"]{ --i-richtext-color: var(--i-background_1); }
+[data-i-color="theme_2"]{ --i-richtext-color: var(--i-background_2); }
+[data-i-color="theme_3"]{ --i-richtext-color: var(--i-background_3); }
+[data-i-color="theme_4"]{ --i-richtext-color: var(--i-background_4); }
+[data-i-color="theme_5"]{ --i-richtext-color: var(--i-background_5); }
+[data-i-color="theme_6"]{ --i-richtext-color: var(--i-background_6); }
+:where([data-i-color]) {
+	color: var(--i-richtext-color, inherit);
+}
+
+[data-i-background-color="red"]{ --i-richtext-background-color: var(--i-color_red); }
+[data-i-background-color="orange"]{ --i-richtext-background-color: var(--i-color_orange); }
+[data-i-background-color="yellow"]{ --i-richtext-background-color: var(--i-color_yellow); }
+[data-i-background-color="green"]{ --i-richtext-background-color: var(--i-color_green); }
+[data-i-background-color="blue"]{ --i-richtext-background-color: var(--i-color_blue); }
+[data-i-background-color="indigo"]{ --i-richtext-background-color: var(--i-color_indigo); }
+[data-i-background-color="violet"]{ --i-richtext-background-color: var(--i-color_violet); }
+[data-i-background-color="default"]{ --i-richtext-background-color: var(--i-color_root); }
+[data-i-background-color="root"]{ --i-richtext-background-color: var(--i-color_root); }
+[data-i-background-color="soft"]{ --i-richtext-background-color: var(--i-color_soft); }
+[data-i-background-color="hard"]{ --i-richtext-background-color: var(--i-color_hard); }
+[data-i-background-color="theme_1"]{ --i-richtext-background-color: var(--i-background_1); }
+[data-i-background-color="theme_2"]{ --i-richtext-background-color: var(--i-background_2); }
+[data-i-background-color="theme_3"]{ --i-richtext-background-color: var(--i-background_3); }
+[data-i-background-color="theme_4"]{ --i-richtext-background-color: var(--i-background_4); }
+[data-i-background-color="theme_5"]{ --i-richtext-background-color: var(--i-background_5); }
+[data-i-background-color="theme_6"]{ --i-richtext-background-color: var(--i-background_6); }
+
+.ipsRichText, .tiptap code{
+	tab-size: 4;
+}
+.ipsRichText {
+	display: flow-root;
+}
+
+	/* Hide empty elements */
+	.ipsRichText:empty{
+		display: none;
+	}
+
+/* Instead of reverting all elements with *, we only target certain elements and revert certain properties. Using * was reverting some unintended elements, such as .ipsButton which can exist in "File topics", or FA icons */
+:where(.ipsRichText) p{
+	margin: revert; /* Revert margins */
+}
+
+/* Ensure tab characters work. This is isolated to user comments only, not other areas like forum descriptions or ipsMessages */
+[data-role="commentContent"] .ipsRichText p{
+	white-space: pre-wrap;
+}
+
+	/* Remove margins from paragraphs if compact setting is enabled, or if the paragraph is inside a list */
+	[data-ips-setting-compact-richtext] :where(.ipsRichText) p,
+	:where(.ipsRichText) :is(ol, ul) p{
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	/* Make empty p tags occupy space, since this is potentially the intended behavior */
+	.ipsRichText p:empty {
+		min-height: 1em;
+		min-height: 1lh;
+	}
+
+:where(.ipsRichText) :is(h1, h2, h3, h4, h5, h6){
+	font-weight: 700;
+	margin: var(--i-rem) 0;
+	color: var(--i-color_hard);
+}
+	/* Font sizes for rich text headings */
+	:where(.ipsRichText) h1{
+		font-size: clamp(1.7em, 1em + 2.3vw, 3em);
+		line-height: 1.1;
+	}
+	:where(.ipsRichText) h2{
+		font-size: clamp(1.5em, 1em + 1.9vw, 2.2em);
+		line-height: 1.1;
+	}
+	:where(.ipsRichText) h3{
+		font-size: clamp(1.4em, 1em + 1.6vw, 1.8em);
+		line-height: 1.1;
+	}
+	:where(.ipsRichText) h4{
+		font-size: clamp(1.3em, 1em + 1.2vw, 1.5em);
+	}
+	:where(.ipsRichText) h5{
+		font-size: 1.2em;
+	}
+	:where(.ipsRichText) h6{
+		font-size: 1em;
+	}
+
+:where(.ipsRichText) :is(ul, ol):not([class]){
+	display: revert;
+	list-style: revert;
+	margin: revert;
+	/* These styles ensure lists indent correctly next to floated content */
+	padding: 0;
+	position: relative;
+	inset-inline-start: 2em;
+	max-width: calc(100% - 2em);
+}
+
+/* Ensure list styles aren't affected by parent lists, such as ".ipsForm ul" (when editing) */
+:where(.ipsRichText) ul:not([class]){
+	list-style-type: disc;
+}
+
+:where(.ipsRichText) ul:not([class]) ul:not([class]){
+	list-style-type: circle;
+}
+
+:where(.ipsRichText) ul:not([class]) ul:not([class]) ul:not([class]){
+	list-style-type: square;
+}
+
+/* Remove excess margins for first/last elements, usually paragraphs */
+.ipsRichText > :first-child{ margin-top: 0; }
+.ipsRichText > :last-child{ margin-bottom: 0; }
+
+/* Underline links for easier noticeability */
+:where(.ipsRichText) a{
+	text-decoration: underline;
+}
+
+/* Font-sizes */
+[data-ips-font-size="80"] { font-size: 0.8em; }
+[data-ips-font-size="90"] { font-size: 0.9em; }
+[data-ips-font-size="125"] { font-size: 1.25em; }
+[data-ips-font-size="150"] { font-size: 1.5em; }
+[data-ips-font-size="175"] { font-size: 1.75em; }
+[data-ips-font-size="200"] { font-size: 2em; }
+
+/* Edited by */
+.ipsEdited {
+	display: block;
+	white-space: normal;
+	clear: both;
+}
+
+/* Figures */
+:where(.ipsRichText) figure{
+	clear: both;
+	margin: 1em auto;
+}
+
+	:where(.ipsRichText) figure img{
+		display: block;
+		margin: 0 auto;
+	}
+
+	:where(.ipsRichText) figcaption {
+		color: var(--i-color_soft);
+		margin-top: 1em;
+		font-weight: 500;
+		font-size: .9em;
+		text-align: center;
+	}
+
+.ipsRichText hr{
+	margin: 1em 0;
+	--i-hr-width: 2px;
+	height: var(--i-hr-width);
+	background-color: var(--i-richtext-color, var(--i-color_root));
+}
+
+/*
+	----------------
+	- Quotes, Code and Spoilers
+	----------------
+*/
+
+.ipsRichText pre,
+.ipsQuote,
+.ipsCode,
+.ipsSpoiler,
+.ipsRichText :where(details), /* :where() is necessary to ensure the float/width options, defined later, still work */
+.ipsRichTextBox,
+.ipsStyle_spoiler {
+	display: flow-root;
+	width: 100%;
+	overflow: hidden;
+	border-radius: min(var(--i-design-radius), 6px);
+	border: 0 solid color-mix(in srgb, var(--i-background_2) 85%, var(--i-color_root));
+	background: var(--i-background_2);
+	border-inline-start-width: 4px;
+	position: relative;
+	z-index: 1; /* When these elements are floated, ensure their content isn't covered by subsequent list margins */
+	padding: 1.3em;
+}
+
+/* Increase z-index when a dropdown menu is active. This lets the "restored content" bar sit on top of boxes, unless a dropdown is active. Redundant once [popover] is implemented */
+:is(.ipsRichText pre, .ipsQuote, .ipsCode, .ipsSpoiler, .ipsRichText :where(details), .ipsRichTextBox, .ipsStyle_spoiler):has(.ipsEditor__anchored-panel:not([hidden])){
+	z-index: 3;
+}
+
+.ipsRichText figure {
+	background: var(--i-background_2);
+}
+
+/* Coloured boxes */
+.ipsRichTextBox[data-i-background-color] {
+	border-color: color-mix(in srgb, var(--i-richtext-background-color, var(--i-background_2)) 40%, var(--i-background_1));
+	background-color: color-mix(in srgb, var(--i-richtext-background-color, var(--i-background_2)) 10%, var(--i-background_1));
+}
+
+/* Tint the text color of colored boxes */
+:where(.ipsRichTextBox[data-i-background-color]){
+	color: color-mix(in srgb, var(--i-richtext-background-color, var(--i-color_root)) 30%, var(--i-color_root));
+}
+
+/* Use the non color-mix version if a theme color has been assigned */
+.ipsRichTextBox[data-i-background-color*="theme_"] {
+	background-color: var(--i-richtext-background-color);
+}
+
+/* If boxes don't have a colour, they're assigned null. Reset them back to default */
+.ipsRichTextBox:is([data-i-background-color="null"], [data-i-background-color="root"], :not([data-i-background-color])) {
+	border-color: color-mix(in srgb, var(--i-background_2) 85%, var(--i-color_root));
+	background-color: var(--i-background_2);
+}
+
+/* Code */
+.ipsRichText pre, .ipsCode {
+	display: block;
+	margin: 1em 0;
+	clear: both;
+	direction: ltr;
+	word-wrap: normal;	
+	overflow: auto;
+	display: block;
+	font-size: max(.9em, 13px); /* Monospace font looked too large at 1em */
+}
+
+	.ipsCode[data-language]::before {
+		content: attr(data-language);
+		display: block;
+		width: fit-content;
+		margin-bottom: 1em;
+		position: sticky;
+		left: 0;
+		background: color-mix(in srgb, currentColor 15%, transparent);
+		padding: 0.5em 0.9em;
+		font-size: 0.7em;
+		border-radius: min(var(--i-design-radius), 5px);
+		font-family: var(--i-font-family);
+		font-weight: 600;
+		color: var(--i-color_soft);
+	}
+
+/* Inline code */
+.ipsRichText p > code{
+	background: var(--i-background_3);
+	padding: .2em .5em;
+	border-radius: 4px;
+	font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+	font-weight: normal;
+}
+
+
+	.ipsQuote_contents > .ipsCode {
+		background: color-mix(in srgb, var(--i-color_root), 6%, transparent);
+	}
+
+[data-ipsspoiler]:not(details) *:not(.ipsSpoiler_header) {
+	display: none; /* Hide this stuff by default */
+}
+.ipsSpoiler_header {
+	color: var(--i-color_root);
+	font-weight: 600;
+	border-radius: min(var(--i-design-radius), 6px);
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+	cursor: pointer;
+	flex: 1 1 auto;
+	align-items: center;
+	padding: 0.8em 1.2em;
+}
+
+:is(.ipsSpoiler, .ipsStyle_spoiler) > :nth-child(2) {
+	margin-top: 1.2em;
+}
+
+.ipsAccordion_header__content {
+	flex-grow: 1;
+}
+
+.ipsSpoiler_header {
+	display: flex;
+	align-items: center;
+	gap: .5em;	
+}
+
+	.ipsSpoiler_header a{
+		color: inherit;
+		text-decoration: none;
+	}
+
+	/* The snapback icon */
+	.ipsQuote_citation-origin{
+		position: absolute;
+		inset-inline-end: 1em;
+	}
+	
+		.ipsQuote_citation-origin:not(:hover) {
+			opacity: .2;
+		}
+
+details.ipsSpoiler > .ipsSpoiler_contents,
+details.ipsQuote > .ipsQuote_contents{
+	overflow: hidden;
+	min-height: revert !important;
+	max-height: revert;
+	flex: 1 1;
+	display: revert;
+	padding: 1.2em;
+}
+
+	:is(.ipsQuote_contents, .ipsSpoiler_contents) p:first-child{ margin-top: 0; }
+	:is(.ipsQuote_contents, .ipsSpoiler_contents) p:last-child{ margin-bottom: 0; }
+
+	.ipsQuote_contents.ipsTruncate::after {
+		content: "";
+		bottom: 0;
+		position: absolute;
+		left: 0; right: 0;
+		height: 60px;
+		background: linear-gradient(transparent, var(--i-background_1));
+		visibility: visible;
+		pointer-events: none;
+	}
+
+
+/*
+	----------------
+	- Quotes
+	----------------
+*/
+
+.ipsQuote{
+	color: var(--i-color_soft);
+}
+
+/* Space apart consecutive node content. There is a corresponding rule in 3-editor.css to apply this style to the nodeviews (wrappers) in the editor */
+:is(.ipsQuote, .ipsCode, .ipsEmbedded, .ipsEmbeddedPhoto, .ipsEmbeddedVideo) + :is(.ipsQuote, .ipsCode, .ipsEmbedded, .ipsEmbeddedPhoto, .ipsEmbeddedVideo) {
+	margin-top: 1em;
+}
+
+	.ipsQuote_citation{
+		color: var(--i-color_root);
+		font-size: 0.95em;
+		font-weight: 600;
+		margin-bottom: 1em;
+	}
+
+		.ipsQuote_citation::before{
+			content: '\f10d';
+			margin-inline-end: .7em;
+			font-family: var(--i-font-awesome);
+			-webkit-font-smoothing: antialiased;
+			text-rendering: auto;
+			font-weight: 900;
+		}
+
+		.ipsQuote_citation a{
+			text-decoration: none;
+			color: inherit;
+		}
+
+/* Remove open/close toggle icon */
+.ipsQuote_citation [data-action="toggleQuote"]{
+	display: none;
+}
+
+/*
+	----------------
+	- Boxes
+	----------------
+*/
+
+/* Add padding to boxes */
+.ipsRichTextBox{
+	padding: 1.3em;
+}
+
+	/* Box headers */
+	.ipsRichTextBox__title,
+	.ipsRichText summary{
+		padding: 1em 0;
+		margin: -1.3em 0; /* Negative margin to cater for padding on .ipsRichTextBox */
+		font-weight: 600;
+		color: var(--i-color_hard);
+		color: color-mix(in srgb, var(--i-richtext-background-color, var(--i-color_hard)) 30%, var(--i-color_hard));
+		position: relative; /* For collapse icon */
+	}
+
+	/* Hide empty headers. The div selector is used since we don't want to hide <summary> elements */
+	div.ipsRichTextBox__title:has(p:empty){
+		display: none;
+	}
+
+	/* Remove negative margin on expanded boxes */
+	.ipsRichText [open] > summary,
+	:is(.ipsRichTextBox--alwaysopen, .ipsRichTextBox[open], div.ipsRichTextBox--expandable) .ipsRichTextBox__title{
+		margin-bottom: 1em;
+		border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+	}
+
+	/* Allow space for collapse icon */
+	.ipsRichText summary,
+	summary.ipsRichTextBox__title {
+		padding-inline-end: 2em;
+	}
+
+	/* Remove margins from p elements inside box headers */
+	.ipsRichTextBox__title p{
+		margin: 0;
+	}
+
+	/* Remove margins certain paragraph in boxes */
+	.ipsRichTextBox > p:first-of-type{
+		margin-top: 0;
+	}
+	.ipsRichTextBox > p:last-child{
+		margin-bottom: 0;
+	}
+
+	/* Restyle marker */
+	.ipsRichText summary::after,
+	summary.ipsRichTextBox__title::after,
+	.ipsRichTextBox__marker {
+		font-size: 10px;
+		display: inline-grid;
+		place-content: center;
+		width: 2em;
+		height: 2em;
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		background: color-mix(in srgb, currentColor 8%, transparent);
+		border-radius: min(var(--i-design-radius), 5px);
+	}
+	.ipsRichText summary::after,
+	summary.ipsRichTextBox__title::after {
+		position: absolute;
+		inset-inline-end: 0;
+		top: 0;
+		bottom: 0;
+		margin-block: auto;
+	}
+	.ipsRichText summary::after,
+	summary.ipsRichTextBox__title::after,
+	.ipsRichTextBox__marker::after {
+		content: "\2b";
+	}
+	/* Close icon */
+	.ipsRichText [open] > summary::after,
+	[open] > summary.ipsRichTextBox__title::after,
+	.ipsSpoiler_open.ipsSpoiler_header::after,
+	.ipsRichTextBox__marker.ipsRichTextBox__marker--collapse-icon::after {
+		content: "\f068";
+	}
+
+	/* Hover */
+	.ipsRichText summary:hover::after,
+	summary.ipsRichTextBox__title:hover::after {
+		background: var(--i-color_root);
+		color: var(--i-background_1);
+	}
+
+/* Push the edited text down so it doesn't look like part of the content */
+.ipsRichText ~ .ipsEdited{
+	margin-top: 1.5em;
+}
+
+/*
+	----------------
+	- Mentions
+	----------------
+*/
+
+[data-mentionid] {
+	display: inline-block;
+	border-radius: 20px;
+	padding: .1em .8em;
+	font-size: .9em;
+	background: var(--i-primary);
+	color: var(--i-primary-contrast);
+	text-decoration: none !important;
+}
+
+	[data-mentionid]:hover{
+		filter: brightness(1.2);
+	}
+
+
+/* Emoji */
+[data-emoticon]{
+	height: 1.2em;
+	width: auto; /* Required to prevent squashed emoji, since they contain both width and height attributes */
+	vertical-align: middle;
+}
+
+/* Float alignment */
+.ipsRichText__align--left, .ipsRichText__align--right, .ipsRichText__align--block {
+	display: inline-block;
+}
+.ipsRichText__align--left, .ipsRichText__align--right {
+	margin-block: 1em;
+	/* When these elements are floated, ensure their content isn't covered by subsequent lists */
+	position: relative;
+	z-index: 1;
+}
+
+@media(min-width: 768px) {
+	.ipsRichText__align--left {
+		float: inline-start;
+		margin-inline-end: 2em;
+	}
+
+	.ipsRichText__align--right {
+		float: inline-end;
+		margin-inline-start: 2em;
+	}
+	.ipsRichText__align--width-small { width: 33%; }
+	.ipsRichText__align--width-medium { width: 50%; }
+	.ipsRichText__align--width-big { width: 66%; }
+}
+
+
+/* If the image is inside a wrapper, as is the case while editing and for images wrapped in an <a> tag, make it fill its container */
+:is(.ipsRichText__align--width-big,.ipsRichText__align--width-small,.ipsRichText__align--width-medium) > :is([width]:not([width=""]), [height]:not([height=""])) {
+	width: 100%;
+}
+
+.ipsRichText__align--block {
+	max-width: 100%;
+}
+
+
+/*
+	----------------
+	- Videos
+	----------------
+*/
+
+/* Highlights */
+:where(.ipsRichText mark) {
+	--i-richtext-background-color: var(--i-color_yellow);
+}
+
+.ipsRichText mark {
+	display: inline;
+	padding-block: 0.1lh;
+	border-radius: 0;
+	padding-inline: 0;
+	background-color: color-mix(in srgb, var(--i-richtext-background-color) 25%, transparent);
+}
+
+.ipsRichText .ipsRichText__align--width-fullwidth {
+	width: 100%;
+}
+
+.ipsRichText .ipsRichText__align--width-custom {
+	--i-media-width: auto;
+}
+.ipsRichText .ipsRichText__align--width-custom, .ipsRichText .ipsRichText__align--width-custom > :is(img,video,.ipsEmbeddedVideo) {
+	width: min(100%,var(--i-media-width));
+}
+
+.ipsRichText .ipsRichText__align--inline {
+	display: inline-block;
+}
+
+/* Attached media will have the full width class on the wrapper */
+.ipsAttachLink.ipsRichText__align--width-fullwidth > :is(video, img) {
+	width: 100%;
+}
+
+
+/* Restrict width of embedded content (iframes, etc) */
+.ipsRichText :where(iframe:not(.ipsEmbeddedBrightcove_frame, .ipsEmbeddedVideo > *, .ipsEmbeddedPhoto > *)){
+	max-width: min(100%,var(--i-embed-max-width, 500px));
+}
+
+.ipsRichText .ipsRichText__table-wrapper {
+	overflow-x: auto;
+	overflow-y: hidden; /* The resize handle can cause the height to overflow slightly */
+}
+
+.ipsRichText table {
+	--i-ta--bo-co: var(--i-background_5);
+	--i-ta--ba-co: transparent;
+	--i-ta--bo-wi: 1px;
+	background-color: var(--i-ta--ba-co);
+	border: var(--i-ta--bo-wi) solid var(--i-ta--bo-co);
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+}
+
+.ipsRichText :is(th, td) {
+	border: var(--i-ta--bo-wi) solid var(--i-ta--bo-co);
+	padding: .7em;
+	position: relative;
+}
+
+.ipsRichText th {
+	background-color: var(--i-background_3);
+	font-weight: 600;
+	text-align: inherit;
+}
+
+/* Remove excess margins from <p> elements which are used inside tables */
+.ipsRichText table p:first-of-type{
+	margin-top: 0;
+}
+.ipsRichText table p:last-of-type{
+	margin-bottom: 0;
+}
+
+@media(hover:none) and (pointer:coarse){
+	/* Make <abbr> elements more friendly for mobiles */
+	.ipsRichText abbr[title]{
+		position: relative;
+		text-decoration: underline;
+		text-decoration-style: dotted;
+	}
+
+	.ipsRichText abbr[title]::after{
+		content: attr(title);
+
+		position: absolute;
+		left: 50%;
+		bottom: 100%;
+		width: max-content;
+		transform: translate(-50%, 10px);
+		opacity: 0;
+		transition: .3s;
+		pointer-events: none;
+
+		background-color: var(--i-background_dark);
+		color: #fff;
+		border-radius: 6px;
+		font-size: .8em;
+		padding: .3em .8em;
+	}
+
+	.ipsRichText abbr[title]:hover::after {
+		transform: translate(-50%, 0px);
+		opacity: 1;
+	}
+}
+
+/* Make lightboxed images have a zoom cursor */
+.ipsRichText [data-ipslightbox] > img {
+	cursor: zoom-in;
+}

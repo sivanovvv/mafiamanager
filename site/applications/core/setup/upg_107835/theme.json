@@ -1,0 +1,22 @@
+{
+    "html": {
+        "added": [
+            "admin\/notifications\/ips4Eol"
+        ],
+        "edited": [
+            "admin\/global\/globalTemplate",
+            "front\/system\/settings"
+        ],
+        "removed": []
+    },
+    "css": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    },
+    "resources": {
+        "added": [],
+        "edited": [],
+        "removed": []
+    }
+}

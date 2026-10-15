@@ -1,0 +1,103 @@
+<ips:template parameters="$featured, $new, $rated, $downloaded" />
+<header class="ipsPageHeader ipsPageHeader--downloadsBrowseHeader">
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class='ipsPageHeader__primary'>
+			<h1 data-ips-hook="title" class='ipsPageHeader__title'>{lang="downloads"}</h1>
+		</div>
+		<ul data-ips-hook="buttons" class='ipsButtons ipsButtons--main'>
+			{{if !\IPS\downloads\Category::theOnlyNode()}}
+				<li class='ipsResponsive_showPhone'>
+					<button type="button" id="elDownloadsCategories" popovertarget="elDownloadsCategories_menu" class='ipsButton ipsButton--inherit'><span>{lang="downloads_category_select"}</span><span>{lang="all"}</span><i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+					{template="categoryMenu" group="browse" params="\IPS\downloads\Category::roots()"}
+				</li>
+			{{endif}}
+			{{if \IPS\downloads\Category::canOnAny('add') OR \IPS\downloads\Category::theOnlyNode()}}
+				{{if \IPS\downloads\Category::theOnlyNode() and ( !\IPS\Settings::i()->club_nodes_in_apps or !\IPS\downloads\Category::clubNodes() )}}
+					<li class='ipsResponsive_hidePhone'><a class='ipsButton ipsButton--inherit' href='{expression="\IPS\downloads\Category::theOnlyNode()->url()"}'>{lang="view_all_files"}</a></li>
+				{{endif}}
+				{template="categoryButtons" group="browse" params="\IPS\downloads\Category::canOnAny('add'), NULL, FALSE"}
+			{{endif}}
+		</ul>
+	</div>
+</header>
+{{if !empty( $featured )}}
+	<section class='ipsBox ipsBox--downloadsFeatured ipsPull'>
+		<header class='ipsBox__header i-flex i-justify-content_space-between'>
+			<h2>{lang="featured_downloads"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'downloads-featured-files'"}
+		</header>
+		<div class='ipsBox__content' id='elDownloadsFeatured'>
+			<i-data>
+				<ol class='ipsData ipsData--featured ipsData--carousel ipsData--downloads-featured-files' id='downloads-featured-files' tabindex="0">
+					{{foreach $featured as $file}}
+						{template="featuredFile" group="browse" app="downloads" params="$file"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		</div>
+	</section>
+{{endif}}
+
+{{if settings.idm_show_newest AND \count( $new ) }}
+	<section class='ipsBox ipsBox--downloadsWhatsNew ipsPull'>
+		<header class='ipsBox__header i-flex i-justify-content_space-between'>
+			<h2>{lang="browse_whats_new"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'downloads-whats-new'"}
+		</header>
+		<div class='ipsBox__content'>
+			<i-data>
+				<ol class="ipsData ipsData--grid ipsData--carousel ipsData--downloads-whats-new" id='downloads-whats-new' tabindex="0">
+					{{foreach $new as $idx => $file}}
+						{template="indexBlock" group="browse" params="$file"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		</div>
+	</section>
+{{endif}}
+
+{{if settings.idm_show_highest_rated AND \count( $rated )}}
+	<section class='ipsBox ipsBox--downloadsHighestRated ipsPull'>
+		<header class='ipsBox__header i-flex i-justify-content_space-between'>
+			<h2>{lang="browse_highest_rated"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'downloads-highest-rated'"}
+
+		</header>
+		<div class='ipsBox__content'>
+			<i-data>
+				<ol class="ipsData ipsData--mini-grid ipsData--carousel ipsData--downloads-highest-rated" id='downloads-highest-rated' tabindex="0">
+					{{foreach $rated as $idx => $file}}
+						{template="indexBlock" group="browse" params="$file"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		</div>
+	</section>
+{{endif}}
+
+{{if settings.idm_show_most_downloaded AND \count( $downloaded )}}
+	<section class='ipsBox ipsBox--downloadsMostDownloaded ipsPull'>
+		<header class='ipsBox__header i-flex i-justify-content_space-between'>
+			<h2>{lang="browse_most_downloaded"}</h2>
+			{template="carouselNavigation" group="global" app="core" params="'downloads-most-downloaded'"}
+		</header>
+		<div class='ipsBox__content'>
+			<i-data>
+				<ol class="ipsData ipsData--mini-grid ipsData--carousel ipsData--downloads-most-downloaded" id='downloads-most-downloaded' tabindex="0">
+					{{foreach $downloaded as $idx => $file}}
+						{template="indexBlock" group="browse" params="$file"}
+					{{endforeach}}
+				</ol>
+			</i-data>
+		</div>
+	</section>
+{{endif}}
+
+{{if \IPS\downloads\Category::canOnAny('add') OR \IPS\downloads\Category::theOnlyNode()}}
+	<ul class="ipsButtons ipsButtons--main ipsResponsive_showPhone">
+		{{if \IPS\downloads\Category::theOnlyNode() and ( !\IPS\Settings::i()->club_nodes_in_apps or !\IPS\downloads\Category::clubNodes() )}}
+			<li><a class='ipsButton ipsButton--inherit' href='{expression="\IPS\downloads\Category::theOnlyNode()->url()"}'>{lang="view_all_files"}</a></li>
+		{{endif}}
+		{template="categoryButtons" group="browse" params="\IPS\downloads\Category::canOnAny('add'), NULL, TRUE"}
+	</ul>
+{{endif}}

@@ -1,0 +1,138 @@
+[data-ips-scheme="light"] {
+	--pp-root: #202746;
+	--pp-str: #ac9739;
+	--pp-kwd: #6679cc;
+	--pp-typ: #6679cc;
+	--pp-lit: #c76b29;
+	--pp-tag: #c94922;
+	--pp-atv: #22a2c9;
+}
+
+[data-ips-scheme="dark"] {
+	--pp-root: #e6e9ed;
+	--pp-str: #ffce54;
+	--pp-kwd: #4fc1e9;
+	--pp-typ: #4fc1e9;
+	--pp-lit: #ac92ec;
+	--pp-tag: #ed5565;
+	--pp-atv: #ffce54;
+}
+
+.prettyprint {
+	/* background: var(--i-background_2);
+	font-family: Menlo, "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, Consolas, monospace;
+	border: 0 !important; */
+}
+
+.pln {
+	color: var(--pp-root);
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+	margin-top: 0;
+	margin-bottom: 0;
+	color: var(--pp-root);
+}
+
+li.L0,
+li.L1,
+li.L2,
+li.L3,
+li.L4,
+li.L5,
+li.L6,
+li.L7,
+li.L8,
+li.L9 {
+	padding-inline-start: 1em;
+	background-color: var(--i-background_3);
+	list-style-type: decimal;
+}
+
+@media screen {
+
+	/* string content */
+
+	.str {
+		color: var(--pp-str);
+	}
+
+	/* keyword */
+
+	.kwd {
+		color: var(--pp-kwd);
+	}
+
+	/* comment */
+
+	.com {
+		color: var(--pp-root);
+	}
+
+	/* type name */
+
+	.typ {
+		color: var(--pp-typ);
+	}
+
+	/* literal value */
+
+	.lit {
+		color: var(--pp-lit);
+	}
+
+	/* punctuation */
+
+	.pun {
+		color: var(--pp-root);
+	}
+
+	/* lisp open bracket */
+
+	.opn {
+		color: var(--pp-root);
+	}
+
+	/* lisp close bracket */
+
+	.clo {
+		color: var(--pp-root);
+	}
+
+	/* markup tag name */
+
+	.tag {
+		color: var(--pp-tag);
+	}
+
+	/* markup attribute name */
+
+	.atn {
+		color: var(--pp-lit);
+	}
+
+	/* markup attribute value */
+
+	.atv {
+		color: var(--pp-atv);
+	}
+
+	/* declaration */
+
+	.dec {
+		color: var(--pp-lit);
+	}
+
+	/* variable name */
+
+	.var {
+		color: var(--pp-tag);
+	}
+
+	/* function name */
+
+	.fun {
+		color: var(--pp-typ);
+	}
+}

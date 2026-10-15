@@ -1,0 +1,24 @@
+<ips:template parameters="$name, $diff" />
+
+<p class="ipsMessage ipsMessage--error">{lang="database_conflict_message"}</p>
+
+<div class="ipsBox">
+	<div class="acpBlock_title">{lang="database_conflict_title"}</div>
+	<table class="ipsTable diff">
+		<tr>
+			<th>{lang="database_conflict_schema"}</th>
+			<th>{lang="database_conflict_local"}</th>
+		</tr>
+	</table>
+	{$diff|raw}
+	<div class="i-background_2 i-padding_3">
+		<div class='ipsSpanGrid'>
+			<div class='ipsSpanGrid__6'>
+				<a href='{url="app=core&module=developer&controller=schema&appKey="}{request="appKey"}&do=resolveSchemaConflicts&local=0&_name={$name}&csrfKey={expression="\IPS\Session::i()->csrfKey"}' class='ipsButton ipsButton--primary' data-delete-confirm="">{lang="database_conflict_choose"}</a>
+			</div>
+			<div class='ipsSpanGrid__6'>
+				<a href='{url="app=core&module=developer&controller=schema&appKey="}{request="appKey"}&do=resolveSchemaConflicts&local=1&_name={$name}&csrfKey={expression="\IPS\Session::i()->csrfKey"}' class='ipsButton ipsButton--primary'>{lang="database_conflict_choose"}</a>
+			</div>
+		</div>
+	</div>
+</div>

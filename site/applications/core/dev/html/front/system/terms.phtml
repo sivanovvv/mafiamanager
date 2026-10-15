@@ -1,0 +1,9 @@
+<ips:template parameters="" />
+<div class='{{if !\IPS\Request::i()->isAjax()}}ipsBox ipsBox--registrationTerms{{endif}}'>
+	<header data-ips-hook="pageHeader" class='ipsPageHeader ipsPageHeader--padding'>
+		<h1 class='ipsPageHeader__title'>{lang="reg_terms"}</h1>
+	</header>
+	<div class="ipsBox__padding ipsRichText">
+		{template="richText" group="global" app="core" location="global" params="\IPS\Member::loggedIn()->language()->addToStack('reg_rules_value')"}
+	</div>
+</div>

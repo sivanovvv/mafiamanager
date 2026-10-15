@@ -1,0 +1,226 @@
+<ips:template parameters="$image" />
+
+<section data-role='imageInfo'>
+{template="contentItemMessages" group="global" app="core" params="$image->getMessages(), $image"}
+<div class='ipsBox ipsColumns ipsColumns--lines ipsPull i-margin-bottom_block'>
+	<div class='ipsColumns__primary'>
+		<article>
+			<div data-role='imageDescription'>
+				<header class='ipsPageHeader'>
+					<div class="ipsPageHeader__row">
+						<div class="ipsPageHeader__primary" data-ips-hook="header">
+							<div class='ipsPageHeader__title'>
+								<h1 data-ips-hook='title'>
+									{{if $image->canEdit()}}
+										<span data-controller="core.front.core.moderation">{{if $image->locked()}}<i class='fa-solid fa-lock' aria-hidden="true"></i> {{endif}}
+											<span data-role="editableTitle" title='{lang="click_hold_edit"}'>{$image->caption}</span>
+										</span>
+									{{else}}
+										<span>{$image->caption}</span>
+									{{endif}}
+								</h1>
+								<div class='ipsBadges' data-ips-hook="badges">
+									{{foreach $image->badges() as $badge}}{$badge|raw}{{endforeach}}
+								</div>
+							</div>
+							{{if $image->directContainer()->allow_rating}}
+								<div class='ipsPageHeader__rating'>{$image->rating()|raw}</div>
+							{{endif}}
+							{{if \count( $image->tags() ) OR $image->prefix() OR ( $image->canEdit() AND $image::canTag( NULL, $image->container() ) )}}
+								{template="tagsWithPrefix" group="global" app="core" params="$image->tags(), $image->prefix(), FALSE, FALSE, ( $image->canEdit() AND $image::canTag( NULL, $image->container() ) ) ? $image->url() : NULL"}
+							{{endif}}
+						</div>
+						<div class='ipsButtons' data-ips-hook='buttons'>
+							{{if \count( $image->shareLinks() )}}
+								{template="shareButton" app="core" group="sharelinks" params="$image"}
+							{{endif}}
+							{template="follow" app="core" group="global" params="'gallery', 'image', $image->id, $image->followersCount()"}
+						</div>
+					</div>
+					<div class="ipsPageHeader__row ipsPageHeader__row--footer">
+						<div class='ipsPageHeader__primary' data-ips-hook="footer">
+							<div class='ipsPhotoPanel ipsPhotoPanel--inline'>
+								{template="userPhoto" app="core" group="global" params="$image->author(), 'mini', $image->warningRef()"}
+								<div class='ipsPhotoPanel__text' data-ips-hook="author">
+									<p class="ipsPhotoPanel__primary">{lang="byline_nodate_itemprop" htmlsprintf="$image->author()->link( $image->warningRef() )"}</p>
+									<ul class='ipsPhotoPanel__secondary ipsList ipsList--sep'>
+										<li>{datetime="$image->date"}</li>
+										<li>{lang="num_views_with_number" pluralize="$image->views"}</li>
+										{{if $image->author()->member_id}}
+											<li><a href='{url="app=core&module=members&controller=profile&id={$image->author()->member_id}&do=content&type=gallery_image" base="front" seoTitles="$image->author()->members_seo_name" seoTemplate="profile_content"}'>{lang="find_users_images" sprintf="$image->author()->name"}</a></li>
+										{{endif}}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</header>
+				<div class='ipsEntry__post i-padding_3' data-ips-hook="info">
+					{{if $image->description}}
+					    {template="contentWrapper" app="core" group="global" params="$image, 'image'"}
+					{{endif}}
+					{{if $image->credit_info OR $image->copyright}}
+						<div class='i-margin-top_4 i-flex i-flex-wrap_wrap i-gap_2'>
+							{{if $image->credit_info}}
+								<div class='i-flex_11'>
+									<h3 class='ipsTitle ipsTitle--h6'>{lang="image_credit_info"}</h3>
+									<div>
+										{$image->credit_info}
+									</div>
+								</div>
+							{{endif}}
+							{{if $image->copyright}}
+								<div class='i-flex_11'>
+									<h3 class='ipsTitle ipsTitle--h6'>{lang="image_copyright"}</h3>
+									<div>
+										&copy; {$image->copyright}
+									</div>
+								</div>
+							{{endif}}
+						</div>
+					{{endif}}
+				</div>				
+			</div>
+			<footer class='ipsEntry__footer'>
+				<menu class='ipsEntry__controls'>
+					<li>{$image->menu()|raw}</li>
+				</menu>
+				{{if \IPS\IPS::classUsesTrait( $image, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+					{template="reputation" app="core" group="global" params="$image"}
+				{{endif}}
+			</footer>
+		</div>
+	</article>
+	<div class='ipsColumns__secondary i-basis_380 i-padding_3' id='elGalleryImageStats'>
+		<div class='' data-role="imageStats" data-ips-hook="imageStats">
+			{{if $image->showLocation()}}
+				{$image->map( 308, 200 )|raw}
+				<div class='i-margin-top_2'>
+					<div class='i-flex i-justify-content_space-between i-flex-wrap_wrap i-gap_1'>
+						<div>
+							{$image->loc_short}
+						</div>
+						{{if $image->canEdit() }}
+							<div>
+								<button type="button" id="elMapForm" popovertarget="elMapForm_menu" class='i-color_soft'>{lang="map_privacy"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+								<i-dropdown popover id="elMapForm_menu">
+									<div class="iDropdown">
+										<div class='i-padding_2'>
+											{$image->enableMapForm()|raw}
+										</div>
+									</div>
+								</i-dropdown>
+							</div>
+						{{endif}}
+					</div>
+				</div>
+				<hr class='ipsHr'>
+			{{elseif $image->showLocation() AND $image->canEdit() AND $image->gps_raw}}
+				<div class='i-opacity_6'>
+					{$image->map( 308, 200 )|raw}
+					<div class='i-font-size_-1 i-margin-top_2'>
+						{$image->loc_short}
+					</div>
+				</div>
+				<div class='i-font-size_-1 i-margin-top_2'>
+					<div class='i-flex i-justify-content_space-between i-flex-wrap_wrap i-gap_1'>
+						<div>
+							<strong>{lang="map_not_being_shown"}</strong>
+						</div>
+						<div>
+							<button type="button" id="elMapForm" popovertarget="elMapForm_menu">{lang="map_privacy"} <i class='fa-solid fa-caret-down' aria-hidden="true"></i></button>
+							<i-dropdown popover id="elMapForm_menu">
+								<div class="iDropdown">
+									<div class='i-padding_3'>
+										{$image->enableMapForm()|raw}
+									</div>
+								</div>
+							</i-dropdown>
+						</div>
+					</div>
+				</div>
+
+				<hr class='ipsHr'>
+			{{endif}}
+
+            <div data-ips-hook="container">
+                <h2 class='ipsTitle ipsTitle--h6 i-color_soft'>{{if $image->directContainer() instanceof \IPS\gallery\Album}}{lang="from_the_album"}{{else}}{lang="from_the_category"}{{endif}}</h2>
+                <h3 class='ipsTitle ipsTitle--h4 i-display_inline-block'><a href='{$image->directContainer()->url()}'>{$image->directContainer()->_title}</a></h3>
+                <span class='i-color_soft'>&middot; {lang="num_images" pluralize="$image->directContainer()->count_imgs"}</span>
+            </div>
+            <hr class='ipsHr'>
+
+			{{if \is_countable($image->metadata) AND \count($image->metadata)}}
+				<div class='cGalleryExif' data-ips-hook="exif">
+					{{if isset( $image->metadata['EXIF.FocalLength'] ) || ( isset( $image->metadata['IFD0.Make'] ) AND isset( $image->metadata['IFD0.Model'] ) ) || isset( $image->metadata['EXIF.ShutterSpeedValue'] ) || isset( $image->metadata['COMPUTED.ApertureFNumber'] ) || isset( $image->metadata['Exif.Photo.ISOSpeed'] )}}
+						<h3 class='ipsTitle ipsTitle--h4 ipsTitle--margin'>{lang="gallery_metadata" sprintf="$image->caption"}</h3>
+						<ul class='ipsList ipsList--border ipsList--label-value'>
+							{{if isset( $image->metadata['IFD0.Make'] ) AND isset( $image->metadata['IFD0.Model'] )}}
+								<li>
+									<i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
+									<strong class='ipsList__label'>{lang="gallery_exif_camera"}</strong>
+									<span class='ipsList__value'>{$image->metadata['IFD0.Make']} {$image->metadata['IFD0.Model']}</span>
+								</li>
+							{{endif}}
+							{{if isset( $image->metadata['EXIF.FocalLength'] )}}
+								<li>
+									<i class='fa-solid fa-arrows-left-right' aria-hidden="true"></i>
+									<strong class='ipsList__label'>{lang="EXIF.FocalLength"}</strong>
+									<span class='ipsList__value'>{$image->focallength}</span>
+								</li>
+							{{endif}}
+							{{if isset( $image->metadata['EXIF.ExposureTime'] )}}
+								<li>
+									<i class='fa-regular fa-clock' aria-hidden="true"></i>
+									<strong class='ipsList__label'>{lang="EXIF.ExposureTime"}</strong>
+									<span class='ipsList__value'>{$image->metadata['EXIF.ExposureTime']}</span>
+								</li>
+							{{endif}}
+							{{if isset( $image->metadata['COMPUTED.ApertureFNumber'] )}}
+								<li>
+									<i class="fa-solid fa-expand" aria-hidden="true"></i>
+									<strong class='ipsList__label'>{lang="COMPUTED.ApertureFNumber"}</strong>
+									<span class='ipsList__value'>{$image->metadata['COMPUTED.ApertureFNumber']}</span>
+								</li>
+							{{endif}}
+							{{if isset( $image->metadata['Exif.Photo.ISOSpeed'] ) || isset( $image->metadata['EXIF.ISOSpeedRatings'] )}}
+								<li>
+									<i class="fa-solid fa-camera" aria-hidden="true"></i>
+									<strong class='ipsList__label'>{lang="gallery_exif_isospeed"}</strong>
+									<span class='ipsList__value'>
+										{{if isset( $image->metadata['Exit.Photo.ISOSpeed'] )}}
+											{$image->metadata['Exif.Photo.ISOSpeed']}
+										{{else}}
+											{{if \is_array( $image->metadata['EXIF.ISOSpeedRatings'] )}}
+												{expression="implode( '/', $image->metadata['EXIF.ISOSpeedRatings'] )"}
+											{{else}}
+												{$image->metadata['EXIF.ISOSpeedRatings']}
+											{{endif}}
+										{{endif}}
+									</span>
+								</li>
+							{{endif}}
+						</ul>
+						<div class='i-text-align_center i-margin-top_3'>
+							<a href='{$image->url( 'metadata' )}' data-ipsDialog data-ipsdialog-size="narrow" data-ipsDialog-title='{lang="view_all_photo_info"}' class='ipsButton ipsButton--inherit'>{lang="view_all_photo_info"}</a>
+						</div>
+					{{else}}
+						<div class='i-text-align_center i-margin-top_3'>
+							<a href='{$image->url( 'metadata' )}' data-ipsDialog data-ipsdialog-size="narrow" data-ipsDialog-title='{lang="view_all_photo_info"}' class='ipsButton ipsButton--inherit'>{lang="view_photo_info"}</a>
+						</div>
+					{{endif}}
+				</div>
+			{{endif}}
+		</div>
+	</div>
+</div>
+
+<div class='ipsBox ipsBox--padding ipsPull ipsResponsive_showPhone'>
+	<div class='ipsPageActions'>
+		{{if \count( $image->shareLinks() )}}
+			{template="shareButton" app="core" group="sharelinks" params="$image"}
+		{{endif}}
+		{template="follow" app="core" group="global" params="'gallery', 'image', $image->id, $image->followersCount()"}
+	</div>
+</div>
+</section>

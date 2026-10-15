@@ -1,0 +1,8 @@
+<ips:template parameters="$menu" />
+{{foreach $menu->elements as $element}}
+    {{if $element instanceof \IPS\Helpers\Menu\Link}}
+        {template="buttonsLink" group="menu" app="core" params="$element" location="front"}
+    {{elseif \is_string( $element )}}
+        {$element|raw}
+    {{endif}}
+{{endforeach}}

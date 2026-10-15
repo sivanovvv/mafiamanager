@@ -1,0 +1,8 @@
+<ips:template parameters="$items, $canEdit, $layout='table', $isCarousel=false" />
+
+<div class="ipsWidget__padding ipsTableOfContents ipsTableOfContents__root" data-ipstableofcontents data-ipstableofcontents-currentitems="{expression='base64_encode(json_encode($items));' raw='true'}" {{if $canEdit}}data-ipstableofcontents-canedit{{endif}}>
+    <h2 class="ipsTitle--h3">{lang="block_tableofcontents__blocktitle"}</h2>
+    <hr class="ipsHr"/>
+    <div class="ipsWidget__padding ipsTableOfContents__content ipsLoading ipsLoading--small">
+    </div>
+</div>

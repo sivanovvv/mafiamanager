@@ -1,0 +1,10 @@
+<ips:template parameters="$database, $category, $form, $layout='table', $isCarousel=false" />
+{{if $category !== null}}
+<h3 class='ipsWidget__header'>{lang="block_DatabaseFilters_title" sprintf="$category->_title"}</h3>
+{{else}}
+<h3 class='ipsWidget__header'>{lang="block_DatabaseFilters_title" sprintf="$database->_title"}</h3>
+{{endif}}
+<div class='ipsWidget__content'>
+	{$form|raw}
+</div>
+

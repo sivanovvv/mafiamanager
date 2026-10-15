@@ -1,0 +1,54 @@
+<ips:template parameters="$header, $item, $comment" />
+{{$idField = $comment::$databaseColumnId;}}
+{{$itemClassSafe = str_replace( '\\', '_', mb_substr( $comment::$itemClass, 4 ) );}}
+{{if ! \IPS\Request::i()->isAjax()}}
+	<h1 class='ipsTitle ipsTitle--h3'><a href="{$item->url()->setQueryString( array( 'do' => 'findComment', 'comment' => $comment->$idField ) )}">{$header}</a></h1>
+{{endif}}
+<article id='elComment_{$comment->$idField}' class='ipsEntry js-ipsEntry ipsEntry--find-comment {{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and $comment->isHighlighted()}}ipsEntry--popular{{endif}} {{if $comment->hidden()}}ipsModerated{{endif}}'>
+	<div id='comment-{$comment->$idField}_wrap' data-controller='core.front.core.comment' data-feedid="{$comment->feedId}" data-commentApp='{$comment::$application}' data-commentType='{$item::$module}' data-commentID="{$comment->$idField}" data-quoteData='{expression="json_encode( array('userid' => $comment->author()->member_id, 'username' => $comment->author()->name, 'timestamp' => $comment->mapped('date'), 'contentapp' => $comment::$application, 'contenttype' => $item::$module, 'contentclass' => $itemClassSafe, 'contentid' => $item->id, 'contentcommentid' => $comment->$idField) )"}' class='ipsEntry__content js-ipsEntry__content'
+{{if \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\IntersectionViewTracking' ) AND $hash=$comment->getViewTrackingHash()}}
+data-view-hash="{$hash|raw}"
+data-view-tracking-data="{expression="base64_encode(json_encode( $comment->getViewTrackingData() ))" raw="true"}"
+{{endif}}
+>
+		<header class='ipsEntry__header'>
+			<div class='ipsEntry__header-align'>
+				<div class='ipsPhotoPanel'>
+					<div>{template="userPhoto" app="core" group="global" params="$comment->author(), 'mini', $comment->warningRef()"}</div>
+					<div class='ipsPhotoPanel__text'>
+						<h3 class='ipsPhotoPanel__primary'>
+							{template="userLink" app="core" group="global" params="$comment->author(), $comment->warningRef()"}
+						</h3>
+						<p class='ipsPhotoPanel__secondary'>
+							<a href='{$comment->item()->url()->setQueryString( array( 'do' => 'findComment', 'comment' => $comment->id ) )}' class='i-color_inherit'>{$comment->dateLine()|raw}</a>
+							{{if $comment->editLine()}}
+								&middot; {$comment->editLine()|raw}
+							{{endif}}
+							{{if $comment->hidden()}}
+								&middot; {$comment->hiddenBlurb()}
+							{{endif}}
+						</p>
+						{{if member.modPermission('mod_see_warn') and $comment->warning}}
+							{template="commentWarned" group="global" app="core" params="$comment"}
+						{{endif}}
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class='ipsEntry__post'>
+			{{if settings.reputation_enabled and \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and $comment->isHighlighted()}}
+				<strong class='ipsEntry__popularFlag' data-ipsTooltip title='{lang="this_is_a_popular_comment"}'><i class='fa-solid fa-heart' aria-hidden="true"></i></strong>
+			{{endif}}
+			<div data-role='commentContent' class='ipsRichText' data-controller='core.front.core.lightboxedImages'>
+				{{if $comment->hidden() === 1 && $comment->author()->member_id == \IPS\Member::loggedIn()->member_id}}
+					<strong class='i-color_warning'><i class='fa-solid fa-circle-info' aria-hidden="true"></i> {lang="comment_awaiting_approval"}</strong>
+				{{endif}}
+				{$comment->content()|raw}
+			</div>
+			{{if $comment->hidden() !== 1 && \IPS\IPS::classUsesTrait( $comment, 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+				<br>
+				{template="reputation" group="global" app="core" params="$comment"}
+			{{endif}}
+		</div>
+	</div>
+</article>

@@ -1,0 +1,35 @@
+<ips:template parameters="$table, $headers, $entries" />
+{{if \count( $entries ) > 0}}
+	{{if $table->sortBy == 'entry_last_update'}}
+		{{foreach $entries as $idx => $entry}}
+			{{if $idx <= 3}}
+				{template="blogViewLarge" group="view" app="blog" params="$entry, $table, $idx === 0"}
+			{{endif}}
+		{{endforeach}}
+	
+		{{if \count( $entries ) > 4}}
+			<div class='ipsGrid ipsGrid--blog-view-rows'>
+				<div>
+					{{foreach $entries as $idx => $entry}}
+						{{if $idx > 3 && $idx % 2 == 0}}
+							{template="blogViewMedium" group="view" app="blog" params="$entry, $table"}
+						{{endif}}
+					{{endforeach}}
+				</div>
+				<div>
+					{{foreach $entries as $idx => $entry}}
+						{{if $idx > 3 && $idx % 2 != 0}}
+							{template="blogViewMedium" group="view" app="blog" params="$entry, $table"}
+						{{endif}}
+					{{endforeach}}
+				</div>
+			</div>
+		{{endif}}
+	{{else}}
+		{{foreach $entries as $idx => $entry}}
+			{template="blogViewLarge" group="view" app="blog" params="$entry, $table, FALSE"}
+		{{endforeach}}
+	{{endif}}
+{{else}}
+	{template="noEntries" group="view" app="blog" params="$table->container()"}
+{{endif}}

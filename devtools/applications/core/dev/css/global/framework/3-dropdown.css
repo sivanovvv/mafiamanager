@@ -1,0 +1,592 @@
+@property --i-dropdown--backdrop-scroll{
+	syntax: "<percentage>";
+	inherits: true;
+	initial-value: 0%;
+}
+@property --i-dropdown--backdrop-transition{
+	syntax: "<percentage>";
+	inherits: true;
+	initial-value: 0%;
+}
+
+i-dropdown{
+	inset: auto; /* Reset [popover] defaults. Required for RTL */
+	--i-dropdown--tr-du: .3s;
+	scrollbar-width: none;
+}
+
+i-dropdown::-webkit-scrollbar{
+	-webkit-appearance: none;
+	display: none;
+	width: 0px;
+}
+
+/* Menu */
+.iDropdown{
+	background: var(--i-dropdown--ba-co);
+	color: var(--i-dropdown--co);
+	border-radius: var(--i-dropdown--bo-ra);
+	box-shadow: var(--i-dropdown--bo-sh);
+
+	transition-timing-function: ease-in-out;
+	transition-duration: var(--i-dropdown--tr-du);
+	
+	display: flex;
+	flex-direction: column;
+
+	/* Prevent outside styles from leaking in */
+	font-family: var(--i-font-family);
+	font-size: var(--i-rem);
+	font-style: normal;
+	font-weight: normal;
+	letter-spacing: normal;
+	line-height: 1.5;
+	text-align: start;
+	text-decoration: none;
+	text-shadow: none;
+	text-transform: none;
+}
+
+.iDropdown__header{
+	flex: 0 0 auto;
+	padding: 1em 1.4em;
+	color: var(--i-color_hard);
+	border-bottom: 1px solid var(--i-background_5);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1em;
+}
+
+.iDropdown__headerTitle{
+	font-weight: 600;
+	font-size: 1.3em;
+}
+
+:where(.iDropdown__header) a{
+	color: inherit;
+}
+:where(.iDropdown__header a):hover{
+	text-decoration: underline;
+}
+
+.iDropdown__content{
+	overflow: auto;
+	scrollbar-width: thin;
+	flex: 1 1 auto;
+}
+
+.iDropdown__footer{
+	flex: 0 0 auto;
+	padding: 1em;
+	color: var(--i-color_soft);
+	border-top: 1px solid var(--i-background_5);
+	font-weight: 500;
+}
+
+a.iDropdown__footer{
+	display: block;
+	text-align: center;
+	border-bottom-left-radius: inherit;
+	border-bottom-right-radius: inherit;
+}
+
+a.iDropdown__footer:hover{
+	background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+/* Dropdown links */
+.iDropdown__items{
+	--i-outline-offset: -2px;
+	padding: 8px;
+	overflow: auto;
+}
+.iDropdown__title{
+	font-weight: 600;
+	color: var(--i-color_soft);
+	padding: 0.8em 1em;
+	margin-bottom: 4px;
+	text-transform: uppercase;
+	font-size: 0.9em;
+}
+.iDropdown__items > li > :is(a, button, label){
+	display: flex;
+	align-items: center;
+	gap: .8em;
+	padding: .8em 1em;
+	border-radius: 5px;
+	text-decoration: none !important;
+	cursor: pointer;
+	color: inherit;
+	width: 100%;
+	font-weight: 500;
+}
+
+/* Space out inputs so active ones aren't one large clump */
+.iDropdown__items > li > label{
+	margin: 2px 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+	.iDropdown__items :is(.fa-solid, .fa-regular, .fa-brands):first-child{
+		opacity: .5;
+		width: 1.2em;
+		margin-inline-end: .3em;
+		text-align: center;
+	}
+
+@media(hover){
+	.iDropdown__items > li > :is(a, button, label):hover{
+		background-color: var(--if-light, var(--i-background_3)) var(--if-dark, var(--i-background_4));
+		color: var(--i-color_hard);
+	}
+}
+
+/* Active */
+.iDropdown__items > li > label:has([type="radio"]:checked),
+i-dropdown:not([data-i-dropdown-selectable="checkbox"]) .iDropdown__items > li > [aria-selected="true"]{
+	--i-outline-offset: -4px;
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+}
+/* Active hover */
+@media(hover){
+	.iDropdown__items > li > label:has([type="radio"]:checked):hover,
+	i-dropdown:not([data-i-dropdown-selectable="checkbox"]) .iDropdown__items > li > [aria-selected="true"]:hover{
+		background-color: var(--if-light, var(--i-primary-dark)) var(--if-dark, var(--i-primary-light));
+		color: var(--i-primary-contrast);
+	}
+}
+
+/* Disabled */
+.iDropdown__items [data-disabled],
+.iDropdown__items label:has(:disabled){
+	pointer-events: none;
+	font-style: italic;
+	opacity: .4;
+}
+
+/* Checkbox and radio */
+.iDropdown__items :is([type="checkbox"], [type="radio"]),
+.iDropdown__input{
+	appearance: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.2em;
+	height: 1.2em;
+	color: inherit;
+	/* Without this, the inputs use the default cursor */
+	cursor: inherit;
+	/* For <i class="iDropdown__input" aria-hidden="true"></i> */
+	font-style: normal;
+	/* Improve focus-visible styles for keyboard users */
+	outline-offset: 2px;
+  	border-radius: 4px;
+}
+
+@supports not selector(a:has(b)){
+    .iDropdown__items :is([type="checkbox"], [type="radio"]):checked,
+    [aria-selected="true"] > .iDropdown__input{
+        color: var(--i-color_primary);
+    }
+}
+
+.iDropdown__items [type="checkbox"]::before,
+.iDropdown__items [type="radio"]::before,
+.iDropdown__input::before{
+	content: "";
+	border-radius: 50%;
+	width: .6em;
+	height: .6em;
+	background: currentColor;
+	opacity: .25;
+}
+.iDropdown__items [type="checkbox"]::before,
+[data-i-dropdown-selectable="checkbox"] .iDropdown__input::before{
+	border-radius: 2px;
+}
+
+	.iDropdown__items input:checked::before,
+	[aria-selected="true"] > .iDropdown__input::before{
+		content: "\f00c";
+		font-family: var(--i-font-awesome);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: auto;
+		font-weight: 900;
+		
+		opacity: 1;
+		background: transparent;
+		width: auto;
+		height: auto;
+		line-height: 0;
+	}
+
+/* Since multiple :checked checkboxes looks odd, we simplify the UI */
+.iDropdown__items > li > label:has([type="checkbox"]:checked),
+[data-i-dropdown-selectable="checkbox"] .iDropdown__items > li > [aria-selected="true"]{
+	color: var(--i-color_hard);
+}
+.iDropdown__items [type="checkbox"]:checked,
+[data-i-dropdown-selectable="checkbox"] [aria-selected="true"] .iDropdown__input{
+	background-color: var(--i-primary);
+	color: var(--i-primary-contrast);
+	border-radius: 4px;
+}
+.iDropdown__items [type="checkbox"]:checked::before,
+[data-i-dropdown-selectable="checkbox"] [aria-selected="true"] .iDropdown__input::before{
+	font-size: .7em;
+}
+
+.iDropdown__items hr{
+	margin: .6em 0;
+	background: currentColor;
+	height: 1px;
+	border-width: 0;
+	opacity: .3;
+}
+
+/* Descriptions, display under the main item text */
+.iDropdown__minor{
+	font-weight: normal;
+	margin-top: .3em;
+	display: block;
+	opacity: .7;
+	font-size: .9em;
+}
+
+/* Mobile */
+@media (max-width: 499px){
+
+	html:has(i-dropdown:popover-open){
+		overflow: hidden;
+	}
+	html:has(i-dropdown.\:popover-open){
+		overflow: hidden;
+	}
+
+	i-dropdown{
+		--i-dropdown--backdrop-transition: 0%;
+		--i-dropdown--backdrop-scroll: 100%;
+
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+		overflow-y: auto;
+		overscroll-behavior-y: contain;
+		scroll-snap-type: y mandatory;
+		transition-property: display, overlay, --i-dropdown--backdrop-transition;
+		transition-behavior: allow-discrete;
+		transition-timing-function: ease-in;
+		transition-duration: var(--i-dropdown--tr-du);
+		/* Polyfill */
+		top: 0; left: 0;
+		position: fixed;
+	}
+	i-dropdown:popover-open{
+		--i-dropdown--backdrop-transition: 100%;
+	}
+	i-dropdown[class*=":popover-open"]{
+		--i-dropdown--backdrop-transition: 100%;
+	}
+	@starting-style{
+		i-dropdown:popover-open{
+			--i-dropdown--backdrop-transition: 0%;
+		}
+	}
+	
+	/* We need to use a pseudo element here since Safari instantly deletes the ::backdrop from the DOM on close. Last checked in 18.6 */
+	i-dropdown::before{
+		content: "";
+		position: fixed;
+		pointer-events: none;
+		top: 0; left: 0; right: 0; bottom: 0;
+		background: hsl(0 0% 0% / .6);
+		-webkit-backdrop-filter: blur(1px);
+		backdrop-filter: blur(1px);
+		opacity: min(var(--i-dropdown--backdrop-scroll), var(--i-dropdown--backdrop-transition));
+	}
+
+	.iDropdownSwipe{
+		flex: 0 0 auto;
+		height: 20px;
+		margin-bottom: 20px;
+		scroll-snap-align: start;
+	}
+
+	/* Repaint Safari to prevent excess overscroll. Last tested in 26.0 */
+	@supports (-webkit-hyphens: auto){
+		i-dropdown:popover-open .iDropdownSwipe{
+			transition: var(--i-dropdown--tr-du);
+		}
+		@starting-style{
+			i-dropdown:popover-open .iDropdownSwipe{
+				height: 21px;
+			}
+		}
+	}
+
+	.iDropdownDismiss{
+		/* Ensure this element is hidden but still usable, since parent styles can leak in (background colors, etc) */
+		opacity: 0;
+		-webkit-tap-highlight-color: transparent;
+		width: 100%;
+		height: 100%;
+		flex: 0 0 auto;
+	}
+
+	/* Zero-JS fallback: Ensure tapping backdrop closes dropdowns if JS hasn't loaded */
+	html:has(i-dropdown:not(:defined):popover-open){
+		pointer-events: none;
+	}
+	i-dropdown:not(:defined) .iDropdown{
+		pointer-events: auto;
+	}
+
+	.iDropdown{
+		flex: 0 0 auto;
+		border-radius: max(var(--i-dropdown--bo-ra), 10px);
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		box-shadow: var(--if-light, var(--i-dropdown--bo-sh)) var(--if-dark, inset hsl(0 0% 100% / .1) 0px 1px 0px, hsl(0 0% 0% / .6) 0px -1px 0px);
+		min-height: min(15em, 100% - 50px);
+		max-height: calc(100% - env(safe-area-inset-top) - 50px);
+		padding-bottom: env(safe-area-inset-bottom);
+		/* For zero-JS version */
+		margin-top: auto;
+		/* Height + drag handle */
+		translate: 0 calc(100% + 20px);
+		transition-timing-function: ease-out;
+		transition-property: translate;
+		/* Widths are sometimes defined elsewhere. Ensure that mobile menus are always 100% */
+		width: 100% !important;
+	}
+
+	/* Elastic background */
+	.iDropdown::after{
+		content: "";
+		display: block;
+		height: 1px;
+		box-shadow: 0px 220px 0px 220px var(--i-dropdown--ba-co);
+	}
+	
+	:popover-open > .iDropdown{
+		translate: 0 0;
+	}
+	@starting-style{
+		:popover-open > .iDropdown{
+			translate: 0 calc(100% + 20px);
+		}
+	}
+	.\:popover-open > .iDropdown{
+		translate: 0 0;
+	}
+
+	/* Drag handle */
+	@media (hover:none){ 
+		i-dropdown:defined .iDropdown::before{
+			content: "";
+			display: block;
+			background: hsl(0 0% 100% / .6);
+			box-shadow: inset 0px 1px 0px hsl(0 0% 100% / .5);
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			border-radius: 6px;
+			width: 50px;
+			height: 6px;
+			position: absolute;
+			top: -14px;
+			left: calc(50% - 25px);
+			pointer-events: none;
+		}
+	}
+
+	i-dropdown::after{
+		content: "";
+		scroll-snap-align: end;
+		flex: 0 0 1px; /* This prevents Firefox from randomly closing some menus */
+		margin-top: -1px;
+	}
+	
+	.iDropdown__items{
+		flex: 1 1 auto;
+	}
+
+	/* Fade out the backdrop when scrolling to dismiss */
+	@supports ((animation-timeline: scroll()) and (animation-range: 0 100%)){
+		@keyframes iPopoverScroll{
+			from{
+				--i-dropdown--backdrop-scroll: 0%;
+			}
+		}
+		i-dropdown:defined{
+			animation: iPopoverScroll linear forwards;
+			animation-timeline: scroll(self);
+			animation-range: 0 100%;
+		}
+	}
+
+	/* This instantly hides the popover after the swipe gesture. It prevents a "backdrop flash" in Safari 26.0 caused by the -scroll variable reverting back to 100% once the swipe gesture has occurred */
+	i-dropdown[hidden-via-swipe]{
+		transition-duration: 0s;
+	}
+
+	/* Ensure menus with [autofocus] inputs sit above the keyboard in iOS. Without this, the keyboard overlaps the menu. Fixed in iOS 26 */
+	i-dropdown:has([autofocus]):popover-open{
+		--i-dropdown--tr-du: 0s;
+	}
+
+	/* Make autocomplete menus more usable on mobiles */
+	i-dropdown .ipsAutocompleteMenu{
+		position: relative;
+		top: auto;
+	}
+	/* Prevent the menu from closing when the keyboard is active, since a vertical swipe can often close the menu accidentally */
+	i-dropdown:focus-within{
+		overflow: hidden;
+	}
+}
+
+/* Desktop (dropdown) */
+@media (min-width: 500px){
+	i-dropdown{
+        --i-dropdown--tr-du: .12s;
+        --_offset: 6px;
+		display: block;
+		overflow: visible; /* Required to ensure box-shadow isn't clipped */
+
+		/* Offset and browser gutter */
+		padding: var(--_offset) 10px;
+
+		opacity: 0;
+		translate: 0 20px;
+		transition-property: display, overlay, translate, opacity;
+		transition-behavior: allow-discrete;
+		transition-timing-function: ease-in;
+		transition-duration: var(--i-dropdown--tr-du);		
+	}
+
+	/* Anchor positioning */
+    @supports (position-area: bottom) and (not (-webkit-hyphens: auto)){
+        i-dropdown{
+            inset: auto;
+			position: absolute;
+			position-area: bottom;
+            justify-self: anchor-center;
+			position-try: flip-block, flip-inline, flip-block flip-inline;
+        }
+		/* Dropdown menus inside dialogs need this (eg. the Gallery submission form) */
+		dialog i-dropdown{
+			position: fixed;
+		}
+    }
+	
+    /*  
+        Anchor positioning fallback:
+        If anchor isn't supported, we position menus using position:absolute
+    */
+	@supports (-webkit-hyphens: auto) or (not (position-area: bottom)){
+		i-dropdown{
+			position: absolute;
+            top: var(--_anchor-v, 0px);
+            left: 0px;
+            /*
+				This transform ensures the menu stays within the browser window
+            	Horizontal: Center the menu and prevent it from overflowing browser
+            	Vertical: Pull the menu up if:
+					1. There isn't enough space below the menu
+					AND
+					2. There's enough space above the menu, ensuring it doesn't fall outside the top of the browser
+			*/
+			transform: translate(
+				clamp(0%, var(--_anchor-h) - 50%, 100vw - 100%),
+				clamp(
+					-100% - var(--_anchor-height),
+					max(
+						var(--_remaining-height) - 100%,
+						100% - var(--_anchor-v)
+					) * 999,
+					0%
+				)
+			);
+		}
+
+		/* UI #211125, Safari 26.1: Closing, transitioned menus in Safari will jump in position if their parent uses position:relative. We can fix this by using position:fixed; for closed menus */
+		@supports (-webkit-hyphens: auto){
+			i-dropdown:not(:popover-open){
+				position: fixed;
+            	top: var(--_anchor-v-fixed, 0px);
+			}
+		}
+
+        /* If JS fails, display the menu as a centered popover with a backdrop */
+		i-dropdown:not(:defined){
+			inset: 0;
+			margin: auto;
+			position: fixed;
+		}
+		i-dropdown:not(:defined)::backdrop{
+			background: hsl(0 0% 0% / .1);
+		}
+		i-dropdown:not(:defined) .iDropdown{
+			max-height: 80vh;
+		}
+	}
+
+	/* Safari bug: Dropdowns in container parents jump to different positions while closing. Lets remove the transition completely on those. Last tested in 26 */
+	@supports (-webkit-hyphens: auto){
+		:is(.ipsData, .ipsPageAction, .ipsEntry__meta, .ipsProfileContainer, .cGalleryDialog, #elMessageSidebar) i-dropdown:not(:popover-open){
+			transition-duration: 0s;
+		}
+	}
+
+	i-dropdown:popover-open{
+		opacity: 1;
+		translate: 0 0px;
+		@starting-style{
+			&{
+				opacity: 0;
+				translate: 0 20px;
+			}
+		}
+	}
+	
+	@supports not selector(:popover-open){
+		/* If popover isn't supported, we position menus using position:fixed */
+		/* This allows us to position menus even if they're inside overflow hidden/scroll parents */
+		i-dropdown{
+			position: fixed;
+			top: calc(var(--_anchor-v, 0px) - var(--_anchor-scroll, 0px));
+			transition: none;
+			/* Display popovers */
+			opacity: 1;
+			translate: 0;
+		}
+	}
+	
+	/* Hide swipe and dismiss elements on desktop */
+	.iDropdownSwipe,
+	.iDropdownDismiss{
+		display: none;
+	}
+	
+	/* Dropdown width */
+	.iDropdown{
+		min-width: 18em;
+		max-width: 32em;
+	}
+	
+	.iDropdown__content{
+		max-height: min(600px, 50vh);
+	}
+
+}
+
+/* Prevents Chrome 133 from crashing when closing the popover */
+@supports (-webkit-app-region: drag) and (not (appearance: base-select)) {
+	i-dropdown{
+		transition-behavior: normal;
+	}
+}

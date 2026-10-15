@@ -1,0 +1,33 @@
+<ips:template parameters="$lang='save_chart', $role='saveReport', $buttonStyle='ipsButton--inherit', $icon='floppy-disk', $dropdownSource=null, $headerLang=null" />
+
+{{$id = mt_rand();}}
+
+<button
+	data-ipstooltip
+	title='{lang="$lang"}'
+	class='ipsButton {$buttonStyle}'
+	data-role='{$role}'
+    type="button"
+    id="stat_block_button_{$id}"
+    popovertarget="stat_block_button_{$id}_dropdown"
+>
+	{{if $icon}}<i class='fa-solid fa-{$icon}' aria-hidden="true"></i><span class="ipsInvisible">{lang="$lang"}</span>{{else}}{lang="$lang"}{{endif}}
+</button>
+{{if $dropdownSource}}
+    <i-dropdown
+            popover
+            id="stat_block_button_{$id}_dropdown"
+            class="cStatTile__save-report-menu"
+            data-i-dropdown-source="{$dropdownSource}"
+            data-dropdown-role="{$role}"
+    >
+        <div class="iDropdown">
+            {{if $headerLang}}
+                <div class="iDropdown__header">
+                    <p class='iDropdown__headerTitle'>{lang="$headerLang"}</p>
+                </div>
+            {{endif}}
+            <div class="ipsLoading iDropdown__content"></div>
+        </div>
+    </i-dropdown>
+{{endif}}

@@ -1,0 +1,19 @@
+<ips:template parameters="$name, $value, $required, $options, $disabled=FALSE, $toggles=array(), $descriptions=array(), $warnings=array(), $userSuppliedInput='', $unlimited=NULL, $unlimitedLang=NULL, $htmlId=NULL" />
+
+<div class="ipsGrid ipsGrid--forms-radio-images ipsAttachment_fileList ipsAttachment_fileList--radios">
+	{{foreach $options as $k => $v}}
+		<div class='ipsAttach ipsImageAttach ipsAttach_done'>
+			<label>
+				<div class="ipsImageAttach_thumb" data-role='preview'>
+					<img src="{$v}" alt='' loading='lazy'>
+				</div>
+				<div>
+					<input type="radio" name="{$name}" value="{$k}" {{if (string) $value == (string) $k or ( isset( $userSuppliedInput ) and !\in_array( $value, array_keys( $options ) ) and $k == $userSuppliedInput )}}checked{{endif}} {{if $disabled === TRUE or ( \is_array( $disabled ) and \in_array( $k, $disabled ) )}}disabled{{endif}} {{if isset( $toggles[ $k ] ) and !empty( $toggles[ $k ] )}}data-control="toggle" data-toggles="{expression="implode( ',', $toggles[ $k ] )"}"{{endif}} id="elRadio_{$name}_{$k}_{$htmlId}" class="ipsInput ipsInput--toggle">
+				</div>
+				{{if isset( $descriptions[ $k ] )}}
+					<div class='i-color_soft'>{$descriptions[ $k ]|raw}</div>
+				{{endif}}
+			</label>
+		</div>
+	{{endforeach}}
+</div>

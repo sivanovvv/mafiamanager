@@ -1,0 +1,22 @@
+<ips:template parameters="$package, $item, $purchaseForm" />
+
+<div class='i-padding_3' data-controller='nexus.front.store.packagePage' data-itemTitle="{$package->_title}">
+	<div class='ipsColumns'>
+		<div class='ipsColumns__secondary i-basis_200'>
+			{{if $images = $item->images() and \count( $images )}}
+				{{$donePrimary = false;}}
+				{{foreach $images as $image}}
+					{{if !$donePrimary}}
+						<a href='{$image}' class='cNexusProduct_primaryImage'><img src='{$image}' class="ipsImage ipsImage_thumb"></a>
+						{{$donePrimary = true;}}
+					{{endif}}
+				{{endforeach}}
+			{{endif}}
+		</div>
+		<div class='ipsColumns__primary'>
+			<h1 class='ipsTitle ipsTitle--h3'>{$item->mapped('title')}</h1>
+			<hr class='ipsHr'>
+			{$purchaseForm|raw}
+		</div>
+	</div>
+</div>

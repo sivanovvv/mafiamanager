@@ -1,0 +1,81 @@
+<ips:template parameters="$headers, $rows, $langPrefix, $manageable=TRUE, $widths=array(), $checkAlls=array(), $checkAllRows=FALSE, $showTooltips=FALSE, $sortable=FALSE, $styledRowTitle=FALSE" />
+<thead>
+	<tr>
+		{{if $sortable}}
+			<th></th>
+		{{endif}}
+		{{foreach $headers as $header}}
+			<th class="ipsMatrixHeader i-text-align_center" style="width: {$widths[ $header ]}%">
+				{lang="{$langPrefix}{$header}"}
+				{{if array_key_exists( $header, $checkAlls )}}
+					<br>
+					<input type="checkbox" data-action="checkAll" name="__all[{$header}]" data-checkallheader="{$header}" {{if $checkAlls[ $header ]}}checked{{endif}} class="ipsInput ipsInput--toggle">
+				{{endif}}
+			</th>
+		{{endforeach}}
+		{{if $manageable}}
+		    <th></th>
+		{{endif}}
+	</tr>
+</thead>
+<tbody>
+	<tr role='row' class='ipsMatrix_empty {{if \count( $rows ) > 0}}ipsHide{{endif}}'>
+		<td colspan="{expression="\count( $headers )"}" class='i-padding_3 i-color_soft'>
+			{lang="matrix_no_rows"}
+		</td>
+	</tr>
+	{{foreach $rows as $rowId => $row}}
+		{{if \is_string( $row )}}
+			<tr>
+				<th class="ipsMatrix_subHeader" colspan="{expression="\count( $headers )"}">{$row|raw}</th>
+			</tr>
+		{{else}}
+			<tr data-matrixrowid="{$rowId}" role='row' {{if \IPS\Request::i()->type && \IPS\Request::i()->type == $rowId}}class='ipsMatrix_highlighted'{{endif}}>
+				{{if $sortable}}
+					<td>
+						<input type="hidden" name="{$sortable}_matrixOrder[]" value="{$rowId}" data-role="noMatrixSquash">
+						<div class='ipsTree_drag ipsDrag'>
+							<i class='ipsTree_dragHandle ipsDrag_dragHandle fa-solid fa-bars ipsJS_show' data-ipsTooltip='{lang="reorder"}' aria-hidden="true"></i>
+						</div>
+					</td>
+				{{endif}}
+				{{foreach $headers as $header}}
+					{{if \is_object( $row[ $header ] )}}
+						<td role='gridcell' {{if $showTooltips}}data-ipsTooltip title="{lang="{$langPrefix}{$header}"}"{{endif}} data-col='{$header}' data-title="{lang="{$langPrefix}{$header}"}" class="{{if $row[$header]->error}} ipsMatrix_error{{endif}}" data-role="unlimitedCatch">
+							{$row[ $header ]->html()|raw}
+							{{if $row[$header]->error}}
+								<p class="i-color_warning">{lang="$row[$header]->error"}</p>
+							{{endif}}
+						</td>
+					{{elseif \is_string( $row[ $header ] )}}
+						<td role='gridcell' class="ipsMatrix_rowTitle">
+							<div {{if isset( $row['_level'] )}}style="margin-left: {expression="$row['_level']*15"}px"{{endif}}>
+                                {{if $styledRowTitle}}
+                                    {$row[ $header ]|raw}
+                                {{else}}
+								    <strong>{{if $langPrefix === FALSE}}{$row[ $header ]|raw}{{else}}{lang="$row[ $header ]"}{{endif}}</strong>
+                                {{endif}}
+								{{if $checkAllRows}}
+									<br>
+                                    <div class="ipsButtons ipsButtons--start i-margin-top_1">
+                                        <a href='#' data-action="checkRow" class='ipsButton ipsButton--soft ipsButton--tiny'><i class='fa-solid fa-plus' aria-hidden="true"></i></a> <a href='#' data-action="unCheckRow" class='ipsButton ipsButton--soft ipsButton--tiny'><i class='fa-solid fa-minus' aria-hidden="true"></i></a>
+                                    </div>
+								{{endif}}
+							</div>
+						</td>
+					{{endif}}
+				{{endforeach}}
+				{{if $manageable}}
+					<td role='gridcell' class="ipsTable_controls">
+							<span class="ipsJS_show">
+								{template="controlStrip" app="core" group="global" params="array( 'add' => array( 'icon' => 'times-circle', 'title' => 'delete', 'class' => 'matrixDelete' ) )"}
+							</span>
+							<noscript>
+								{template="checkbox" app="core" group="forms" location="global" params="$rowId . '_delete'"}
+							</noscript>
+					</td>
+				{{endif}}
+			</tr>
+		{{endif}}
+	{{endforeach}}
+</tbody>

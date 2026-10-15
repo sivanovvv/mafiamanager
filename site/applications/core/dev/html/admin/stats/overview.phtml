@@ -1,0 +1,21 @@
+<ips:template parameters="$form, $blocks" />
+<div data-controller='core.admin.stats.overview' data-url='?app=core&module=stats&controller=overview&do=loadBlock'>
+	<div class='ipsBox i-padding_3 i-margin-bottom_1 i-flex i-justify-content_center i-align-items_center'>
+		<div class='i-flex_11'></div>
+		{$form|raw}
+	</div>
+	<div class='cStatsGrid'>
+		<div class='ipsGrid i-basis_340'>
+			{{foreach $blocks as $blockKey => $block}}
+				{{if $block->page == 'user' AND $subBlocks = $block->getBlocks()}}
+					{{foreach $subBlocks as $subBlock}}
+						{{if $details = $block->getBlockDetails( $subBlock )}}
+                            {{$details['title'] = member.language()->addToStack( $details['title'] );}}
+                            {template="overviewStatisticBlock" app="core" location="admin" group="reports" params="$blockKey, $subBlock, $details, null"}
+						{{endif}}
+					{{endforeach}}
+				{{endif}}
+			{{endforeach}}
+		</div>
+	</div>
+</div>

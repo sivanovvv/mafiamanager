@@ -1,0 +1,35 @@
+<ips:template parameters="$table, $url, $rules" />
+<div class='i-padding_3 i-border-bottom_3'>
+	<h2 class="ipsTitle ipsTitle--h3">{lang="referrals"}</h2>
+</div>
+
+<div class='i-padding_3 cReferralLinks'>
+	<h3 class='ipsTitle ipsTitle--h5 i-margin-bottom_2'>{lang="referral_directlink"}</h3>
+	<div class="i-flex i-gap_1">
+		<input class='i-flex_11 ipsInput ipsInput--text' type="text" value="{$url}" readonly id="referralURL">
+		<button type="button" class="i-flex_00 ipsButton ipsButton--primary ipsButton--tiny" data-ipscopy data-ipscopy-flashmessage data-ipscopy-target="referralURL"><i class="fa-solid fa-copy" aria-hidden="true"></i> {lang="copy"}</button>
+	</div>
+	{{if \count( \IPS\core\ReferralBanner::roots() )}}
+	<h3 class='ipsTitle ipsTitle--h5 i-margin-bottom_2 i-margin-top_4'>{lang="referral_banners"}</h3>
+	<div class='ipsGrid i-gap_4 cReferralsGrid'>
+		{{foreach \IPS\core\ReferralBanner::roots() as $banner}}
+			<div class='i-flex i-flex-direction_column i-gap_2'>
+				<div class='i-flex_11 cReferralsGrid__image' style="--_referralBanner:url('{file="$banner->url" extension="core_ReferralBanners"}')">
+					<img src='{file="$banner->url" extension="core_ReferralBanners"}' alt="" loading="lazy">
+				</div>
+				<div class='i-flex_00 i-flex i-gap_1'>
+					<input type='text' class='i-flex_11 ipsInput ipsInput--text' id="bannerValue_{$banner->id}" value="&lt;a href='{$url}'&gt;&lt;img src='{file="$banner->url" extension="core_ReferralBanners"}' alt='{setting="board_name"}'&gt;&lt;/a&gt;">
+					<button type="button" class="i-flex_00 ipsButton ipsButton--inherit ipsButton--tiny" data-ipscopy data-ipscopy-flashmessage data-ipscopy-target="bannerValue_{$banner->id}"><i class="fa-solid fa-copy" aria-hidden="true"></i> {lang="copy"}</button>
+				</div>
+			</div>
+		{{endforeach}}
+	</div>
+	{{endif}}
+</div>
+
+<h3 class='ipsTitle ipsTitle--h5 i-padding-inline_3 i-margin-top_4 i-margin-bottom_2'>{lang="referrals_yours"}</h3>
+{$table|raw}
+
+{{if $rules}}
+	{template="referralRulesCommission" app="nexus" group="global" location="front" params="$rules"}
+{{endif}}

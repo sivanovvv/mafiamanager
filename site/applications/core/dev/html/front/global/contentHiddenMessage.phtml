@@ -1,0 +1,31 @@
+<ips:template parameters="$entry" />
+{{if $entry->hidden() === 1}}
+	{{if $entry->canUnhide()}}
+		<div class="ipsMessage ipsMessage--withButtons ipsMessage--warning ipsPull">
+			<i class="fa-solid fa-clock ipsMessage__icon" aria-hidden="true"></i>
+			<div>
+				<h4 class='ipsMessage__title'>{lang="pending_approval"}</h4>
+				<p class="i-color_soft">{lang="pending_approval_desc"}</p>
+			</div>
+			<ul class='ipsButtons'>
+				<li><a href="{$entry->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unhide' ) )}" class="ipsButton ipsButton--primary"><i class="fa-solid fa-check" aria-hidden="true"></i><span>{lang="approve"}</span></a></li>
+				{{if $entry->canDelete()}}
+					<li><a href='{$entry->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'delete' ) )}' data-confirm class='ipsButton'><i class='fa-solid fa-xmark' aria-hidden="true"></i><span>{lang="delete"}</span></a></li>
+				{{endif}}
+			</ul>
+		</div>
+	{{else}}
+		<div class="ipsMessage ipsMessage--warning ipsPull">
+			<i class="fa-solid fa-clock ipsMessage__icon" aria-hidden="true"></i>
+			<p>{lang="pending_approval_author"}</p>
+		</div>
+	{{endif}}
+{{elseif $entry->hidden() === -1 and $entry->canUnhide()}}
+	<div class="ipsMessage ipsMessage--withButtons ipsMessage--warning ipsPull">
+		<i class="fa-solid fa-eye-slash ipsMessage__icon" aria-hidden="true"></i>
+		<div>{$entry->hiddenBlurb()}</div>
+		<ul class='ipsButtons'>
+			<li><a href="{$entry->url()->csrf()->setQueryString( array( 'do' => 'moderate', 'action' => 'unhide' ) )}" class="ipsButton"><i class="fa-solid fa-eye" aria-hidden="true"></i><span>{lang="unhide"}</span></a></li>
+		</ul>
+	</div>
+{{endif}}

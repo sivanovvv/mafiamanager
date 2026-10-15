@@ -1,0 +1,11 @@
+<ips:template parameters="$transaction" />
+<li class='ipsPhotoPanel ipsPhotoPanel_mini i-padding_2' data-role='result'>
+	<div class="ipsPhotoPanel__text">
+		<h2 class='ipsPhotoPanel__primary'>
+			<a href='{$transaction->acpUrl()}'>{lang="transaction_number" sprintf="$transaction->id"}</a>
+			&nbsp;
+			{template="status" group="transactions" app="nexus" params="$transaction->status"}
+		</h2>
+		<p class='ipsPhotoPanel__secondary'>{$transaction->amount} &middot; {{if $transaction->method}}{$transaction->method->_title}{{else}}{lang="account_credit"}{{endif}} &middot; {$transaction->member->cm_name}</p>
+	</div>
+</li>

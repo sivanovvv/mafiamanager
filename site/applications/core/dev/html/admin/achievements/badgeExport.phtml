@@ -1,0 +1,17 @@
+<ips:template parameters="$exportableBadges" />
+{{if $exportableBadges}}
+<div class='ipsBox i-padding_3'>
+	<div class="ipsMessage ipsMessage--info">
+		{lang="acp_achievements_export_badges_blurb" sprintf="$exportableBadges" pluralize="$exportableBadges"}
+	</div>
+	<div class="ipsSubmitRow">
+		<a href="{url="app=core&module=achievements&controller=badges&do=export"}" class="ipsButton ipsButton--primary">{lang="acp_achievements_export"}</a>
+	</div>
+</div>
+{{else}}
+<div class='ipsBox i-padding_3'>
+	<div class="ipsMessage ipsMessage--error">
+		{lang="acp_achievements_export_badges_blurb_error"}
+	</div>
+</div>
+{{endif}}

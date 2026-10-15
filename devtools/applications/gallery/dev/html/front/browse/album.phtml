@@ -1,0 +1,135 @@
+<ips:template parameters="$album, $table, $commentsAndReviews" />
+
+{{if $club = $album->category()->club()}}
+	{{if settings.clubs and settings.clubs_header == 'full'}}
+		{template="header" app="core" group="clubs" params="$club, $album->category()"}
+	{{endif}}
+	<div id='elClubContainer'>
+{{endif}}
+
+{{if $album->coverPhoto('masked')}}
+	<div class='ipsCoverPhoto ipsCoverPhoto--album' data-controller='core.global.core.coverPhoto'>
+		<div class='ipsCoverPhoto__container'>
+			<img src='{$album->coverPhoto('masked')}' class='ipsCoverPhoto__image' data-action="toggleCoverPhoto" alt="{$album->name}" loading='lazy'>
+		</div>
+	</div>
+{{endif}}
+<header class="ipsPageHeader ipsBox ipsBox--galleryAlbumHeader ipsPull">
+	<div class="ipsPageHeader__row">
+		<div data-ips-hook="header" class="ipsPageHeader__primary">
+			<h1 class="ipsPageHeader__title">
+				<div data-ips-hook="badges" class="ipsBadges">
+				    {{foreach $album->asItem()->badges() as $badge}}{$badge|raw}{{endforeach}}
+				</div>
+				<span data-ips-hook="title">
+				    {{if $album->asItem()->canEdit()}}
+					    <span data-controller="core.front.core.moderation">{{if $album->asItem()->locked()}}<i class='fa-solid fa-lock' aria-hidden="true"></i> {{endif}}
+						    <span data-role="editableTitle" title='{lang="click_hold_edit"}'>{$album->_title}</span>
+					    </span>
+				    {{else}}
+					    {{if $album->asItem()->locked()}}<i class='fa-solid fa-lock' aria-hidden="true"></i> {{endif}}{$album->_title}
+				    {{endif}}
+				</span>
+			</h1>
+			<div class='ipsPageHeader__desc'>
+				{{if !isset( \IPS\Request::i()->tab ) || \IPS\Request::i()->tab !== 'node_gallery_gallery'}}
+					{lang="album_created_by"} {$album->owner()->link()|raw} {{if $album->last_img_date}}&middot;{{endif}}
+				{{endif}}
+				{{if $album->last_img_date}}
+					{lang="updated"} {datetime="$album->last_img_date"}
+				{{endif}}
+			</div>
+		</div>
+		<div class='ipsButtons'>
+			{{if $album->asItem()->shareLinks()}}
+				{template="shareButton" app="core" group="sharelinks" params="$album->asItem()"}
+			{{endif}}
+			{{$followerCount = \IPS\gallery\Image::containerFollowerCount( $album );}}
+			{template="follow" app="core" group="global" params="'gallery', 'album', $album->_id, $followerCount"}
+		</div>
+	</div>
+	{{if $album->description}}
+		<div class='ipsPageHeader__row'>
+			{template="richText" group="global" app="core" location="global" params="$album->description, array(''), array(), array('data-ipsTruncate')"}
+		</div>
+	{{endif}}
+	<div class='ipsPageHeader__row ipsPageHeader__row--footer'>
+		<div class='ipsPageHeader__primary'>
+			<ul class='ipsList ipsList--inline ipsList--icons i-link-color_inherit' data-ips-hook="iconsList">
+				<li><i class="fa-solid fa-photo-film" aria-hidden="true"></i> {lang="num_images" pluralize="$album->count_imgs"}</li>
+				{{if $album->use_comments && $album->comments > 0}}
+					<li><i class="fa-regular fa-images" aria-hidden="true"></i> {lang="gallery_album_num_comments_lc" pluralize="$album->comments"}</li>
+				{{endif}}
+				{{if $album->allow_comments && $album->count_comments > 0}}
+					<li><i class="fa-regular fa-images" aria-hidden="true"></i> {lang="gallery_image_comments_s" pluralize="$album->count_comments"}</li>
+				{{endif}}
+                {{if $album->use_reviews && $album->reviews > 0}}
+                    <li><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> {lang="gallery_album_num_reviews_lc" pluralize="$album->reviews"}</li>
+                {{endif}}
+                {{if $album->views >= 0}}
+                <li id='elAlbumViews'>
+                    {{if \IPS\Application::appIsEnabled('cloud') and \IPS\Member::loggedIn()->modPermission('can_view_moderation_log')}}
+                        {{$url = "app=cloud&module=analytics&controller=analytics&contentClass=\IPS\gallery\Album\Item&contentId=" . $album->id;}}
+                        <i class='fa-solid fa-eye' aria-hidden="true"></i> <a href='{url="$url"}' data-ipsDialog data-ipsDialog-title='{lang="analytics"}' data-ipsTooltip title='{lang="analytics"}'>{lang="num_views_with_number" pluralize="$album->views"}</a>
+                    {{else}}
+                        <i class='fa-solid fa-eye' aria-hidden="true"></i> {lang="num_views_with_number" pluralize="$album->views"}
+                    {{endif}}
+                </li>
+                {{endif}}
+                {{if \IPS\IPS::classUsesTrait( $album->asItem(), 'IPS\Content\Reactable' ) and settings.reputation_enabled}}
+                    <li class='i-margin-start_auto'>{template="reputation" app="core" group="global" params="$album->asItem()"}</li>
+                {{endif}}
+			</ul>
+		</div>
+	</div>
+</header>
+
+{{if $menu = $album->asItem()->menu()}}
+	<ul class="ipsButtons ipsButtons--main">
+		<li>{$menu|raw}</li>
+		{{if $album->can( 'add' )}}
+		{template="categoryButtons" group="browse" params="$album->can('add'), $album->category(), $album"}
+		{{endif}}
+	</ul>
+{{endif}}
+
+{{if \count( $album->_event )}}
+	<div class='ipsBox ipsBox--galleryAlbumEvent'>
+		<h4 class='ipsBox__header'>{lang="events_in_album" pluralize="\count( $album->_event )"}</h4>
+		<div class='ipsBox__content ipsBox__padding'>{template="eventBlocks" group="view" app="calendar" params="$album->_event"}</div>
+	</div>
+{{endif}}
+
+{template="contentItemMessages" group="global" app="core" params="$album->asItem()->getMessages(), $album->asItem()"}
+
+<div class='ipsBox ipsBox--galleryAlbumMain ipsPull'>
+	{$table|raw}
+</div>
+
+{{if $commentsAndReviews}}
+	<div class='ipsBox ipsBox--galleryAlbumCommentsReviews ipsPull' id="replies">
+		{{if ( $album->asItem()->use_reviews && $album->asItem()->container()->allow_reviews ) && ( $album->asItem()->use_comments && $album->asItem()->container()->allow_comments ) }}
+			<h2 class='ipsBox__header' hidden>{lang="user_feedback"}</h2>
+		{{endif}}
+		{{if (!( $album->asItem()->use_reviews && $album->asItem()->container()->allow_reviews ) && ( $album->asItem()->use_comments && $album->asItem()->container()->allow_comments )) OR (( $album->asItem()->use_reviews && $album->asItem()->container()->allow_reviews ) && !( $album->asItem()->use_comments && $album->asItem()->container()->allow_comments )) }}
+			<div>
+				{$commentsAndReviews|raw}
+			</div>
+		{{else}}
+			{$commentsAndReviews|raw}
+		{{endif}}
+	</div>
+{{endif}}
+<div class="ipsBox ipsBox--padding ipsPull ipsResponsive_hideDesktop">
+	<div class='ipsPageActions'>
+		{{if $album->asItem()->shareLinks()}}
+			{template="shareButton" app="core" group="sharelinks" params="$album->asItem()"}
+		{{endif}}
+		{{$followerCount = \IPS\gallery\Image::containerFollowerCount( $album );}}
+		{template="follow" app="core" group="global" params="'gallery', 'album', $album->_id, $followerCount"}
+	</div>
+</div>
+
+{{if $album->category()->club()}}
+	</div>
+{{endif}}
