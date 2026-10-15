@@ -174,5 +174,323 @@
             }
         },
         "collation": "utf8mb4_unicode_ci"
+    },
+    "mafiamanager_players": {
+        "name": "mafiamanager_players",
+        "columns": {
+            "id": {
+                "name": "id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": true
+            },
+            "game_id": {
+                "name": "game_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "member_id": {
+                "name": "member_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "weight": {
+                "name": "weight",
+                "type": "TINYINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": "1",
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "type": "primary",
+                "name": "PRIMARY",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "id"
+                ]
+            },
+            "unique_game_player": {
+                "type": "unique",
+                "name": "unique_game_player",
+                "length": [
+                    null,
+                    null
+                ],
+                "columns": [
+                    "game_id",
+                    "member_id"
+                ]
+            }
+        },
+        "collation": "utf8mb4_unicode_ci"
+    },
+    "mafiamanager_votes": {
+        "name": "mafiamanager_votes",
+        "columns": {
+            "id": {
+                "name": "id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": true
+            },
+            "game_id": {
+                "name": "game_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "voter_id": {
+                "name": "voter_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "target_id": {
+                "name": "target_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "created_at": {
+                "name": "created_at",
+                "type": "INT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "updated_at": {
+                "name": "updated_at",
+                "type": "INT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "type": "primary",
+                "name": "PRIMARY",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "id"
+                ]
+            },
+            "unique_game_voter": {
+                "type": "unique",
+                "name": "unique_game_voter",
+                "length": [
+                    null,
+                    null
+                ],
+                "columns": [
+                    "game_id",
+                    "voter_id"
+                ]
+            },
+            "idx_game_target": {
+                "type": "key",
+                "name": "idx_game_target",
+                "length": [
+                    null,
+                    null
+                ],
+                "columns": [
+                    "game_id",
+                    "target_id"
+                ]
+            }
+        },
+        "collation": "utf8mb4_unicode_ci"
+    },
+    "mafiamanager_vote_history": {
+        "name": "mafiamanager_vote_history",
+        "columns": {
+            "id": {
+                "name": "id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": true
+            },
+            "game_id": {
+                "name": "game_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "voter_id": {
+                "name": "voter_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "previous_target_id": {
+                "name": "previous_target_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": true,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "new_target_id": {
+                "name": "new_target_id",
+                "type": "BIGINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": true,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "action": {
+                "name": "action",
+                "type": "VARCHAR",
+                "length": 12,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": false,
+                "auto_increment": false
+            },
+            "weight": {
+                "name": "weight",
+                "type": "TINYINT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            },
+            "changed_at": {
+                "name": "changed_at",
+                "type": "INT",
+                "length": 0,
+                "decimals": null,
+                "values": [],
+                "allow_null": false,
+                "default": null,
+                "comment": "",
+                "unsigned": true,
+                "auto_increment": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "type": "primary",
+                "name": "PRIMARY",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "id"
+                ]
+            },
+            "idx_history_game": {
+                "type": "key",
+                "name": "idx_history_game",
+                "length": [
+                    null,
+                    null
+                ],
+                "columns": [
+                    "game_id",
+                    "changed_at"
+                ]
+            }
+        },
+        "collation": "utf8mb4_unicode_ci"
     }
 }

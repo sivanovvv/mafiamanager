@@ -54,5 +54,14 @@ protected function manage() : void
     ';
 }
 	
-	// Create new methods with the same name as the 'do' parameter which should execute it
+	protected function roster(): void
+{
+    \IPS\Output::i()->error(
+        'Списъкът с играчи се задава само при създаване на темата.',
+        '2SMM/3',
+        403
+    );
+}
+
+
 }
