@@ -71,28 +71,28 @@ class MafiaVoting extends UIItem
             return [];
         }
 
-return [
-    'mafiamanager_enable_voting' => new YesNo(
-        'mafiamanager_enable_voting',
-        false,
-        false,
-        [
-            'togglesOn' => [
-                'mafiamanager_voting_deadline'
-            ]
-        ]
-    ),
+			return [
+					'mafiamanager_enable_voting' => new YesNo(
+							'mafiamanager_enable_voting',
+							false,
+							false,
+							[
+									'togglesOn' => [
+											'mafiamanager_voting_deadline'
+									]
+							]
+					),
 
-    'mafiamanager_voting_deadline' => new Date(
-        'mafiamanager_voting_deadline',
-        null,
-        true,
-        [
-            'time' => true,
-            'min' => DateTime::ts(time() + 60)
-        ]
-    )
-];
+					'mafiamanager_voting_deadline' => new Date(
+							'mafiamanager_voting_deadline',
+							null,
+							true,
+							[
+									'time' => true,
+									'min' => DateTime::ts(time() + 60)
+							]
+					)
+			];
     }
 
 		public function formPostSave(
