@@ -1,0 +1,7 @@
+{
+  "core": {
+    "Loader": {
+      "SmartEmbeds": "IPS\\smartembeds\\extensions\\core\\Loader\\SmartEmbeds"
+    }
+  }
+}

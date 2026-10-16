@@ -1,0 +1,9 @@
+{
+  "front": {
+    "embed": {
+      "default_controller": "resolve",
+      "protected": 0,
+      "default": 1
+    }
+  }
+}
