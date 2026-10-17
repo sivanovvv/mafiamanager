@@ -1,6 +1,19 @@
-.smartembeds-card{max-width:560px;margin:14px 0;padding:8px;border:1px solid var(--i-border-color,#ddd);border-radius:8px;background:var(--i-background_1,#fff);overflow:hidden}
-.smartembeds-card .smartembeds-preview{min-height:40px;max-width:100%;overflow:hidden}
-.smartembeds-card .smartembeds-source{display:block;padding:7px 4px 0;font-size:12px;overflow-wrap:anywhere}
-.smartembeds-card.smartembeds-image{padding:0;border:0;background:none}
-.smartembeds-image img{display:block;max-width:100%;height:auto;border-radius:6px}
-.smartembeds-card iframe{max-width:100%}
+/* Smart Embeds v0.4.2 - optional external stylesheet (runtime also injects CSS). */
+.smartembeds-card{box-sizing:border-box;width:100%;max-width:740px;margin:16px 0;overflow:hidden}
+.smartembeds-card iframe{display:block;max-width:100%;border:0}
+.smartembeds-preview{width:100%;min-width:0;overflow:hidden}
+.smartembeds-instagram{max-width:658px}
+.smartembeds-instagram blockquote.instagram-media{margin:0!important;width:100%!important;min-width:0!important;max-width:658px!important}
+.smartembeds-facebook{max-width:700px}
+.smartembeds-facebook .fb-video,.smartembeds-facebook .fb-post{max-width:100%}
+.smartembeds-card.smartembeds-video{max-width:760px}
+.smartembeds-frame{display:block;width:100%;aspect-ratio:16/9;height:auto;min-height:220px;border:0;border-radius:8px}
+.smartembeds-tiktok .smartembeds-frame{width:min(100%,420px);height:740px;min-height:420px;aspect-ratio:auto}
+.smartembeds-giphy .smartembeds-frame{aspect-ratio:4/3;max-height:520px}
+.smartembeds-spotify .smartembeds-frame{height:352px;min-height:152px;aspect-ratio:auto}
+.smartembeds-soundcloud .smartembeds-frame{height:166px;min-height:166px;aspect-ratio:auto}
+.smartembeds-card.smartembeds-image{max-width:760px}
+.smartembeds-image img{display:block;max-width:100%;height:auto;border-radius:7px}
+.smartembeds-card.smartembeds-native-video video{display:block;width:100%;height:auto;max-height:600px}
+/* Inline editor previews live outside ProseMirror and cannot be serialized into posts. */
+@media(max-width:500px){.smartembeds-tiktok .smartembeds-frame{width:100%;height:630px}}

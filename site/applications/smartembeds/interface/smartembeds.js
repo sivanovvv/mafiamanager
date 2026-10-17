@@ -1,4 +1,4 @@
-/* Smart Embeds for Invision Community 5.0.20
+/* Smart Embeds v0.4.2 stable embeds and legacy video repair for Invision Community 5.0.20
  * Progressive enhancement: never alters stored post HTML; leaves URLs on failure.
  */
 (function () {
@@ -20,32 +20,35 @@
   var endpoint = base + '/index.php?app=smartembeds&module=embed&controller=resolve&url=';
   var sdkPromises = {};
   var scanPending = false;
+  var exclude = "nav, header, footer, aside, blockquote, .ipsQuote, .ipsSpoiler, .smartembeds-card, [contenteditable], .ipsMenu, .ipsBreadcrumb";
   // The Loader currently enables JavaScript but not CSS on this installation.
   // Keep styles self-contained so they apply without touching the working Loader.
-  if (!document.getElementById('smartembeds-v02-styles')) {
+  if (!document.getElementById('smartembeds-v042-styles')) {
     var style = document.createElement('style');
-    style.id = 'smartembeds-v02-styles';
+    style.id = 'smartembeds-v042-styles';
     style.textContent = [
-      '.smartembeds-card{box-sizing:border-box;width:100%;max-width:660px;margin:16px 0;overflow:hidden}',
-      '.smartembeds-preview{max-width:100%;min-width:0;overflow:hidden}',
+      '.smartembeds-card{box-sizing:border-box;width:100%;max-width:740px;margin:16px 0;overflow:hidden}',
+      '.smartembeds-preview{width:100%;min-width:0;overflow:hidden}',
       '.smartembeds-card iframe{display:block;max-width:100%;border:0}',
-      '.smartembeds-instagram blockquote.instagram-media{margin:0!important;width:100%!important;max-width:660px!important}',
-      '.smartembeds-card.smartembeds-video{max-width:700px}',
+      '.smartembeds-instagram{max-width:658px}',
+      '.smartembeds-instagram blockquote.instagram-media{margin:0!important;width:100%!important;min-width:0!important;max-width:658px!important}',
+      '.smartembeds-facebook{max-width:700px}',
+      '.smartembeds-facebook .fb-video,.smartembeds-facebook .fb-post{max-width:100%}',
+      '.smartembeds-card.smartembeds-video{max-width:760px}',
       '.smartembeds-frame{display:block;width:100%;aspect-ratio:16/9;height:auto;min-height:220px;border:0;border-radius:8px}',
-      '.smartembeds-tiktok .smartembeds-frame{width:min(100%,380px);height:680px;min-height:400px;aspect-ratio:auto}',
+      '.smartembeds-tiktok .smartembeds-frame{width:min(100%,420px);height:740px;min-height:420px;aspect-ratio:auto}',
       '.smartembeds-giphy .smartembeds-frame{aspect-ratio:4/3;max-height:520px}',
       '.smartembeds-spotify .smartembeds-frame{height:352px;min-height:152px;aspect-ratio:auto}',
       '.smartembeds-soundcloud .smartembeds-frame{height:166px;min-height:166px;aspect-ratio:auto}',
-      '.smartembeds-card.smartembeds-image{max-width:720px}',
+      '.smartembeds-card.smartembeds-image{max-width:760px}',
       '.smartembeds-image img{display:block;max-width:100%;height:auto;border-radius:7px}',
-      '.smartembeds-card.smartembeds-native-video video{display:block;width:100%;height:auto;max-height:550px}',
-      '@media(max-width:500px){.smartembeds-tiktok .smartembeds-frame{width:100%;height:570px}}'
+      '.smartembeds-card.smartembeds-native-video video{display:block;width:100%;height:auto;max-height:600px}',
+      '@media(max-width:500px){.smartembeds-tiktok .smartembeds-frame{width:100%;height:630px}}'
     ].join('\n');
     (document.head || document.documentElement).appendChild(style);
   }
   // Invision 5 post markup varies with themes; avoid hard-coding IC4 classes.
   // We only act on a standalone social/image URL, never on navigation/editor links.
-  var exclude = 'nav, header, footer, aside, blockquote, .ipsQuote, .ipsSpoiler, .smartembeds-card, [contenteditable], .ipsMenu, .ipsBreadcrumb';
 
   function classify(address) {
     var url;
@@ -295,6 +298,12 @@
         var content = fromOEmbed(data.html, match.type);
         if (!content) throw new Error('Unsupported Meta markup');
         preview.textContent = '';
+        // Facebook's SDK reads data-width when it builds the video iframe.
+        // Changing iframe CSS afterwards is not reliable and can distort Reels.
+        if (match.type === 'facebook') {
+          content.setAttribute('data-width', content.classList.contains('fb-video') ? '700' : '680');
+          if (content.classList.contains('fb-video')) content.setAttribute('data-allowfullscreen', 'true');
+        }
         preview.appendChild(content);
         return processSdk(match.type, preview);
       })
@@ -323,9 +332,45 @@
     else resolveMeta(target, match);
   }
 
+  // Repair a specific IC5 legacy attachment regression. Older video HTML may
+  // contain <source src="https://forum.example/#t=0"> even though the real
+  // attachment URL is already in the nested <a class="ipsAttachLink">.
+  // This is intentionally read-only: it changes the browser's DOM, not the DB.
+  function repairBrokenUploadedVideo(video) {
+    if (video.dataset.smartembedsRepaired === '1') return;
+    var fileId = video.getAttribute('data-fileid');
+    if (!fileId || !/^\d+$/.test(fileId)) return;
+    var source = video.querySelector('source[type^="video/"]');
+    var fallback = video.querySelector('a.ipsAttachLink[href]');
+    if (!source || !fallback) return;
+    try {
+      var broken = new URL(source.getAttribute('src') || '', document.baseURI);
+      var origin = new URL(document.baseURI);
+      // Only replace the known broken "forum homepage + time fragment" source.
+      // Do not override normal media files, CDN URLs or valid attachments.
+      if (broken.origin !== origin.origin || broken.pathname !== '/' ||
+          !/^#t=(?:0(?:\.0+)?|\d+(?:\.\d+)?)$/.test(broken.hash)) return;
+      var attachment = new URL(fallback.getAttribute('href'), document.baseURI);
+      if (attachment.origin !== origin.origin || !attachment.pathname.endsWith('/applications/core/interface/file/attachment.php') ||
+          attachment.searchParams.get('id') !== fileId || attachment.username || attachment.password || attachment.port) return;
+      attachment.hash = broken.hash;
+      source.setAttribute('src', attachment.href);
+      video.dataset.smartembedsRepaired = '1';
+      // Browsers do not always re-evaluate <source> changes automatically.
+      if (typeof video.load === 'function') video.load();
+    } catch (_) { /* leave the original source unchanged */ }
+  }
+
+  function scanBrokenVideos() {
+    document.querySelectorAll('video.ipsEmbeddedVideo[data-fileid]').forEach(repairBrokenUploadedVideo);
+  }
+
+  // No overlays or direct DOM manipulation inside Tiptap/ProseMirror editors.
+  // URLs remain editable text until a native editor extension is available.
   function scan() {
     scanPending = false;
     document.querySelectorAll('a[href]').forEach(examine);
+    scanBrokenVideos();
   }
 
   function scheduleScan() {
@@ -337,7 +382,7 @@
   } else {
     scheduleScan();
   }
-  // Forum posts and replies can be inserted without a full page reload.
+  // Scan new replies loaded asynchronously; no post content is saved or changed.
   var observer = new MutationObserver(scheduleScan);
   observer.observe(document.documentElement, {subtree: true, childList: true});
 })();

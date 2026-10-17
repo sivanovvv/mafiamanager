@@ -13,7 +13,8 @@ class SmartEmbeds extends LoaderAbstract
     public function js(): array
     {
         return [[
-            '/applications/smartembeds/interface/smartembeds.js'
+            '/applications/smartembeds/interface/smartembeds-v064-editor.js',
+            '/applications/smartembeds/interface/smartembeds-v064-display.js'
         ]];
     }
 }

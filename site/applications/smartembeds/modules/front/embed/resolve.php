@@ -31,7 +31,7 @@ class resolve extends Controller
             return;
         }
 
-        $cacheKey = 'smartembeds_' . hash('sha256', $url);
+        $cacheKey = 'smartembeds_v03_' . hash('sha256', $url);
         try {
             $cache = Cache::i()->getWithExpire($cacheKey);
             if (is_array($cache) && isset($cache['ok'])) {
@@ -132,6 +132,6 @@ class resolve extends Controller
         } else {
             return null;
         }
-        return $api . '?url=' . rawurlencode($url) . '&omitscript=false';
+        return $api . '?url=' . rawurlencode($url) . '&maxwidth=' . (str_contains($api, 'instagram_oembed') ? '658' : '700') . '&omitscript=false';
     }
 }

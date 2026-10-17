@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build core="5002006">
+ <module key="front/embed"><![CDATA[{"default_controller":"resolve","protected":0,"default":1}]]></module>
+</build>
